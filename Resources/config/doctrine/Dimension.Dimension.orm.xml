@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <entity name="Sulu\Bundle\ContentBundle\Model\Dimension\Dimension"
+            table="cs_dimensions"
+            repository-class="Sulu\Bundle\ContentBundle\Repository\Dimension\DimensionRepository">
+        <id name="id" type="guid">
+            <generator strategy="NONE"/>
+        </id>
+
+        <field name="attributeCount" type="integer" nullable="false"/>
+
+        <one-to-many field="attributes"
+                     target-entity="Sulu\Bundle\ContentBundle\Model\Dimension\DimensionAttribute"
+                     mapped-by="dimension">
+            <cascade>
+                <cascade-persist/>
+                <cascade-remove/>
+            </cascade>
+        </one-to-many>
+    </entity>
+</doctrine-mapping>

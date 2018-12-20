@@ -1,0 +1,40 @@
+# PHP CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-php/ for more details
+#
+version: 2
+jobs:
+    build:
+        docker:
+        - image: circleci/php:7.1-node-browsers
+        - image: circleci/mysql:5.7
+          environment:
+          - DATABASE_URL=mysql://root:@127.0.0.1:3306/su_sylius_test
+
+        working_directory: ~/repo
+
+        steps:
+        - checkout
+
+        - run: echo -e "memory_limit=2G" | sudo tee /usr/local/etc/php/php.ini > /dev/null
+
+        - run:
+              name: Install OS dependencies (mysql, gd)
+              command: |
+                  sudo apt-get install -y libpng-dev
+                  sudo -E docker-php-ext-install pdo_mysql gd
+              parallel: true
+
+        - restore_cache:
+              keys:
+              - v1-dependencies-{{ checksum "composer.json" }}
+              - v1-dependencies-
+
+        - run: composer install -n --prefer-dist
+
+        - save_cache:
+              paths:
+              - ~/.composer
+              key: v1-dependencies-{{ checksum "composer.json" }}
+
+        - run: composer test

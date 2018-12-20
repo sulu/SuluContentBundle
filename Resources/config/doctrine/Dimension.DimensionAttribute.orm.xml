@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <entity name="Sulu\Bundle\ContentBundle\Model\Dimension\DimensionAttribute"
+            table="cs_dimension_attributes">
+        <id name="dimension" type="string" association-key="true">
+            <generator strategy="NONE"/>
+        </id>
+        <id name="key" type="string" column="attribute_key">
+            <generator strategy="NONE"/>
+        </id>
+
+        <field name="value" type="string" nullable="false"/>
+
+        <many-to-one field="dimension" target-entity="Sulu\Bundle\ContentBundle\Model\Dimension\Dimension" inversed-by="attributes"/>
+    </entity>
+</doctrine-mapping>

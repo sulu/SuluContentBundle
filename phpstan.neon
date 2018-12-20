@@ -1,0 +1,15 @@
+includes:
+    - vendor/jangregor/phpstan-prophecy/src/extension.neon
+    - vendor/phpstan/phpstan-doctrine/extension.neon
+
+parameters:
+    level: 7
+    paths:
+        - .
+    excludes_analyse:
+        - %currentWorkingDirectory%/DependencyInjection/Configuration.php
+        - %currentWorkingDirectory%/vendor/*
+        - %currentWorkingDirectory%/Tests/app/AppKernel.php
+        - %currentWorkingDirectory%/Tests/app/cache/*
+        - %currentWorkingDirectory%/Tests/app/var/*
+        - %currentWorkingDirectory%/Tests/var/*

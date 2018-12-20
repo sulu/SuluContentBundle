@@ -1,0 +1,21 @@
+# composer
+vendor
+composer.lock
+
+# phpunit
+phpunit.phar
+phpunit.xml
+
+# php-cs
+.php_cs.cache
+
+# tests
+.env
+Tests/app/cache
+Tests/app/data
+Tests/app/var
+Tests/var
+
+# npm
+Resources/js/package-lock.json
+Resources/js/node_modules

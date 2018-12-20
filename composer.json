@@ -1,0 +1,66 @@
+{
+    "name": "sulu/content-bundle",
+    "type": "sulu-bundle",
+    "description": "Experimental content implementation for sulu.",
+    "authors": [
+        {
+            "name": "SuluContentBundle",
+            "homepage": "https://github.com/sulu/SuluContentBundle/contributors"
+        }
+    ],
+    "homepage": "https://github.com/sulu/SuluContentBundle",
+    "license": "MIT",
+    "require": {
+        "php": "^7.1.3",
+        "doctrine/doctrine-bundle": "^1.6",
+        "friendsofsymfony/rest-bundle": "^2.2",
+        "jms/serializer": "^1.13",
+        "sulu/sulu": "dev-enhancement/rename-content-bundle",
+        "symfony/config": "^4.1",
+        "symfony/dependency-injection": "^4.1",
+        "symfony/http-foundation": "^4.1",
+        "symfony/http-kernel": "^4.1",
+        "symfony/messenger": "^4.1",
+        "webmozart/assert": "^1.3"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^2.12",
+        "jackalope/jackalope-doctrine-dbal": "^1.2.5",
+        "jangregor/phpstan-prophecy": "^0.2",
+        "phpstan/phpstan": "^0.10",
+        "phpstan/phpstan-doctrine": "^0.10",
+        "phpunit/phpunit": "^7.2",
+        "symfony/dotenv": "^4.1",
+        "symfony/monolog-bundle": "^3.3",
+        "zendframework/zend-stdlib": "~2.3",
+        "zendframework/zendsearch": "@dev"
+    },
+    "conflict": {
+        "symfony/dependency-injection": "4.1.8"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "autoload": {
+        "psr-4": {
+            "Sulu\\Bundle\\ContentBundle\\": ""
+        }
+    },
+    "scripts": {
+        "test": [
+            "@phpunit",
+            "@phpstan",
+            "@php-cs"
+        ],
+        "phpunit": "vendor/bin/phpunit",
+        "phpstan": "vendor/bin/phpstan analyze -c ./phpstan.neon . -l max",
+        "php-cs": "vendor/bin/php-cs-fixer fix --verbose --diff --dry-run",
+        "php-cs-fix": "vendor/bin/php-cs-fixer fix"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    },
+    "repositories":[{"type": "git", "url": "https://github.com/wachterjohannes/sulu.git"}]
+}
