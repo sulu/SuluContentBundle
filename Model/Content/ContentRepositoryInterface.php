@@ -17,6 +17,12 @@ use Sulu\Bundle\ContentBundle\Model\Dimension\DimensionInterface;
 
 interface ContentRepositoryInterface
 {
+    public function create(
+        string $resourceKey,
+        string $resourceId,
+        DimensionInterface $dimension
+    ): ContentInterface;
+
     public function findOrCreate(
         string $resourceKey,
         string $resourceId,
