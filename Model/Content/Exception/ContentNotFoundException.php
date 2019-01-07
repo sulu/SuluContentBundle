@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Model\Content\Exception;
 
+use Sulu\Bundle\ContentBundle\Common\Model\ModelNotFoundException;
 use Sulu\Bundle\ContentBundle\Model\Content\Content;
-use Sulu\Bundle\ContentBundle\Model\ModelNotFoundException;
 
 class ContentNotFoundException extends ModelNotFoundException
 {

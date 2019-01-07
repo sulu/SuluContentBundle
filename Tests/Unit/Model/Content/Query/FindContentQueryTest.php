@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Model\Content\Query;
 
 use PHPUnit\Framework\TestCase;
+use Sulu\Bundle\ContentBundle\Common\Model\MissingResultException;
 use Sulu\Bundle\ContentBundle\Model\Content\ContentViewInterface;
 use Sulu\Bundle\ContentBundle\Model\Content\Query\FindContentQuery;
 
@@ -44,7 +45,7 @@ class FindContentQueryTest extends TestCase
 
     public function testGetContent(): void
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(MissingResultException::class);
 
         $query = new FindContentQuery(self::RESOURCE_KEY, 'product-1', 'en');
 

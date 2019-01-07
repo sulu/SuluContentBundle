@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Model\Content\Query;
 
+use Sulu\Bundle\ContentBundle\Common\Model\MissingResultException;
 use Sulu\Bundle\ContentBundle\Model\Content\ContentViewInterface;
 
 class FindContentQuery
@@ -62,7 +63,7 @@ class FindContentQuery
     public function getContent(): ContentViewInterface
     {
         if (!$this->content) {
-            throw new \RuntimeException('Trying to retrieve content when no content has been set.');
+            throw new MissingResultException(__METHOD__);
         }
 
         return $this->content;
