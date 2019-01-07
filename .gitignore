@@ -19,3 +19,6 @@ Tests/var
 # npm
 Resources/js/package-lock.json
 Resources/js/node_modules
+
+# IDEs
+/.idea
