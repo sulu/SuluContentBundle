@@ -54,7 +54,7 @@ class SuluContentExtension extends Extension implements PrependExtensionInterfac
                 'metadata' => [
                     'directories' => [
                         [
-                            'name' => 'SuluSyliusConsumerBundle',
+                            'name' => 'SuluContentBundle',
                             'path' => __DIR__ . '/../Resources/config/serializer',
                             'namespace_prefix' => 'Sulu\\Bundle\\ContentBundle\\Model',
                         ],
