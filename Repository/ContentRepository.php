@@ -27,6 +27,19 @@ class ContentRepository extends ServiceEntityRepository implements ContentReposi
         parent::__construct($registry, Content::class);
     }
 
+    public function create(
+        string $resourceKey,
+        string $resourceId,
+        DimensionInterface $dimension
+    ): ContentInterface {
+        $className = $this->getClassName();
+        $content = new $className($dimension, $resourceKey, $resourceId);
+
+        $this->getEntityManager()->persist($content);
+
+        return $content;
+    }
+
     public function findOrCreate(
         string $resourceKey,
         string $resourceId,
@@ -38,12 +51,7 @@ class ContentRepository extends ServiceEntityRepository implements ContentReposi
             return $content;
         }
 
-        $className = $this->getClassName();
-        $content = new $className($dimension, $resourceKey, $resourceId);
-
-        $this->getEntityManager()->persist($content);
-
-        return $content;
+        return $this->create($resourceKey, $resourceId, $dimension);
     }
 
     public function findByResource(
