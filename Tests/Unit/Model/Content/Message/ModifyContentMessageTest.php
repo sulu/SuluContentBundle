@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Model\Content\Message;
 
 use PHPUnit\Framework\TestCase;
+use Sulu\Bundle\ContentBundle\Common\Model\MissingResultException;
 use Sulu\Bundle\ContentBundle\Model\Content\ContentViewInterface;
 use Sulu\Bundle\ContentBundle\Model\Content\Message\ModifyContentMessage;
 
@@ -83,7 +84,7 @@ class ModifyContentMessageTest extends TestCase
 
     public function testGetContent(): void
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(MissingResultException::class);
 
         $message = new ModifyContentMessage(
             self::RESOURCE_KEY,
