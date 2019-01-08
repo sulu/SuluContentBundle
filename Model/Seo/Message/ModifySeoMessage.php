@@ -67,6 +67,41 @@ class ModifySeoMessage
         return $this->locale;
     }
 
+    public function getTitle(): ?string
+    {
+        return $this->getNullableStringValue('title');
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->getNullableStringValue('description');
+    }
+
+    public function getKeywords(): ?string
+    {
+        return $this->getNullableStringValue('keywords');
+    }
+
+    public function getCanonicalUrl(): ?string
+    {
+        return $this->getNullableStringValue('canonicalUrl');
+    }
+
+    public function getNoIndex(): bool
+    {
+        return $this->getNullableBoolValue('noIndex') ?? false;
+    }
+
+    public function getNoFollow(): bool
+    {
+        return $this->getNullableBoolValue('noFollow') ?? false;
+    }
+
+    public function getHideInSitemap(): bool
+    {
+        return $this->getNullableBoolValue('hideInSitemap') ?? false;
+    }
+
     public function getSeo(): SeoViewInterface
     {
         if (!$this->seo) {

@@ -23,21 +23,21 @@ interface SeoInterface
 
     public function getResourceId(): string;
 
-    public function getTitle(): string;
+    public function getTitle(): ?string;
 
-    public function setTitle(string $title): self;
+    public function setTitle(?string $title): self;
 
-    public function getDescription(): string;
+    public function getDescription(): ?string;
 
-    public function setDescription(string $description): self;
+    public function setDescription(?string $description): self;
 
-    public function getKeywords(): string;
+    public function getKeywords(): ?string;
 
-    public function setKeywords(string $keywords): self;
+    public function setKeywords(?string $keywords): self;
 
-    public function getCanonicalUrl(): string;
+    public function getCanonicalUrl(): ?string;
 
-    public function setCanonicalUrl(string $canonicalUrl): self;
+    public function setCanonicalUrl(?string $canonicalUrl): self;
 
     public function getNoIndex(): bool;
 

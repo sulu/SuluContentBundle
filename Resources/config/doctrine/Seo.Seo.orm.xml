@@ -15,10 +15,10 @@
             <generator strategy="NONE"/>
         </id>
 
-        <field name="title" type="string" nullable="false"/>
-        <field name="description" type="string" nullable="false"/>
-        <field name="keywords" type="string" nullable="false"/>
-        <field name="canonicalUrl" type="string" nullable="false"/>
+        <field name="title" type="string" nullable="true"/>
+        <field name="description" type="string" nullable="true"/>
+        <field name="keywords" type="string" nullable="true"/>
+        <field name="canonicalUrl" type="string" nullable="true"/>
         <field name="noIndex" type="boolean" nullable="false"/>
         <field name="noFollow" type="boolean" nullable="false"/>
         <field name="hideInSitemap" type="boolean" nullable="false"/>

@@ -16,6 +16,14 @@
                  alias="Sulu\Bundle\ContentBundle\Model\Seo\Factory\SeoViewFactory"/>
 
         <!-- handler -->
+        <service id="Sulu\Bundle\ContentBundle\Model\Seo\MessageHandler\ModifySeoMessageHandler">
+            <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Seo\SeoRepositoryInterface"/>
+            <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Dimension\DimensionRepositoryInterface"/>
+            <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Seo\Factory\SeoViewFactoryInterface"/>
+
+            <tag name="messenger.message_handler"/>
+        </service>
+
         <service id="Sulu\Bundle\ContentBundle\Model\Seo\QueryHandler\FindSeoQueryHandler">
             <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Seo\SeoRepositoryInterface"/>
             <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Dimension\DimensionRepositoryInterface"/>

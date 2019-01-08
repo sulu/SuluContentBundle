@@ -21,13 +21,13 @@ interface SeoViewInterface
 
     public function getLocale(): string;
 
-    public function getTitle(): string;
+    public function getTitle(): ?string;
 
-    public function getDescription(): string;
+    public function getDescription(): ?string;
 
-    public function getKeywords(): string;
+    public function getKeywords(): ?string;
 
-    public function getCanonicalUrl(): string;
+    public function getCanonicalUrl(): ?string;
 
     public function getNoIndex(): bool;
 

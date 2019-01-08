@@ -33,22 +33,22 @@ class Seo implements SeoInterface
     private $resourceId;
 
     /**
-     * @var string
+     * @var ?string
      */
     private $title;
 
     /**
-     * @var string
+     * @var ?string
      */
     private $description;
 
     /**
-     * @var string
+     * @var ?string
      */
     private $keywords;
 
     /**
-     * @var string
+     * @var ?string
      */
     private $canonicalUrl;
 
@@ -71,10 +71,10 @@ class Seo implements SeoInterface
         DimensionInterface $dimension,
         string $resourceKey,
         string $resourceId,
-        string $title,
-        string $description,
-        string $keywords,
-        string $canonicalUrl,
+        string $title = null,
+        string $description = null,
+        string $keywords = null,
+        string $canonicalUrl = null,
         bool $noIndex = false,
         bool $noFollow = false,
         bool $hideInSitemap = false
@@ -106,48 +106,48 @@ class Seo implements SeoInterface
         return $this->resourceId;
     }
 
-    public function getTitle(): string
+    public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    public function setTitle(string $title): SeoInterface
+    public function setTitle(?string $title): SeoInterface
     {
         $this->title = $title;
 
         return $this;
     }
 
-    public function getDescription(): string
+    public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    public function setDescription(string $description): SeoInterface
+    public function setDescription(?string $description): SeoInterface
     {
         $this->description = $description;
 
         return $this;
     }
 
-    public function getKeywords(): string
+    public function getKeywords(): ?string
     {
         return $this->keywords;
     }
 
-    public function setKeywords(string $keywords): SeoInterface
+    public function setKeywords(?string $keywords): SeoInterface
     {
         $this->keywords = $keywords;
 
         return $this;
     }
 
-    public function getCanonicalUrl(): string
+    public function getCanonicalUrl(): ?string
     {
         return $this->canonicalUrl;
     }
 
-    public function setCanonicalUrl(string $canonicalUrl): SeoInterface
+    public function setCanonicalUrl(?string $canonicalUrl): SeoInterface
     {
         $this->canonicalUrl = $canonicalUrl;
 

@@ -56,9 +56,9 @@ class SeoViewFactory implements SeoViewFactoryInterface
             $description,
             $keywords,
             $canonicalUrl,
-            $noIndex,
-            $noFollow,
-            $hideInSitemap
+            $noIndex ?? false,
+            $noFollow ?? false,
+            $hideInSitemap ?? false
         );
     }
 }

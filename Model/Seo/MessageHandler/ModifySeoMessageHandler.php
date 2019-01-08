@@ -13,21 +13,20 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Model\Seo\MessageHandler;
 
-use Sulu\Bundle\ContentBundle\Model\Content\ContentInterface;
-use Sulu\Bundle\ContentBundle\Model\Content\ContentRepositoryInterface;
-use Sulu\Bundle\ContentBundle\Model\Content\Exception\ContentNotFoundException;
-use Sulu\Bundle\ContentBundle\Model\Content\Factory\ContentViewFactoryInterface;
-use Sulu\Bundle\ContentBundle\Model\Content\Message\ModifyContentMessage;
 use Sulu\Bundle\ContentBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Model\Dimension\DimensionRepositoryInterface;
-use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
+use Sulu\Bundle\ContentBundle\Model\Seo\Exception\SeoNotFoundException;
+use Sulu\Bundle\ContentBundle\Model\Seo\Factory\SeoViewFactoryInterface;
+use Sulu\Bundle\ContentBundle\Model\Seo\Message\ModifySeoMessage;
+use Sulu\Bundle\ContentBundle\Model\Seo\SeoInterface;
+use Sulu\Bundle\ContentBundle\Model\Seo\SeoRepositoryInterface;
 
 class ModifySeoMessageHandler
 {
     /**
-     * @var ContentRepositoryInterface
+     * @var SeoRepositoryInterface
      */
-    private $contentRepository;
+    private $seoRepository;
 
     /**
      * @var DimensionRepositoryInterface
@@ -35,95 +34,61 @@ class ModifySeoMessageHandler
     private $dimensionRepository;
 
     /**
-     * @var StructureMetadataFactoryInterface
+     * @var SeoViewFactoryInterface
      */
-    private $factory;
-
-    /**
-     * @var ContentViewFactoryInterface
-     */
-    private $contentViewFactory;
+    private $seoViewFactory;
 
     public function __construct(
-        ContentRepositoryInterface $contentRepository,
+        SeoRepositoryInterface $seoRepository,
         DimensionRepositoryInterface $dimensionRepository,
-        StructureMetadataFactoryInterface $factory,
-        ContentViewFactoryInterface $contentViewFactory
+        SeoViewFactoryInterface $seoViewFactory
     ) {
-        $this->contentRepository = $contentRepository;
+        $this->seoRepository = $seoRepository;
         $this->dimensionRepository = $dimensionRepository;
-        $this->factory = $factory;
-        $this->contentViewFactory = $contentViewFactory;
+        $this->seoViewFactory = $seoViewFactory;
     }
 
-    public function __invoke(ModifyContentMessage $message): void
+    public function __invoke(ModifySeoMessage $message): void
     {
-        $draftContent = $this->findOrCreateContent($message->getResourceKey(), $message->getResourceId());
-        $localizedDraftContent = $this->findOrCreateContent(
+        $draftSeo = $this->findOrCreateSeo($message->getResourceKey(), $message->getResourceId());
+        $localizedDraftSeo = $this->findOrCreateSeo(
             $message->getResourceKey(),
             $message->getResourceId(),
             $message->getLocale()
         );
 
-        $draftContent->setType($message->getType());
-        $localizedDraftContent->setType($message->getType());
+        $this->setData($message, $draftSeo, $localizedDraftSeo);
 
-        $this->setData($message, $draftContent, $localizedDraftContent);
-
-        $contentView = $this->contentViewFactory->create([$localizedDraftContent, $draftContent], $message->getLocale());
-        if (!$contentView) {
-            throw new ContentNotFoundException($message->getResourceKey(), $message->getResourceId());
+        $seoView = $this->seoViewFactory->create([$localizedDraftSeo, $draftSeo], $message->getLocale());
+        if (!$seoView) {
+            throw new SeoNotFoundException($message->getResourceKey(), $message->getResourceId());
         }
 
-        $message->setContent($contentView);
+        $message->setSeo($seoView);
     }
 
     private function setData(
-        ModifyContentMessage $message,
-        ContentInterface $draftContent,
-        ContentInterface $localizedDraftContent
+        ModifySeoMessage $message,
+        SeoInterface $draftSeo,
+        SeoInterface $localizedDraftSeo
     ): void {
-        $data = $message->getData();
-        $metadata = $this->factory->getStructureMetadata($message->getResourceKey(), $message->getType());
-        if (!$metadata) {
-            return;
-        }
-
-        $localizedDraftData = [];
-        $draftData = [];
-        foreach ($metadata->getProperties() as $property) {
-            $value = null;
-
-            $name = $property->getName();
-            if (is_float($name)) {
-                $name = strval($name);
-            }
-
-            if (array_key_exists($name, $data)) {
-                $value = $data[$name];
-            }
-
-            if ($property->isLocalized()) {
-                $localizedDraftData[$name] = $value;
-
-                continue;
-            }
-
-            $draftData[$name] = $value;
-        }
-
-        $localizedDraftContent->setData($localizedDraftData);
-        $draftContent->setData($draftData);
+        $localizedDraftSeo->setTitle($message->getTitle());
+        $localizedDraftSeo->setDescription($message->getDescription());
+        $localizedDraftSeo->setKeywords($message->getKeywords());
+        $localizedDraftSeo->setCanonicalUrl($message->getCanonicalUrl());
+        $localizedDraftSeo->setNoIndex($message->getNoIndex());
+        $localizedDraftSeo->setNoFollow($message->getNoFollow());
+        $localizedDraftSeo->setHideInSitemap($message->getHideInSitemap());
     }
 
-    private function findOrCreateContent(
+    private function findOrCreateSeo(
         string $resourceKey,
         string $resourceId,
         ?string $locale = null
-    ): ContentInterface {
+    ): SeoInterface {
         $dimension = $this->dimensionRepository->findOrCreateByAttributes($this->createAttributes($locale));
 
-        return $this->contentRepository->findOrCreate($resourceKey, $resourceId, $dimension);
+        return $this->seoRepository->findOrCreate($resourceKey, $resourceId, $dimension);
     }
 
     /**

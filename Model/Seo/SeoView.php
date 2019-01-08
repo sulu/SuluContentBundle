@@ -31,22 +31,22 @@ class SeoView implements SeoViewInterface
     private $locale;
 
     /**
-     * @var string
+     * @var ?string
      */
     private $title;
 
     /**
-     * @var string
+     * @var ?string
      */
     private $description;
 
     /**
-     * @var string
+     * @var ?string
      */
     private $keywords;
 
     /**
-     * @var string
+     * @var ?string
      */
     private $canonicalUrl;
 
@@ -69,10 +69,10 @@ class SeoView implements SeoViewInterface
         string $resourceKey,
         string $resourceId,
         string $locale,
-        string $title,
-        string $description,
-        string $keywords,
-        string $canonicalUrl,
+        string $title = null,
+        string $description = null,
+        string $keywords = null,
+        string $canonicalUrl = null,
         bool $noIndex = false,
         bool $noFollow = false,
         bool $hideInSitemap = false
@@ -104,22 +104,22 @@ class SeoView implements SeoViewInterface
         return $this->locale;
     }
 
-    public function getTitle(): string
+    public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    public function getDescription(): string
+    public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    public function getKeywords(): string
+    public function getKeywords(): ?string
     {
         return $this->keywords;
     }
 
-    public function getCanonicalUrl(): string
+    public function getCanonicalUrl(): ?string
     {
         return $this->canonicalUrl;
     }
