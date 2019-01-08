@@ -34,5 +34,4 @@ interface SeoViewInterface
     public function getNoFollow(): bool;
 
     public function getHideInSitemap(): bool;
-
 }

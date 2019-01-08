@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Model\Seo;
 
-
 use Sulu\Bundle\ContentBundle\Model\Dimension\DimensionInterface;
 
 class Seo implements SeoInterface
@@ -79,7 +78,7 @@ class Seo implements SeoInterface
         bool $noIndex = false,
         bool $noFollow = false,
         bool $hideInSitemap = false
-    ){
+    ) {
         $this->dimension = $dimension;
         $this->resourceKey = $resourceKey;
         $this->resourceId = $resourceId;
@@ -91,7 +90,6 @@ class Seo implements SeoInterface
         $this->noFollow = $noFollow;
         $this->hideInSitemap = $hideInSitemap;
     }
-
 
     public function getDimension(): DimensionInterface
     {

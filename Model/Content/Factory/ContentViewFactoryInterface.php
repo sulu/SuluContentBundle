@@ -20,6 +20,7 @@ interface ContentViewFactoryInterface
 {
     /**
      * @param ContentInterface[] $contentDimensions
+     *
      * @return ContentViewInterface|null
      */
     public function create(array $contentDimensions, string $locale): ?ContentViewInterface;

@@ -20,6 +20,7 @@ interface SeoViewFactoryInterface
 {
     /**
      * @param SeoInterface[] $seoDimensions
+     *
      * @return SeoViewInterface|null
      */
     public function create(array $seoDimensions, string $locale): ?SeoViewInterface;

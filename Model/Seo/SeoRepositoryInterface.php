@@ -37,6 +37,7 @@ interface SeoRepositoryInterface
 
     /**
      * @param DimensionInterface[] $dimensions
+     *
      * @return SeoInterface[]
      */
     public function findByDimensions(string $resourceKey, string $resourceId, array $dimensions): array;

@@ -76,7 +76,7 @@ class SeoView implements SeoViewInterface
         bool $noIndex = false,
         bool $noFollow = false,
         bool $hideInSitemap = false
-    ){
+    ) {
         $this->resourceKey = $resourceKey;
         $this->resourceId = $resourceId;
         $this->locale = $locale;
