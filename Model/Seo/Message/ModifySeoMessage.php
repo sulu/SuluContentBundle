@@ -11,11 +11,11 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Model\Content\Message;
+namespace Sulu\Bundle\ContentBundle\Model\Seo\Message;
 
 use Sulu\Bundle\ContentBundle\Common\Model\MissingResultException;
 use Sulu\Bundle\ContentBundle\Common\Payload\PayloadTrait;
-use Sulu\Bundle\ContentBundle\Model\Seo\SeoInterface;
+use Sulu\Bundle\ContentBundle\Model\Seo\SeoViewInterface;
 
 class ModifySeoMessage
 {
@@ -39,7 +39,7 @@ class ModifySeoMessage
     private $locale;
 
     /**
-     * @var SeoInterface|null
+     * @var SeoViewInterface|null
      */
     private $seo;
 
@@ -67,7 +67,7 @@ class ModifySeoMessage
         return $this->locale;
     }
 
-    public function getSeo(): SeoInterface
+    public function getSeo(): SeoViewInterface
     {
         if (!$this->seo) {
             throw new MissingResultException(__METHOD__);
@@ -76,7 +76,7 @@ class ModifySeoMessage
         return $this->seo;
     }
 
-    public function setSeo(SeoInterface $seo): ModifySeoMessage
+    public function setSeo(SeoViewInterface $seo): ModifySeoMessage
     {
         $this->seo = $seo;
 

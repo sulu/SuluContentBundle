@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <entity name="Sulu\Bundle\ContentBundle\Model\Seo\Seo"
+            table="cs_seo"
+            repository-class="Sulu\Bundle\ContentBundle\Repository\SeoRepository">
+        <id name="resourceKey" type="string">
+            <generator strategy="NONE"/>
+        </id>
+        <id name="resourceId" type="string">
+            <generator strategy="NONE"/>
+        </id>
+        <id name="dimension" type="guid" association-key="true">
+            <generator strategy="NONE"/>
+        </id>
+
+        <field name="title" type="string" nullable="false"/>
+        <field name="description" type="string" nullable="false"/>
+        <field name="keywords" type="string" nullable="false"/>
+        <field name="canonicalUrl" type="string" nullable="false"/>
+        <field name="noIndex" type="boolean" nullable="false"/>
+        <field name="noFollow" type="boolean" nullable="false"/>
+        <field name="hideInSitemap" type="boolean" nullable="false"/>
+
+        <many-to-one field="dimension" target-entity="Sulu\Bundle\ContentBundle\Model\Dimension\Dimension"/>
+    </entity>
+</doctrine-mapping>

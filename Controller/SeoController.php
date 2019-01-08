@@ -16,10 +16,8 @@ namespace Sulu\Bundle\ContentBundle\Controller;
 use FOS\RestBundle\Controller\ControllerTrait;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\ViewHandlerInterface;
-use Sulu\Bundle\ContentBundle\Model\Content\Exception\ContentNotFoundException;
-use Sulu\Bundle\ContentBundle\Model\Content\Message\ModifyContentMessage;
-use Sulu\Bundle\ContentBundle\Model\Content\Message\ModifySeoMessage;
-use Sulu\Bundle\ContentBundle\Model\Content\Query\FindContentQuery;
+use Sulu\Bundle\ContentBundle\Model\Seo\Exception\SeoNotFoundException;
+use Sulu\Bundle\ContentBundle\Model\Seo\Message\ModifySeoMessage;
 use Sulu\Bundle\ContentBundle\Model\Seo\Query\FindSeoQuery;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -56,9 +54,13 @@ abstract class SeoController implements ClassResourceInterface
 
     public function getAction(Request $request, string $resourceId): Response
     {
-        $message = new FindSeoQuery($this->getResourceKey(), $resourceId, $request->query->get('locale'));
-        $this->messageBus->dispatch($message);
-        $seo = $message->getSeo();
+        try {
+            $message = new FindSeoQuery($this->getResourceKey(), $resourceId, $request->query->get('locale'));
+            $this->messageBus->dispatch($message);
+            $seo = $message->getSeo();
+        } catch (SeoNotFoundException $exception) {
+            $seo = null;
+        }
 
         return $this->handleView($this->view($seo));
     }

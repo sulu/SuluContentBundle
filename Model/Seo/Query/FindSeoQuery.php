@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Model\Seo\Query;
 
 use Sulu\Bundle\ContentBundle\Common\Model\MissingResultException;
-use Sulu\Bundle\ContentBundle\Model\Seo\SeoInterface;
+use Sulu\Bundle\ContentBundle\Model\Seo\SeoViewInterface;
 
 class FindSeoQuery
 {
@@ -34,7 +34,7 @@ class FindSeoQuery
     private $locale;
 
     /**
-     * @var SeoInterface|null
+     * @var SeoViewInterface|null
      */
     private $seo;
 
@@ -60,7 +60,7 @@ class FindSeoQuery
         return $this->locale;
     }
 
-    public function getSeo(): SeoInterface
+    public function getSeo(): SeoViewInterface
     {
         if (!$this->seo) {
             throw new MissingResultException(__METHOD__);
@@ -69,7 +69,7 @@ class FindSeoQuery
         return $this->seo;
     }
 
-    public function setSeo(SeoInterface $seo): FindSeoQuery
+    public function setSeo(SeoViewInterface $seo): FindSeoQuery
     {
         $this->seo = $seo;
 

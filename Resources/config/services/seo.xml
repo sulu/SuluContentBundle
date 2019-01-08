@@ -1,0 +1,27 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <!-- repository -->
+        <service id="Sulu\Bundle\ContentBundle\Repository\SeoRepository">
+            <argument type="service" id="doctrine"/>
+        </service>
+        <service id="Sulu\Bundle\ContentBundle\Model\Seo\SeoRepositoryInterface"
+                 alias="Sulu\Bundle\ContentBundle\Repository\SeoRepository"/>
+
+        <!-- factory -->
+        <service id="Sulu\Bundle\ContentBundle\Model\Seo\Factory\SeoViewFactory"/>
+        <service id="Sulu\Bundle\ContentBundle\Model\Seo\Factory\SeoViewFactoryInterface"
+                 alias="Sulu\Bundle\ContentBundle\Model\Seo\Factory\SeoViewFactory"/>
+
+        <!-- handler -->
+        <service id="Sulu\Bundle\ContentBundle\Model\Seo\QueryHandler\FindSeoQueryHandler">
+            <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Seo\SeoRepositoryInterface"/>
+            <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Dimension\DimensionRepositoryInterface"/>
+            <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Seo\Factory\SeoViewFactoryInterface"/>
+
+            <tag name="messenger.message_handler"/>
+        </service>
+    </services>
+</container>
