@@ -1,0 +1,13 @@
+{
+    "sulu_content.search_result": "Search Engine Result Pages Preview (SERP)",
+    "sulu_content.meta_title": "Title (Meta title)",
+    "sulu_content.meta_title_info_text": "The meta title is limited to 55 characters.",
+    "sulu_content.meta_description": "Description (Meta description)",
+    "sulu_content.meta_description_info_text": "The meta description is limited to 320 characters.",
+    "sulu_content.meta_keywords": "Keywords (Meta keywords)",
+    "sulu_content.meta_keywords_info_text": "Please use a maximum of 5 keywords, dependant from the content of the page, separated by commas.",
+    "sulu_content.canonical_url": "Canonical URL  (Canonical tag)",
+    "sulu_content.no_index": "no-index (page will not be indexed by search engines)",
+    "sulu_content.no_follow": "no-follow (links on this page will not be followed by the search engine)",
+    "sulu_content.hide_in_sitemap": "Hide in sitemap",
+}
