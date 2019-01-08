@@ -31,6 +31,17 @@ class SuluContentExtension extends Extension implements PrependExtensionInterfac
     public function prepend(ContainerBuilder $container)
     {
         $container->prependExtensionConfig(
+            'sulu_admin',
+            [
+                'forms' => [
+                    'directories' => [
+                        __DIR__ . '/../Resources/config/forms',
+                    ],
+                ],
+            ]
+        );
+
+        $container->prependExtensionConfig(
             'doctrine',
             [
                 'orm' => [
