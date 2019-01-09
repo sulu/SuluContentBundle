@@ -19,6 +19,7 @@ use FOS\RestBundle\View\ViewHandlerInterface;
 use Sulu\Bundle\ContentBundle\Model\Seo\Exception\SeoNotFoundException;
 use Sulu\Bundle\ContentBundle\Model\Seo\Message\ModifySeoMessage;
 use Sulu\Bundle\ContentBundle\Model\Seo\Query\FindSeoQuery;
+use Sulu\Bundle\ContentBundle\Model\Seo\SeoView;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -59,7 +60,9 @@ abstract class SeoController implements ClassResourceInterface
             $this->messageBus->dispatch($message);
             $seo = $message->getSeo();
         } catch (SeoNotFoundException $exception) {
-            $seo = null;
+            // the form in the frontend requires an object with all properties of the seo-view
+            // TODO: return null when the form in the frontend does not require an object with all properties anymore
+            $seo = new SeoView($this->getResourceKey(), $resourceId, $request->query->get('locale'));
         }
 
         return $this->handleView($this->view($seo));
