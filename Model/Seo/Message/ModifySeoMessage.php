@@ -87,19 +87,19 @@ class ModifySeoMessage
         return $this->getNullableStringValue('canonicalUrl');
     }
 
-    public function getNoIndex(): bool
+    public function getNoIndex(): ?bool
     {
-        return $this->getNullableBoolValue('noIndex') ?? false;
+        return $this->getNullableBoolValue('noIndex');
     }
 
-    public function getNoFollow(): bool
+    public function getNoFollow(): ?bool
     {
-        return $this->getNullableBoolValue('noFollow') ?? false;
+        return $this->getNullableBoolValue('noFollow');
     }
 
-    public function getHideInSitemap(): bool
+    public function getHideInSitemap(): ?bool
     {
-        return $this->getNullableBoolValue('hideInSitemap') ?? false;
+        return $this->getNullableBoolValue('hideInSitemap');
     }
 
     public function getSeo(): SeoViewInterface

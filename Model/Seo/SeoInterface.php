@@ -39,15 +39,15 @@ interface SeoInterface
 
     public function setCanonicalUrl(?string $canonicalUrl): self;
 
-    public function getNoIndex(): bool;
+    public function getNoIndex(): ?bool;
 
-    public function setNoIndex(bool $noIndex): self;
+    public function setNoIndex(?bool $noIndex): self;
 
-    public function getNoFollow(): bool;
+    public function getNoFollow(): ?bool;
 
-    public function setNoFollow(bool $noFollow): self;
+    public function setNoFollow(?bool $noFollow): self;
 
-    public function getHideInSitemap(): bool;
+    public function getHideInSitemap(): ?bool;
 
-    public function setHideInSitemap(bool $hideInSitemap): self;
+    public function setHideInSitemap(?bool $hideInSitemap): self;
 }

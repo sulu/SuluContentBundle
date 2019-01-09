@@ -53,17 +53,17 @@ class Seo implements SeoInterface
     private $canonicalUrl;
 
     /**
-     * @var bool
+     * @var ?bool
      */
     private $noIndex;
 
     /**
-     * @var bool
+     * @var ?bool
      */
     private $noFollow;
 
     /**
-     * @var bool
+     * @var ?bool
      */
     private $hideInSitemap;
 
@@ -75,9 +75,9 @@ class Seo implements SeoInterface
         string $description = null,
         string $keywords = null,
         string $canonicalUrl = null,
-        bool $noIndex = false,
-        bool $noFollow = false,
-        bool $hideInSitemap = false
+        bool $noIndex = null,
+        bool $noFollow = null,
+        bool $hideInSitemap = null
     ) {
         $this->dimension = $dimension;
         $this->resourceKey = $resourceKey;
@@ -154,36 +154,36 @@ class Seo implements SeoInterface
         return $this;
     }
 
-    public function getNoIndex(): bool
+    public function getNoIndex(): ?bool
     {
         return $this->noIndex;
     }
 
-    public function setNoIndex(bool $noIndex): SeoInterface
+    public function setNoIndex(?bool $noIndex): SeoInterface
     {
         $this->noIndex = $noIndex;
 
         return $this;
     }
 
-    public function getNoFollow(): bool
+    public function getNoFollow(): ?bool
     {
         return $this->noFollow;
     }
 
-    public function setNoFollow(bool $noFollow): SeoInterface
+    public function setNoFollow(?bool $noFollow): SeoInterface
     {
         $this->noFollow = $noFollow;
 
         return $this;
     }
 
-    public function getHideInSitemap(): bool
+    public function getHideInSitemap(): ?bool
     {
         return $this->hideInSitemap;
     }
 
-    public function setHideInSitemap(bool $hideInSitemap): SeoInterface
+    public function setHideInSitemap(?bool $hideInSitemap): SeoInterface
     {
         $this->hideInSitemap = $hideInSitemap;
 

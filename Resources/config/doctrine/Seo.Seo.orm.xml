@@ -19,9 +19,9 @@
         <field name="description" type="string" nullable="true"/>
         <field name="keywords" type="string" nullable="true"/>
         <field name="canonicalUrl" type="string" nullable="true"/>
-        <field name="noIndex" type="boolean" nullable="false"/>
-        <field name="noFollow" type="boolean" nullable="false"/>
-        <field name="hideInSitemap" type="boolean" nullable="false"/>
+        <field name="noIndex" type="boolean" nullable="true"/>
+        <field name="noFollow" type="boolean" nullable="true"/>
+        <field name="hideInSitemap" type="boolean" nullable="true"/>
 
         <many-to-one field="dimension" target-entity="Sulu\Bundle\ContentBundle\Model\Dimension\Dimension"/>
     </entity>
