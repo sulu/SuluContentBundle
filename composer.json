@@ -29,6 +29,8 @@
         "jangregor/phpstan-prophecy": "^0.2",
         "phpstan/phpstan": "^0.10",
         "phpstan/phpstan-doctrine": "^0.10",
+        "phpstan/phpstan-phpunit": "^0.10.0",
+        "phpstan/phpstan-webmozart-assert": "^0.10.0",
         "phpunit/phpunit": "^7.2",
         "symfony/dotenv": "^4.1",
         "symfony/monolog-bundle": "^3.3",
