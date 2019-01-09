@@ -77,7 +77,7 @@ class PublishContentMessageHandler
         bool $mandatory,
         ?string $locale = null
     ): ?ContentInterface {
-        $draftAttributes = $this->getAttributes(DimensionInterface::ATTRIBUTE_VALUE_DRAFT, $locale);
+        $draftAttributes = $this->createAttributes(DimensionInterface::ATTRIBUTE_VALUE_DRAFT, $locale);
         $draftDimension = $this->dimensionRepository->findOrCreateByAttributes($draftAttributes);
         $draftContent = $this->contentRepository->findByResource($resourceKey, $resourceId, $draftDimension);
 
@@ -94,7 +94,7 @@ class PublishContentMessageHandler
             throw new \InvalidArgumentException('Content type cannot be null');
         }
 
-        $liveAttributes = $this->getAttributes(DimensionInterface::ATTRIBUTE_VALUE_LIVE, $locale);
+        $liveAttributes = $this->createAttributes(DimensionInterface::ATTRIBUTE_VALUE_LIVE, $locale);
         $liveDimension = $this->dimensionRepository->findOrCreateByAttributes($liveAttributes);
         $liveContent = $this->contentRepository->findOrCreate($resourceKey, $resourceId, $liveDimension);
 
@@ -104,7 +104,7 @@ class PublishContentMessageHandler
         return $liveContent;
     }
 
-    protected function getAttributes(string $stage, ?string $locale = null): array
+    protected function createAttributes(string $stage, ?string $locale = null): array
     {
         $attributes = [DimensionInterface::ATTRIBUTE_KEY_STAGE => $stage];
         if (!$locale) {
