@@ -50,7 +50,6 @@ class FindSeoQueryHandler
     public function __invoke(FindSeoQuery $query): void
     {
         $dimensions = [
-            $this->dimensionRepository->findOrCreateByAttributes($this->createAttributes()),
             $this->dimensionRepository->findOrCreateByAttributes($this->createAttributes($query->getLocale())),
         ];
 
@@ -73,13 +72,10 @@ class FindSeoQueryHandler
     /**
      * @return string[]
      */
-    private function createAttributes(?string $locale = null): array
+    private function createAttributes(string $locale): array
     {
-        $attributes = [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT];
-        if (!$locale) {
-            return $attributes;
-        }
-
+        $attributes = [];
+        $attributes[DimensionInterface::ATTRIBUTE_KEY_STAGE] = DimensionInterface::ATTRIBUTE_VALUE_DRAFT;
         $attributes[DimensionInterface::ATTRIBUTE_KEY_LOCALE] = $locale;
 
         return $attributes;

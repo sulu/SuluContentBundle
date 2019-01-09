@@ -50,16 +50,14 @@ class ModifySeoMessageHandler
 
     public function __invoke(ModifySeoMessage $message): void
     {
-        $draftSeo = $this->findOrCreateSeo($message->getResourceKey(), $message->getResourceId());
         $localizedDraftSeo = $this->findOrCreateSeo(
             $message->getResourceKey(),
             $message->getResourceId(),
             $message->getLocale()
         );
+        $this->setData($message, $localizedDraftSeo);
 
-        $this->setData($message, $draftSeo, $localizedDraftSeo);
-
-        $seoView = $this->seoViewFactory->create([$localizedDraftSeo, $draftSeo], $message->getLocale());
+        $seoView = $this->seoViewFactory->create([$localizedDraftSeo], $message->getLocale());
         if (!$seoView) {
             throw new SeoNotFoundException($message->getResourceKey(), $message->getResourceId());
         }
@@ -69,7 +67,6 @@ class ModifySeoMessageHandler
 
     private function setData(
         ModifySeoMessage $message,
-        SeoInterface $draftSeo,
         SeoInterface $localizedDraftSeo
     ): void {
         $localizedDraftSeo->setTitle($message->getTitle());
@@ -84,7 +81,7 @@ class ModifySeoMessageHandler
     private function findOrCreateSeo(
         string $resourceKey,
         string $resourceId,
-        ?string $locale = null
+        string $locale
     ): SeoInterface {
         $dimension = $this->dimensionRepository->findOrCreateByAttributes($this->createAttributes($locale));
 
@@ -94,13 +91,10 @@ class ModifySeoMessageHandler
     /**
      * @return string[]
      */
-    private function createAttributes(?string $locale = null): array
+    private function createAttributes(string $locale): array
     {
-        $attributes = [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT];
-        if (!$locale) {
-            return $attributes;
-        }
-
+        $attributes = [];
+        $attributes[DimensionInterface::ATTRIBUTE_KEY_STAGE] = DimensionInterface::ATTRIBUTE_VALUE_DRAFT;
         $attributes[DimensionInterface::ATTRIBUTE_KEY_LOCALE] = $locale;
 
         return $attributes;
