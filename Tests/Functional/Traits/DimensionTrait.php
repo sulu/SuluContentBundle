@@ -21,7 +21,9 @@ trait DimensionTrait
 {
     protected function findDimension(array $attributes): DimensionInterface
     {
-        return $this->getContainer()->get(DimensionRepositoryInterface::class)->findOrCreateByAttributes($attributes);
+        /** @var DimensionRepositoryInterface */
+        $dimensionRepository = $this->getContainer()->get(DimensionRepositoryInterface::class);
+        return $dimensionRepository->findOrCreateByAttributes($attributes);
     }
 
     /**

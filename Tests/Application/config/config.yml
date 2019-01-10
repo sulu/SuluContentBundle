@@ -1,0 +1,28 @@
+doctrine:
+    orm:
+        mappings:
+            gedmo_tree:
+                type: xml
+                prefix: Gedmo\Tree\Entity
+                dir: "%kernel.root_dir%/../../vendor/gedmo/doctrine-extensions/lib/Gedmo/Tree/Entity"
+                alias: GedmoTree
+                is_bundle: false
+
+services:
+    sulu_content.controller.test_resource_contents:
+        class: Sulu\Bundle\ContentBundle\Tests\Application\Controller\TestResourceContentController
+        public: true
+        autowire: true
+    Sulu\Bundle\ContentBundle\Model\Dimension\DimensionRepositoryInterface:
+        alias: Sulu\Bundle\ContentBundle\Repository\DimensionRepository
+        public: true
+
+sulu_core:
+    content:
+        structure:
+            type_map:
+                test_resource_contents: 'Sulu\Component\Content\Compat\Structure\StructureBridge'
+            paths:
+                test_resource_contents:
+                    path: '%kernel.project_dir%/config/templates/test_resources'
+                    type: 'test_resource_contents'
