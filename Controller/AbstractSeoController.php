@@ -25,7 +25,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Messenger\MessageBusInterface;
 
-abstract class SeoController implements ClassResourceInterface
+abstract class AbstractSeoController implements ClassResourceInterface
 {
     use ControllerTrait;
 
@@ -56,13 +56,13 @@ abstract class SeoController implements ClassResourceInterface
     public function getAction(Request $request, string $resourceId): Response
     {
         try {
-            $message = new FindSeoQuery($this->getResourceKey(), $resourceId, $request->query->get('locale'));
+            $message = new FindSeoQuery($this->getSeoResourceKey(), $resourceId, $request->query->get('locale'));
             $this->messageBus->dispatch($message);
             $seo = $message->getSeo();
         } catch (SeoNotFoundException $exception) {
             // the form in the frontend requires an object with all properties of the seo-view
             // TODO: return null when the form in the frontend does not require an object with all properties anymore
-            $seo = new SeoView($this->getResourceKey(), $resourceId, $request->query->get('locale'));
+            $seo = new SeoView($this->getSeoResourceKey(), $resourceId, $request->query->get('locale'));
         }
 
         return $this->handleView($this->view($seo));
@@ -71,7 +71,7 @@ abstract class SeoController implements ClassResourceInterface
     public function putAction(Request $request, string $resourceId): Response
     {
         $locale = $request->query->get('locale');
-        $message = new ModifySeoMessage($this->getResourceKey(), $resourceId, $locale, $request->request->all());
+        $message = new ModifySeoMessage($this->getSeoResourceKey(), $resourceId, $locale, $request->request->all());
         $this->messageBus->dispatch($message);
         $seo = $message->getSeo();
 
@@ -92,5 +92,5 @@ abstract class SeoController implements ClassResourceInterface
 
     abstract protected function handlePublish(string $resourceId, string $locale): void;
 
-    abstract protected function getResourceKey(): string;
+    abstract protected function getSeoResourceKey(): string;
 }

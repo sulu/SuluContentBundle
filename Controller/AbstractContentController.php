@@ -24,7 +24,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Messenger\MessageBusInterface;
 
-abstract class ContentController implements ClassResourceInterface
+abstract class AbstractContentController implements ClassResourceInterface
 {
     use ControllerTrait;
 
@@ -62,7 +62,7 @@ abstract class ContentController implements ClassResourceInterface
     public function getAction(Request $request, string $resourceId): Response
     {
         try {
-            $message = new FindContentQuery($this->getResourceKey(), $resourceId, $request->query->get('locale'));
+            $message = new FindContentQuery($this->getContentResourceKey(), $resourceId, $request->query->get('locale'));
             $this->messageBus->dispatch($message);
             $content = $message->getContent();
         } catch (ContentNotFoundException $exception) {
@@ -84,7 +84,7 @@ abstract class ContentController implements ClassResourceInterface
         ];
 
         $locale = $request->query->get('locale');
-        $message = new ModifyContentMessage($this->getResourceKey(), $resourceId, $locale, $payload);
+        $message = new ModifyContentMessage($this->getContentResourceKey(), $resourceId, $locale, $payload);
         $this->messageBus->dispatch($message);
         $content = $message->getContent();
 
@@ -105,5 +105,5 @@ abstract class ContentController implements ClassResourceInterface
 
     abstract protected function handlePublish(string $resourceId, string $locale): void;
 
-    abstract protected function getResourceKey(): string;
+    abstract protected function getContentResourceKey(): string;
 }
