@@ -18,6 +18,7 @@ use Prophecy\Argument;
 use Sulu\Bundle\ContentBundle\Model\Content\ContentInterface;
 use Sulu\Bundle\ContentBundle\Model\Content\ContentRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Content\ContentViewInterface;
+use Sulu\Bundle\ContentBundle\Model\Content\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Model\Content\Factory\ContentViewFactoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Content\Message\PublishContentMessage;
 use Sulu\Bundle\ContentBundle\Model\Content\MessageHandler\PublishContentMessageHandler;
@@ -41,10 +42,10 @@ class PublishContentMessageHandlerTest extends TestCase
         );
 
         $message = $this->prophesize(PublishContentMessage::class);
-        $message->getResourceKey()->willReturn(self::RESOURCE_KEY);
-        $message->getResourceId()->willReturn('product-1');
-        $message->getLocale()->willReturn('en');
-        $message->isMandatory()->willReturn(true);
+        $message->getResourceKey()->shouldBeCalled()->willReturn(self::RESOURCE_KEY);
+        $message->getResourceId()->shouldBeCalled()->willReturn('product-1');
+        $message->getLocale()->shouldBeCalled()->willReturn('en');
+        $message->isMandatory()->shouldBeCalled()->willReturn(true);
 
         $draftDimension = $this->prophesize(DimensionInterface::class);
         $liveDimension = $this->prophesize(DimensionInterface::class);
@@ -54,65 +55,87 @@ class PublishContentMessageHandlerTest extends TestCase
 
         $dimensionRepository->findOrCreateByAttributes(
             [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT]
-        )->willReturn($draftDimension->reveal());
+        )->shouldBeCalled()->willReturn($draftDimension->reveal());
         $dimensionRepository->findOrCreateByAttributes(
             [
                 DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT,
                 DimensionInterface::ATTRIBUTE_KEY_LOCALE => 'en',
             ]
-        )->willReturn($localizedDraftDimension->reveal());
+        )->shouldBeCalled()->willReturn($localizedDraftDimension->reveal());
 
         $dimensionRepository->findOrCreateByAttributes(
             [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_LIVE]
-        )->willReturn($liveDimension->reveal());
+        )->shouldBeCalled()->willReturn($liveDimension->reveal());
         $dimensionRepository->findOrCreateByAttributes(
             [
                 DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_LIVE,
                 DimensionInterface::ATTRIBUTE_KEY_LOCALE => 'en',
             ]
-        )->willReturn($localizedLiveDimension->reveal());
+        )->shouldBeCalled()->willReturn($localizedLiveDimension->reveal());
 
         $draftContent = $this->prophesize(ContentInterface::class);
-        $draftContent->getType()->willReturn('default');
-        $draftContent->getData()->willReturn(['article' => '<p>Sulu is awesome</p>']);
-        $draftContent->getDimension()->willReturn($draftDimension->reveal());
+        $draftContent->getType()->shouldBeCalled()->willReturn('default');
+        $draftContent->getData()->shouldBeCalled()->willReturn(['article' => '<p>Sulu is awesome</p>']);
 
         $liveContent = $this->prophesize(ContentInterface::class);
         $liveContent->setType('default')->shouldBeCalled();
         $liveContent->setData(['article' => '<p>Sulu is awesome</p>'])->shouldBeCalled();
-        $draftContent->getDimension()->willReturn($liveDimension->reveal());
 
         $localizedDraftContent = $this->prophesize(ContentInterface::class);
-        $localizedDraftContent->getType()->willReturn('default');
-        $localizedDraftContent->getData()->willReturn(['title' => 'Sulu']);
+        $localizedDraftContent->getType()->shouldBeCalled()->willReturn('default');
+        $localizedDraftContent->getData()->shouldBeCalled()->willReturn(['title' => 'Sulu']);
 
         $localizedLiveContent = $this->prophesize(ContentInterface::class);
         $localizedLiveContent->setType('default')->shouldBeCalled();
         $localizedLiveContent->setData(['title' => 'Sulu'])->shouldBeCalled();
 
         $contentRepository->findByResource(self::RESOURCE_KEY, 'product-1', $draftDimension->reveal())
-            ->willReturn($draftContent);
+            ->shouldBeCalled()->willReturn($draftContent);
 
         $contentRepository->findOrCreate(self::RESOURCE_KEY, 'product-1', $liveDimension->reveal())
-            ->willReturn($liveContent);
+            ->shouldBeCalled()->willReturn($liveContent);
 
         $contentRepository->findByResource(self::RESOURCE_KEY, 'product-1', $localizedDraftDimension->reveal())
-            ->willReturn($localizedDraftContent);
+            ->shouldBeCalled()->willReturn($localizedDraftContent);
 
         $contentRepository->findOrCreate(self::RESOURCE_KEY, 'product-1', $localizedLiveDimension->reveal())
-            ->willReturn($localizedLiveContent);
+            ->shouldBeCalled()->willReturn($localizedLiveContent);
 
         $contentView = $this->prophesize(ContentViewInterface::class);
         $contentViewFactory->create([$liveContent->reveal(), $localizedLiveContent->reveal()], 'en')
-            ->willReturn($contentView->reveal());
+            ->shouldBeCalled()->willReturn($contentView->reveal());
 
-        $message->setContent(
-            Argument::that(
-                function ($result) use ($contentView) {
-                    return $contentView->reveal() === $result;
-                }
-            )
-        )->shouldBeCalled();
+        $message->setContent($contentView->reveal())->shouldBeCalled();
+
+        $handler->__invoke($message->reveal());
+    }
+
+    public function testInvokeContentNotFound(): void
+    {
+        $this->expectException(ContentNotFoundException::class);
+
+        $contentRepository = $this->prophesize(ContentRepositoryInterface::class);
+        $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
+        $contentViewFactory = $this->prophesize(ContentViewFactoryInterface::class);
+
+        $handler = new PublishContentMessageHandler(
+            $contentRepository->reveal(),
+            $dimensionRepository->reveal(),
+            $contentViewFactory->reveal()
+        );
+
+        $message = $this->prophesize(PublishContentMessage::class);
+        $message->getResourceKey()->shouldBeCalled()->willReturn(self::RESOURCE_KEY);
+        $message->getResourceId()->shouldBeCalled()->willReturn('product-1');
+        $message->isMandatory()->shouldBeCalled()->willReturn(true);
+
+        $draftDimension = $this->prophesize(DimensionInterface::class);
+        $dimensionRepository->findOrCreateByAttributes(
+            [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT]
+        )->shouldBeCalled()->willReturn($draftDimension->reveal());
+
+        $contentRepository->findByResource(self::RESOURCE_KEY, 'product-1', $draftDimension->reveal())
+            ->shouldBeCalled()->willReturn(null);
 
         $handler->__invoke($message->reveal());
     }
