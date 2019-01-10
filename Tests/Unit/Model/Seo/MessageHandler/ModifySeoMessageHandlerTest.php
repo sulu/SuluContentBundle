@@ -11,7 +11,7 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Tests\Unit\Model\Content\MessageHandler;
+namespace Sulu\Bundle\ContentBundle\Tests\Unit\Model\Seo\MessageHandler;
 
 use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\ContentBundle\Model\Dimension\DimensionInterface;

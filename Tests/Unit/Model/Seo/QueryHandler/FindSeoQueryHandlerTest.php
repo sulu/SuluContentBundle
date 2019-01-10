@@ -11,7 +11,7 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Tests\Unit\Model\Content\QueryHandler;
+namespace Sulu\Bundle\ContentBundle\Tests\Unit\Model\Seo\QueryHandler;
 
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
