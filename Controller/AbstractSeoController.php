@@ -60,8 +60,6 @@ abstract class AbstractSeoController implements ClassResourceInterface
             $this->messageBus->dispatch($message);
             $seo = $message->getSeo();
         } catch (SeoNotFoundException $exception) {
-            // the form in the frontend requires an object with all properties of the seo-view
-            // TODO: return null when the form in the frontend does not require an object with all properties anymore
             $seo = new SeoView($this->getSeoResourceKey(), $resourceId, $request->query->get('locale'));
         }
 

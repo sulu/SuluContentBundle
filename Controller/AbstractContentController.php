@@ -16,6 +16,7 @@ namespace Sulu\Bundle\ContentBundle\Controller;
 use FOS\RestBundle\Controller\ControllerTrait;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\ViewHandlerInterface;
+use Sulu\Bundle\ContentBundle\Model\Content\ContentView;
 use Sulu\Bundle\ContentBundle\Model\Content\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Model\Content\Message\ModifyContentMessage;
 use Sulu\Bundle\ContentBundle\Model\Content\Query\FindContentQuery;
@@ -66,9 +67,9 @@ abstract class AbstractContentController implements ClassResourceInterface
             $this->messageBus->dispatch($message);
             $content = $message->getContent();
         } catch (ContentNotFoundException $exception) {
-            $content = [
-                'template' => $this->defaultType,
-            ];
+            $content = new ContentView(
+                $this->getContentResourceKey(), $resourceId, $request->query->get('locale'), $this->defaultType
+            );
         }
 
         return $this->handleView($this->view($content));
