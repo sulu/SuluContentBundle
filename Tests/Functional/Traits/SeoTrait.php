@@ -14,34 +14,50 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Functional\Traits;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Sulu\Bundle\ContentBundle\Model\Content\Content;
-use Sulu\Bundle\ContentBundle\Model\Content\ContentInterface;
 use Sulu\Bundle\ContentBundle\Model\Dimension\DimensionInterface;
+use Sulu\Bundle\ContentBundle\Model\Seo\Seo;
+use Sulu\Bundle\ContentBundle\Model\Seo\SeoInterface;
 
-trait ContentTrait
+trait SeoTrait
 {
-    protected function createContent(
+    protected function createSeo(
         string $resourceKey,
         string $resourceId,
         string $locale = 'en',
-        ?string $type = 'default',
-        array $data = ['title' => 'Sulu', 'article' => 'Sulu is awesome']
-    ): ContentInterface {
+        string $title = null,
+        string $description = null,
+        string $keywords = null,
+        string $canonicalUrl = null,
+        bool $noIndex = null,
+        bool $noFollow = null,
+        bool $hideInSitemap = null
+    ): SeoInterface {
         $dimension = $this->findDimension(
             [
                 DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT,
                 DimensionInterface::ATTRIBUTE_KEY_LOCALE => $locale,
             ]
         );
-        $content = new Content($dimension, $resourceKey, $resourceId, $type, $data);
+        $seo = new Seo(
+            $dimension,
+            $resourceKey,
+            $resourceId,
+            $title,
+            $description,
+            $keywords,
+            $canonicalUrl,
+            $noIndex,
+            $noFollow,
+            $hideInSitemap
+        );
 
-        $this->getEntityManager()->persist($content);
+        $this->getEntityManager()->persist($seo);
         $this->getEntityManager()->flush();
 
-        return $content;
+        return $seo;
     }
 
-    protected function findContent(string $resourceKey, string $resourceId, string $locale): ?ContentInterface
+    protected function findSeo(string $resourceKey, string $resourceId, string $locale): ?SeoInterface
     {
         $dimension = $this->findDimension(
             [
@@ -50,13 +66,13 @@ trait ContentTrait
             ]
         );
 
-        /** @var Content $content */
-        $content = $this->getEntityManager()->find(
-            Content::class,
+        /** @var Seo $seo */
+        $seo = $this->getEntityManager()->find(
+            Seo::class,
             ['resourceKey' => $resourceKey, 'resourceId' => $resourceId, 'dimension' => $dimension]
         );
 
-        return $content;
+        return $seo;
     }
 
     abstract protected function findDimension(array $attributes): DimensionInterface;

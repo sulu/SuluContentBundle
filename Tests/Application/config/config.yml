@@ -13,6 +13,10 @@ services:
         class: Sulu\Bundle\ContentBundle\Tests\Application\Controller\TestResourceContentController
         public: true
         autowire: true
+    sulu_content.controller.test_resource_seos:
+        class: Sulu\Bundle\ContentBundle\Tests\Application\Controller\TestResourceSeoController
+        public: true
+        autowire: true
     Sulu\Bundle\ContentBundle\Model\Dimension\DimensionRepositoryInterface:
         alias: Sulu\Bundle\ContentBundle\Repository\DimensionRepository
         public: true
