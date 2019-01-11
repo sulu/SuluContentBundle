@@ -23,6 +23,7 @@ trait DimensionTrait
     {
         /** @var DimensionRepositoryInterface */
         $dimensionRepository = $this->getContainer()->get(DimensionRepositoryInterface::class);
+
         return $dimensionRepository->findOrCreateByAttributes($attributes);
     }
 

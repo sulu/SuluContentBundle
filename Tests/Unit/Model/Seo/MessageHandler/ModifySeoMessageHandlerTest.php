@@ -130,7 +130,6 @@ class ModifySeoMessageHandlerTest extends TestCase
         $seoViewFactory->create([$localizedSeo->reveal()], 'de')
             ->shouldBeCalled()->willReturn(null);
 
-
         $handler->__invoke($message->reveal());
     }
 }

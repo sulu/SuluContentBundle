@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Model\Seo;
 
 use PHPUnit\Framework\TestCase;
-use Sulu\Bundle\ContentBundle\Model\Content\Content;
 use Sulu\Bundle\ContentBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Model\Seo\Seo;
 

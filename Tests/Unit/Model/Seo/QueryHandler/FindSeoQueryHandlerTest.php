@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Model\Seo\QueryHandler;
 
 use PHPUnit\Framework\TestCase;
-use Prophecy\Argument;
 use Sulu\Bundle\ContentBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Model\Dimension\DimensionRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Seo\Exception\SeoNotFoundException;

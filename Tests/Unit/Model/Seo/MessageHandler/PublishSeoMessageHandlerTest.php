@@ -14,13 +14,6 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Model\Seo\MessageHandler;
 
 use PHPUnit\Framework\TestCase;
-use Prophecy\Argument;
-use Sulu\Bundle\ContentBundle\Model\Content\ContentInterface;
-use Sulu\Bundle\ContentBundle\Model\Content\ContentRepositoryInterface;
-use Sulu\Bundle\ContentBundle\Model\Content\ContentViewInterface;
-use Sulu\Bundle\ContentBundle\Model\Content\Factory\ContentViewFactoryInterface;
-use Sulu\Bundle\ContentBundle\Model\Content\Message\PublishContentMessage;
-use Sulu\Bundle\ContentBundle\Model\Content\MessageHandler\PublishContentMessageHandler;
 use Sulu\Bundle\ContentBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Model\Dimension\DimensionRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Seo\Exception\SeoNotFoundException;

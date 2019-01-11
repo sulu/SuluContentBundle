@@ -244,8 +244,7 @@ class ModifySeoMessageTest extends TestCase
         $message->getSeo();
     }
 
-    public function testSetSeo
-    (): void
+    public function testSetSeo(): void
     {
         $message = new ModifySeoMessage(
             self::RESOURCE_KEY,

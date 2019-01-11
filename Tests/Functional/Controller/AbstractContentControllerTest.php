@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Functional\Controller;
 
 use Sulu\Bundle\ContentBundle\Tests\Application\Controller\HandlePublishCallbackInterface;
-use Sulu\Bundle\ContentBundle\Tests\Application\Controller\TestResourceContentController;
 use Sulu\Bundle\ContentBundle\Tests\Functional\Traits\ContentTrait;
 use Sulu\Bundle\ContentBundle\Tests\Functional\Traits\DimensionTrait;
 use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
