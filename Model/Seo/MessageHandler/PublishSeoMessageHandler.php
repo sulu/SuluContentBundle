@@ -77,7 +77,7 @@ class PublishSeoMessageHandler
         string $locale
     ): ?SeoDimensionInterface {
         $draftDimensionIdentifier = $this->getDimensionIdentifier(DimensionIdentifierInterface::ATTRIBUTE_VALUE_DRAFT, $locale);
-        $draftSeo = $this->seoDimensionRepository->findByResource($resourceKey, $resourceId, $draftDimensionIdentifier);
+        $draftSeo = $this->seoDimensionRepository->findDimension($resourceKey, $resourceId, $draftDimensionIdentifier);
 
         if (!$draftSeo) {
             if (!$mandatory) {
@@ -88,7 +88,7 @@ class PublishSeoMessageHandler
         }
 
         $liveDimensionIdentifier = $this->getDimensionIdentifier(DimensionIdentifierInterface::ATTRIBUTE_VALUE_LIVE, $locale);
-        $liveSeo = $this->seoDimensionRepository->findOrCreate($resourceKey, $resourceId, $liveDimensionIdentifier);
+        $liveSeo = $this->seoDimensionRepository->findOrCreateDimension($resourceKey, $resourceId, $liveDimensionIdentifier);
 
         $liveSeo->copyAttributesFrom($draftSeo);
 

@@ -69,7 +69,7 @@ class ModifySeoMessageHandlerTest extends TestCase
         $localizedSeo->setNoFollow(false)->shouldBeCalled()->willReturn($localizedSeo->reveal());
         $localizedSeo->setHideInSitemap(null)->shouldBeCalled()->willReturn($localizedSeo->reveal());
 
-        $seoDimensionRepository->findOrCreate(self::RESOURCE_KEY, 'seo-1', $localizedDimensionIdentifier->reveal())
+        $seoDimensionRepository->findOrCreateDimension(self::RESOURCE_KEY, 'seo-1', $localizedDimensionIdentifier->reveal())
             ->shouldBeCalled()->willReturn($localizedSeo->reveal());
 
         $seoView = $this->prophesize(SeoViewInterface::class);
@@ -124,7 +124,7 @@ class ModifySeoMessageHandlerTest extends TestCase
         $localizedSeo->setNoFollow(false)->shouldBeCalled()->willReturn($localizedSeo->reveal());
         $localizedSeo->setHideInSitemap(null)->shouldBeCalled()->willReturn($localizedSeo->reveal());
 
-        $seoDimensionRepository->findOrCreate(self::RESOURCE_KEY, 'seo-1', $localizedDimensionIdentifier->reveal())
+        $seoDimensionRepository->findOrCreateDimension(self::RESOURCE_KEY, 'seo-1', $localizedDimensionIdentifier->reveal())
             ->shouldBeCalled()->willReturn($localizedSeo->reveal());
 
         $seoViewFactory->create([$localizedSeo->reveal()], 'de')

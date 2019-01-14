@@ -85,10 +85,10 @@ class ModifyContentMessageHandlerTest extends TestCase
         $localizedContent->setData(['title' => 'Sulu'])
             ->shouldBeCalled()->willReturn($localizedContent->reveal());
 
-        $contentDimensionRepository->findOrCreate(self::RESOURCE_KEY, 'product-1', $draftDimensionIdentifier->reveal())
+        $contentDimensionRepository->findOrCreateDimension(self::RESOURCE_KEY, 'product-1', $draftDimensionIdentifier->reveal())
             ->shouldBeCalled()->willReturn($draftContent->reveal());
 
-        $contentDimensionRepository->findOrCreate(self::RESOURCE_KEY, 'product-1', $localizedDimensionIdentifier->reveal())
+        $contentDimensionRepository->findOrCreateDimension(self::RESOURCE_KEY, 'product-1', $localizedDimensionIdentifier->reveal())
             ->shouldBeCalled()->willReturn($localizedContent->reveal());
 
         $contentView = $this->prophesize(ContentViewInterface::class);
@@ -156,10 +156,10 @@ class ModifyContentMessageHandlerTest extends TestCase
         $localizedContent->setData(['title' => 'Sulu'])
             ->shouldBeCalled()->willReturn($localizedContent->reveal());
 
-        $contentDimensionRepository->findOrCreate(self::RESOURCE_KEY, 'product-1', $draftDimensionIdentifier->reveal())
+        $contentDimensionRepository->findOrCreateDimension(self::RESOURCE_KEY, 'product-1', $draftDimensionIdentifier->reveal())
             ->shouldBeCalled()->willReturn($draftContent->reveal());
 
-        $contentDimensionRepository->findOrCreate(self::RESOURCE_KEY, 'product-1', $localizedDimensionIdentifier->reveal())
+        $contentDimensionRepository->findOrCreateDimension(self::RESOURCE_KEY, 'product-1', $localizedDimensionIdentifier->reveal())
             ->shouldBeCalled()->willReturn($localizedContent->reveal());
 
         $contentViewFactory->create([$localizedContent->reveal(), $draftContent->reveal()], 'de')

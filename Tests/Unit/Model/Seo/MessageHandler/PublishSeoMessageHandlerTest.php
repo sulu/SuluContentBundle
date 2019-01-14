@@ -68,10 +68,10 @@ class PublishSeoMessageHandlerTest extends TestCase
         $localizedLiveSeo->copyAttributesFrom($localizedDraftSeo->reveal())
             ->shouldBeCalled()->willReturn($localizedLiveSeo->reveal());
 
-        $seoDimensionRepository->findByResource(self::RESOURCE_KEY, 'seo-1', $localizedDraftDimensionIdentifier->reveal())
+        $seoDimensionRepository->findDimension(self::RESOURCE_KEY, 'seo-1', $localizedDraftDimensionIdentifier->reveal())
             ->shouldBeCalled()->willReturn($localizedDraftSeo);
 
-        $seoDimensionRepository->findOrCreate(self::RESOURCE_KEY, 'seo-1', $localizedLiveDimensionIdentifier->reveal())
+        $seoDimensionRepository->findOrCreateDimension(self::RESOURCE_KEY, 'seo-1', $localizedLiveDimensionIdentifier->reveal())
             ->shouldBeCalled()->willReturn($localizedLiveSeo);
 
         $seoView = $this->prophesize(SeoViewInterface::class);
@@ -111,7 +111,7 @@ class PublishSeoMessageHandlerTest extends TestCase
             ]
         )->shouldBeCalled()->willReturn($localizedDraftDimensionIdentifier->reveal());
 
-        $seoDimensionRepository->findByResource(self::RESOURCE_KEY, 'seo-1', $localizedDraftDimensionIdentifier->reveal())
+        $seoDimensionRepository->findDimension(self::RESOURCE_KEY, 'seo-1', $localizedDraftDimensionIdentifier->reveal())
             ->shouldBeCalled()->willReturn(null);
 
         $handler->__invoke($message->reveal());

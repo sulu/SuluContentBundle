@@ -27,7 +27,7 @@ class SeoDimensionRepository extends ServiceEntityRepository implements SeoDimen
         parent::__construct($registry, SeoDimension::class);
     }
 
-    public function create(
+    public function createDimension(
         string $resourceKey,
         string $resourceId,
         DimensionIdentifierInterface $dimensionIdentifier
@@ -40,21 +40,21 @@ class SeoDimensionRepository extends ServiceEntityRepository implements SeoDimen
         return $seoDimension;
     }
 
-    public function findOrCreate(
+    public function findOrCreateDimension(
         string $resourceKey,
         string $resourceId,
         DimensionIdentifierInterface $dimensionIdentifier
     ): SeoDimensionInterface {
         /** @var SeoDimensionInterface|null $seoDimension */
-        $seoDimension = $this->findByResource($resourceKey, $resourceId, $dimensionIdentifier);
+        $seoDimension = $this->findDimension($resourceKey, $resourceId, $dimensionIdentifier);
         if ($seoDimension) {
             return $seoDimension;
         }
 
-        return $this->create($resourceKey, $resourceId, $dimensionIdentifier);
+        return $this->createDimension($resourceKey, $resourceId, $dimensionIdentifier);
     }
 
-    public function findByResource(
+    public function findDimension(
         string $resourceKey,
         string $resourceId,
         DimensionIdentifierInterface $dimensionIdentifier

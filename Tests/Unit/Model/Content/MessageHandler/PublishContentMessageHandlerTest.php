@@ -82,16 +82,16 @@ class PublishContentMessageHandlerTest extends TestCase
         $localizedLiveContent = $this->prophesize(ContentDimensionInterface::class);
         $localizedLiveContent->copyAttributesFrom($localizedDraftContent->reveal())->shouldBeCalled();
 
-        $contentDimensionRepository->findByResource(self::RESOURCE_KEY, 'product-1', $draftDimensionIdentifier->reveal())
+        $contentDimensionRepository->findDimension(self::RESOURCE_KEY, 'product-1', $draftDimensionIdentifier->reveal())
             ->shouldBeCalled()->willReturn($draftContent);
 
-        $contentDimensionRepository->findOrCreate(self::RESOURCE_KEY, 'product-1', $liveDimensionIdentifier->reveal())
+        $contentDimensionRepository->findOrCreateDimension(self::RESOURCE_KEY, 'product-1', $liveDimensionIdentifier->reveal())
             ->shouldBeCalled()->willReturn($liveContent);
 
-        $contentDimensionRepository->findByResource(self::RESOURCE_KEY, 'product-1', $localizedDraftDimensionIdentifier->reveal())
+        $contentDimensionRepository->findDimension(self::RESOURCE_KEY, 'product-1', $localizedDraftDimensionIdentifier->reveal())
             ->shouldBeCalled()->willReturn($localizedDraftContent);
 
-        $contentDimensionRepository->findOrCreate(self::RESOURCE_KEY, 'product-1', $localizedLiveDimensionIdentifier->reveal())
+        $contentDimensionRepository->findOrCreateDimension(self::RESOURCE_KEY, 'product-1', $localizedLiveDimensionIdentifier->reveal())
             ->shouldBeCalled()->willReturn($localizedLiveContent);
 
         $contentView = $this->prophesize(ContentViewInterface::class);
@@ -127,7 +127,7 @@ class PublishContentMessageHandlerTest extends TestCase
             [DimensionIdentifierInterface::ATTRIBUTE_KEY_STAGE => DimensionIdentifierInterface::ATTRIBUTE_VALUE_DRAFT]
         )->shouldBeCalled()->willReturn($draftDimensionIdentifier->reveal());
 
-        $contentDimensionRepository->findByResource(self::RESOURCE_KEY, 'product-1', $draftDimensionIdentifier->reveal())
+        $contentDimensionRepository->findDimension(self::RESOURCE_KEY, 'product-1', $draftDimensionIdentifier->reveal())
             ->shouldBeCalled()->willReturn(null);
 
         $handler->__invoke($message->reveal());

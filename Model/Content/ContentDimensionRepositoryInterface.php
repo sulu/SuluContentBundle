@@ -17,19 +17,19 @@ use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierInter
 
 interface ContentDimensionRepositoryInterface
 {
-    public function create(
+    public function createDimension(
         string $resourceKey,
         string $resourceId,
         DimensionIdentifierInterface $dimensionIdentifier
     ): ContentDimensionInterface;
 
-    public function findOrCreate(
+    public function findOrCreateDimension(
         string $resourceKey,
         string $resourceId,
         DimensionIdentifierInterface $dimensionIdentifier
     ): ContentDimensionInterface;
 
-    public function findByResource(
+    public function findDimension(
         string $resourceKey,
         string $resourceId,
         DimensionIdentifierInterface $dimensionIdentifier

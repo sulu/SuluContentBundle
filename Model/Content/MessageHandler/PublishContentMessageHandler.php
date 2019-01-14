@@ -78,7 +78,7 @@ class PublishContentMessageHandler
         ?string $locale = null
     ): ?ContentDimensionInterface {
         $draftDimensionIdentifier = $this->getDimensionIdentifier(DimensionIdentifierInterface::ATTRIBUTE_VALUE_DRAFT, $locale);
-        $draftContent = $this->contentDimensionRepository->findByResource($resourceKey, $resourceId, $draftDimensionIdentifier);
+        $draftContent = $this->contentDimensionRepository->findDimension($resourceKey, $resourceId, $draftDimensionIdentifier);
 
         if (!$draftContent) {
             if (!$mandatory) {
@@ -94,7 +94,7 @@ class PublishContentMessageHandler
         }
 
         $liveDimensionIdentifier = $this->getDimensionIdentifier(DimensionIdentifierInterface::ATTRIBUTE_VALUE_LIVE, $locale);
-        $liveContent = $this->contentDimensionRepository->findOrCreate($resourceKey, $resourceId, $liveDimensionIdentifier);
+        $liveContent = $this->contentDimensionRepository->findOrCreateDimension($resourceKey, $resourceId, $liveDimensionIdentifier);
 
         $liveContent->copyAttributesFrom($draftContent);
 
