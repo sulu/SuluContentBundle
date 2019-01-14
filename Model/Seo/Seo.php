@@ -199,5 +199,7 @@ class Seo implements SeoInterface
         $this->setNoIndex($seo->getNoIndex());
         $this->setNoFollow($seo->getNoFollow());
         $this->setHideInSitemap($seo->getHideInSitemap());
+
+        return $this;
     }
 }

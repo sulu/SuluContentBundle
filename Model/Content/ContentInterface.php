@@ -25,7 +25,7 @@ interface ContentInterface
 
     public function getType(): ?string;
 
-    public function setType(string $type): self;
+    public function setType(?string $type): self;
 
     public function getData(): array;
 

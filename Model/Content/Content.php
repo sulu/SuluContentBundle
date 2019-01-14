@@ -71,7 +71,7 @@ class Content implements ContentInterface
         return $this->type;
     }
 
-    public function setType(string $type): ContentInterface
+    public function setType(?string $type): ContentInterface
     {
         $this->type = $type;
 
@@ -94,5 +94,7 @@ class Content implements ContentInterface
     {
         $this->setType($content->getType());
         $this->setData($content->getData());
+
+        return $this;
     }
 }
