@@ -67,6 +67,11 @@ class ContentDimensionRepository extends ServiceEntityRepository implements Cont
         return $contentDimension;
     }
 
+    public function findByResource(string $resourceKey, string $resourceId): array
+    {
+        return $this->findBy(['resourceKey' => $resourceKey, 'resourceId' => $resourceId]);
+    }
+
     public function findByDimensionIdentifiers(string $resourceKey, string $resourceId, array $dimensionIdentifiers): array
     {
         return $this->findBy(['resourceKey' => $resourceKey, 'resourceId' => $resourceId, 'dimensionIdentifier' => $dimensionIdentifiers]);

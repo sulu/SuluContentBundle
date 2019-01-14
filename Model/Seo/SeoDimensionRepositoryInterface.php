@@ -36,6 +36,11 @@ interface SeoDimensionRepositoryInterface
     ): ?SeoDimensionInterface;
 
     /**
+     * @return SeoDimensionInterface[]
+     */
+    public function findByResource(string $resourceKey, string $resourceId): array;
+
+    /**
      * @param DimensionIdentifierInterface[] $dimensionIdentifiers
      *
      * @return SeoDimensionInterface[]

@@ -36,6 +36,11 @@ interface ContentDimensionRepositoryInterface
     ): ?ContentDimensionInterface;
 
     /**
+     * @return ContentDimensionInterface[]
+     */
+    public function findByResource(string $resourceKey, string $resourceId): array;
+
+    /**
      * @param DimensionIdentifierInterface[] $dimensionIdentifiers
      *
      * @return ContentDimensionInterface[]
