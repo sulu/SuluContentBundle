@@ -50,8 +50,8 @@ class FindContentQueryHandler
     public function __invoke(FindContentQuery $query): void
     {
         $dimensionIdentifiers = [
-            $this->dimensionIdentifierRepository->findOrCreateByAttributes($this->createAttributes()),
-            $this->dimensionIdentifierRepository->findOrCreateByAttributes($this->createAttributes($query->getLocale())),
+            $this->getDraftDimensionIdentifier(),
+            $this->getDraftDimensionIdentifier($query->getLocale()),
         ];
 
         $contentView = $this->contentViewFactory->create(
@@ -70,18 +70,13 @@ class FindContentQueryHandler
         $query->setContent($contentView);
     }
 
-    /**
-     * @return string[]
-     */
-    private function createAttributes(?string $locale = null): array
+    private function getDraftDimensionIdentifier(?string $locale = null): DimensionIdentifierInterface
     {
         $attributes = [DimensionIdentifierInterface::ATTRIBUTE_KEY_STAGE => DimensionIdentifierInterface::ATTRIBUTE_VALUE_DRAFT];
-        if (!$locale) {
-            return $attributes;
+        if ($locale) {
+            $attributes[DimensionIdentifierInterface::ATTRIBUTE_KEY_LOCALE] = $locale;
         }
 
-        $attributes[DimensionIdentifierInterface::ATTRIBUTE_KEY_LOCALE] = $locale;
-
-        return $attributes;
+        return $this->dimensionIdentifierRepository->findOrCreateByAttributes($attributes);
     }
 }

@@ -20,7 +20,7 @@ use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierInter
 
 trait ContentDimensionTrait
 {
-    protected function createContentDimension(
+    protected function createDraftContentDimension(
         string $resourceKey,
         string $resourceId,
         string $locale = 'en',
@@ -41,7 +41,7 @@ trait ContentDimensionTrait
         return $contentDimension;
     }
 
-    protected function findContentDimension(string $resourceKey, string $resourceId, string $locale): ?ContentDimensionInterface
+    protected function findDraftContentDimension(string $resourceKey, string $resourceId, string $locale): ?ContentDimensionInterface
     {
         $dimensionIdentifier = $this->findOrCreateDimensionIdentifier(
             [

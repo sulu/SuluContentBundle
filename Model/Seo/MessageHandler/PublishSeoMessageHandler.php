@@ -76,8 +76,7 @@ class PublishSeoMessageHandler
         bool $mandatory,
         string $locale
     ): ?SeoDimensionInterface {
-        $draftAttributes = $this->createAttributes(DimensionIdentifierInterface::ATTRIBUTE_VALUE_DRAFT, $locale);
-        $draftDimensionIdentifier = $this->dimensionIdentifierRepository->findOrCreateByAttributes($draftAttributes);
+        $draftDimensionIdentifier = $this->getDimensionIdentifier(DimensionIdentifierInterface::ATTRIBUTE_VALUE_DRAFT, $locale);
         $draftSeo = $this->seoDimensionRepository->findByResource($resourceKey, $resourceId, $draftDimensionIdentifier);
 
         if (!$draftSeo) {
@@ -88,8 +87,7 @@ class PublishSeoMessageHandler
             throw new SeoNotFoundException($resourceKey, $resourceId);
         }
 
-        $liveAttributes = $this->createAttributes(DimensionIdentifierInterface::ATTRIBUTE_VALUE_LIVE, $locale);
-        $liveDimensionIdentifier = $this->dimensionIdentifierRepository->findOrCreateByAttributes($liveAttributes);
+        $liveDimensionIdentifier = $this->getDimensionIdentifier(DimensionIdentifierInterface::ATTRIBUTE_VALUE_LIVE, $locale);
         $liveSeo = $this->seoDimensionRepository->findOrCreate($resourceKey, $resourceId, $liveDimensionIdentifier);
 
         $liveSeo->copyAttributesFrom($draftSeo);
@@ -97,12 +95,12 @@ class PublishSeoMessageHandler
         return $liveSeo;
     }
 
-    protected function createAttributes(string $stage, string $locale): array
+    protected function getDimensionIdentifier(string $stage, string $locale): DimensionIdentifierInterface
     {
         $attributes = [];
         $attributes[DimensionIdentifierInterface::ATTRIBUTE_KEY_STAGE] = $stage;
         $attributes[DimensionIdentifierInterface::ATTRIBUTE_KEY_LOCALE] = $locale;
 
-        return $attributes;
+        return $this->dimensionIdentifierRepository->findOrCreateByAttributes($attributes);
     }
 }

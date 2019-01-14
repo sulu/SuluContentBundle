@@ -49,15 +49,11 @@ class FindSeoQueryHandler
 
     public function __invoke(FindSeoQuery $query): void
     {
-        $dimensionIdentifiers = [
-            $this->dimensionIdentifierRepository->findOrCreateByAttributes($this->createAttributes($query->getLocale())),
-        ];
-
         $seoView = $this->seoViewFactory->create(
             $this->seoDimensionRepository->findByDimensionIdentifiers(
                 $query->getResourceKey(),
                 $query->getResourceId(),
-                $dimensionIdentifiers
+                [$this->getDraftDimensionIdentifier($query->getLocale())]
             ),
             $query->getLocale()
         );
@@ -69,15 +65,12 @@ class FindSeoQueryHandler
         $query->setSeo($seoView);
     }
 
-    /**
-     * @return string[]
-     */
-    private function createAttributes(string $locale): array
+    private function getDraftDimensionIdentifier(string $locale): DimensionIdentifierInterface
     {
         $attributes = [];
         $attributes[DimensionIdentifierInterface::ATTRIBUTE_KEY_STAGE] = DimensionIdentifierInterface::ATTRIBUTE_VALUE_DRAFT;
         $attributes[DimensionIdentifierInterface::ATTRIBUTE_KEY_LOCALE] = $locale;
 
-        return $attributes;
+        return $this->dimensionIdentifierRepository->findOrCreateByAttributes($attributes);
     }
 }

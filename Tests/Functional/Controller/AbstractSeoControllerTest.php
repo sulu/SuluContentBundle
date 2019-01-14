@@ -32,7 +32,7 @@ class AbstractSeoControllerTest extends SuluTestCase
 
     public function testGet(): void
     {
-        $this->createSeoDimension(
+        $this->createDraftSeoDimension(
             'test_resource_seos',
             'test-resource-1',
             'en',
@@ -81,7 +81,7 @@ class AbstractSeoControllerTest extends SuluTestCase
 
     public function testPut(): void
     {
-        $this->createSeoDimension('test_resource_seos', 'test-resource-1');
+        $this->createDraftSeoDimension('test_resource_seos', 'test-resource-1');
 
         $handlePublishCallback = $this->prophesize(HandlePublishCallbackInterface::class);
         $handlePublishCallback->invoke()->shouldNotBeCalled();
@@ -155,7 +155,7 @@ class AbstractSeoControllerTest extends SuluTestCase
 
     public function testPutWithPublishAction(): void
     {
-        $this->createSeoDimension('test_resource_seos', 'test-resource-1');
+        $this->createDraftSeoDimension('test_resource_seos', 'test-resource-1');
 
         $handlePublishCallback = $this->prophesize(HandlePublishCallbackInterface::class);
         $handlePublishCallback->invoke('test-resource-1', 'en')->shouldBeCalled();

@@ -50,7 +50,7 @@ class ModifySeoMessageHandler
 
     public function __invoke(ModifySeoMessage $message): void
     {
-        $localizedDraftSeo = $this->findOrCreateSeoDimension(
+        $localizedDraftSeo = $this->findOrCreateDraftSeoDimension(
             $message->getResourceKey(),
             $message->getResourceId(),
             $message->getLocale()
@@ -78,25 +78,22 @@ class ModifySeoMessageHandler
         $localizedDraftSeo->setHideInSitemap($message->getHideInSitemap());
     }
 
-    private function findOrCreateSeoDimension(
+    private function findOrCreateDraftSeoDimension(
         string $resourceKey,
         string $resourceId,
         string $locale
     ): SeoDimensionInterface {
-        $dimension = $this->dimensionIdentifierRepository->findOrCreateByAttributes($this->createAttributes($locale));
+        $dimensionIdentifier = $this->getDraftDimensionIdentifier($locale);
 
-        return $this->seoDimensionRepository->findOrCreate($resourceKey, $resourceId, $dimension);
+        return $this->seoDimensionRepository->findOrCreate($resourceKey, $resourceId, $dimensionIdentifier);
     }
 
-    /**
-     * @return string[]
-     */
-    private function createAttributes(string $locale): array
+    private function getDraftDimensionIdentifier(string $locale): DimensionIdentifierInterface
     {
         $attributes = [];
         $attributes[DimensionIdentifierInterface::ATTRIBUTE_KEY_STAGE] = DimensionIdentifierInterface::ATTRIBUTE_VALUE_DRAFT;
         $attributes[DimensionIdentifierInterface::ATTRIBUTE_KEY_LOCALE] = $locale;
 
-        return $attributes;
+        return $this->dimensionIdentifierRepository->findOrCreateByAttributes($attributes);
     }
 }

@@ -32,7 +32,7 @@ class AbstractContentControllerTest extends SuluTestCase
 
     public function testGet(): void
     {
-        $this->createContentDimension(
+        $this->createDraftContentDimension(
             'test_resource_contents',
             'test-resource-1',
             'en',
@@ -68,7 +68,7 @@ class AbstractContentControllerTest extends SuluTestCase
 
     public function testPut(): void
     {
-        $this->createContentDimension('test_resource_contents', 'test-resource-1');
+        $this->createDraftContentDimension('test_resource_contents', 'test-resource-1');
 
         $handlePublishCallback = $this->prophesize(HandlePublishCallbackInterface::class);
         $handlePublishCallback->invoke()->shouldNotBeCalled();
@@ -118,7 +118,7 @@ class AbstractContentControllerTest extends SuluTestCase
 
     public function testPutWithPublishAction(): void
     {
-        $this->createContentDimension('test_resource_contents', 'test-resource-1');
+        $this->createDraftContentDimension('test_resource_contents', 'test-resource-1');
 
         $handlePublishCallback = $this->prophesize(HandlePublishCallbackInterface::class);
         $handlePublishCallback->invoke('test-resource-1', 'en')->shouldBeCalled();

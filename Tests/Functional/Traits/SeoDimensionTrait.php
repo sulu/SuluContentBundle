@@ -20,7 +20,7 @@ use Sulu\Bundle\ContentBundle\Model\Seo\SeoDimensionInterface;
 
 trait SeoDimensionTrait
 {
-    protected function createSeoDimension(
+    protected function createDraftSeoDimension(
         string $resourceKey,
         string $resourceId,
         string $locale = 'en',
@@ -57,7 +57,7 @@ trait SeoDimensionTrait
         return $seoDimension;
     }
 
-    protected function findSeoDimension(string $resourceKey, string $resourceId, string $locale): ?SeoDimensionInterface
+    protected function findDraftSeoDimension(string $resourceKey, string $resourceId, string $locale): ?SeoDimensionInterface
     {
         $dimensionIdentifier = $this->findOrCreateDimensionIdentifier(
             [

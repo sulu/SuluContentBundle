@@ -58,8 +58,8 @@ class ModifyContentMessageHandler
 
     public function __invoke(ModifyContentMessage $message): void
     {
-        $draftContent = $this->findOrCreateContentDimension($message->getResourceKey(), $message->getResourceId());
-        $localizedDraftContent = $this->findOrCreateContentDimension(
+        $draftContent = $this->findOrCreateDraftContentDimension($message->getResourceKey(), $message->getResourceId());
+        $localizedDraftContent = $this->findOrCreateDraftContentDimension(
             $message->getResourceKey(),
             $message->getResourceId(),
             $message->getLocale()
@@ -116,28 +116,23 @@ class ModifyContentMessageHandler
         $draftContent->setData($draftData);
     }
 
-    private function findOrCreateContentDimension(
+    private function findOrCreateDraftContentDimension(
         string $resourceKey,
         string $resourceId,
         ?string $locale = null
     ): ContentDimensionInterface {
-        $dimensionIdentifier = $this->dimensionIdentifierRepository->findOrCreateByAttributes($this->createAttributes($locale));
+        $dimensionIdentifier = $this->getDraftDimensionIdentifier($locale);
 
         return $this->contentDimensionRepository->findOrCreate($resourceKey, $resourceId, $dimensionIdentifier);
     }
 
-    /**
-     * @return string[]
-     */
-    private function createAttributes(?string $locale = null): array
+    private function getDraftDimensionIdentifier(?string $locale = null): DimensionIdentifierInterface
     {
         $attributes = [DimensionIdentifierInterface::ATTRIBUTE_KEY_STAGE => DimensionIdentifierInterface::ATTRIBUTE_VALUE_DRAFT];
-        if (!$locale) {
-            return $attributes;
+        if ($locale) {
+            $attributes[DimensionIdentifierInterface::ATTRIBUTE_KEY_LOCALE] = $locale;
         }
 
-        $attributes[DimensionIdentifierInterface::ATTRIBUTE_KEY_LOCALE] = $locale;
-
-        return $attributes;
+        return $this->dimensionIdentifierRepository->findOrCreateByAttributes($attributes);
     }
 }

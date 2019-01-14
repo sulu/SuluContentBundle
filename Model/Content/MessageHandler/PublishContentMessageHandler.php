@@ -77,8 +77,7 @@ class PublishContentMessageHandler
         bool $mandatory,
         ?string $locale = null
     ): ?ContentDimensionInterface {
-        $draftAttributes = $this->createAttributes(DimensionIdentifierInterface::ATTRIBUTE_VALUE_DRAFT, $locale);
-        $draftDimensionIdentifier = $this->dimensionIdentifierRepository->findOrCreateByAttributes($draftAttributes);
+        $draftDimensionIdentifier = $this->getDimensionIdentifier(DimensionIdentifierInterface::ATTRIBUTE_VALUE_DRAFT, $locale);
         $draftContent = $this->contentDimensionRepository->findByResource($resourceKey, $resourceId, $draftDimensionIdentifier);
 
         if (!$draftContent) {
@@ -94,8 +93,7 @@ class PublishContentMessageHandler
             throw new \InvalidArgumentException('Content type cannot be null');
         }
 
-        $liveAttributes = $this->createAttributes(DimensionIdentifierInterface::ATTRIBUTE_VALUE_LIVE, $locale);
-        $liveDimensionIdentifier = $this->dimensionIdentifierRepository->findOrCreateByAttributes($liveAttributes);
+        $liveDimensionIdentifier = $this->getDimensionIdentifier(DimensionIdentifierInterface::ATTRIBUTE_VALUE_LIVE, $locale);
         $liveContent = $this->contentDimensionRepository->findOrCreate($resourceKey, $resourceId, $liveDimensionIdentifier);
 
         $liveContent->copyAttributesFrom($draftContent);
@@ -103,15 +101,13 @@ class PublishContentMessageHandler
         return $liveContent;
     }
 
-    protected function createAttributes(string $stage, ?string $locale = null): array
+    protected function getDimensionIdentifier(string $stage, ?string $locale = null): DimensionIdentifierInterface
     {
         $attributes = [DimensionIdentifierInterface::ATTRIBUTE_KEY_STAGE => $stage];
-        if (!$locale) {
-            return $attributes;
+        if ($locale) {
+            $attributes[DimensionIdentifierInterface::ATTRIBUTE_KEY_LOCALE] = $locale;
         }
 
-        $attributes[DimensionIdentifierInterface::ATTRIBUTE_KEY_LOCALE] = $locale;
-
-        return $attributes;
+        return $this->dimensionIdentifierRepository->findOrCreateByAttributes($attributes);
     }
 }
