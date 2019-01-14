@@ -18,15 +18,15 @@ use Sulu\Bundle\ContentBundle\Model\Dimension\DimensionRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Seo\Exception\SeoNotFoundException;
 use Sulu\Bundle\ContentBundle\Model\Seo\Factory\SeoViewFactoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Seo\Message\ModifySeoMessage;
-use Sulu\Bundle\ContentBundle\Model\Seo\SeoInterface;
-use Sulu\Bundle\ContentBundle\Model\Seo\SeoRepositoryInterface;
+use Sulu\Bundle\ContentBundle\Model\Seo\SeoDimensionInterface;
+use Sulu\Bundle\ContentBundle\Model\Seo\SeoDimensionRepositoryInterface;
 
 class ModifySeoMessageHandler
 {
     /**
-     * @var SeoRepositoryInterface
+     * @var SeoDimensionRepositoryInterface
      */
-    private $seoRepository;
+    private $seoDimensionRepository;
 
     /**
      * @var DimensionRepositoryInterface
@@ -39,11 +39,11 @@ class ModifySeoMessageHandler
     private $seoViewFactory;
 
     public function __construct(
-        SeoRepositoryInterface $seoRepository,
+        SeoDimensionRepositoryInterface $seoDimensionRepository,
         DimensionRepositoryInterface $dimensionRepository,
         SeoViewFactoryInterface $seoViewFactory
     ) {
-        $this->seoRepository = $seoRepository;
+        $this->seoDimensionRepository = $seoDimensionRepository;
         $this->dimensionRepository = $dimensionRepository;
         $this->seoViewFactory = $seoViewFactory;
     }
@@ -67,7 +67,7 @@ class ModifySeoMessageHandler
 
     private function setData(
         ModifySeoMessage $message,
-        SeoInterface $localizedDraftSeo
+        SeoDimensionInterface $localizedDraftSeo
     ): void {
         $localizedDraftSeo->setTitle($message->getTitle());
         $localizedDraftSeo->setDescription($message->getDescription());
@@ -82,10 +82,10 @@ class ModifySeoMessageHandler
         string $resourceKey,
         string $resourceId,
         string $locale
-    ): SeoInterface {
+    ): SeoDimensionInterface {
         $dimension = $this->dimensionRepository->findOrCreateByAttributes($this->createAttributes($locale));
 
-        return $this->seoRepository->findOrCreate($resourceKey, $resourceId, $dimension);
+        return $this->seoDimensionRepository->findOrCreate($resourceKey, $resourceId, $dimension);
     }
 
     /**

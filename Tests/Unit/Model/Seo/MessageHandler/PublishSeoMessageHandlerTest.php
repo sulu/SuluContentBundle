@@ -20,8 +20,8 @@ use Sulu\Bundle\ContentBundle\Model\Seo\Exception\SeoNotFoundException;
 use Sulu\Bundle\ContentBundle\Model\Seo\Factory\SeoViewFactoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Seo\Message\PublishSeoMessage;
 use Sulu\Bundle\ContentBundle\Model\Seo\MessageHandler\PublishSeoMessageHandler;
-use Sulu\Bundle\ContentBundle\Model\Seo\SeoInterface;
-use Sulu\Bundle\ContentBundle\Model\Seo\SeoRepositoryInterface;
+use Sulu\Bundle\ContentBundle\Model\Seo\SeoDimensionInterface;
+use Sulu\Bundle\ContentBundle\Model\Seo\SeoDimensionRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Seo\SeoViewInterface;
 
 class PublishSeoMessageHandlerTest extends TestCase
@@ -30,12 +30,12 @@ class PublishSeoMessageHandlerTest extends TestCase
 
     public function testInvoke(): void
     {
-        $seoRepository = $this->prophesize(SeoRepositoryInterface::class);
+        $seoDimensionRepository = $this->prophesize(SeoDimensionRepositoryInterface::class);
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
         $seoViewFactory = $this->prophesize(SeoViewFactoryInterface::class);
 
         $handler = new PublishSeoMessageHandler(
-            $seoRepository->reveal(),
+            $seoDimensionRepository->reveal(),
             $dimensionRepository->reveal(),
             $seoViewFactory->reveal()
         );
@@ -63,15 +63,15 @@ class PublishSeoMessageHandlerTest extends TestCase
             ]
         )->shouldBeCalled()->willReturn($localizedLiveDimension->reveal());
 
-        $localizedDraftSeo = $this->prophesize(SeoInterface::class);
-        $localizedLiveSeo = $this->prophesize(SeoInterface::class);
+        $localizedDraftSeo = $this->prophesize(SeoDimensionInterface::class);
+        $localizedLiveSeo = $this->prophesize(SeoDimensionInterface::class);
         $localizedLiveSeo->copyAttributesFrom($localizedDraftSeo->reveal())
             ->shouldBeCalled()->willReturn($localizedLiveSeo->reveal());
 
-        $seoRepository->findByResource(self::RESOURCE_KEY, 'seo-1', $localizedDraftDimension->reveal())
+        $seoDimensionRepository->findByResource(self::RESOURCE_KEY, 'seo-1', $localizedDraftDimension->reveal())
             ->shouldBeCalled()->willReturn($localizedDraftSeo);
 
-        $seoRepository->findOrCreate(self::RESOURCE_KEY, 'seo-1', $localizedLiveDimension->reveal())
+        $seoDimensionRepository->findOrCreate(self::RESOURCE_KEY, 'seo-1', $localizedLiveDimension->reveal())
             ->shouldBeCalled()->willReturn($localizedLiveSeo);
 
         $seoView = $this->prophesize(SeoViewInterface::class);
@@ -87,12 +87,12 @@ class PublishSeoMessageHandlerTest extends TestCase
     {
         $this->expectException(SeoNotFoundException::class);
 
-        $seoRepository = $this->prophesize(SeoRepositoryInterface::class);
+        $seoDimensionRepository = $this->prophesize(SeoDimensionRepositoryInterface::class);
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
         $seoViewFactory = $this->prophesize(SeoViewFactoryInterface::class);
 
         $handler = new PublishSeoMessageHandler(
-            $seoRepository->reveal(),
+            $seoDimensionRepository->reveal(),
             $dimensionRepository->reveal(),
             $seoViewFactory->reveal()
         );
@@ -111,7 +111,7 @@ class PublishSeoMessageHandlerTest extends TestCase
             ]
         )->shouldBeCalled()->willReturn($localizedDraftDimension->reveal());
 
-        $seoRepository->findByResource(self::RESOURCE_KEY, 'seo-1', $localizedDraftDimension->reveal())
+        $seoDimensionRepository->findByResource(self::RESOURCE_KEY, 'seo-1', $localizedDraftDimension->reveal())
             ->shouldBeCalled()->willReturn(null);
 
         $handler->__invoke($message->reveal());

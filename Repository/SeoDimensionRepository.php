@@ -15,40 +15,40 @@ namespace Sulu\Bundle\ContentBundle\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Sulu\Bundle\ContentBundle\Model\Dimension\DimensionInterface;
-use Sulu\Bundle\ContentBundle\Model\Seo\Seo;
-use Sulu\Bundle\ContentBundle\Model\Seo\SeoInterface;
-use Sulu\Bundle\ContentBundle\Model\Seo\SeoRepositoryInterface;
+use Sulu\Bundle\ContentBundle\Model\Seo\SeoDimension;
+use Sulu\Bundle\ContentBundle\Model\Seo\SeoDimensionInterface;
+use Sulu\Bundle\ContentBundle\Model\Seo\SeoDimensionRepositoryInterface;
 use Symfony\Bridge\Doctrine\ManagerRegistry;
 
-class SeoRepository extends ServiceEntityRepository implements SeoRepositoryInterface
+class SeoDimensionRepository extends ServiceEntityRepository implements SeoDimensionRepositoryInterface
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Seo::class);
+        parent::__construct($registry, SeoDimension::class);
     }
 
     public function create(
         string $resourceKey,
         string $resourceId,
         DimensionInterface $dimension
-    ): SeoInterface {
+    ): SeoDimensionInterface {
         $className = $this->getClassName();
-        $seo = new $className($dimension, $resourceKey, $resourceId);
+        $seoDimension = new $className($dimension, $resourceKey, $resourceId);
 
-        $this->getEntityManager()->persist($seo);
+        $this->getEntityManager()->persist($seoDimension);
 
-        return $seo;
+        return $seoDimension;
     }
 
     public function findOrCreate(
         string $resourceKey,
         string $resourceId,
         DimensionInterface $dimension
-    ): SeoInterface {
-        /** @var SeoInterface|null $seo */
-        $seo = $this->findByResource($resourceKey, $resourceId, $dimension);
-        if ($seo) {
-            return $seo;
+    ): SeoDimensionInterface {
+        /** @var SeoDimensionInterface|null $seoDimension */
+        $seoDimension = $this->findByResource($resourceKey, $resourceId, $dimension);
+        if ($seoDimension) {
+            return $seoDimension;
         }
 
         return $this->create($resourceKey, $resourceId, $dimension);
@@ -58,11 +58,13 @@ class SeoRepository extends ServiceEntityRepository implements SeoRepositoryInte
         string $resourceKey,
         string $resourceId,
         DimensionInterface $dimension
-    ): ?SeoInterface {
-        /** @var SeoInterface|null $seo */
-        $seo = $this->find(['resourceKey' => $resourceKey, 'resourceId' => $resourceId, 'dimension' => $dimension]);
+    ): ?SeoDimensionInterface {
+        /** @var SeoDimensionInterface|null $seoDimension */
+        $seoDimension = $this->find(
+            ['resourceKey' => $resourceKey, 'resourceId' => $resourceId, 'dimension' => $dimension]
+        );
 
-        return $seo;
+        return $seoDimension;
     }
 
     public function findByDimensions(string $resourceKey, string $resourceId, array $dimensions): array

@@ -15,30 +15,30 @@ namespace Sulu\Bundle\ContentBundle\Model\Seo;
 
 use Sulu\Bundle\ContentBundle\Model\Dimension\DimensionInterface;
 
-interface SeoRepositoryInterface
+interface SeoDimensionRepositoryInterface
 {
     public function create(
         string $resourceKey,
         string $resourceId,
         DimensionInterface $dimension
-    ): SeoInterface;
+    ): SeoDimensionInterface;
 
     public function findOrCreate(
         string $resourceKey,
         string $resourceId,
         DimensionInterface $dimension
-    ): SeoInterface;
+    ): SeoDimensionInterface;
 
     public function findByResource(
         string $resourceKey,
         string $resourceId,
         DimensionInterface $dimension
-    ): ?SeoInterface;
+    ): ?SeoDimensionInterface;
 
     /**
      * @param DimensionInterface[] $dimensions
      *
-     * @return SeoInterface[]
+     * @return SeoDimensionInterface[]
      */
     public function findByDimensions(string $resourceKey, string $resourceId, array $dimensions): array;
 }

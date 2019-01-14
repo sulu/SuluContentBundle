@@ -13,13 +13,13 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Model\Seo\Factory;
 
-use Sulu\Bundle\ContentBundle\Model\Seo\SeoInterface;
+use Sulu\Bundle\ContentBundle\Model\Seo\SeoDimensionInterface;
 use Sulu\Bundle\ContentBundle\Model\Seo\SeoViewInterface;
 
 interface SeoViewFactoryInterface
 {
     /**
-     * @param SeoInterface[] $seoDimensions
+     * @param SeoDimensionInterface[] $seoDimensions
      *
      * @return SeoViewInterface|null
      */

@@ -15,7 +15,7 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\Model\Seo\Factory;
 
 use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\ContentBundle\Model\Seo\Factory\SeoViewFactory;
-use Sulu\Bundle\ContentBundle\Model\Seo\SeoInterface;
+use Sulu\Bundle\ContentBundle\Model\Seo\SeoDimensionInterface;
 
 class SeoViewFactoryTest extends TestCase
 {
@@ -25,7 +25,7 @@ class SeoViewFactoryTest extends TestCase
     {
         $factory = new SeoViewFactory();
 
-        $seoDimension1 = $this->prophesize(SeoInterface::class);
+        $seoDimension1 = $this->prophesize(SeoDimensionInterface::class);
         $seoDimension1->getResourceKey()->shouldBeCalled()->willReturn(self::RESOURCE_KEY);
         $seoDimension1->getResourceId()->shouldBeCalled()->willReturn('seo-1');
         $seoDimension1->getTitle()->shouldBeCalled()->willReturn('title-1');
@@ -36,7 +36,7 @@ class SeoViewFactoryTest extends TestCase
         $seoDimension1->getNoFollow()->shouldBeCalled()->willReturn(null);
         $seoDimension1->getHideInSitemap()->shouldBeCalled()->willReturn(null);
 
-        $seoDimension2 = $this->prophesize(SeoInterface::class);
+        $seoDimension2 = $this->prophesize(SeoDimensionInterface::class);
         $seoDimension2->getResourceKey()->shouldNotBeCalled();
         $seoDimension2->getResourceId()->shouldNotBeCalled();
         $seoDimension2->getTitle()->shouldBeCalled()->willReturn(null);

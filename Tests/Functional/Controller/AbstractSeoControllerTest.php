@@ -15,13 +15,13 @@ namespace Sulu\Bundle\ContentBundle\Tests\Functional\Controller;
 
 use Sulu\Bundle\ContentBundle\Tests\Application\Controller\HandlePublishCallbackInterface;
 use Sulu\Bundle\ContentBundle\Tests\Functional\Traits\DimensionTrait;
-use Sulu\Bundle\ContentBundle\Tests\Functional\Traits\SeoTrait;
+use Sulu\Bundle\ContentBundle\Tests\Functional\Traits\SeoDimensionTrait;
 use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
 
 class AbstractSeoControllerTest extends SuluTestCase
 {
     use DimensionTrait;
-    use SeoTrait;
+    use SeoDimensionTrait;
 
     public function setUp()
     {
@@ -32,7 +32,7 @@ class AbstractSeoControllerTest extends SuluTestCase
 
     public function testGet(): void
     {
-        $this->createSeo(
+        $this->createSeoDimension(
             'test_resource_seos',
             'test-resource-1',
             'en',
@@ -81,7 +81,7 @@ class AbstractSeoControllerTest extends SuluTestCase
 
     public function testPut(): void
     {
-        $this->createSeo('test_resource_seos', 'test-resource-1');
+        $this->createSeoDimension('test_resource_seos', 'test-resource-1');
 
         $handlePublishCallback = $this->prophesize(HandlePublishCallbackInterface::class);
         $handlePublishCallback->invoke()->shouldNotBeCalled();
@@ -155,7 +155,7 @@ class AbstractSeoControllerTest extends SuluTestCase
 
     public function testPutWithPublishAction(): void
     {
-        $this->createSeo('test_resource_seos', 'test-resource-1');
+        $this->createSeoDimension('test_resource_seos', 'test-resource-1');
 
         $handlePublishCallback = $this->prophesize(HandlePublishCallbackInterface::class);
         $handlePublishCallback->invoke('test-resource-1', 'en')->shouldBeCalled();
