@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Model\Content\QueryHandler;
 
-use Sulu\Bundle\ContentBundle\Model\Content\ContentRepositoryInterface;
+use Sulu\Bundle\ContentBundle\Model\Content\ContentDimensionRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Content\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Model\Content\Factory\ContentViewFactoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Content\Query\FindContentQuery;
@@ -23,7 +23,7 @@ use Sulu\Bundle\ContentBundle\Model\Dimension\DimensionRepositoryInterface;
 class FindContentQueryHandler
 {
     /**
-     * @var ContentRepositoryInterface
+     * @var ContentDimensionRepositoryInterface
      */
     private $contentRepository;
 
@@ -38,7 +38,7 @@ class FindContentQueryHandler
     private $contentViewFactory;
 
     public function __construct(
-        ContentRepositoryInterface $contentRepository,
+        ContentDimensionRepositoryInterface $contentRepository,
         DimensionRepositoryInterface $dimensionRepository,
         ContentViewFactoryInterface $contentViewFactory
     ) {

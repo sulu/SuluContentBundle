@@ -14,41 +14,41 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Sulu\Bundle\ContentBundle\Model\Content\Content;
-use Sulu\Bundle\ContentBundle\Model\Content\ContentInterface;
-use Sulu\Bundle\ContentBundle\Model\Content\ContentRepositoryInterface;
+use Sulu\Bundle\ContentBundle\Model\Content\ContentDimension;
+use Sulu\Bundle\ContentBundle\Model\Content\ContentDimensionInterface;
+use Sulu\Bundle\ContentBundle\Model\Content\ContentDimensionRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Dimension\DimensionInterface;
 use Symfony\Bridge\Doctrine\ManagerRegistry;
 
-class ContentRepository extends ServiceEntityRepository implements ContentRepositoryInterface
+class ContentDimensionRepository extends ServiceEntityRepository implements ContentDimensionRepositoryInterface
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Content::class);
+        parent::__construct($registry, ContentDimension::class);
     }
 
     public function create(
         string $resourceKey,
         string $resourceId,
         DimensionInterface $dimension
-    ): ContentInterface {
+    ): ContentDimensionInterface {
         $className = $this->getClassName();
-        $content = new $className($dimension, $resourceKey, $resourceId);
+        $contentDimension = new $className($dimension, $resourceKey, $resourceId);
 
-        $this->getEntityManager()->persist($content);
+        $this->getEntityManager()->persist($contentDimension);
 
-        return $content;
+        return $contentDimension;
     }
 
     public function findOrCreate(
         string $resourceKey,
         string $resourceId,
         DimensionInterface $dimension
-    ): ContentInterface {
-        /** @var ContentInterface|null $content */
-        $content = $this->findByResource($resourceKey, $resourceId, $dimension);
-        if ($content) {
-            return $content;
+    ): ContentDimensionInterface {
+        /** @var ContentDimensionInterface|null $contentDimension */
+        $contentDimension = $this->findByResource($resourceKey, $resourceId, $dimension);
+        if ($contentDimension) {
+            return $contentDimension;
         }
 
         return $this->create($resourceKey, $resourceId, $dimension);
@@ -58,11 +58,13 @@ class ContentRepository extends ServiceEntityRepository implements ContentReposi
         string $resourceKey,
         string $resourceId,
         DimensionInterface $dimension
-    ): ?ContentInterface {
-        /** @var ContentInterface|null $content */
-        $content = $this->find(['resourceKey' => $resourceKey, 'resourceId' => $resourceId, 'dimension' => $dimension]);
+    ): ?ContentDimensionInterface {
+        /** @var ContentDimensionInterface|null $contentDimension */
+        $contentDimension = $this->find(
+            ['resourceKey' => $resourceKey, 'resourceId' => $resourceId, 'dimension' => $dimension]
+        );
 
-        return $content;
+        return $contentDimension;
     }
 
     public function findByDimensions(string $resourceKey, string $resourceId, array $dimensions): array

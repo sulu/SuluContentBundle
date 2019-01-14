@@ -13,13 +13,13 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Model\Content\Factory;
 
-use Sulu\Bundle\ContentBundle\Model\Content\ContentInterface;
+use Sulu\Bundle\ContentBundle\Model\Content\ContentDimensionInterface;
 use Sulu\Bundle\ContentBundle\Model\Content\ContentViewInterface;
 
 interface ContentViewFactoryInterface
 {
     /**
-     * @param ContentInterface[] $contentDimensions
+     * @param ContentDimensionInterface[] $contentDimensions
      *
      * @return ContentViewInterface|null
      */

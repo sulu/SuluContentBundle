@@ -15,30 +15,30 @@ namespace Sulu\Bundle\ContentBundle\Model\Content;
 
 use Sulu\Bundle\ContentBundle\Model\Dimension\DimensionInterface;
 
-interface ContentRepositoryInterface
+interface ContentDimensionRepositoryInterface
 {
     public function create(
         string $resourceKey,
         string $resourceId,
         DimensionInterface $dimension
-    ): ContentInterface;
+    ): ContentDimensionInterface;
 
     public function findOrCreate(
         string $resourceKey,
         string $resourceId,
         DimensionInterface $dimension
-    ): ContentInterface;
+    ): ContentDimensionInterface;
 
     public function findByResource(
         string $resourceKey,
         string $resourceId,
         DimensionInterface $dimension
-    ): ?ContentInterface;
+    ): ?ContentDimensionInterface;
 
     /**
      * @param DimensionInterface[] $dimensions
      *
-     * @return ContentInterface[]
+     * @return ContentDimensionInterface[]
      */
     public function findByDimensions(string $resourceKey, string $resourceId, array $dimensions): array;
 }

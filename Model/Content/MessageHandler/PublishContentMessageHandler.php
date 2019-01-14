@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Model\Content\MessageHandler;
 
-use Sulu\Bundle\ContentBundle\Model\Content\ContentInterface;
-use Sulu\Bundle\ContentBundle\Model\Content\ContentRepositoryInterface;
+use Sulu\Bundle\ContentBundle\Model\Content\ContentDimensionInterface;
+use Sulu\Bundle\ContentBundle\Model\Content\ContentDimensionRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Content\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Model\Content\Factory\ContentViewFactoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Content\Message\PublishContentMessage;
@@ -24,7 +24,7 @@ use Sulu\Bundle\ContentBundle\Model\Dimension\DimensionRepositoryInterface;
 class PublishContentMessageHandler
 {
     /**
-     * @var ContentRepositoryInterface
+     * @var ContentDimensionRepositoryInterface
      */
     private $contentRepository;
 
@@ -39,7 +39,7 @@ class PublishContentMessageHandler
     private $contentViewFactory;
 
     public function __construct(
-        ContentRepositoryInterface $contentRepository,
+        ContentDimensionRepositoryInterface $contentRepository,
         DimensionRepositoryInterface $dimensionRepository,
         ContentViewFactoryInterface $contentViewFactory
     ) {
@@ -76,7 +76,7 @@ class PublishContentMessageHandler
         string $resourceId,
         bool $mandatory,
         ?string $locale = null
-    ): ?ContentInterface {
+    ): ?ContentDimensionInterface {
         $draftAttributes = $this->createAttributes(DimensionInterface::ATTRIBUTE_VALUE_DRAFT, $locale);
         $draftDimension = $this->dimensionRepository->findOrCreateByAttributes($draftAttributes);
         $draftContent = $this->contentRepository->findByResource($resourceKey, $resourceId, $draftDimension);

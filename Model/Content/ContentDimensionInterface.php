@@ -15,7 +15,7 @@ namespace Sulu\Bundle\ContentBundle\Model\Content;
 
 use Sulu\Bundle\ContentBundle\Model\Dimension\DimensionInterface;
 
-interface ContentInterface
+interface ContentDimensionInterface
 {
     public function getDimension(): DimensionInterface;
 
@@ -31,5 +31,5 @@ interface ContentInterface
 
     public function setData(array $data): self;
 
-    public function copyAttributesFrom(ContentInterface $content): self;
+    public function copyAttributesFrom(ContentDimensionInterface $content): self;
 }

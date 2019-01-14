@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Model\Content\MessageHandler;
 
-use Sulu\Bundle\ContentBundle\Model\Content\ContentInterface;
-use Sulu\Bundle\ContentBundle\Model\Content\ContentRepositoryInterface;
+use Sulu\Bundle\ContentBundle\Model\Content\ContentDimensionInterface;
+use Sulu\Bundle\ContentBundle\Model\Content\ContentDimensionRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Content\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Model\Content\Factory\ContentViewFactoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Content\Message\ModifyContentMessage;
@@ -25,9 +25,9 @@ use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
 class ModifyContentMessageHandler
 {
     /**
-     * @var ContentRepositoryInterface
+     * @var ContentDimensionRepositoryInterface
      */
-    private $contentRepository;
+    private $contentDimensionRepository;
 
     /**
      * @var DimensionRepositoryInterface
@@ -45,12 +45,12 @@ class ModifyContentMessageHandler
     private $contentViewFactory;
 
     public function __construct(
-        ContentRepositoryInterface $contentRepository,
+        ContentDimensionRepositoryInterface $contentDimensionRepository,
         DimensionRepositoryInterface $dimensionRepository,
         StructureMetadataFactoryInterface $factory,
         ContentViewFactoryInterface $contentViewFactory
     ) {
-        $this->contentRepository = $contentRepository;
+        $this->contentDimensionRepository = $contentDimensionRepository;
         $this->dimensionRepository = $dimensionRepository;
         $this->factory = $factory;
         $this->contentViewFactory = $contentViewFactory;
@@ -80,8 +80,8 @@ class ModifyContentMessageHandler
 
     private function setData(
         ModifyContentMessage $message,
-        ContentInterface $draftContent,
-        ContentInterface $localizedDraftContent
+        ContentDimensionInterface $draftContent,
+        ContentDimensionInterface $localizedDraftContent
     ): void {
         $data = $message->getData();
         $metadata = $this->factory->getStructureMetadata($message->getResourceKey(), $message->getType());
@@ -120,10 +120,10 @@ class ModifyContentMessageHandler
         string $resourceKey,
         string $resourceId,
         ?string $locale = null
-    ): ContentInterface {
+    ): ContentDimensionInterface {
         $dimension = $this->dimensionRepository->findOrCreateByAttributes($this->createAttributes($locale));
 
-        return $this->contentRepository->findOrCreate($resourceKey, $resourceId, $dimension);
+        return $this->contentDimensionRepository->findOrCreate($resourceKey, $resourceId, $dimension);
     }
 
     /**

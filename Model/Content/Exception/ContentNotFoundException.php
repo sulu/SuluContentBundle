@@ -14,12 +14,12 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Model\Content\Exception;
 
 use Sulu\Bundle\ContentBundle\Common\Model\ModelNotFoundException;
-use Sulu\Bundle\ContentBundle\Model\Content\Content;
+use Sulu\Bundle\ContentBundle\Model\Content\ContentDimension;
 
 class ContentNotFoundException extends ModelNotFoundException
 {
     public function __construct(string $resourceKey, string $resourceId, $code = 0, \Throwable $previous = null)
     {
-        parent::__construct(Content::class, sprintf('%s#%s', $resourceKey, $resourceId), $code, $previous);
+        parent::__construct(ContentDimension::class, sprintf('%s#%s', $resourceKey, $resourceId), $code, $previous);
     }
 }

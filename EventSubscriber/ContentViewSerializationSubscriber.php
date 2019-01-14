@@ -20,7 +20,7 @@ use JMS\Serializer\JsonSerializationVisitor;
 use Sulu\Bundle\ContentBundle\Model\Content\ContentViewInterface;
 use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
 
-class ContentSerializerSubscriber implements EventSubscriberInterface
+class ContentViewSerializationSubscriber implements EventSubscriberInterface
 {
     public static function getSubscribedEvents()
     {

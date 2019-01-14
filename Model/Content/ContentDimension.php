@@ -15,7 +15,7 @@ namespace Sulu\Bundle\ContentBundle\Model\Content;
 
 use Sulu\Bundle\ContentBundle\Model\Dimension\DimensionInterface;
 
-class Content implements ContentInterface
+class ContentDimension implements ContentDimensionInterface
 {
     /**
      * @var DimensionInterface
@@ -71,7 +71,7 @@ class Content implements ContentInterface
         return $this->type;
     }
 
-    public function setType(?string $type): ContentInterface
+    public function setType(?string $type): ContentDimensionInterface
     {
         $this->type = $type;
 
@@ -83,14 +83,14 @@ class Content implements ContentInterface
         return $this->data;
     }
 
-    public function setData(array $data): ContentInterface
+    public function setData(array $data): ContentDimensionInterface
     {
         $this->data = $data;
 
         return $this;
     }
 
-    public function copyAttributesFrom(ContentInterface $content): ContentInterface
+    public function copyAttributesFrom(ContentDimensionInterface $content): ContentDimensionInterface
     {
         $this->setType($content->getType());
         $this->setData($content->getData());

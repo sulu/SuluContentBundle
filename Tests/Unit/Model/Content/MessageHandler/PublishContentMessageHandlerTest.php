@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Model\Content\MessageHandler;
 
 use PHPUnit\Framework\TestCase;
-use Sulu\Bundle\ContentBundle\Model\Content\ContentInterface;
-use Sulu\Bundle\ContentBundle\Model\Content\ContentRepositoryInterface;
+use Sulu\Bundle\ContentBundle\Model\Content\ContentDimensionInterface;
+use Sulu\Bundle\ContentBundle\Model\Content\ContentDimensionRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Content\ContentViewInterface;
 use Sulu\Bundle\ContentBundle\Model\Content\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Model\Content\Factory\ContentViewFactoryInterface;
@@ -30,7 +30,7 @@ class PublishContentMessageHandlerTest extends TestCase
 
     public function testInvoke(): void
     {
-        $contentRepository = $this->prophesize(ContentRepositoryInterface::class);
+        $contentRepository = $this->prophesize(ContentDimensionRepositoryInterface::class);
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
         $contentViewFactory = $this->prophesize(ContentViewFactoryInterface::class);
 
@@ -72,14 +72,14 @@ class PublishContentMessageHandlerTest extends TestCase
             ]
         )->shouldBeCalled()->willReturn($localizedLiveDimension->reveal());
 
-        $draftContent = $this->prophesize(ContentInterface::class);
+        $draftContent = $this->prophesize(ContentDimensionInterface::class);
         $draftContent->getType()->shouldBeCalled()->willReturn('default');
-        $liveContent = $this->prophesize(ContentInterface::class);
+        $liveContent = $this->prophesize(ContentDimensionInterface::class);
         $liveContent->copyAttributesFrom($draftContent->reveal())->shouldBeCalled();
 
-        $localizedDraftContent = $this->prophesize(ContentInterface::class);
+        $localizedDraftContent = $this->prophesize(ContentDimensionInterface::class);
         $localizedDraftContent->getType()->shouldBeCalled()->willReturn('default');
-        $localizedLiveContent = $this->prophesize(ContentInterface::class);
+        $localizedLiveContent = $this->prophesize(ContentDimensionInterface::class);
         $localizedLiveContent->copyAttributesFrom($localizedDraftContent->reveal())->shouldBeCalled();
 
         $contentRepository->findByResource(self::RESOURCE_KEY, 'product-1', $draftDimension->reveal())
@@ -107,7 +107,7 @@ class PublishContentMessageHandlerTest extends TestCase
     {
         $this->expectException(ContentNotFoundException::class);
 
-        $contentRepository = $this->prophesize(ContentRepositoryInterface::class);
+        $contentRepository = $this->prophesize(ContentDimensionRepositoryInterface::class);
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
         $contentViewFactory = $this->prophesize(ContentViewFactoryInterface::class);
 

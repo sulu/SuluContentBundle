@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Model\Content\MessageHandler;
 
 use PHPUnit\Framework\TestCase;
-use Sulu\Bundle\ContentBundle\Model\Content\ContentInterface;
-use Sulu\Bundle\ContentBundle\Model\Content\ContentRepositoryInterface;
+use Sulu\Bundle\ContentBundle\Model\Content\ContentDimensionInterface;
+use Sulu\Bundle\ContentBundle\Model\Content\ContentDimensionRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Content\ContentViewInterface;
 use Sulu\Bundle\ContentBundle\Model\Content\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Model\Content\Factory\ContentViewFactoryInterface;
@@ -33,7 +33,7 @@ class ModifyContentMessageHandlerTest extends TestCase
 
     public function testInvoke(): void
     {
-        $contentRepository = $this->prophesize(ContentRepositoryInterface::class);
+        $contentRepository = $this->prophesize(ContentDimensionRepositoryInterface::class);
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
         $factory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $contentViewFactory = $this->prophesize(ContentViewFactoryInterface::class);
@@ -75,12 +75,12 @@ class ModifyContentMessageHandlerTest extends TestCase
         $metadata->getProperties()->shouldBeCalled()->willReturn([$titleProperty->reveal(), $articleProperty->reveal()]);
         $factory->getStructureMetadata(self::RESOURCE_KEY, 'default')->shouldBeCalled()->willReturn($metadata->reveal());
 
-        $draftContent = $this->prophesize(ContentInterface::class);
+        $draftContent = $this->prophesize(ContentDimensionInterface::class);
         $draftContent->setType('default')->shouldBeCalled()->willReturn($draftContent->reveal());
         $draftContent->setData(['article' => '<p>Sulu is awesome</p>'])
             ->shouldBeCalled()->willReturn($draftContent->reveal());
 
-        $localizedContent = $this->prophesize(ContentInterface::class);
+        $localizedContent = $this->prophesize(ContentDimensionInterface::class);
         $localizedContent->setType('default')->shouldBeCalled()->willReturn($localizedContent->reveal());
         $localizedContent->setData(['title' => 'Sulu'])
             ->shouldBeCalled()->willReturn($localizedContent->reveal());
@@ -104,7 +104,7 @@ class ModifyContentMessageHandlerTest extends TestCase
     {
         $this->expectException(ContentNotFoundException::class);
 
-        $contentRepository = $this->prophesize(ContentRepositoryInterface::class);
+        $contentRepository = $this->prophesize(ContentDimensionRepositoryInterface::class);
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
         $factory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $contentViewFactory = $this->prophesize(ContentViewFactoryInterface::class);
@@ -146,12 +146,12 @@ class ModifyContentMessageHandlerTest extends TestCase
         $metadata->getProperties()->shouldBeCalled()->willReturn([$titleProperty->reveal(), $articleProperty->reveal()]);
         $factory->getStructureMetadata(self::RESOURCE_KEY, 'default')->shouldBeCalled()->willReturn($metadata->reveal());
 
-        $draftContent = $this->prophesize(ContentInterface::class);
+        $draftContent = $this->prophesize(ContentDimensionInterface::class);
         $draftContent->setType('default')->shouldBeCalled()->willReturn($draftContent->reveal());
         $draftContent->setData(['article' => '<p>Sulu is awesome</p>'])
             ->shouldBeCalled()->willReturn($draftContent->reveal());
 
-        $localizedContent = $this->prophesize(ContentInterface::class);
+        $localizedContent = $this->prophesize(ContentDimensionInterface::class);
         $localizedContent->setType('default')->shouldBeCalled()->willReturn($localizedContent->reveal());
         $localizedContent->setData(['title' => 'Sulu'])
             ->shouldBeCalled()->willReturn($localizedContent->reveal());

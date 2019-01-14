@@ -14,34 +14,34 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Functional\Traits;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Sulu\Bundle\ContentBundle\Model\Content\Content;
-use Sulu\Bundle\ContentBundle\Model\Content\ContentInterface;
+use Sulu\Bundle\ContentBundle\Model\Content\ContentDimension;
+use Sulu\Bundle\ContentBundle\Model\Content\ContentDimensionInterface;
 use Sulu\Bundle\ContentBundle\Model\Dimension\DimensionInterface;
 
-trait ContentTrait
+trait ContentDimensionTrait
 {
-    protected function createContent(
+    protected function createContentDimension(
         string $resourceKey,
         string $resourceId,
         string $locale = 'en',
         ?string $type = 'default',
         array $data = ['title' => 'Sulu', 'article' => 'Sulu is awesome']
-    ): ContentInterface {
+    ): ContentDimensionInterface {
         $dimension = $this->findDimension(
             [
                 DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT,
                 DimensionInterface::ATTRIBUTE_KEY_LOCALE => $locale,
             ]
         );
-        $content = new Content($dimension, $resourceKey, $resourceId, $type, $data);
+        $contentDimension = new ContentDimension($dimension, $resourceKey, $resourceId, $type, $data);
 
-        $this->getEntityManager()->persist($content);
+        $this->getEntityManager()->persist($contentDimension);
         $this->getEntityManager()->flush();
 
-        return $content;
+        return $contentDimension;
     }
 
-    protected function findContent(string $resourceKey, string $resourceId, string $locale): ?ContentInterface
+    protected function findContentDimension(string $resourceKey, string $resourceId, string $locale): ?ContentDimensionInterface
     {
         $dimension = $this->findDimension(
             [
@@ -50,13 +50,13 @@ trait ContentTrait
             ]
         );
 
-        /** @var Content $content */
-        $content = $this->getEntityManager()->find(
-            Content::class,
+        /** @var ContentDimension $contentDimension */
+        $contentDimension = $this->getEntityManager()->find(
+            ContentDimension::class,
             ['resourceKey' => $resourceKey, 'resourceId' => $resourceId, 'dimension' => $dimension]
         );
 
-        return $content;
+        return $contentDimension;
     }
 
     abstract protected function findDimension(array $attributes): DimensionInterface;

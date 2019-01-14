@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Model\Content\QueryHandler;
 
 use PHPUnit\Framework\TestCase;
-use Sulu\Bundle\ContentBundle\Model\Content\ContentInterface;
-use Sulu\Bundle\ContentBundle\Model\Content\ContentRepositoryInterface;
+use Sulu\Bundle\ContentBundle\Model\Content\ContentDimensionInterface;
+use Sulu\Bundle\ContentBundle\Model\Content\ContentDimensionRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Content\ContentViewInterface;
 use Sulu\Bundle\ContentBundle\Model\Content\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Model\Content\Factory\ContentViewFactoryInterface;
@@ -31,7 +31,7 @@ class FindContentQueryHandlerTest extends TestCase
     public function testInvoke(): void
     {
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
-        $contentRepository = $this->prophesize(ContentRepositoryInterface::class);
+        $contentRepository = $this->prophesize(ContentDimensionRepositoryInterface::class);
         $contentViewFactory = $this->prophesize(ContentViewFactoryInterface::class);
 
         $handler = new FindContentQueryHandler(
@@ -58,8 +58,8 @@ class FindContentQueryHandlerTest extends TestCase
             ]
         )->shouldBeCalled()->willReturn($localizedDimension->reveal());
 
-        $contentDimension1 = $this->prophesize(ContentInterface::class);
-        $contentDimension2 = $this->prophesize(ContentInterface::class);
+        $contentDimension1 = $this->prophesize(ContentDimensionInterface::class);
+        $contentDimension2 = $this->prophesize(ContentDimensionInterface::class);
 
         $contentRepository->findByDimensions(
             self::RESOURCE_KEY,
@@ -83,7 +83,7 @@ class FindContentQueryHandlerTest extends TestCase
         $this->expectException(ContentNotFoundException::class);
 
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
-        $contentRepository = $this->prophesize(ContentRepositoryInterface::class);
+        $contentRepository = $this->prophesize(ContentDimensionRepositoryInterface::class);
         $contentViewFactory = $this->prophesize(ContentViewFactoryInterface::class);
 
         $handler = new FindContentQueryHandler(
@@ -110,8 +110,8 @@ class FindContentQueryHandlerTest extends TestCase
             ]
         )->shouldBeCalled()->willReturn($localizedDimension->reveal());
 
-        $contentDimension1 = $this->prophesize(ContentInterface::class);
-        $contentDimension2 = $this->prophesize(ContentInterface::class);
+        $contentDimension1 = $this->prophesize(ContentDimensionInterface::class);
+        $contentDimension2 = $this->prophesize(ContentDimensionInterface::class);
 
         $contentRepository->findByDimensions(
             self::RESOURCE_KEY,
