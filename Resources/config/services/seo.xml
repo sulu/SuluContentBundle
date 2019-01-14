@@ -18,7 +18,7 @@
         <!-- handler -->
         <service id="Sulu\Bundle\ContentBundle\Model\Seo\MessageHandler\ModifySeoMessageHandler">
             <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Seo\SeoDimensionRepositoryInterface"/>
-            <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Dimension\DimensionRepositoryInterface"/>
+            <argument type="service" id="Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierRepositoryInterface"/>
             <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Seo\Factory\SeoViewFactoryInterface"/>
 
             <tag name="messenger.message_handler"/>
@@ -26,7 +26,7 @@
 
         <service id="Sulu\Bundle\ContentBundle\Model\Seo\MessageHandler\PublishSeoMessageHandler">
             <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Seo\SeoDimensionRepositoryInterface"/>
-            <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Dimension\DimensionRepositoryInterface"/>
+            <argument type="service" id="Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierRepositoryInterface"/>
             <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Seo\Factory\SeoViewFactoryInterface"/>
 
             <tag name="messenger.message_handler"/>
@@ -34,7 +34,7 @@
 
         <service id="Sulu\Bundle\ContentBundle\Model\Seo\QueryHandler\FindSeoQueryHandler">
             <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Seo\SeoDimensionRepositoryInterface"/>
-            <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Dimension\DimensionRepositoryInterface"/>
+            <argument type="service" id="Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierRepositoryInterface"/>
             <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Seo\Factory\SeoViewFactoryInterface"/>
 
             <tag name="messenger.message_handler"/>

@@ -11,13 +11,13 @@
         <id name="resourceId" type="string">
             <generator strategy="NONE"/>
         </id>
-        <id name="dimension" type="guid" association-key="true">
+        <id name="dimensionIdentifier" type="guid" association-key="true">
             <generator strategy="NONE"/>
         </id>
 
         <field name="type" type="string" nullable="false"/>
         <field name="data" type="json" nullable="false"/>
 
-        <many-to-one field="dimension" target-entity="Sulu\Bundle\ContentBundle\Model\Dimension\Dimension"/>
+        <many-to-one field="dimensionIdentifier" target-entity="Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifier"/>
     </entity>
 </doctrine-mapping>

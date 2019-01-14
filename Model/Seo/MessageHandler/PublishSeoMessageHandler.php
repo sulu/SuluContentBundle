@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Model\Seo\MessageHandler;
 
-use Sulu\Bundle\ContentBundle\Model\Dimension\DimensionInterface;
-use Sulu\Bundle\ContentBundle\Model\Dimension\DimensionRepositoryInterface;
+use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierInterface;
+use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Seo\Exception\SeoNotFoundException;
 use Sulu\Bundle\ContentBundle\Model\Seo\Factory\SeoViewFactoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Seo\Message\PublishSeoMessage;
@@ -29,9 +29,9 @@ class PublishSeoMessageHandler
     private $seoDimensionRepository;
 
     /**
-     * @var DimensionRepositoryInterface
+     * @var DimensionIdentifierRepositoryInterface
      */
-    private $dimensionRepository;
+    private $dimensionIdentifierRepository;
 
     /**
      * @var SeoViewFactoryInterface
@@ -40,11 +40,11 @@ class PublishSeoMessageHandler
 
     public function __construct(
         SeoDimensionRepositoryInterface $seoDimensionRepository,
-        DimensionRepositoryInterface $dimensionRepository,
+        DimensionIdentifierRepositoryInterface $dimensionIdentifierRepository,
         SeoViewFactoryInterface $seoViewFactory
     ) {
         $this->seoDimensionRepository = $seoDimensionRepository;
-        $this->dimensionRepository = $dimensionRepository;
+        $this->dimensionIdentifierRepository = $dimensionIdentifierRepository;
         $this->seoViewFactory = $seoViewFactory;
     }
 
@@ -54,15 +54,15 @@ class PublishSeoMessageHandler
         $resourceId = $message->getResourceId();
         $mandatory = $message->isMandatory();
 
-        $liveSeos = array_filter([
-            $this->publishSeo($resourceKey, $resourceId, $mandatory, $message->getLocale()),
+        $publishedSeoDimensions = array_filter([
+            $this->publishSeoDimensions($resourceKey, $resourceId, $mandatory, $message->getLocale()),
         ]);
 
-        if (!$liveSeos) {
+        if (!$publishedSeoDimensions) {
             return;
         }
 
-        $seoView = $this->seoViewFactory->create($liveSeos, $message->getLocale());
+        $seoView = $this->seoViewFactory->create($publishedSeoDimensions, $message->getLocale());
         if (!$seoView) {
             throw new SeoNotFoundException($resourceKey, $resourceId);
         }
@@ -70,15 +70,15 @@ class PublishSeoMessageHandler
         $message->setSeo($seoView);
     }
 
-    protected function publishSeo(
+    protected function publishSeoDimensions(
         string $resourceKey,
         string $resourceId,
         bool $mandatory,
         string $locale
     ): ?SeoDimensionInterface {
-        $draftAttributes = $this->createAttributes(DimensionInterface::ATTRIBUTE_VALUE_DRAFT, $locale);
-        $draftDimension = $this->dimensionRepository->findOrCreateByAttributes($draftAttributes);
-        $draftSeo = $this->seoDimensionRepository->findByResource($resourceKey, $resourceId, $draftDimension);
+        $draftAttributes = $this->createAttributes(DimensionIdentifierInterface::ATTRIBUTE_VALUE_DRAFT, $locale);
+        $draftDimensionIdentifier = $this->dimensionIdentifierRepository->findOrCreateByAttributes($draftAttributes);
+        $draftSeo = $this->seoDimensionRepository->findByResource($resourceKey, $resourceId, $draftDimensionIdentifier);
 
         if (!$draftSeo) {
             if (!$mandatory) {
@@ -88,9 +88,9 @@ class PublishSeoMessageHandler
             throw new SeoNotFoundException($resourceKey, $resourceId);
         }
 
-        $liveAttributes = $this->createAttributes(DimensionInterface::ATTRIBUTE_VALUE_LIVE, $locale);
-        $liveDimension = $this->dimensionRepository->findOrCreateByAttributes($liveAttributes);
-        $liveSeo = $this->seoDimensionRepository->findOrCreate($resourceKey, $resourceId, $liveDimension);
+        $liveAttributes = $this->createAttributes(DimensionIdentifierInterface::ATTRIBUTE_VALUE_LIVE, $locale);
+        $liveDimensionIdentifier = $this->dimensionIdentifierRepository->findOrCreateByAttributes($liveAttributes);
+        $liveSeo = $this->seoDimensionRepository->findOrCreate($resourceKey, $resourceId, $liveDimensionIdentifier);
 
         $liveSeo->copyAttributesFrom($draftSeo);
 
@@ -100,8 +100,8 @@ class PublishSeoMessageHandler
     protected function createAttributes(string $stage, string $locale): array
     {
         $attributes = [];
-        $attributes[DimensionInterface::ATTRIBUTE_KEY_STAGE] = $stage;
-        $attributes[DimensionInterface::ATTRIBUTE_KEY_LOCALE] = $locale;
+        $attributes[DimensionIdentifierInterface::ATTRIBUTE_KEY_STAGE] = $stage;
+        $attributes[DimensionIdentifierInterface::ATTRIBUTE_KEY_LOCALE] = $locale;
 
         return $attributes;
     }

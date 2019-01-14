@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Model\Seo\MessageHandler;
 
 use PHPUnit\Framework\TestCase;
-use Sulu\Bundle\ContentBundle\Model\Dimension\DimensionInterface;
-use Sulu\Bundle\ContentBundle\Model\Dimension\DimensionRepositoryInterface;
+use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierInterface;
+use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Seo\Exception\SeoNotFoundException;
 use Sulu\Bundle\ContentBundle\Model\Seo\Factory\SeoViewFactoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Seo\Message\PublishSeoMessage;
@@ -31,12 +31,12 @@ class PublishSeoMessageHandlerTest extends TestCase
     public function testInvoke(): void
     {
         $seoDimensionRepository = $this->prophesize(SeoDimensionRepositoryInterface::class);
-        $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
+        $dimensionIdentifierRepository = $this->prophesize(DimensionIdentifierRepositoryInterface::class);
         $seoViewFactory = $this->prophesize(SeoViewFactoryInterface::class);
 
         $handler = new PublishSeoMessageHandler(
             $seoDimensionRepository->reveal(),
-            $dimensionRepository->reveal(),
+            $dimensionIdentifierRepository->reveal(),
             $seoViewFactory->reveal()
         );
 
@@ -46,32 +46,32 @@ class PublishSeoMessageHandlerTest extends TestCase
         $message->getLocale()->shouldBeCalled()->willReturn('en');
         $message->isMandatory()->shouldBeCalled()->willReturn(true);
 
-        $localizedDraftDimension = $this->prophesize(DimensionInterface::class);
-        $localizedLiveDimension = $this->prophesize(DimensionInterface::class);
+        $localizedDraftDimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
+        $localizedLiveDimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
 
-        $dimensionRepository->findOrCreateByAttributes(
+        $dimensionIdentifierRepository->findOrCreateByAttributes(
             [
-                DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT,
-                DimensionInterface::ATTRIBUTE_KEY_LOCALE => 'en',
+                DimensionIdentifierInterface::ATTRIBUTE_KEY_STAGE => DimensionIdentifierInterface::ATTRIBUTE_VALUE_DRAFT,
+                DimensionIdentifierInterface::ATTRIBUTE_KEY_LOCALE => 'en',
             ]
-        )->shouldBeCalled()->willReturn($localizedDraftDimension->reveal());
+        )->shouldBeCalled()->willReturn($localizedDraftDimensionIdentifier->reveal());
 
-        $dimensionRepository->findOrCreateByAttributes(
+        $dimensionIdentifierRepository->findOrCreateByAttributes(
             [
-                DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_LIVE,
-                DimensionInterface::ATTRIBUTE_KEY_LOCALE => 'en',
+                DimensionIdentifierInterface::ATTRIBUTE_KEY_STAGE => DimensionIdentifierInterface::ATTRIBUTE_VALUE_LIVE,
+                DimensionIdentifierInterface::ATTRIBUTE_KEY_LOCALE => 'en',
             ]
-        )->shouldBeCalled()->willReturn($localizedLiveDimension->reveal());
+        )->shouldBeCalled()->willReturn($localizedLiveDimensionIdentifier->reveal());
 
         $localizedDraftSeo = $this->prophesize(SeoDimensionInterface::class);
         $localizedLiveSeo = $this->prophesize(SeoDimensionInterface::class);
         $localizedLiveSeo->copyAttributesFrom($localizedDraftSeo->reveal())
             ->shouldBeCalled()->willReturn($localizedLiveSeo->reveal());
 
-        $seoDimensionRepository->findByResource(self::RESOURCE_KEY, 'seo-1', $localizedDraftDimension->reveal())
+        $seoDimensionRepository->findByResource(self::RESOURCE_KEY, 'seo-1', $localizedDraftDimensionIdentifier->reveal())
             ->shouldBeCalled()->willReturn($localizedDraftSeo);
 
-        $seoDimensionRepository->findOrCreate(self::RESOURCE_KEY, 'seo-1', $localizedLiveDimension->reveal())
+        $seoDimensionRepository->findOrCreate(self::RESOURCE_KEY, 'seo-1', $localizedLiveDimensionIdentifier->reveal())
             ->shouldBeCalled()->willReturn($localizedLiveSeo);
 
         $seoView = $this->prophesize(SeoViewInterface::class);
@@ -88,12 +88,12 @@ class PublishSeoMessageHandlerTest extends TestCase
         $this->expectException(SeoNotFoundException::class);
 
         $seoDimensionRepository = $this->prophesize(SeoDimensionRepositoryInterface::class);
-        $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
+        $dimensionIdentifierRepository = $this->prophesize(DimensionIdentifierRepositoryInterface::class);
         $seoViewFactory = $this->prophesize(SeoViewFactoryInterface::class);
 
         $handler = new PublishSeoMessageHandler(
             $seoDimensionRepository->reveal(),
-            $dimensionRepository->reveal(),
+            $dimensionIdentifierRepository->reveal(),
             $seoViewFactory->reveal()
         );
 
@@ -103,15 +103,15 @@ class PublishSeoMessageHandlerTest extends TestCase
         $message->getLocale()->shouldBeCalled()->willReturn('en');
         $message->isMandatory()->shouldBeCalled()->willReturn(true);
 
-        $localizedDraftDimension = $this->prophesize(DimensionInterface::class);
-        $dimensionRepository->findOrCreateByAttributes(
+        $localizedDraftDimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
+        $dimensionIdentifierRepository->findOrCreateByAttributes(
             [
-                DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT,
-                DimensionInterface::ATTRIBUTE_KEY_LOCALE => 'en',
+                DimensionIdentifierInterface::ATTRIBUTE_KEY_STAGE => DimensionIdentifierInterface::ATTRIBUTE_VALUE_DRAFT,
+                DimensionIdentifierInterface::ATTRIBUTE_KEY_LOCALE => 'en',
             ]
-        )->shouldBeCalled()->willReturn($localizedDraftDimension->reveal());
+        )->shouldBeCalled()->willReturn($localizedDraftDimensionIdentifier->reveal());
 
-        $seoDimensionRepository->findByResource(self::RESOURCE_KEY, 'seo-1', $localizedDraftDimension->reveal())
+        $seoDimensionRepository->findByResource(self::RESOURCE_KEY, 'seo-1', $localizedDraftDimensionIdentifier->reveal())
             ->shouldBeCalled()->willReturn(null);
 
         $handler->__invoke($message->reveal());

@@ -17,8 +17,8 @@ use Sulu\Bundle\ContentBundle\Model\Content\ContentDimensionRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Content\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Model\Content\Factory\ContentViewFactoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Content\Query\FindContentQuery;
-use Sulu\Bundle\ContentBundle\Model\Dimension\DimensionInterface;
-use Sulu\Bundle\ContentBundle\Model\Dimension\DimensionRepositoryInterface;
+use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierInterface;
+use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierRepositoryInterface;
 
 class FindContentQueryHandler
 {
@@ -28,9 +28,9 @@ class FindContentQueryHandler
     private $contentRepository;
 
     /**
-     * @var DimensionRepositoryInterface
+     * @var DimensionIdentifierRepositoryInterface
      */
-    private $dimensionRepository;
+    private $dimensionIdentifierRepository;
 
     /**
      * @var ContentViewFactoryInterface
@@ -38,36 +38,36 @@ class FindContentQueryHandler
     private $contentViewFactory;
 
     public function __construct(
-        ContentDimensionRepositoryInterface $contentRepository,
-        DimensionRepositoryInterface $dimensionRepository,
+        ContentDimensionRepositoryInterface $contentDimensionRepository,
+        DimensionIdentifierRepositoryInterface $dimensionIdentifierRepository,
         ContentViewFactoryInterface $contentViewFactory
     ) {
-        $this->contentRepository = $contentRepository;
-        $this->dimensionRepository = $dimensionRepository;
+        $this->contentRepository = $contentDimensionRepository;
+        $this->dimensionIdentifierRepository = $dimensionIdentifierRepository;
         $this->contentViewFactory = $contentViewFactory;
     }
 
     public function __invoke(FindContentQuery $query): void
     {
-        $dimensions = [
-            $this->dimensionRepository->findOrCreateByAttributes($this->createAttributes()),
-            $this->dimensionRepository->findOrCreateByAttributes($this->createAttributes($query->getLocale())),
+        $dimensionIdentifiers = [
+            $this->dimensionIdentifierRepository->findOrCreateByAttributes($this->createAttributes()),
+            $this->dimensionIdentifierRepository->findOrCreateByAttributes($this->createAttributes($query->getLocale())),
         ];
 
-        $content = $this->contentViewFactory->create(
-            $this->contentRepository->findByDimensions(
+        $contentView = $this->contentViewFactory->create(
+            $this->contentRepository->findByDimensionIdentifiers(
                 $query->getResourceKey(),
                 $query->getResourceId(),
-                $dimensions
+                $dimensionIdentifiers
             ),
             $query->getLocale()
         );
 
-        if (!$content) {
+        if (!$contentView) {
             throw new ContentNotFoundException($query->getResourceKey(), $query->getResourceId());
         }
 
-        $query->setContent($content);
+        $query->setContent($contentView);
     }
 
     /**
@@ -75,12 +75,12 @@ class FindContentQueryHandler
      */
     private function createAttributes(?string $locale = null): array
     {
-        $attributes = [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT];
+        $attributes = [DimensionIdentifierInterface::ATTRIBUTE_KEY_STAGE => DimensionIdentifierInterface::ATTRIBUTE_VALUE_DRAFT];
         if (!$locale) {
             return $attributes;
         }
 
-        $attributes[DimensionInterface::ATTRIBUTE_KEY_LOCALE] = $locale;
+        $attributes[DimensionIdentifierInterface::ATTRIBUTE_KEY_LOCALE] = $locale;
 
         return $attributes;
     }

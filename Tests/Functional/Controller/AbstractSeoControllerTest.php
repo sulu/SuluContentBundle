@@ -14,13 +14,13 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Functional\Controller;
 
 use Sulu\Bundle\ContentBundle\Tests\Application\Controller\HandlePublishCallbackInterface;
-use Sulu\Bundle\ContentBundle\Tests\Functional\Traits\DimensionTrait;
+use Sulu\Bundle\ContentBundle\Tests\Functional\Traits\DimensionIdentifierTrait;
 use Sulu\Bundle\ContentBundle\Tests\Functional\Traits\SeoDimensionTrait;
 use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
 
 class AbstractSeoControllerTest extends SuluTestCase
 {
-    use DimensionTrait;
+    use DimensionIdentifierTrait;
     use SeoDimensionTrait;
 
     public function setUp()

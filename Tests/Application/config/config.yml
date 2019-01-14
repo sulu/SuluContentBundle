@@ -17,8 +17,8 @@ services:
         class: Sulu\Bundle\ContentBundle\Tests\Application\Controller\TestResourceSeoController
         public: true
         autowire: true
-    Sulu\Bundle\ContentBundle\Model\Dimension\DimensionRepositoryInterface:
-        alias: Sulu\Bundle\ContentBundle\Repository\DimensionRepository
+    Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierRepositoryInterface:
+        alias: Sulu\Bundle\ContentBundle\Repository\DimensionIdentifierRepository
         public: true
 
 sulu_core:

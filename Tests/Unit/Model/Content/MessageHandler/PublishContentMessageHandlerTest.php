@@ -21,8 +21,8 @@ use Sulu\Bundle\ContentBundle\Model\Content\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Model\Content\Factory\ContentViewFactoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Content\Message\PublishContentMessage;
 use Sulu\Bundle\ContentBundle\Model\Content\MessageHandler\PublishContentMessageHandler;
-use Sulu\Bundle\ContentBundle\Model\Dimension\DimensionInterface;
-use Sulu\Bundle\ContentBundle\Model\Dimension\DimensionRepositoryInterface;
+use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierInterface;
+use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierRepositoryInterface;
 
 class PublishContentMessageHandlerTest extends TestCase
 {
@@ -30,13 +30,13 @@ class PublishContentMessageHandlerTest extends TestCase
 
     public function testInvoke(): void
     {
-        $contentRepository = $this->prophesize(ContentDimensionRepositoryInterface::class);
-        $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
+        $contentDimensionRepository = $this->prophesize(ContentDimensionRepositoryInterface::class);
+        $dimensionIdentifierRepository = $this->prophesize(DimensionIdentifierRepositoryInterface::class);
         $contentViewFactory = $this->prophesize(ContentViewFactoryInterface::class);
 
         $handler = new PublishContentMessageHandler(
-            $contentRepository->reveal(),
-            $dimensionRepository->reveal(),
+            $contentDimensionRepository->reveal(),
+            $dimensionIdentifierRepository->reveal(),
             $contentViewFactory->reveal()
         );
 
@@ -46,31 +46,31 @@ class PublishContentMessageHandlerTest extends TestCase
         $message->getLocale()->shouldBeCalled()->willReturn('en');
         $message->isMandatory()->shouldBeCalled()->willReturn(true);
 
-        $draftDimension = $this->prophesize(DimensionInterface::class);
-        $liveDimension = $this->prophesize(DimensionInterface::class);
+        $draftDimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
+        $liveDimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
 
-        $localizedDraftDimension = $this->prophesize(DimensionInterface::class);
-        $localizedLiveDimension = $this->prophesize(DimensionInterface::class);
+        $localizedDraftDimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
+        $localizedLiveDimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
 
-        $dimensionRepository->findOrCreateByAttributes(
-            [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT]
-        )->shouldBeCalled()->willReturn($draftDimension->reveal());
-        $dimensionRepository->findOrCreateByAttributes(
+        $dimensionIdentifierRepository->findOrCreateByAttributes(
+            [DimensionIdentifierInterface::ATTRIBUTE_KEY_STAGE => DimensionIdentifierInterface::ATTRIBUTE_VALUE_DRAFT]
+        )->shouldBeCalled()->willReturn($draftDimensionIdentifier->reveal());
+        $dimensionIdentifierRepository->findOrCreateByAttributes(
             [
-                DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT,
-                DimensionInterface::ATTRIBUTE_KEY_LOCALE => 'en',
+                DimensionIdentifierInterface::ATTRIBUTE_KEY_STAGE => DimensionIdentifierInterface::ATTRIBUTE_VALUE_DRAFT,
+                DimensionIdentifierInterface::ATTRIBUTE_KEY_LOCALE => 'en',
             ]
-        )->shouldBeCalled()->willReturn($localizedDraftDimension->reveal());
+        )->shouldBeCalled()->willReturn($localizedDraftDimensionIdentifier->reveal());
 
-        $dimensionRepository->findOrCreateByAttributes(
-            [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_LIVE]
-        )->shouldBeCalled()->willReturn($liveDimension->reveal());
-        $dimensionRepository->findOrCreateByAttributes(
+        $dimensionIdentifierRepository->findOrCreateByAttributes(
+            [DimensionIdentifierInterface::ATTRIBUTE_KEY_STAGE => DimensionIdentifierInterface::ATTRIBUTE_VALUE_LIVE]
+        )->shouldBeCalled()->willReturn($liveDimensionIdentifier->reveal());
+        $dimensionIdentifierRepository->findOrCreateByAttributes(
             [
-                DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_LIVE,
-                DimensionInterface::ATTRIBUTE_KEY_LOCALE => 'en',
+                DimensionIdentifierInterface::ATTRIBUTE_KEY_STAGE => DimensionIdentifierInterface::ATTRIBUTE_VALUE_LIVE,
+                DimensionIdentifierInterface::ATTRIBUTE_KEY_LOCALE => 'en',
             ]
-        )->shouldBeCalled()->willReturn($localizedLiveDimension->reveal());
+        )->shouldBeCalled()->willReturn($localizedLiveDimensionIdentifier->reveal());
 
         $draftContent = $this->prophesize(ContentDimensionInterface::class);
         $draftContent->getType()->shouldBeCalled()->willReturn('default');
@@ -82,16 +82,16 @@ class PublishContentMessageHandlerTest extends TestCase
         $localizedLiveContent = $this->prophesize(ContentDimensionInterface::class);
         $localizedLiveContent->copyAttributesFrom($localizedDraftContent->reveal())->shouldBeCalled();
 
-        $contentRepository->findByResource(self::RESOURCE_KEY, 'product-1', $draftDimension->reveal())
+        $contentDimensionRepository->findByResource(self::RESOURCE_KEY, 'product-1', $draftDimensionIdentifier->reveal())
             ->shouldBeCalled()->willReturn($draftContent);
 
-        $contentRepository->findOrCreate(self::RESOURCE_KEY, 'product-1', $liveDimension->reveal())
+        $contentDimensionRepository->findOrCreate(self::RESOURCE_KEY, 'product-1', $liveDimensionIdentifier->reveal())
             ->shouldBeCalled()->willReturn($liveContent);
 
-        $contentRepository->findByResource(self::RESOURCE_KEY, 'product-1', $localizedDraftDimension->reveal())
+        $contentDimensionRepository->findByResource(self::RESOURCE_KEY, 'product-1', $localizedDraftDimensionIdentifier->reveal())
             ->shouldBeCalled()->willReturn($localizedDraftContent);
 
-        $contentRepository->findOrCreate(self::RESOURCE_KEY, 'product-1', $localizedLiveDimension->reveal())
+        $contentDimensionRepository->findOrCreate(self::RESOURCE_KEY, 'product-1', $localizedLiveDimensionIdentifier->reveal())
             ->shouldBeCalled()->willReturn($localizedLiveContent);
 
         $contentView = $this->prophesize(ContentViewInterface::class);
@@ -107,13 +107,13 @@ class PublishContentMessageHandlerTest extends TestCase
     {
         $this->expectException(ContentNotFoundException::class);
 
-        $contentRepository = $this->prophesize(ContentDimensionRepositoryInterface::class);
-        $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
+        $contentDimensionRepository = $this->prophesize(ContentDimensionRepositoryInterface::class);
+        $dimensionIdentifierRepository = $this->prophesize(DimensionIdentifierRepositoryInterface::class);
         $contentViewFactory = $this->prophesize(ContentViewFactoryInterface::class);
 
         $handler = new PublishContentMessageHandler(
-            $contentRepository->reveal(),
-            $dimensionRepository->reveal(),
+            $contentDimensionRepository->reveal(),
+            $dimensionIdentifierRepository->reveal(),
             $contentViewFactory->reveal()
         );
 
@@ -122,12 +122,12 @@ class PublishContentMessageHandlerTest extends TestCase
         $message->getResourceId()->shouldBeCalled()->willReturn('product-1');
         $message->isMandatory()->shouldBeCalled()->willReturn(true);
 
-        $draftDimension = $this->prophesize(DimensionInterface::class);
-        $dimensionRepository->findOrCreateByAttributes(
-            [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT]
-        )->shouldBeCalled()->willReturn($draftDimension->reveal());
+        $draftDimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
+        $dimensionIdentifierRepository->findOrCreateByAttributes(
+            [DimensionIdentifierInterface::ATTRIBUTE_KEY_STAGE => DimensionIdentifierInterface::ATTRIBUTE_VALUE_DRAFT]
+        )->shouldBeCalled()->willReturn($draftDimensionIdentifier->reveal());
 
-        $contentRepository->findByResource(self::RESOURCE_KEY, 'product-1', $draftDimension->reveal())
+        $contentDimensionRepository->findByResource(self::RESOURCE_KEY, 'product-1', $draftDimensionIdentifier->reveal())
             ->shouldBeCalled()->willReturn(null);
 
         $handler->__invoke($message->reveal());

@@ -15,7 +15,7 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\Model\Content;
 
 use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\ContentBundle\Model\Content\ContentDimension;
-use Sulu\Bundle\ContentBundle\Model\Dimension\DimensionInterface;
+use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierInterface;
 
 class ContentDimensionTest extends TestCase
 {
@@ -23,41 +23,41 @@ class ContentDimensionTest extends TestCase
 
     public function testGetDimension(): void
     {
-        $dimension = $this->prophesize(DimensionInterface::class);
-        $contentDimension = new ContentDimension($dimension->reveal(), self::RESOURCE_KEY, 'product-1');
+        $dimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
+        $contentDimension = new ContentDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'product-1');
 
-        $this->assertEquals($dimension->reveal(), $contentDimension->getDimension());
+        $this->assertEquals($dimensionIdentifier->reveal(), $contentDimension->getDimensionIdentifier());
     }
 
     public function testGetResourceKey(): void
     {
-        $dimension = $this->prophesize(DimensionInterface::class);
-        $contentDimension = new ContentDimension($dimension->reveal(), self::RESOURCE_KEY, 'product-1');
+        $dimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
+        $contentDimension = new ContentDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'product-1');
 
         $this->assertEquals(self::RESOURCE_KEY, $contentDimension->getResourceKey());
     }
 
     public function testGetResourceId(): void
     {
-        $dimension = $this->prophesize(DimensionInterface::class);
-        $contentDimension = new ContentDimension($dimension->reveal(), self::RESOURCE_KEY, 'product-1');
+        $dimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
+        $contentDimension = new ContentDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'product-1');
 
         $this->assertEquals('product-1', $contentDimension->getResourceId());
     }
 
     public function testGetType(): void
     {
-        $dimension = $this->prophesize(DimensionInterface::class);
-        $contentDimension = new ContentDimension($dimension->reveal(), self::RESOURCE_KEY, 'product-1', 'default');
+        $dimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
+        $contentDimension = new ContentDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'product-1', 'default');
 
         $this->assertEquals('default', $contentDimension->getType());
     }
 
     public function testGetData(): void
     {
-        $dimension = $this->prophesize(DimensionInterface::class);
+        $dimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
         $contentDimension = new ContentDimension(
-            $dimension->reveal(),
+            $dimensionIdentifier->reveal(),
             self::RESOURCE_KEY,
             'product-1',
             'default',
@@ -69,8 +69,8 @@ class ContentDimensionTest extends TestCase
 
     public function testSetType(): void
     {
-        $dimension = $this->prophesize(DimensionInterface::class);
-        $contentDimension = new ContentDimension($dimension->reveal(), self::RESOURCE_KEY, 'product-1', 'default');
+        $dimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
+        $contentDimension = new ContentDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'product-1', 'default');
 
         $this->assertEquals($contentDimension, $contentDimension->setType('homepage'));
         $this->assertEquals('homepage', $contentDimension->getType());
@@ -78,9 +78,9 @@ class ContentDimensionTest extends TestCase
 
     public function testSetData(): void
     {
-        $dimension = $this->prophesize(DimensionInterface::class);
+        $dimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
         $contentDimension = new ContentDimension(
-            $dimension->reveal(),
+            $dimensionIdentifier->reveal(),
             self::RESOURCE_KEY,
             'product-1',
             'default',
@@ -93,12 +93,12 @@ class ContentDimensionTest extends TestCase
 
     public function testCopyAttributesFrom(): void
     {
-        $dimension = $this->prophesize(DimensionInterface::class);
-        $contentDimension = new ContentDimension($dimension->reveal(), self::RESOURCE_KEY, 'product-1', 'default');
+        $dimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
+        $contentDimension = new ContentDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'product-1', 'default');
 
-        $otherDimension = $this->prophesize(DimensionInterface::class);
+        $otherDimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
         $otherContent = new ContentDimension(
-            $otherDimension->reveal(),
+            $otherDimensionIdentifier->reveal(),
             'other-resource-key',
             'other-resource-id',
             'other-type',
@@ -107,7 +107,7 @@ class ContentDimensionTest extends TestCase
 
         $this->assertEquals($contentDimension, $contentDimension->copyAttributesFrom($otherContent));
 
-        $this->assertEquals($dimension->reveal(), $contentDimension->getDimension());
+        $this->assertEquals($dimensionIdentifier->reveal(), $contentDimension->getDimensionIdentifier());
         $this->assertEquals(self::RESOURCE_KEY, $contentDimension->getResourceKey());
         $this->assertEquals('product-1', $contentDimension->getResourceId());
         $this->assertEquals('other-type', $contentDimension->getType());

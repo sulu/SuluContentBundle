@@ -15,12 +15,12 @@ namespace Sulu\Bundle\ContentBundle\Tests\Functional\Controller;
 
 use Sulu\Bundle\ContentBundle\Tests\Application\Controller\HandlePublishCallbackInterface;
 use Sulu\Bundle\ContentBundle\Tests\Functional\Traits\ContentDimensionTrait;
-use Sulu\Bundle\ContentBundle\Tests\Functional\Traits\DimensionTrait;
+use Sulu\Bundle\ContentBundle\Tests\Functional\Traits\DimensionIdentifierTrait;
 use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
 
 class AbstractContentControllerTest extends SuluTestCase
 {
-    use DimensionTrait;
+    use DimensionIdentifierTrait;
     use ContentDimensionTrait;
 
     public function setUp()

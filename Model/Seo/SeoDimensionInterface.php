@@ -13,11 +13,11 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Model\Seo;
 
-use Sulu\Bundle\ContentBundle\Model\Dimension\DimensionInterface;
+use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierInterface;
 
 interface SeoDimensionInterface
 {
-    public function getDimension(): DimensionInterface;
+    public function getDimensionIdentifier(): DimensionIdentifierInterface;
 
     public function getResourceKey(): string;
 

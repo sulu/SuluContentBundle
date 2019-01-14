@@ -13,32 +13,32 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Model\Content;
 
-use Sulu\Bundle\ContentBundle\Model\Dimension\DimensionInterface;
+use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierInterface;
 
 interface ContentDimensionRepositoryInterface
 {
     public function create(
         string $resourceKey,
         string $resourceId,
-        DimensionInterface $dimension
+        DimensionIdentifierInterface $dimensionIdentifier
     ): ContentDimensionInterface;
 
     public function findOrCreate(
         string $resourceKey,
         string $resourceId,
-        DimensionInterface $dimension
+        DimensionIdentifierInterface $dimensionIdentifier
     ): ContentDimensionInterface;
 
     public function findByResource(
         string $resourceKey,
         string $resourceId,
-        DimensionInterface $dimension
+        DimensionIdentifierInterface $dimensionIdentifier
     ): ?ContentDimensionInterface;
 
     /**
-     * @param DimensionInterface[] $dimensions
+     * @param DimensionIdentifierInterface[] $dimensionIdentifiers
      *
      * @return ContentDimensionInterface[]
      */
-    public function findByDimensions(string $resourceKey, string $resourceId, array $dimensions): array;
+    public function findByDimensionIdentifiers(string $resourceKey, string $resourceId, array $dimensionIdentifiers): array;
 }

@@ -13,14 +13,14 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Model\Seo;
 
-use Sulu\Bundle\ContentBundle\Model\Dimension\DimensionInterface;
+use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierInterface;
 
 class SeoDimension implements SeoDimensionInterface
 {
     /**
-     * @var DimensionInterface
+     * @var DimensionIdentifierInterface
      */
-    private $dimension;
+    private $dimensionIdentifier;
 
     /**
      * @var string
@@ -68,7 +68,7 @@ class SeoDimension implements SeoDimensionInterface
     private $hideInSitemap;
 
     public function __construct(
-        DimensionInterface $dimension,
+        DimensionIdentifierInterface $dimensionIdentifier,
         string $resourceKey,
         string $resourceId,
         string $title = null,
@@ -79,7 +79,7 @@ class SeoDimension implements SeoDimensionInterface
         bool $noFollow = null,
         bool $hideInSitemap = null
     ) {
-        $this->dimension = $dimension;
+        $this->dimensionIdentifier = $dimensionIdentifier;
         $this->resourceKey = $resourceKey;
         $this->resourceId = $resourceId;
         $this->title = $title;
@@ -91,9 +91,9 @@ class SeoDimension implements SeoDimensionInterface
         $this->hideInSitemap = $hideInSitemap;
     }
 
-    public function getDimension(): DimensionInterface
+    public function getDimensionIdentifier(): DimensionIdentifierInterface
     {
-        return $this->dimension;
+        return $this->dimensionIdentifier;
     }
 
     public function getResourceKey(): string

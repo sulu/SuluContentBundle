@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Model\Seo\MessageHandler;
 
-use Sulu\Bundle\ContentBundle\Model\Dimension\DimensionInterface;
-use Sulu\Bundle\ContentBundle\Model\Dimension\DimensionRepositoryInterface;
+use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierInterface;
+use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Seo\Exception\SeoNotFoundException;
 use Sulu\Bundle\ContentBundle\Model\Seo\Factory\SeoViewFactoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Seo\Message\ModifySeoMessage;
@@ -29,9 +29,9 @@ class ModifySeoMessageHandler
     private $seoDimensionRepository;
 
     /**
-     * @var DimensionRepositoryInterface
+     * @var DimensionIdentifierRepositoryInterface
      */
-    private $dimensionRepository;
+    private $dimensionIdentifierRepository;
 
     /**
      * @var SeoViewFactoryInterface
@@ -40,17 +40,17 @@ class ModifySeoMessageHandler
 
     public function __construct(
         SeoDimensionRepositoryInterface $seoDimensionRepository,
-        DimensionRepositoryInterface $dimensionRepository,
+        DimensionIdentifierRepositoryInterface $dimensionIdentifierRepository,
         SeoViewFactoryInterface $seoViewFactory
     ) {
         $this->seoDimensionRepository = $seoDimensionRepository;
-        $this->dimensionRepository = $dimensionRepository;
+        $this->dimensionIdentifierRepository = $dimensionIdentifierRepository;
         $this->seoViewFactory = $seoViewFactory;
     }
 
     public function __invoke(ModifySeoMessage $message): void
     {
-        $localizedDraftSeo = $this->findOrCreateSeo(
+        $localizedDraftSeo = $this->findOrCreateSeoDimension(
             $message->getResourceKey(),
             $message->getResourceId(),
             $message->getLocale()
@@ -78,12 +78,12 @@ class ModifySeoMessageHandler
         $localizedDraftSeo->setHideInSitemap($message->getHideInSitemap());
     }
 
-    private function findOrCreateSeo(
+    private function findOrCreateSeoDimension(
         string $resourceKey,
         string $resourceId,
         string $locale
     ): SeoDimensionInterface {
-        $dimension = $this->dimensionRepository->findOrCreateByAttributes($this->createAttributes($locale));
+        $dimension = $this->dimensionIdentifierRepository->findOrCreateByAttributes($this->createAttributes($locale));
 
         return $this->seoDimensionRepository->findOrCreate($resourceKey, $resourceId, $dimension);
     }
@@ -94,8 +94,8 @@ class ModifySeoMessageHandler
     private function createAttributes(string $locale): array
     {
         $attributes = [];
-        $attributes[DimensionInterface::ATTRIBUTE_KEY_STAGE] = DimensionInterface::ATTRIBUTE_VALUE_DRAFT;
-        $attributes[DimensionInterface::ATTRIBUTE_KEY_LOCALE] = $locale;
+        $attributes[DimensionIdentifierInterface::ATTRIBUTE_KEY_STAGE] = DimensionIdentifierInterface::ATTRIBUTE_VALUE_DRAFT;
+        $attributes[DimensionIdentifierInterface::ATTRIBUTE_KEY_LOCALE] = $locale;
 
         return $attributes;
     }

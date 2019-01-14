@@ -18,8 +18,8 @@ use Sulu\Bundle\ContentBundle\Model\Content\ContentDimensionRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Content\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Model\Content\Factory\ContentViewFactoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Content\Message\ModifyContentMessage;
-use Sulu\Bundle\ContentBundle\Model\Dimension\DimensionInterface;
-use Sulu\Bundle\ContentBundle\Model\Dimension\DimensionRepositoryInterface;
+use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierInterface;
+use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierRepositoryInterface;
 use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
 
 class ModifyContentMessageHandler
@@ -30,9 +30,9 @@ class ModifyContentMessageHandler
     private $contentDimensionRepository;
 
     /**
-     * @var DimensionRepositoryInterface
+     * @var DimensionIdentifierRepositoryInterface
      */
-    private $dimensionRepository;
+    private $dimensionIdentifierRepository;
 
     /**
      * @var StructureMetadataFactoryInterface
@@ -46,20 +46,20 @@ class ModifyContentMessageHandler
 
     public function __construct(
         ContentDimensionRepositoryInterface $contentDimensionRepository,
-        DimensionRepositoryInterface $dimensionRepository,
+        DimensionIdentifierRepositoryInterface $dimensionIdentifierRepository,
         StructureMetadataFactoryInterface $factory,
         ContentViewFactoryInterface $contentViewFactory
     ) {
         $this->contentDimensionRepository = $contentDimensionRepository;
-        $this->dimensionRepository = $dimensionRepository;
+        $this->dimensionIdentifierRepository = $dimensionIdentifierRepository;
         $this->factory = $factory;
         $this->contentViewFactory = $contentViewFactory;
     }
 
     public function __invoke(ModifyContentMessage $message): void
     {
-        $draftContent = $this->findOrCreateContent($message->getResourceKey(), $message->getResourceId());
-        $localizedDraftContent = $this->findOrCreateContent(
+        $draftContent = $this->findOrCreateContentDimension($message->getResourceKey(), $message->getResourceId());
+        $localizedDraftContent = $this->findOrCreateContentDimension(
             $message->getResourceKey(),
             $message->getResourceId(),
             $message->getLocale()
@@ -116,14 +116,14 @@ class ModifyContentMessageHandler
         $draftContent->setData($draftData);
     }
 
-    private function findOrCreateContent(
+    private function findOrCreateContentDimension(
         string $resourceKey,
         string $resourceId,
         ?string $locale = null
     ): ContentDimensionInterface {
-        $dimension = $this->dimensionRepository->findOrCreateByAttributes($this->createAttributes($locale));
+        $dimensionIdentifier = $this->dimensionIdentifierRepository->findOrCreateByAttributes($this->createAttributes($locale));
 
-        return $this->contentDimensionRepository->findOrCreate($resourceKey, $resourceId, $dimension);
+        return $this->contentDimensionRepository->findOrCreate($resourceKey, $resourceId, $dimensionIdentifier);
     }
 
     /**
@@ -131,12 +131,12 @@ class ModifyContentMessageHandler
      */
     private function createAttributes(?string $locale = null): array
     {
-        $attributes = [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT];
+        $attributes = [DimensionIdentifierInterface::ATTRIBUTE_KEY_STAGE => DimensionIdentifierInterface::ATTRIBUTE_VALUE_DRAFT];
         if (!$locale) {
             return $attributes;
         }
 
-        $attributes[DimensionInterface::ATTRIBUTE_KEY_LOCALE] = $locale;
+        $attributes[DimensionIdentifierInterface::ATTRIBUTE_KEY_LOCALE] = $locale;
 
         return $attributes;
     }

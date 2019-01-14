@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Sulu\Bundle\ContentBundle\Model\Dimension\DimensionInterface;
+use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierInterface;
 use Sulu\Bundle\ContentBundle\Model\Seo\SeoDimension;
 use Sulu\Bundle\ContentBundle\Model\Seo\SeoDimensionInterface;
 use Sulu\Bundle\ContentBundle\Model\Seo\SeoDimensionRepositoryInterface;
@@ -30,10 +30,10 @@ class SeoDimensionRepository extends ServiceEntityRepository implements SeoDimen
     public function create(
         string $resourceKey,
         string $resourceId,
-        DimensionInterface $dimension
+        DimensionIdentifierInterface $dimensionIdentifier
     ): SeoDimensionInterface {
         $className = $this->getClassName();
-        $seoDimension = new $className($dimension, $resourceKey, $resourceId);
+        $seoDimension = new $className($dimensionIdentifier, $resourceKey, $resourceId);
 
         $this->getEntityManager()->persist($seoDimension);
 
@@ -43,32 +43,32 @@ class SeoDimensionRepository extends ServiceEntityRepository implements SeoDimen
     public function findOrCreate(
         string $resourceKey,
         string $resourceId,
-        DimensionInterface $dimension
+        DimensionIdentifierInterface $dimensionIdentifier
     ): SeoDimensionInterface {
         /** @var SeoDimensionInterface|null $seoDimension */
-        $seoDimension = $this->findByResource($resourceKey, $resourceId, $dimension);
+        $seoDimension = $this->findByResource($resourceKey, $resourceId, $dimensionIdentifier);
         if ($seoDimension) {
             return $seoDimension;
         }
 
-        return $this->create($resourceKey, $resourceId, $dimension);
+        return $this->create($resourceKey, $resourceId, $dimensionIdentifier);
     }
 
     public function findByResource(
         string $resourceKey,
         string $resourceId,
-        DimensionInterface $dimension
+        DimensionIdentifierInterface $dimensionIdentifier
     ): ?SeoDimensionInterface {
         /** @var SeoDimensionInterface|null $seoDimension */
         $seoDimension = $this->find(
-            ['resourceKey' => $resourceKey, 'resourceId' => $resourceId, 'dimension' => $dimension]
+            ['resourceKey' => $resourceKey, 'resourceId' => $resourceId, 'dimensionIdentifier' => $dimensionIdentifier]
         );
 
         return $seoDimension;
     }
 
-    public function findByDimensions(string $resourceKey, string $resourceId, array $dimensions): array
+    public function findByDimensionIdentifiers(string $resourceKey, string $resourceId, array $dimensionIdentifiers): array
     {
-        return $this->findBy(['resourceKey' => $resourceKey, 'resourceId' => $resourceId, 'dimension' => $dimensions]);
+        return $this->findBy(['resourceKey' => $resourceKey, 'resourceId' => $resourceId, 'dimensionIdentifier' => $dimensionIdentifiers]);
     }
 }

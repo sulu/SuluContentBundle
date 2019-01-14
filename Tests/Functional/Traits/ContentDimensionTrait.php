@@ -16,7 +16,7 @@ namespace Sulu\Bundle\ContentBundle\Tests\Functional\Traits;
 use Doctrine\ORM\EntityManagerInterface;
 use Sulu\Bundle\ContentBundle\Model\Content\ContentDimension;
 use Sulu\Bundle\ContentBundle\Model\Content\ContentDimensionInterface;
-use Sulu\Bundle\ContentBundle\Model\Dimension\DimensionInterface;
+use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierInterface;
 
 trait ContentDimensionTrait
 {
@@ -27,13 +27,13 @@ trait ContentDimensionTrait
         ?string $type = 'default',
         array $data = ['title' => 'Sulu', 'article' => 'Sulu is awesome']
     ): ContentDimensionInterface {
-        $dimension = $this->findDimension(
+        $dimensionIdentifier = $this->findOrCreateDimensionIdentifier(
             [
-                DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT,
-                DimensionInterface::ATTRIBUTE_KEY_LOCALE => $locale,
+                DimensionIdentifierInterface::ATTRIBUTE_KEY_STAGE => DimensionIdentifierInterface::ATTRIBUTE_VALUE_DRAFT,
+                DimensionIdentifierInterface::ATTRIBUTE_KEY_LOCALE => $locale,
             ]
         );
-        $contentDimension = new ContentDimension($dimension, $resourceKey, $resourceId, $type, $data);
+        $contentDimension = new ContentDimension($dimensionIdentifier, $resourceKey, $resourceId, $type, $data);
 
         $this->getEntityManager()->persist($contentDimension);
         $this->getEntityManager()->flush();
@@ -43,23 +43,23 @@ trait ContentDimensionTrait
 
     protected function findContentDimension(string $resourceKey, string $resourceId, string $locale): ?ContentDimensionInterface
     {
-        $dimension = $this->findDimension(
+        $dimensionIdentifier = $this->findOrCreateDimensionIdentifier(
             [
-                DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT,
-                DimensionInterface::ATTRIBUTE_KEY_LOCALE => $locale,
+                DimensionIdentifierInterface::ATTRIBUTE_KEY_STAGE => DimensionIdentifierInterface::ATTRIBUTE_VALUE_DRAFT,
+                DimensionIdentifierInterface::ATTRIBUTE_KEY_LOCALE => $locale,
             ]
         );
 
         /** @var ContentDimension $contentDimension */
         $contentDimension = $this->getEntityManager()->find(
             ContentDimension::class,
-            ['resourceKey' => $resourceKey, 'resourceId' => $resourceId, 'dimension' => $dimension]
+            ['resourceKey' => $resourceKey, 'resourceId' => $resourceId, 'dimensionIdentifier' => $dimensionIdentifier]
         );
 
         return $contentDimension;
     }
 
-    abstract protected function findDimension(array $attributes): DimensionInterface;
+    abstract protected function findOrCreateDimensionIdentifier(array $attributes): DimensionIdentifierInterface;
 
     /**
      * @return EntityManagerInterface

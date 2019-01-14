@@ -13,32 +13,32 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Model\Seo;
 
-use Sulu\Bundle\ContentBundle\Model\Dimension\DimensionInterface;
+use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierInterface;
 
 interface SeoDimensionRepositoryInterface
 {
     public function create(
         string $resourceKey,
         string $resourceId,
-        DimensionInterface $dimension
+        DimensionIdentifierInterface $dimensionIdentifier
     ): SeoDimensionInterface;
 
     public function findOrCreate(
         string $resourceKey,
         string $resourceId,
-        DimensionInterface $dimension
+        DimensionIdentifierInterface $dimensionIdentifier
     ): SeoDimensionInterface;
 
     public function findByResource(
         string $resourceKey,
         string $resourceId,
-        DimensionInterface $dimension
+        DimensionIdentifierInterface $dimensionIdentifier
     ): ?SeoDimensionInterface;
 
     /**
-     * @param DimensionInterface[] $dimensions
+     * @param DimensionIdentifierInterface[] $dimensionIdentifiers
      *
      * @return SeoDimensionInterface[]
      */
-    public function findByDimensions(string $resourceKey, string $resourceId, array $dimensions): array;
+    public function findByDimensionIdentifiers(string $resourceKey, string $resourceId, array $dimensionIdentifiers): array;
 }

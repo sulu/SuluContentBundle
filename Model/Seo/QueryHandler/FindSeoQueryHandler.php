@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Model\Seo\QueryHandler;
 
-use Sulu\Bundle\ContentBundle\Model\Dimension\DimensionInterface;
-use Sulu\Bundle\ContentBundle\Model\Dimension\DimensionRepositoryInterface;
+use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierInterface;
+use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Seo\Exception\SeoNotFoundException;
 use Sulu\Bundle\ContentBundle\Model\Seo\Factory\SeoViewFactoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Seo\Query\FindSeoQuery;
@@ -28,9 +28,9 @@ class FindSeoQueryHandler
     private $seoDimensionRepository;
 
     /**
-     * @var DimensionRepositoryInterface
+     * @var DimensionIdentifierRepositoryInterface
      */
-    private $dimensionRepository;
+    private $dimensionIdentifierRepository;
 
     /**
      * @var SeoViewFactoryInterface
@@ -39,34 +39,34 @@ class FindSeoQueryHandler
 
     public function __construct(
         SeoDimensionRepositoryInterface $seoDimensionRepository,
-        DimensionRepositoryInterface $dimensionRepository,
+        DimensionIdentifierRepositoryInterface $dimensionIdentifierRepository,
         SeoViewFactoryInterface $seoViewFactory
     ) {
         $this->seoDimensionRepository = $seoDimensionRepository;
-        $this->dimensionRepository = $dimensionRepository;
+        $this->dimensionIdentifierRepository = $dimensionIdentifierRepository;
         $this->seoViewFactory = $seoViewFactory;
     }
 
     public function __invoke(FindSeoQuery $query): void
     {
-        $dimensions = [
-            $this->dimensionRepository->findOrCreateByAttributes($this->createAttributes($query->getLocale())),
+        $dimensionIdentifiers = [
+            $this->dimensionIdentifierRepository->findOrCreateByAttributes($this->createAttributes($query->getLocale())),
         ];
 
-        $seo = $this->seoViewFactory->create(
-            $this->seoDimensionRepository->findByDimensions(
+        $seoView = $this->seoViewFactory->create(
+            $this->seoDimensionRepository->findByDimensionIdentifiers(
                 $query->getResourceKey(),
                 $query->getResourceId(),
-                $dimensions
+                $dimensionIdentifiers
             ),
             $query->getLocale()
         );
 
-        if (!$seo) {
+        if (!$seoView) {
             throw new SeoNotFoundException($query->getResourceKey(), $query->getResourceId());
         }
 
-        $query->setSeo($seo);
+        $query->setSeo($seoView);
     }
 
     /**
@@ -75,8 +75,8 @@ class FindSeoQueryHandler
     private function createAttributes(string $locale): array
     {
         $attributes = [];
-        $attributes[DimensionInterface::ATTRIBUTE_KEY_STAGE] = DimensionInterface::ATTRIBUTE_VALUE_DRAFT;
-        $attributes[DimensionInterface::ATTRIBUTE_KEY_LOCALE] = $locale;
+        $attributes[DimensionIdentifierInterface::ATTRIBUTE_KEY_STAGE] = DimensionIdentifierInterface::ATTRIBUTE_VALUE_DRAFT;
+        $attributes[DimensionIdentifierInterface::ATTRIBUTE_KEY_LOCALE] = $locale;
 
         return $attributes;
     }
