@@ -67,8 +67,13 @@ abstract class AbstractContentController implements ClassResourceInterface
             $this->messageBus->dispatch($message);
             $content = $message->getContent();
         } catch (ContentNotFoundException $exception) {
+            // need to return an empty content-view object because the sulu frontend does not expect any errors here
+            // TODO: review this code when subresource handling is implemented in the sulu frontend
             $content = new ContentView(
-                $this->getContentResourceKey(), $resourceId, $request->query->get('locale'), $this->defaultType
+                $this->getContentResourceKey(),
+                $resourceId,
+                $request->query->get('locale'),
+                $this->defaultType
             );
         }
 

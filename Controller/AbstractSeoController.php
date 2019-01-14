@@ -60,6 +60,8 @@ abstract class AbstractSeoController implements ClassResourceInterface
             $this->messageBus->dispatch($message);
             $seo = $message->getSeo();
         } catch (SeoNotFoundException $exception) {
+            // need to return an empty seo-view object because the sulu frontend does not expect any errors here
+            // TODO: review this code when subresource handling is implemented in the sulu frontend
             $seo = new SeoView($this->getSeoResourceKey(), $resourceId, $request->query->get('locale'));
         }
 
