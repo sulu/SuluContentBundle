@@ -30,4 +30,6 @@ interface ContentInterface
     public function getData(): array;
 
     public function setData(array $data): self;
+
+    public function copyAttributesFrom(ContentInterface $content): self;
 }

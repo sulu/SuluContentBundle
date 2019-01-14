@@ -189,4 +189,15 @@ class Seo implements SeoInterface
 
         return $this;
     }
+
+    public function copyAttributesFrom(SeoInterface $seo): SeoInterface
+    {
+        $this->setTitle($seo->getTitle());
+        $this->setDescription($seo->getDescription());
+        $this->setKeywords($seo->getKeywords());
+        $this->setCanonicalUrl($seo->getCanonicalUrl());
+        $this->setNoIndex($seo->getNoIndex());
+        $this->setNoFollow($seo->getNoFollow());
+        $this->setHideInSitemap($seo->getHideInSitemap());
+    }
 }

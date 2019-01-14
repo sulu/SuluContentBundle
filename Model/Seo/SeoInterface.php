@@ -50,4 +50,6 @@ interface SeoInterface
     public function getHideInSitemap(): ?bool;
 
     public function setHideInSitemap(?bool $hideInSitemap): self;
+
+    public function copyAttributesFrom(SeoInterface $seo): self;
 }

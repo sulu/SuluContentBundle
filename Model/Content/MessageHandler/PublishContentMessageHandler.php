@@ -55,8 +55,8 @@ class PublishContentMessageHandler
         $mandatory = $message->isMandatory();
 
         $contents = array_filter([
-            $this->publishDimension($resourceKey, $resourceId, $mandatory),
-            $this->publishDimension($resourceKey, $resourceId, $mandatory, $message->getLocale()),
+            $this->publishContent($resourceKey, $resourceId, $mandatory),
+            $this->publishContent($resourceKey, $resourceId, $mandatory, $message->getLocale()),
         ]);
 
         if (!$contents) {
@@ -71,7 +71,7 @@ class PublishContentMessageHandler
         $message->setContent($contentView);
     }
 
-    protected function publishDimension(
+    protected function publishContent(
         string $resourceKey,
         string $resourceId,
         bool $mandatory,
@@ -98,8 +98,7 @@ class PublishContentMessageHandler
         $liveDimension = $this->dimensionRepository->findOrCreateByAttributes($liveAttributes);
         $liveContent = $this->contentRepository->findOrCreate($resourceKey, $resourceId, $liveDimension);
 
-        $liveContent->setType($type);
-        $liveContent->setData($draftContent->getData());
+        $liveContent->copyAttributesFrom($draftContent);
 
         return $liveContent;
     }

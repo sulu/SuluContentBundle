@@ -74,19 +74,13 @@ class PublishContentMessageHandlerTest extends TestCase
 
         $draftContent = $this->prophesize(ContentInterface::class);
         $draftContent->getType()->shouldBeCalled()->willReturn('default');
-        $draftContent->getData()->shouldBeCalled()->willReturn(['article' => '<p>Sulu is awesome</p>']);
-
         $liveContent = $this->prophesize(ContentInterface::class);
-        $liveContent->setType('default')->shouldBeCalled();
-        $liveContent->setData(['article' => '<p>Sulu is awesome</p>'])->shouldBeCalled();
+        $liveContent->copyAttributesFrom($draftContent->reveal())->shouldBeCalled();
 
         $localizedDraftContent = $this->prophesize(ContentInterface::class);
         $localizedDraftContent->getType()->shouldBeCalled()->willReturn('default');
-        $localizedDraftContent->getData()->shouldBeCalled()->willReturn(['title' => 'Sulu']);
-
         $localizedLiveContent = $this->prophesize(ContentInterface::class);
-        $localizedLiveContent->setType('default')->shouldBeCalled();
-        $localizedLiveContent->setData(['title' => 'Sulu'])->shouldBeCalled();
+        $localizedLiveContent->copyAttributesFrom($localizedDraftContent->reveal())->shouldBeCalled();
 
         $contentRepository->findByResource(self::RESOURCE_KEY, 'product-1', $draftDimension->reveal())
             ->shouldBeCalled()->willReturn($draftContent);

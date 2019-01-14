@@ -64,22 +64,9 @@ class PublishSeoMessageHandlerTest extends TestCase
         )->shouldBeCalled()->willReturn($localizedLiveDimension->reveal());
 
         $localizedDraftSeo = $this->prophesize(SeoInterface::class);
-        $localizedDraftSeo->getTitle()->shouldBeCalled()->willReturn('title-1');
-        $localizedDraftSeo->getDescription()->shouldBeCalled()->willReturn('description-1');
-        $localizedDraftSeo->getKeywords()->shouldBeCalled()->willReturn('keywords-1');
-        $localizedDraftSeo->getCanonicalUrl()->shouldBeCalled()->willReturn(null);
-        $localizedDraftSeo->getNoIndex()->shouldBeCalled()->willReturn(true);
-        $localizedDraftSeo->getNoFollow()->shouldBeCalled()->willReturn(false);
-        $localizedDraftSeo->getHideInSitemap()->shouldBeCalled()->willReturn(null);
-
         $localizedLiveSeo = $this->prophesize(SeoInterface::class);
-        $localizedLiveSeo->setTitle('title-1')->shouldBeCalled()->willReturn($localizedLiveSeo->reveal());
-        $localizedLiveSeo->setDescription('description-1')->shouldBeCalled()->willReturn($localizedLiveSeo->reveal());
-        $localizedLiveSeo->setKeywords('keywords-1')->shouldBeCalled()->willReturn($localizedLiveSeo->reveal());
-        $localizedLiveSeo->setCanonicalUrl(null)->shouldBeCalled()->willReturn($localizedLiveSeo->reveal());
-        $localizedLiveSeo->setNoIndex(true)->shouldBeCalled()->willReturn($localizedLiveSeo->reveal());
-        $localizedLiveSeo->setNoFollow(false)->shouldBeCalled()->willReturn($localizedLiveSeo->reveal());
-        $localizedLiveSeo->setHideInSitemap(null)->shouldBeCalled()->willReturn($localizedLiveSeo->reveal());
+        $localizedLiveSeo->copyAttributesFrom($localizedDraftSeo->reveal())
+            ->shouldBeCalled()->willReturn($localizedLiveSeo->reveal());
 
         $seoRepository->findByResource(self::RESOURCE_KEY, 'seo-1', $localizedDraftDimension->reveal())
             ->shouldBeCalled()->willReturn($localizedDraftSeo);

@@ -55,7 +55,7 @@ class PublishSeoMessageHandler
         $mandatory = $message->isMandatory();
 
         $liveSeos = array_filter([
-            $this->publishDimension($resourceKey, $resourceId, $mandatory, $message->getLocale()),
+            $this->publishSeo($resourceKey, $resourceId, $mandatory, $message->getLocale()),
         ]);
 
         if (!$liveSeos) {
@@ -70,7 +70,7 @@ class PublishSeoMessageHandler
         $message->setSeo($seoView);
     }
 
-    protected function publishDimension(
+    protected function publishSeo(
         string $resourceKey,
         string $resourceId,
         bool $mandatory,
@@ -92,13 +92,7 @@ class PublishSeoMessageHandler
         $liveDimension = $this->dimensionRepository->findOrCreateByAttributes($liveAttributes);
         $liveSeo = $this->seoRepository->findOrCreate($resourceKey, $resourceId, $liveDimension);
 
-        $liveSeo->setTitle($draftSeo->getTitle());
-        $liveSeo->setDescription($draftSeo->getDescription());
-        $liveSeo->setKeywords($draftSeo->getKeywords());
-        $liveSeo->setCanonicalUrl($draftSeo->getCanonicalUrl());
-        $liveSeo->setNoIndex($draftSeo->getNoIndex());
-        $liveSeo->setNoFollow($draftSeo->getNoFollow());
-        $liveSeo->setHideInSitemap($draftSeo->getHideInSitemap());
+        $liveSeo->copyAttributesFrom($draftSeo);
 
         return $liveSeo;
     }

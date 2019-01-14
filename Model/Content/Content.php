@@ -89,4 +89,10 @@ class Content implements ContentInterface
 
         return $this;
     }
+
+    public function copyAttributesFrom(ContentInterface $content): ContentInterface
+    {
+        $this->setType($content->getType());
+        $this->setData($content->getData());
+    }
 }
