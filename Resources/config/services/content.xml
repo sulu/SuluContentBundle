@@ -19,7 +19,7 @@
         <service id="Sulu\Bundle\ContentBundle\Model\Content\MessageHandler\ModifyContentMessageHandler">
             <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Content\ContentRepositoryInterface"/>
             <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Dimension\DimensionRepositoryInterface"/>
-            <argument type="service" id="sulu_webspace.structure.factory"/>
+            <argument type="service" id="sulu_page.structure.factory"/>
             <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Content\Factory\ContentViewFactoryInterface"/>
 
             <tag name="messenger.message_handler"/>
@@ -43,7 +43,7 @@
 
         <!-- serializer -->
         <service id="Sulu\Bundle\ContentBundle\EventSubscriber\ContentSerializerSubscriber">
-            <argument type="service" id="sulu_webspace.structure.factory"/>
+            <argument type="service" id="sulu_page.structure.factory"/>
 
             <tag name="jms_serializer.event_subscriber"/>
         </service>

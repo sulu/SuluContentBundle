@@ -14,10 +14,10 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Model\Content\MessageHandler;
 
 use PHPUnit\Framework\TestCase;
-use Prophecy\Argument;
 use Sulu\Bundle\ContentBundle\Model\Content\ContentInterface;
 use Sulu\Bundle\ContentBundle\Model\Content\ContentRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Content\ContentViewInterface;
+use Sulu\Bundle\ContentBundle\Model\Content\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Model\Content\Factory\ContentViewFactoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Content\Message\ModifyContentMessage;
 use Sulu\Bundle\ContentBundle\Model\Content\MessageHandler\ModifyContentMessageHandler;
@@ -46,66 +46,124 @@ class ModifyContentMessageHandlerTest extends TestCase
         );
 
         $message = $this->prophesize(ModifyContentMessage::class);
-        $message->getResourceId()->willReturn('product-1');
-        $message->getResourceKey()->willReturn(self::RESOURCE_KEY);
-        $message->getLocale()->willReturn('de');
-        $message->getType()->willReturn('default');
-        $message->getData()->willReturn(['title' => 'Sulu', 'article' => '<p>Sulu is awesome</p>']);
+        $message->getResourceId()->shouldBeCalled()->willReturn('product-1');
+        $message->getResourceKey()->shouldBeCalled()->willReturn(self::RESOURCE_KEY);
+        $message->getLocale()->shouldBeCalled()->willReturn('de');
+        $message->getType()->shouldBeCalled()->willReturn('default');
+        $message->getData()->shouldBeCalled()->willReturn(['title' => 'Sulu', 'article' => '<p>Sulu is awesome</p>']);
 
         $draftDimension = $this->prophesize(DimensionInterface::class);
         $localizedDimension = $this->prophesize(DimensionInterface::class);
 
         $dimensionRepository->findOrCreateByAttributes(
             [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT]
-        )->willReturn($draftDimension->reveal());
+        )->shouldBeCalled()->willReturn($draftDimension->reveal());
         $dimensionRepository->findOrCreateByAttributes(
             [
                 DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT,
                 DimensionInterface::ATTRIBUTE_KEY_LOCALE => 'de',
             ]
-        )->willReturn($localizedDimension->reveal());
+        )->shouldBeCalled()->willReturn($localizedDimension->reveal());
 
         $metadata = $this->prophesize(StructureMetadata::class);
         $titleProperty = $this->prophesize(PropertyMetadata::class);
-        $titleProperty->getName()->willReturn('title');
-        $titleProperty->isLocalized()->willReturn(true);
+        $titleProperty->getName()->shouldBeCalled()->willReturn('title');
+        $titleProperty->isLocalized()->shouldBeCalled()->willReturn(true);
         $articleProperty = $this->prophesize(PropertyMetadata::class);
-        $articleProperty->getName()->willReturn('article');
-        $articleProperty->isLocalized()->willReturn(false);
-        $metadata->getProperties()->willReturn([$titleProperty->reveal(), $articleProperty->reveal()]);
-        $factory->getStructureMetadata(self::RESOURCE_KEY, 'default')->willReturn($metadata->reveal());
+        $articleProperty->getName()->shouldBeCalled()->willReturn('article');
+        $articleProperty->isLocalized()->shouldBeCalled()->willReturn(false);
+        $metadata->getProperties()->shouldBeCalled()->willReturn([$titleProperty->reveal(), $articleProperty->reveal()]);
+        $factory->getStructureMetadata(self::RESOURCE_KEY, 'default')->shouldBeCalled()->willReturn($metadata->reveal());
 
         $draftContent = $this->prophesize(ContentInterface::class);
         $draftContent->setType('default')->shouldBeCalled()->willReturn($draftContent->reveal());
         $draftContent->setData(['article' => '<p>Sulu is awesome</p>'])
-            ->shouldBeCalled()
-            ->willReturn($draftContent->reveal());
+            ->shouldBeCalled()->willReturn($draftContent->reveal());
 
         $localizedContent = $this->prophesize(ContentInterface::class);
-        $localizedContent->setType('default')->shouldBeCalled()->willReturn($draftContent->reveal());
+        $localizedContent->setType('default')->shouldBeCalled()->willReturn($localizedContent->reveal());
         $localizedContent->setData(['title' => 'Sulu'])
-            ->shouldBeCalled()
-            ->willReturn($draftContent->reveal());
+            ->shouldBeCalled()->willReturn($localizedContent->reveal());
 
         $contentRepository->findOrCreate(self::RESOURCE_KEY, 'product-1', $draftDimension->reveal())
-            ->shouldBeCalled()
-            ->willReturn($draftContent->reveal());
+            ->shouldBeCalled()->willReturn($draftContent->reveal());
 
         $contentRepository->findOrCreate(self::RESOURCE_KEY, 'product-1', $localizedDimension->reveal())
-            ->shouldBeCalled()
-            ->willReturn($localizedContent->reveal());
+            ->shouldBeCalled()->willReturn($localizedContent->reveal());
 
         $contentView = $this->prophesize(ContentViewInterface::class);
         $contentViewFactory->create([$localizedContent->reveal(), $draftContent->reveal()], 'de')
-            ->willReturn($contentView->reveal());
+            ->shouldBeCalled()->willReturn($contentView->reveal());
 
-        $message->setContent(
-            Argument::that(
-                function ($result) use ($contentView) {
-                    return $contentView->reveal() === $result;
-                }
-            )
-        )->shouldBeCalled();
+        $message->setContent($contentView->reveal())->shouldBeCalled();
+
+        $handler->__invoke($message->reveal());
+    }
+
+    public function testInvokeContentNotFound(): void
+    {
+        $this->expectException(ContentNotFoundException::class);
+
+        $contentRepository = $this->prophesize(ContentRepositoryInterface::class);
+        $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
+        $factory = $this->prophesize(StructureMetadataFactoryInterface::class);
+        $contentViewFactory = $this->prophesize(ContentViewFactoryInterface::class);
+
+        $handler = new ModifyContentMessageHandler(
+            $contentRepository->reveal(),
+            $dimensionRepository->reveal(),
+            $factory->reveal(),
+            $contentViewFactory->reveal()
+        );
+
+        $message = $this->prophesize(ModifyContentMessage::class);
+        $message->getResourceId()->shouldBeCalled()->willReturn('product-1');
+        $message->getResourceKey()->shouldBeCalled()->willReturn(self::RESOURCE_KEY);
+        $message->getLocale()->shouldBeCalled()->willReturn('de');
+        $message->getType()->shouldBeCalled()->willReturn('default');
+        $message->getData()->shouldBeCalled()->willReturn(['title' => 'Sulu', 'article' => '<p>Sulu is awesome</p>']);
+
+        $draftDimension = $this->prophesize(DimensionInterface::class);
+        $localizedDimension = $this->prophesize(DimensionInterface::class);
+
+        $dimensionRepository->findOrCreateByAttributes(
+            [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT]
+        )->shouldBeCalled()->willReturn($draftDimension->reveal());
+        $dimensionRepository->findOrCreateByAttributes(
+            [
+                DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT,
+                DimensionInterface::ATTRIBUTE_KEY_LOCALE => 'de',
+            ]
+        )->shouldBeCalled()->willReturn($localizedDimension->reveal());
+
+        $metadata = $this->prophesize(StructureMetadata::class);
+        $titleProperty = $this->prophesize(PropertyMetadata::class);
+        $titleProperty->getName()->shouldBeCalled()->willReturn('title');
+        $titleProperty->isLocalized()->shouldBeCalled()->willReturn(true);
+        $articleProperty = $this->prophesize(PropertyMetadata::class);
+        $articleProperty->getName()->shouldBeCalled()->willReturn('article');
+        $articleProperty->isLocalized()->shouldBeCalled()->willReturn(false);
+        $metadata->getProperties()->shouldBeCalled()->willReturn([$titleProperty->reveal(), $articleProperty->reveal()]);
+        $factory->getStructureMetadata(self::RESOURCE_KEY, 'default')->shouldBeCalled()->willReturn($metadata->reveal());
+
+        $draftContent = $this->prophesize(ContentInterface::class);
+        $draftContent->setType('default')->shouldBeCalled()->willReturn($draftContent->reveal());
+        $draftContent->setData(['article' => '<p>Sulu is awesome</p>'])
+            ->shouldBeCalled()->willReturn($draftContent->reveal());
+
+        $localizedContent = $this->prophesize(ContentInterface::class);
+        $localizedContent->setType('default')->shouldBeCalled()->willReturn($localizedContent->reveal());
+        $localizedContent->setData(['title' => 'Sulu'])
+            ->shouldBeCalled()->willReturn($localizedContent->reveal());
+
+        $contentRepository->findOrCreate(self::RESOURCE_KEY, 'product-1', $draftDimension->reveal())
+            ->shouldBeCalled()->willReturn($draftContent->reveal());
+
+        $contentRepository->findOrCreate(self::RESOURCE_KEY, 'product-1', $localizedDimension->reveal())
+            ->shouldBeCalled()->willReturn($localizedContent->reveal());
+
+        $contentViewFactory->create([$localizedContent->reveal(), $draftContent->reveal()], 'de')
+            ->shouldBeCalled()->willReturn(null);
 
         $handler->__invoke($message->reveal());
     }

@@ -55,8 +55,8 @@ class PublishContentMessageHandler
         $mandatory = $message->isMandatory();
 
         $contents = array_filter([
-            $this->publishDimension($resourceKey, $resourceId, $mandatory),
-            $this->publishDimension($resourceKey, $resourceId, $mandatory, $message->getLocale()),
+            $this->publishContent($resourceKey, $resourceId, $mandatory),
+            $this->publishContent($resourceKey, $resourceId, $mandatory, $message->getLocale()),
         ]);
 
         if (!$contents) {
@@ -71,13 +71,13 @@ class PublishContentMessageHandler
         $message->setContent($contentView);
     }
 
-    protected function publishDimension(
+    protected function publishContent(
         string $resourceKey,
         string $resourceId,
         bool $mandatory,
         ?string $locale = null
     ): ?ContentInterface {
-        $draftAttributes = $this->getAttributes(DimensionInterface::ATTRIBUTE_VALUE_DRAFT, $locale);
+        $draftAttributes = $this->createAttributes(DimensionInterface::ATTRIBUTE_VALUE_DRAFT, $locale);
         $draftDimension = $this->dimensionRepository->findOrCreateByAttributes($draftAttributes);
         $draftContent = $this->contentRepository->findByResource($resourceKey, $resourceId, $draftDimension);
 
@@ -94,17 +94,16 @@ class PublishContentMessageHandler
             throw new \InvalidArgumentException('Content type cannot be null');
         }
 
-        $liveAttributes = $this->getAttributes(DimensionInterface::ATTRIBUTE_VALUE_LIVE, $locale);
+        $liveAttributes = $this->createAttributes(DimensionInterface::ATTRIBUTE_VALUE_LIVE, $locale);
         $liveDimension = $this->dimensionRepository->findOrCreateByAttributes($liveAttributes);
         $liveContent = $this->contentRepository->findOrCreate($resourceKey, $resourceId, $liveDimension);
 
-        $liveContent->setType($type);
-        $liveContent->setData($draftContent->getData());
+        $liveContent->copyAttributesFrom($draftContent);
 
         return $liveContent;
     }
 
-    protected function getAttributes(string $stage, ?string $locale = null): array
+    protected function createAttributes(string $stage, ?string $locale = null): array
     {
         $attributes = [DimensionInterface::ATTRIBUTE_KEY_STAGE => $stage];
         if (!$locale) {

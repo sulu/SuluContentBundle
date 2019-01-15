@@ -15,6 +15,7 @@ namespace Sulu\Bundle\ContentBundle\Tests\Functional\Traits;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Sulu\Bundle\ContentBundle\Model\Content\Content;
+use Sulu\Bundle\ContentBundle\Model\Content\ContentInterface;
 use Sulu\Bundle\ContentBundle\Model\Dimension\DimensionInterface;
 
 trait ContentTrait
@@ -25,7 +26,7 @@ trait ContentTrait
         string $locale = 'en',
         ?string $type = 'default',
         array $data = ['title' => 'Sulu', 'article' => 'Sulu is awesome']
-    ): Content {
+    ): ContentInterface {
         $dimension = $this->findDimension(
             [
                 DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT,
@@ -40,7 +41,7 @@ trait ContentTrait
         return $content;
     }
 
-    protected function findContent(string $resourceKey, string $resourceId, string $locale): ?Content
+    protected function findContent(string $resourceKey, string $resourceId, string $locale): ?ContentInterface
     {
         $dimension = $this->findDimension(
             [

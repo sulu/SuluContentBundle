@@ -8,9 +8,10 @@ jobs:
         docker:
         - image: circleci/php:7.1-node-browsers
         - image: circleci/mysql:5.7
-          environment:
-          - DATABASE_URL=mysql://root:@127.0.0.1:3306/su_sylius_test
 
+        environment:
+            APP_ENV: test
+            DATABASE_URL: mysql://root:@127.0.0.1:3306/su_content_test
         working_directory: ~/repo
 
         steps:
@@ -37,4 +38,5 @@ jobs:
               - ~/.composer
               key: v1-dependencies-{{ checksum "composer.json" }}
 
+        - run: composer initialize
         - run: composer test

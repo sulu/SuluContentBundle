@@ -16,6 +16,7 @@ namespace Sulu\Bundle\ContentBundle\Controller;
 use FOS\RestBundle\Controller\ControllerTrait;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\ViewHandlerInterface;
+use Sulu\Bundle\ContentBundle\Model\Content\ContentView;
 use Sulu\Bundle\ContentBundle\Model\Content\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Model\Content\Message\ModifyContentMessage;
 use Sulu\Bundle\ContentBundle\Model\Content\Query\FindContentQuery;
@@ -24,7 +25,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Messenger\MessageBusInterface;
 
-abstract class ContentController implements ClassResourceInterface
+abstract class AbstractContentController implements ClassResourceInterface
 {
     use ControllerTrait;
 
@@ -62,13 +63,18 @@ abstract class ContentController implements ClassResourceInterface
     public function getAction(Request $request, string $resourceId): Response
     {
         try {
-            $message = new FindContentQuery($this->getResourceKey(), $resourceId, $request->query->get('locale'));
+            $message = new FindContentQuery($this->getContentResourceKey(), $resourceId, $request->query->get('locale'));
             $this->messageBus->dispatch($message);
             $content = $message->getContent();
         } catch (ContentNotFoundException $exception) {
-            $content = [
-                'template' => $this->defaultType,
-            ];
+            // need to return an empty content-view object because the sulu frontend does not expect any errors here
+            // TODO: review this code when subresource handling is implemented in the sulu frontend
+            $content = new ContentView(
+                $this->getContentResourceKey(),
+                $resourceId,
+                $request->query->get('locale'),
+                $this->defaultType
+            );
         }
 
         return $this->handleView($this->view($content));
@@ -84,7 +90,7 @@ abstract class ContentController implements ClassResourceInterface
         ];
 
         $locale = $request->query->get('locale');
-        $message = new ModifyContentMessage($this->getResourceKey(), $resourceId, $locale, $payload);
+        $message = new ModifyContentMessage($this->getContentResourceKey(), $resourceId, $locale, $payload);
         $this->messageBus->dispatch($message);
         $content = $message->getContent();
 
@@ -105,5 +111,5 @@ abstract class ContentController implements ClassResourceInterface
 
     abstract protected function handlePublish(string $resourceId, string $locale): void;
 
-    abstract protected function getResourceKey(): string;
+    abstract protected function getContentResourceKey(): string;
 }

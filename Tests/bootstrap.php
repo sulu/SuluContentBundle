@@ -20,12 +20,12 @@ if (!file_exists($file)) {
 
 $result = require $file;
 
-if (file_exists(__DIR__ . '/../.env')) {
+if (!isset($_SERVER['APP_ENV']) && !isset($_ENV['APP_ENV'])) {
     if (!class_exists(Dotenv::class)) {
         throw new \RuntimeException('Add "symfony/dotenv" as a Composer dependency to load variables from a .env file.');
     }
 
-    (new Dotenv())->load(__DIR__ . '/../.env');
+    (new Dotenv())->load(__DIR__ . '/Application/.env');
 }
 
 return $result;

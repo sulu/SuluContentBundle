@@ -90,4 +90,27 @@ class ContentTest extends TestCase
         $this->assertEquals($content, $content->setData(['title' => 'Sulu is awesome']));
         $this->assertEquals(['title' => 'Sulu is awesome'], $content->getData());
     }
+
+    public function testCopyAttributesFrom(): void
+    {
+        $dimension = $this->prophesize(DimensionInterface::class);
+        $content = new Content($dimension->reveal(), self::RESOURCE_KEY, 'product-1', 'default');
+
+        $otherDimension = $this->prophesize(DimensionInterface::class);
+        $otherContent = new Content(
+            $otherDimension->reveal(),
+            'other-resource-key',
+            'other-resource-id',
+            'other-type',
+            ['title' => 'other-title']
+        );
+
+        $this->assertEquals($content, $content->copyAttributesFrom($otherContent));
+
+        $this->assertEquals($dimension->reveal(), $content->getDimension());
+        $this->assertEquals(self::RESOURCE_KEY, $content->getResourceKey());
+        $this->assertEquals('product-1', $content->getResourceId());
+        $this->assertEquals('other-type', $content->getType());
+        $this->assertEquals(['title' => 'other-title'], $content->getData());
+    }
 }

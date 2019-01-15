@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Model\Content\QueryHandler;
 
 use PHPUnit\Framework\TestCase;
-use Prophecy\Argument;
 use Sulu\Bundle\ContentBundle\Model\Content\ContentInterface;
 use Sulu\Bundle\ContentBundle\Model\Content\ContentRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Content\ContentViewInterface;
@@ -42,22 +41,22 @@ class FindContentQueryHandlerTest extends TestCase
         );
 
         $query = $this->prophesize(FindContentQuery::class);
-        $query->getResourceId()->willReturn('product-1');
-        $query->getResourceKey()->willReturn(self::RESOURCE_KEY);
-        $query->getLocale()->willReturn('de');
+        $query->getResourceId()->shouldBeCalled()->willReturn('product-1');
+        $query->getResourceKey()->shouldBeCalled()->willReturn(self::RESOURCE_KEY);
+        $query->getLocale()->shouldBeCalled()->willReturn('de');
 
         $draftDimension = $this->prophesize(DimensionInterface::class);
         $localizedDimension = $this->prophesize(DimensionInterface::class);
 
         $dimensionRepository->findOrCreateByAttributes(
             [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT]
-        )->willReturn($draftDimension->reveal());
+        )->shouldBeCalled()->willReturn($draftDimension->reveal());
         $dimensionRepository->findOrCreateByAttributes(
             [
                 DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT,
                 DimensionInterface::ATTRIBUTE_KEY_LOCALE => 'de',
             ]
-        )->willReturn($localizedDimension->reveal());
+        )->shouldBeCalled()->willReturn($localizedDimension->reveal());
 
         $contentDimension1 = $this->prophesize(ContentInterface::class);
         $contentDimension2 = $this->prophesize(ContentInterface::class);
@@ -66,21 +65,15 @@ class FindContentQueryHandlerTest extends TestCase
             self::RESOURCE_KEY,
             'product-1',
             [$draftDimension->reveal(), $localizedDimension->reveal()]
-        )->willReturn([$contentDimension1->reveal(), $contentDimension2->reveal()]);
+        )->shouldBeCalled()->willReturn([$contentDimension1->reveal(), $contentDimension2->reveal()]);
 
         $contentView = $this->prophesize(ContentViewInterface::class);
         $contentViewFactory->create(
             [$contentDimension1->reveal(), $contentDimension2->reveal()],
             'de'
-        )->willReturn($contentView->reveal());
+        )->shouldBeCalled()->willReturn($contentView->reveal());
 
-        $query->setContent(
-            Argument::that(
-                function ($result) use ($contentView) {
-                    return $contentView->reveal() === $result;
-                }
-            )
-        )->shouldBeCalled();
+        $query->setContent($contentView->reveal())->shouldBeCalled();
 
         $handler->__invoke($query->reveal());
     }
@@ -100,22 +93,22 @@ class FindContentQueryHandlerTest extends TestCase
         );
 
         $query = $this->prophesize(FindContentQuery::class);
-        $query->getResourceId()->willReturn('product-1');
-        $query->getResourceKey()->willReturn(self::RESOURCE_KEY);
-        $query->getLocale()->willReturn('de');
+        $query->getResourceId()->shouldBeCalled()->willReturn('product-1');
+        $query->getResourceKey()->shouldBeCalled()->willReturn(self::RESOURCE_KEY);
+        $query->getLocale()->shouldBeCalled()->willReturn('de');
 
         $draftDimension = $this->prophesize(DimensionInterface::class);
         $localizedDimension = $this->prophesize(DimensionInterface::class);
 
         $dimensionRepository->findOrCreateByAttributes(
             [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT]
-        )->willReturn($draftDimension->reveal());
+        )->shouldBeCalled()->willReturn($draftDimension->reveal());
         $dimensionRepository->findOrCreateByAttributes(
             [
                 DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT,
                 DimensionInterface::ATTRIBUTE_KEY_LOCALE => 'de',
             ]
-        )->willReturn($localizedDimension->reveal());
+        )->shouldBeCalled()->willReturn($localizedDimension->reveal());
 
         $contentDimension1 = $this->prophesize(ContentInterface::class);
         $contentDimension2 = $this->prophesize(ContentInterface::class);
@@ -124,12 +117,12 @@ class FindContentQueryHandlerTest extends TestCase
             self::RESOURCE_KEY,
             'product-1',
             [$draftDimension->reveal(), $localizedDimension->reveal()]
-        )->willReturn([$contentDimension1->reveal(), $contentDimension2->reveal()]);
+        )->shouldBeCalled()->willReturn([$contentDimension1->reveal(), $contentDimension2->reveal()]);
 
         $contentViewFactory->create(
             [$contentDimension1->reveal(), $contentDimension2->reveal()],
             'de'
-        )->willReturn(null);
+        )->shouldBeCalled()->willReturn(null);
 
         $handler->__invoke($query->reveal());
     }

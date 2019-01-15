@@ -1,0 +1,9 @@
+sulu_content.content:
+    type: rest
+    prefix: /api
+    resource: sulu_content.controller.test_resource_contents
+
+sulu_content.seo:
+    type: rest
+    prefix: /api
+    resource: sulu_content.controller.test_resource_seos

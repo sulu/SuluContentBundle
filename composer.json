@@ -29,7 +29,11 @@
         "jangregor/phpstan-prophecy": "^0.2",
         "phpstan/phpstan": "^0.10",
         "phpstan/phpstan-doctrine": "^0.10",
+        "phpstan/phpstan-phpunit": "^0.10.0",
+        "phpstan/phpstan-symfony": "^0.10.2",
+        "phpstan/phpstan-webmozart-assert": "^0.10.0",
         "phpunit/phpunit": "^7.2",
+        "symfony/browser-kit": "^4.2",
         "symfony/dotenv": "^4.1",
         "symfony/monolog-bundle": "^3.3",
         "zendframework/zend-stdlib": "~2.3",
@@ -47,6 +51,10 @@
         }
     },
     "scripts": {
+        "initialize": [
+            "@php Tests/Application/bin/console doctrine:database:create --if-not-exists -e test",
+            "@php Tests/Application/bin/console doctrine:schema:update --force -e test"
+        ],
         "test": [
             "@phpunit",
             "@phpstan",

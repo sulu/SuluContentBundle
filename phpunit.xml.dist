@@ -18,6 +18,6 @@
     </filter>
 
     <php>
-        <env name="KERNEL_DIR" value="Tests/app"/>
+        <env name="KERNEL_CLASS" value="Sulu\Bundle\ContentBundle\Tests\Application\Kernel"/>
     </php>
 </phpunit>
