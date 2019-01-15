@@ -6,6 +6,8 @@
         <!-- repository -->
         <service id="Sulu\Bundle\ContentBundle\Repository\SeoDimensionRepository">
             <argument type="service" id="doctrine"/>
+
+            <tag name="doctrine.repository_service"/>
         </service>
         <service id="Sulu\Bundle\ContentBundle\Model\Seo\SeoDimensionRepositoryInterface"
                  alias="Sulu\Bundle\ContentBundle\Repository\SeoDimensionRepository"/>

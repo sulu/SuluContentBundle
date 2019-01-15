@@ -4,7 +4,7 @@
                   xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
     <entity name="Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifier"
             table="cs_dimension_identifiers"
-            repository-class="Sulu\Bundle\ContentBundle\Repository\DimensionIdentifier\DimensionIdentifierRepository">
+            repository-class="Sulu\Bundle\ContentBundle\Repository\DimensionIdentifierRepository">
         <id name="id" type="guid">
             <generator strategy="NONE"/>
         </id>

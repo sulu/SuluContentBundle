@@ -5,6 +5,8 @@
     <services>
         <service id="Sulu\Bundle\ContentBundle\Repository\DimensionIdentifierRepository">
             <argument type="service" id="doctrine"/>
+
+            <tag name="doctrine.repository_service"/>
         </service>
         <service id="Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierRepositoryInterface"
                  alias="Sulu\Bundle\ContentBundle\Repository\DimensionIdentifierRepository"/>
