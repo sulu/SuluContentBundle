@@ -13,14 +13,6 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Model\Seo\MessageHandler;
 
-use Sulu\Bundle\ContentBundle\Model\Content\ContentDimensionInterface;
-use Sulu\Bundle\ContentBundle\Model\Content\ContentDimensionRepositoryInterface;
-use Sulu\Bundle\ContentBundle\Model\Content\Exception\ContentNotFoundException;
-use Sulu\Bundle\ContentBundle\Model\Content\Factory\ContentViewFactoryInterface;
-use Sulu\Bundle\ContentBundle\Model\Content\Message\PublishContentMessage;
-use Sulu\Bundle\ContentBundle\Model\Content\Message\RemoveContentMessage;
-use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierInterface;
-use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Seo\Message\RemoveSeoMessage;
 use Sulu\Bundle\ContentBundle\Model\Seo\SeoDimensionRepositoryInterface;
 

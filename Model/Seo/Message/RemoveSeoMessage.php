@@ -13,8 +13,6 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Model\Seo\Message;
 
-use Sulu\Bundle\ContentBundle\Model\Content\ContentViewInterface;
-
 class RemoveSeoMessage
 {
     /**
