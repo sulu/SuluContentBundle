@@ -67,6 +67,11 @@ class ContentDimensionRepository extends ServiceEntityRepository implements Cont
         return $contentDimension;
     }
 
+    public function remove(ContentDimensionInterface $contentDimension): void
+    {
+        $this->getEntityManager()->remove($contentDimension);
+    }
+
     public function findByResource(string $resourceKey, string $resourceId): array
     {
         return $this->findBy(['resourceKey' => $resourceKey, 'resourceId' => $resourceId]);

@@ -35,6 +35,8 @@ interface ContentDimensionRepositoryInterface
         DimensionIdentifierInterface $dimensionIdentifier
     ): ?ContentDimensionInterface;
 
+    public function remove(ContentDimensionInterface $contentDimension): void;
+
     /**
      * @return ContentDimensionInterface[]
      */
