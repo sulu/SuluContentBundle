@@ -26,7 +26,7 @@ use Sulu\Bundle\ContentBundle\Model\Seo\SeoViewInterface;
 
 class ModifySeoMessageHandlerTest extends TestCase
 {
-    const RESOURCE_KEY = 'seo';
+    const RESOURCE_KEY = 'test_resource_seos';
 
     public function testInvoke(): void
     {
@@ -41,7 +41,7 @@ class ModifySeoMessageHandlerTest extends TestCase
         );
 
         $message = $this->prophesize(ModifySeoMessage::class);
-        $message->getResourceId()->shouldBeCalled()->willReturn('seo-1');
+        $message->getResourceId()->shouldBeCalled()->willReturn('resource-1');
         $message->getResourceKey()->shouldBeCalled()->willReturn(self::RESOURCE_KEY);
         $message->getLocale()->shouldBeCalled()->willReturn('de');
         $message->getTitle()->shouldBeCalled()->willReturn('title-1');
@@ -69,7 +69,7 @@ class ModifySeoMessageHandlerTest extends TestCase
         $localizedSeo->setNoFollow(false)->shouldBeCalled()->willReturn($localizedSeo->reveal());
         $localizedSeo->setHideInSitemap(null)->shouldBeCalled()->willReturn($localizedSeo->reveal());
 
-        $seoDimensionRepository->findOrCreate(self::RESOURCE_KEY, 'seo-1', $localizedDimensionIdentifier->reveal())
+        $seoDimensionRepository->findOrCreateDimension(self::RESOURCE_KEY, 'resource-1', $localizedDimensionIdentifier->reveal())
             ->shouldBeCalled()->willReturn($localizedSeo->reveal());
 
         $seoView = $this->prophesize(SeoViewInterface::class);
@@ -96,7 +96,7 @@ class ModifySeoMessageHandlerTest extends TestCase
         );
 
         $message = $this->prophesize(ModifySeoMessage::class);
-        $message->getResourceId()->shouldBeCalled()->willReturn('seo-1');
+        $message->getResourceId()->shouldBeCalled()->willReturn('resource-1');
         $message->getResourceKey()->shouldBeCalled()->willReturn(self::RESOURCE_KEY);
         $message->getLocale()->shouldBeCalled()->willReturn('de');
         $message->getTitle()->shouldBeCalled()->willReturn('title-1');
@@ -124,7 +124,7 @@ class ModifySeoMessageHandlerTest extends TestCase
         $localizedSeo->setNoFollow(false)->shouldBeCalled()->willReturn($localizedSeo->reveal());
         $localizedSeo->setHideInSitemap(null)->shouldBeCalled()->willReturn($localizedSeo->reveal());
 
-        $seoDimensionRepository->findOrCreate(self::RESOURCE_KEY, 'seo-1', $localizedDimensionIdentifier->reveal())
+        $seoDimensionRepository->findOrCreateDimension(self::RESOURCE_KEY, 'resource-1', $localizedDimensionIdentifier->reveal())
             ->shouldBeCalled()->willReturn($localizedSeo->reveal());
 
         $seoViewFactory->create([$localizedSeo->reveal()], 'de')

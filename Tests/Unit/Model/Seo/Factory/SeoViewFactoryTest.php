@@ -19,7 +19,7 @@ use Sulu\Bundle\ContentBundle\Model\Seo\SeoDimensionInterface;
 
 class SeoViewFactoryTest extends TestCase
 {
-    const RESOURCE_KEY = 'seo';
+    const RESOURCE_KEY = 'test_resource_seos';
 
     public function testCreate(): void
     {
@@ -27,7 +27,7 @@ class SeoViewFactoryTest extends TestCase
 
         $seoDimension1 = $this->prophesize(SeoDimensionInterface::class);
         $seoDimension1->getResourceKey()->shouldBeCalled()->willReturn(self::RESOURCE_KEY);
-        $seoDimension1->getResourceId()->shouldBeCalled()->willReturn('seo-1');
+        $seoDimension1->getResourceId()->shouldBeCalled()->willReturn('resource-1');
         $seoDimension1->getTitle()->shouldBeCalled()->willReturn('title-1');
         $seoDimension1->getDescription()->shouldBeCalled()->willReturn('description-1');
         $seoDimension1->getKeywords()->shouldBeCalled()->willReturn('keywords-1');
@@ -51,7 +51,7 @@ class SeoViewFactoryTest extends TestCase
 
         $this->assertNotNull($result);
         $this->assertEquals(self::RESOURCE_KEY, $result->getResourceKey());
-        $this->assertEquals('seo-1', $result->getResourceId());
+        $this->assertEquals('resource-1', $result->getResourceId());
         $this->assertEquals('title-1', $result->getTitle());
         $this->assertEquals('description-1', $result->getDescription());
         $this->assertEquals('keywords-2', $result->getKeywords());

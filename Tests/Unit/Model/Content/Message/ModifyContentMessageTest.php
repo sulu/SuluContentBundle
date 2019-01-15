@@ -20,13 +20,13 @@ use Sulu\Bundle\ContentBundle\Model\Content\Message\ModifyContentMessage;
 
 class ModifyContentMessageTest extends TestCase
 {
-    const RESOURCE_KEY = 'products';
+    const RESOURCE_KEY = 'test_resource_contents';
 
     public function testGetResourceKey(): void
     {
         $message = new ModifyContentMessage(
             self::RESOURCE_KEY,
-            'product-1',
+            'resource-1',
             'en',
             ['type' => 'default', 'data' => ['title' => 'Sulu is awesome']]
         );
@@ -38,19 +38,19 @@ class ModifyContentMessageTest extends TestCase
     {
         $message = new ModifyContentMessage(
             self::RESOURCE_KEY,
-            'product-1',
+            'resource-1',
             'en',
             ['type' => 'default', 'data' => ['title' => 'Sulu is awesome']]
         );
 
-        $this->assertEquals('product-1', $message->getResourceId());
+        $this->assertEquals('resource-1', $message->getResourceId());
     }
 
     public function testGetLocale(): void
     {
         $message = new ModifyContentMessage(
             self::RESOURCE_KEY,
-            'product-1',
+            'resource-1',
             'en',
             ['type' => 'default', 'data' => ['title' => 'Sulu is awesome']]
         );
@@ -62,7 +62,7 @@ class ModifyContentMessageTest extends TestCase
     {
         $message = new ModifyContentMessage(
             self::RESOURCE_KEY,
-            'product-1',
+            'resource-1',
             'en',
             ['type' => 'default', 'data' => ['title' => 'Sulu is awesome']]
         );
@@ -74,7 +74,7 @@ class ModifyContentMessageTest extends TestCase
     {
         $message = new ModifyContentMessage(
             self::RESOURCE_KEY,
-            'product-1',
+            'resource-1',
             'en',
             ['type' => 'default', 'data' => ['title' => 'Sulu is awesome']]
         );
@@ -88,7 +88,7 @@ class ModifyContentMessageTest extends TestCase
 
         $message = new ModifyContentMessage(
             self::RESOURCE_KEY,
-            'product-1',
+            'resource-1',
             'en',
             ['type' => 'default', 'data' => ['title' => 'Sulu is awesome']]
         );
@@ -100,7 +100,7 @@ class ModifyContentMessageTest extends TestCase
     {
         $message = new ModifyContentMessage(
             self::RESOURCE_KEY,
-            'product-1',
+            'resource-1',
             'en',
             ['type' => 'default', 'data' => ['title' => 'Sulu is awesome']]
         );

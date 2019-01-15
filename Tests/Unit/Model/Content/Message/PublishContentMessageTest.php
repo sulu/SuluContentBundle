@@ -19,39 +19,39 @@ use Sulu\Bundle\ContentBundle\Model\Content\Message\PublishContentMessage;
 
 class PublishContentMessageTest extends TestCase
 {
-    const RESOURCE_KEY = 'products';
+    const RESOURCE_KEY = 'test_resource_contents';
 
     public function testGetResourceKey(): void
     {
-        $message = new PublishContentMessage(self::RESOURCE_KEY, 'product-1', 'en');
+        $message = new PublishContentMessage(self::RESOURCE_KEY, 'resource-1', 'en');
 
         $this->assertEquals(self::RESOURCE_KEY, $message->getResourceKey());
     }
 
     public function testGetResourceId(): void
     {
-        $message = new PublishContentMessage(self::RESOURCE_KEY, 'product-1', 'en');
+        $message = new PublishContentMessage(self::RESOURCE_KEY, 'resource-1', 'en');
 
-        $this->assertEquals('product-1', $message->getResourceId());
+        $this->assertEquals('resource-1', $message->getResourceId());
     }
 
     public function testGetLocale(): void
     {
-        $message = new PublishContentMessage(self::RESOURCE_KEY, 'product-1', 'en');
+        $message = new PublishContentMessage(self::RESOURCE_KEY, 'resource-1', 'en');
 
         $this->assertEquals('en', $message->getLocale());
     }
 
     public function testGetContent(): void
     {
-        $message = new PublishContentMessage(self::RESOURCE_KEY, 'product-1', 'en');
+        $message = new PublishContentMessage(self::RESOURCE_KEY, 'resource-1', 'en');
 
         $this->assertNull($message->getContent());
     }
 
     public function testSetContent(): void
     {
-        $message = new PublishContentMessage(self::RESOURCE_KEY, 'product-1', 'en');
+        $message = new PublishContentMessage(self::RESOURCE_KEY, 'resource-1', 'en');
 
         $content = $this->prophesize(ContentViewInterface::class);
 

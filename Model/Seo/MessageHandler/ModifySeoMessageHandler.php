@@ -85,7 +85,7 @@ class ModifySeoMessageHandler
     ): SeoDimensionInterface {
         $dimensionIdentifier = $this->getDraftDimensionIdentifier($locale);
 
-        return $this->seoDimensionRepository->findOrCreate($resourceKey, $resourceId, $dimensionIdentifier);
+        return $this->seoDimensionRepository->findOrCreateDimension($resourceKey, $resourceId, $dimensionIdentifier);
     }
 
     private function getDraftDimensionIdentifier(string $locale): DimensionIdentifierInterface

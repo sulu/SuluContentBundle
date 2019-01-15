@@ -19,39 +19,39 @@ use Sulu\Bundle\ContentBundle\Model\Seo\SeoViewInterface;
 
 class PublishSeoMessageTest extends TestCase
 {
-    const RESOURCE_KEY = 'seo';
+    const RESOURCE_KEY = 'test_resource_seos';
 
     public function testGetResourceKey(): void
     {
-        $message = new PublishSeoMessage(self::RESOURCE_KEY, 'seo-1', 'en');
+        $message = new PublishSeoMessage(self::RESOURCE_KEY, 'resource-1', 'en');
 
         $this->assertEquals(self::RESOURCE_KEY, $message->getResourceKey());
     }
 
     public function testGetResourceId(): void
     {
-        $message = new PublishSeoMessage(self::RESOURCE_KEY, 'seo-1', 'en');
+        $message = new PublishSeoMessage(self::RESOURCE_KEY, 'resource-1', 'en');
 
-        $this->assertEquals('seo-1', $message->getResourceId());
+        $this->assertEquals('resource-1', $message->getResourceId());
     }
 
     public function testGetLocale(): void
     {
-        $message = new PublishSeoMessage(self::RESOURCE_KEY, 'seo-1', 'en');
+        $message = new PublishSeoMessage(self::RESOURCE_KEY, 'resource-1', 'en');
 
         $this->assertEquals('en', $message->getLocale());
     }
 
     public function testGetSeo(): void
     {
-        $message = new PublishSeoMessage(self::RESOURCE_KEY, 'seo-1', 'en');
+        $message = new PublishSeoMessage(self::RESOURCE_KEY, 'resource-1', 'en');
 
         $this->assertNull($message->getSeo());
     }
 
     public function testSetSeo(): void
     {
-        $message = new PublishSeoMessage(self::RESOURCE_KEY, 'seo-1', 'en');
+        $message = new PublishSeoMessage(self::RESOURCE_KEY, 'resource-1', 'en');
 
         $content = $this->prophesize(SeoViewInterface::class);
 

@@ -123,7 +123,7 @@ class ModifyContentMessageHandler
     ): ContentDimensionInterface {
         $dimensionIdentifier = $this->getDraftDimensionIdentifier($locale);
 
-        return $this->contentDimensionRepository->findOrCreate($resourceKey, $resourceId, $dimensionIdentifier);
+        return $this->contentDimensionRepository->findOrCreateDimension($resourceKey, $resourceId, $dimensionIdentifier);
     }
 
     private function getDraftDimensionIdentifier(?string $locale = null): DimensionIdentifierInterface

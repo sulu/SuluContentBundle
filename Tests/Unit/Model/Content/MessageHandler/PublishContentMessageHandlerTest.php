@@ -26,7 +26,7 @@ use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierRepos
 
 class PublishContentMessageHandlerTest extends TestCase
 {
-    const RESOURCE_KEY = 'products';
+    const RESOURCE_KEY = 'test_resource_contents';
 
     public function testInvoke(): void
     {
@@ -42,7 +42,7 @@ class PublishContentMessageHandlerTest extends TestCase
 
         $message = $this->prophesize(PublishContentMessage::class);
         $message->getResourceKey()->shouldBeCalled()->willReturn(self::RESOURCE_KEY);
-        $message->getResourceId()->shouldBeCalled()->willReturn('product-1');
+        $message->getResourceId()->shouldBeCalled()->willReturn('resource-1');
         $message->getLocale()->shouldBeCalled()->willReturn('en');
         $message->isMandatory()->shouldBeCalled()->willReturn(true);
 
@@ -82,16 +82,16 @@ class PublishContentMessageHandlerTest extends TestCase
         $localizedLiveContent = $this->prophesize(ContentDimensionInterface::class);
         $localizedLiveContent->copyAttributesFrom($localizedDraftContent->reveal())->shouldBeCalled();
 
-        $contentDimensionRepository->findByResource(self::RESOURCE_KEY, 'product-1', $draftDimensionIdentifier->reveal())
+        $contentDimensionRepository->findDimension(self::RESOURCE_KEY, 'resource-1', $draftDimensionIdentifier->reveal())
             ->shouldBeCalled()->willReturn($draftContent);
 
-        $contentDimensionRepository->findOrCreate(self::RESOURCE_KEY, 'product-1', $liveDimensionIdentifier->reveal())
+        $contentDimensionRepository->findOrCreateDimension(self::RESOURCE_KEY, 'resource-1', $liveDimensionIdentifier->reveal())
             ->shouldBeCalled()->willReturn($liveContent);
 
-        $contentDimensionRepository->findByResource(self::RESOURCE_KEY, 'product-1', $localizedDraftDimensionIdentifier->reveal())
+        $contentDimensionRepository->findDimension(self::RESOURCE_KEY, 'resource-1', $localizedDraftDimensionIdentifier->reveal())
             ->shouldBeCalled()->willReturn($localizedDraftContent);
 
-        $contentDimensionRepository->findOrCreate(self::RESOURCE_KEY, 'product-1', $localizedLiveDimensionIdentifier->reveal())
+        $contentDimensionRepository->findOrCreateDimension(self::RESOURCE_KEY, 'resource-1', $localizedLiveDimensionIdentifier->reveal())
             ->shouldBeCalled()->willReturn($localizedLiveContent);
 
         $contentView = $this->prophesize(ContentViewInterface::class);
@@ -119,7 +119,7 @@ class PublishContentMessageHandlerTest extends TestCase
 
         $message = $this->prophesize(PublishContentMessage::class);
         $message->getResourceKey()->shouldBeCalled()->willReturn(self::RESOURCE_KEY);
-        $message->getResourceId()->shouldBeCalled()->willReturn('product-1');
+        $message->getResourceId()->shouldBeCalled()->willReturn('resource-1');
         $message->isMandatory()->shouldBeCalled()->willReturn(true);
 
         $draftDimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
@@ -127,7 +127,7 @@ class PublishContentMessageHandlerTest extends TestCase
             [DimensionIdentifierInterface::ATTRIBUTE_KEY_STAGE => DimensionIdentifierInterface::ATTRIBUTE_VALUE_DRAFT]
         )->shouldBeCalled()->willReturn($draftDimensionIdentifier->reveal());
 
-        $contentDimensionRepository->findByResource(self::RESOURCE_KEY, 'product-1', $draftDimensionIdentifier->reveal())
+        $contentDimensionRepository->findDimension(self::RESOURCE_KEY, 'resource-1', $draftDimensionIdentifier->reveal())
             ->shouldBeCalled()->willReturn(null);
 
         $handler->__invoke($message->reveal());

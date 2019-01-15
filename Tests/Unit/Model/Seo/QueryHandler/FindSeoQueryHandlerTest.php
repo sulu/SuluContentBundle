@@ -26,7 +26,7 @@ use Sulu\Bundle\ContentBundle\Model\Seo\SeoViewInterface;
 
 class FindSeoQueryHandlerTest extends TestCase
 {
-    const RESOURCE_KEY = 'seo';
+    const RESOURCE_KEY = 'test_resource_seos';
 
     public function testInvoke(): void
     {
@@ -41,7 +41,7 @@ class FindSeoQueryHandlerTest extends TestCase
         );
 
         $query = $this->prophesize(FindSeoQuery::class);
-        $query->getResourceId()->shouldBeCalled()->willReturn('seo-1');
+        $query->getResourceId()->shouldBeCalled()->willReturn('resource-1');
         $query->getResourceKey()->shouldBeCalled()->willReturn(self::RESOURCE_KEY);
         $query->getLocale()->shouldBeCalled()->willReturn('de');
 
@@ -59,7 +59,7 @@ class FindSeoQueryHandlerTest extends TestCase
 
         $seoDimensionRepository->findByDimensionIdentifiers(
             self::RESOURCE_KEY,
-            'seo-1',
+            'resource-1',
             [$localizedDimensionIdentifier->reveal()]
         )->shouldBeCalled()->willReturn([$seoDimension1->reveal(), $seoDimension2->reveal()]);
 
@@ -89,7 +89,7 @@ class FindSeoQueryHandlerTest extends TestCase
         );
 
         $query = $this->prophesize(FindSeoQuery::class);
-        $query->getResourceId()->shouldBeCalled()->willReturn('seo-1');
+        $query->getResourceId()->shouldBeCalled()->willReturn('resource-1');
         $query->getResourceKey()->shouldBeCalled()->willReturn(self::RESOURCE_KEY);
         $query->getLocale()->shouldBeCalled()->willReturn('de');
 
@@ -107,7 +107,7 @@ class FindSeoQueryHandlerTest extends TestCase
 
         $seoDimensionRepository->findByDimensionIdentifiers(
             self::RESOURCE_KEY,
-            'seo-1',
+            'resource-1',
             [$localizedDimensionIdentifier->reveal()]
         )->shouldBeCalled()->willReturn([$seoDimension1->reveal(), $seoDimension2->reveal()]);
 

@@ -27,7 +27,7 @@ class ContentDimensionRepository extends ServiceEntityRepository implements Cont
         parent::__construct($registry, ContentDimension::class);
     }
 
-    public function create(
+    public function createDimension(
         string $resourceKey,
         string $resourceId,
         DimensionIdentifierInterface $dimensionIdentifier
@@ -40,21 +40,21 @@ class ContentDimensionRepository extends ServiceEntityRepository implements Cont
         return $contentDimension;
     }
 
-    public function findOrCreate(
+    public function findOrCreateDimension(
         string $resourceKey,
         string $resourceId,
         DimensionIdentifierInterface $dimensionIdentifier
     ): ContentDimensionInterface {
         /** @var ContentDimensionInterface|null $contentDimension */
-        $contentDimension = $this->findByResource($resourceKey, $resourceId, $dimensionIdentifier);
+        $contentDimension = $this->findDimension($resourceKey, $resourceId, $dimensionIdentifier);
         if ($contentDimension) {
             return $contentDimension;
         }
 
-        return $this->create($resourceKey, $resourceId, $dimensionIdentifier);
+        return $this->createDimension($resourceKey, $resourceId, $dimensionIdentifier);
     }
 
-    public function findByResource(
+    public function findDimension(
         string $resourceKey,
         string $resourceId,
         DimensionIdentifierInterface $dimensionIdentifier
@@ -65,6 +65,16 @@ class ContentDimensionRepository extends ServiceEntityRepository implements Cont
         );
 
         return $contentDimension;
+    }
+
+    public function removeDimension(ContentDimensionInterface $contentDimension): void
+    {
+        $this->getEntityManager()->remove($contentDimension);
+    }
+
+    public function findByResource(string $resourceKey, string $resourceId): array
+    {
+        return $this->findBy(['resourceKey' => $resourceKey, 'resourceId' => $resourceId]);
     }
 
     public function findByDimensionIdentifiers(string $resourceKey, string $resourceId, array $dimensionIdentifiers): array

@@ -29,7 +29,7 @@ use Sulu\Component\Content\Metadata\StructureMetadata;
 
 class ModifyContentMessageHandlerTest extends TestCase
 {
-    const RESOURCE_KEY = 'products';
+    const RESOURCE_KEY = 'test_resource_contents';
 
     public function testInvoke(): void
     {
@@ -46,7 +46,7 @@ class ModifyContentMessageHandlerTest extends TestCase
         );
 
         $message = $this->prophesize(ModifyContentMessage::class);
-        $message->getResourceId()->shouldBeCalled()->willReturn('product-1');
+        $message->getResourceId()->shouldBeCalled()->willReturn('resource-1');
         $message->getResourceKey()->shouldBeCalled()->willReturn(self::RESOURCE_KEY);
         $message->getLocale()->shouldBeCalled()->willReturn('de');
         $message->getType()->shouldBeCalled()->willReturn('default');
@@ -85,10 +85,10 @@ class ModifyContentMessageHandlerTest extends TestCase
         $localizedContent->setData(['title' => 'Sulu'])
             ->shouldBeCalled()->willReturn($localizedContent->reveal());
 
-        $contentDimensionRepository->findOrCreate(self::RESOURCE_KEY, 'product-1', $draftDimensionIdentifier->reveal())
+        $contentDimensionRepository->findOrCreateDimension(self::RESOURCE_KEY, 'resource-1', $draftDimensionIdentifier->reveal())
             ->shouldBeCalled()->willReturn($draftContent->reveal());
 
-        $contentDimensionRepository->findOrCreate(self::RESOURCE_KEY, 'product-1', $localizedDimensionIdentifier->reveal())
+        $contentDimensionRepository->findOrCreateDimension(self::RESOURCE_KEY, 'resource-1', $localizedDimensionIdentifier->reveal())
             ->shouldBeCalled()->willReturn($localizedContent->reveal());
 
         $contentView = $this->prophesize(ContentViewInterface::class);
@@ -117,7 +117,7 @@ class ModifyContentMessageHandlerTest extends TestCase
         );
 
         $message = $this->prophesize(ModifyContentMessage::class);
-        $message->getResourceId()->shouldBeCalled()->willReturn('product-1');
+        $message->getResourceId()->shouldBeCalled()->willReturn('resource-1');
         $message->getResourceKey()->shouldBeCalled()->willReturn(self::RESOURCE_KEY);
         $message->getLocale()->shouldBeCalled()->willReturn('de');
         $message->getType()->shouldBeCalled()->willReturn('default');
@@ -156,10 +156,10 @@ class ModifyContentMessageHandlerTest extends TestCase
         $localizedContent->setData(['title' => 'Sulu'])
             ->shouldBeCalled()->willReturn($localizedContent->reveal());
 
-        $contentDimensionRepository->findOrCreate(self::RESOURCE_KEY, 'product-1', $draftDimensionIdentifier->reveal())
+        $contentDimensionRepository->findOrCreateDimension(self::RESOURCE_KEY, 'resource-1', $draftDimensionIdentifier->reveal())
             ->shouldBeCalled()->willReturn($draftContent->reveal());
 
-        $contentDimensionRepository->findOrCreate(self::RESOURCE_KEY, 'product-1', $localizedDimensionIdentifier->reveal())
+        $contentDimensionRepository->findOrCreateDimension(self::RESOURCE_KEY, 'resource-1', $localizedDimensionIdentifier->reveal())
             ->shouldBeCalled()->willReturn($localizedContent->reveal());
 
         $contentViewFactory->create([$localizedContent->reveal(), $draftContent->reveal()], 'de')

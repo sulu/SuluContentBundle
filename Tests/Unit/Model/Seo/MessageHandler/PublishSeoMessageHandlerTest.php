@@ -26,7 +26,7 @@ use Sulu\Bundle\ContentBundle\Model\Seo\SeoViewInterface;
 
 class PublishSeoMessageHandlerTest extends TestCase
 {
-    const RESOURCE_KEY = 'seo';
+    const RESOURCE_KEY = 'test_resource_seos';
 
     public function testInvoke(): void
     {
@@ -42,7 +42,7 @@ class PublishSeoMessageHandlerTest extends TestCase
 
         $message = $this->prophesize(PublishSeoMessage::class);
         $message->getResourceKey()->shouldBeCalled()->willReturn(self::RESOURCE_KEY);
-        $message->getResourceId()->shouldBeCalled()->willReturn('seo-1');
+        $message->getResourceId()->shouldBeCalled()->willReturn('resource-1');
         $message->getLocale()->shouldBeCalled()->willReturn('en');
         $message->isMandatory()->shouldBeCalled()->willReturn(true);
 
@@ -68,10 +68,10 @@ class PublishSeoMessageHandlerTest extends TestCase
         $localizedLiveSeo->copyAttributesFrom($localizedDraftSeo->reveal())
             ->shouldBeCalled()->willReturn($localizedLiveSeo->reveal());
 
-        $seoDimensionRepository->findByResource(self::RESOURCE_KEY, 'seo-1', $localizedDraftDimensionIdentifier->reveal())
+        $seoDimensionRepository->findDimension(self::RESOURCE_KEY, 'resource-1', $localizedDraftDimensionIdentifier->reveal())
             ->shouldBeCalled()->willReturn($localizedDraftSeo);
 
-        $seoDimensionRepository->findOrCreate(self::RESOURCE_KEY, 'seo-1', $localizedLiveDimensionIdentifier->reveal())
+        $seoDimensionRepository->findOrCreateDimension(self::RESOURCE_KEY, 'resource-1', $localizedLiveDimensionIdentifier->reveal())
             ->shouldBeCalled()->willReturn($localizedLiveSeo);
 
         $seoView = $this->prophesize(SeoViewInterface::class);
@@ -99,7 +99,7 @@ class PublishSeoMessageHandlerTest extends TestCase
 
         $message = $this->prophesize(PublishSeoMessage::class);
         $message->getResourceKey()->shouldBeCalled()->willReturn(self::RESOURCE_KEY);
-        $message->getResourceId()->shouldBeCalled()->willReturn('seo-1');
+        $message->getResourceId()->shouldBeCalled()->willReturn('resource-1');
         $message->getLocale()->shouldBeCalled()->willReturn('en');
         $message->isMandatory()->shouldBeCalled()->willReturn(true);
 
@@ -111,7 +111,7 @@ class PublishSeoMessageHandlerTest extends TestCase
             ]
         )->shouldBeCalled()->willReturn($localizedDraftDimensionIdentifier->reveal());
 
-        $seoDimensionRepository->findByResource(self::RESOURCE_KEY, 'seo-1', $localizedDraftDimensionIdentifier->reveal())
+        $seoDimensionRepository->findDimension(self::RESOURCE_KEY, 'resource-1', $localizedDraftDimensionIdentifier->reveal())
             ->shouldBeCalled()->willReturn(null);
 
         $handler->__invoke($message->reveal());

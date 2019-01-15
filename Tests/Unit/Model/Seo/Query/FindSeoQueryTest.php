@@ -20,25 +20,25 @@ use Sulu\Bundle\ContentBundle\Model\Seo\SeoViewInterface;
 
 class FindSeoQueryTest extends TestCase
 {
-    const RESOURCE_KEY = 'seo';
+    const RESOURCE_KEY = 'test_resource_seos';
 
     public function testGetResourceKey(): void
     {
-        $query = new FindSeoQuery(self::RESOURCE_KEY, 'seo-1', 'en');
+        $query = new FindSeoQuery(self::RESOURCE_KEY, 'resource-1', 'en');
 
         $this->assertEquals(self::RESOURCE_KEY, $query->getResourceKey());
     }
 
     public function testGetResourceId(): void
     {
-        $query = new FindSeoQuery(self::RESOURCE_KEY, 'seo-1', 'en');
+        $query = new FindSeoQuery(self::RESOURCE_KEY, 'resource-1', 'en');
 
-        $this->assertEquals('seo-1', $query->getResourceId());
+        $this->assertEquals('resource-1', $query->getResourceId());
     }
 
     public function testGetLocale(): void
     {
-        $query = new FindSeoQuery(self::RESOURCE_KEY, 'seo-1', 'en');
+        $query = new FindSeoQuery(self::RESOURCE_KEY, 'resource-1', 'en');
 
         $this->assertEquals('en', $query->getLocale());
     }
@@ -47,14 +47,14 @@ class FindSeoQueryTest extends TestCase
     {
         $this->expectException(MissingResultException::class);
 
-        $query = new FindSeoQuery(self::RESOURCE_KEY, 'seo-1', 'en');
+        $query = new FindSeoQuery(self::RESOURCE_KEY, 'resource-1', 'en');
 
         $query->getSeo();
     }
 
     public function testSetSeo(): void
     {
-        $query = new FindSeoQuery(self::RESOURCE_KEY, 'seo-1', 'en');
+        $query = new FindSeoQuery(self::RESOURCE_KEY, 'resource-1', 'en');
 
         $seo = $this->prophesize(SeoViewInterface::class);
 
