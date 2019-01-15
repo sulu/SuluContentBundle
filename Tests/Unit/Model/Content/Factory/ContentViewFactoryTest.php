@@ -19,7 +19,7 @@ use Sulu\Bundle\ContentBundle\Model\Content\Factory\ContentViewFactory;
 
 class ContentViewFactoryTest extends TestCase
 {
-    const RESOURCE_KEY = 'products';
+    const RESOURCE_KEY = 'test_resource_contents';
 
     public function testCreate(): void
     {
@@ -27,7 +27,7 @@ class ContentViewFactoryTest extends TestCase
 
         $contentDimension1 = $this->prophesize(ContentDimensionInterface::class);
         $contentDimension1->getResourceKey()->shouldBeCalled()->willReturn(self::RESOURCE_KEY);
-        $contentDimension1->getResourceId()->shouldBeCalled()->willReturn('product-1');
+        $contentDimension1->getResourceId()->shouldBeCalled()->willReturn('resource-1');
         $contentDimension1->getType()->shouldBeCalled()->willReturn('default');
         $contentDimension1->getData()->shouldBeCalled()->willReturn(['title' => 'Sulu']);
 
@@ -38,7 +38,7 @@ class ContentViewFactoryTest extends TestCase
 
         $this->assertNotNull($result);
         $this->assertEquals(self::RESOURCE_KEY, $result->getResourceKey());
-        $this->assertEquals('product-1', $result->getResourceId());
+        $this->assertEquals('resource-1', $result->getResourceId());
         $this->assertEquals('default', $result->getType());
         $this->assertEquals(['title' => 'Sulu', 'article' => '<p>Sulu is awesome</p>'], $result->getData());
         $this->assertEquals('en', $result->getLocale());

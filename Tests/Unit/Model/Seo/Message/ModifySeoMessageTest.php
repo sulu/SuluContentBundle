@@ -20,13 +20,13 @@ use Sulu\Bundle\ContentBundle\Model\Seo\SeoViewInterface;
 
 class ModifySeoMessageTest extends TestCase
 {
-    const RESOURCE_KEY = 'seo';
+    const RESOURCE_KEY = 'test_resource_seos';
 
     public function testGetResourceKey(): void
     {
         $message = new ModifySeoMessage(
             self::RESOURCE_KEY,
-            'seo-1',
+            'resource-1',
             'en',
             [
                 'title' => 'title-1',
@@ -46,7 +46,7 @@ class ModifySeoMessageTest extends TestCase
     {
         $message = new ModifySeoMessage(
             self::RESOURCE_KEY,
-            'seo-1',
+            'resource-1',
             'en',
             [
                 'title' => 'title-1',
@@ -59,14 +59,14 @@ class ModifySeoMessageTest extends TestCase
             ]
         );
 
-        $this->assertEquals('seo-1', $message->getResourceId());
+        $this->assertEquals('resource-1', $message->getResourceId());
     }
 
     public function testGetLocale(): void
     {
         $message = new ModifySeoMessage(
             self::RESOURCE_KEY,
-            'seo-1',
+            'resource-1',
             'en',
             [
                 'title' => 'title-1',
@@ -86,7 +86,7 @@ class ModifySeoMessageTest extends TestCase
     {
         $message = new ModifySeoMessage(
             self::RESOURCE_KEY,
-            'seo-1',
+            'resource-1',
             'en',
             [
                 'title' => 'title-1',
@@ -106,7 +106,7 @@ class ModifySeoMessageTest extends TestCase
     {
         $message = new ModifySeoMessage(
             self::RESOURCE_KEY,
-            'seo-1',
+            'resource-1',
             'en',
             [
                 'title' => 'title-1',
@@ -126,7 +126,7 @@ class ModifySeoMessageTest extends TestCase
     {
         $message = new ModifySeoMessage(
             self::RESOURCE_KEY,
-            'seo-1',
+            'resource-1',
             'en',
             [
                 'title' => 'title-1',
@@ -146,7 +146,7 @@ class ModifySeoMessageTest extends TestCase
     {
         $message = new ModifySeoMessage(
             self::RESOURCE_KEY,
-            'seo-1',
+            'resource-1',
             'en',
             [
                 'title' => 'title-1',
@@ -166,7 +166,7 @@ class ModifySeoMessageTest extends TestCase
     {
         $message = new ModifySeoMessage(
             self::RESOURCE_KEY,
-            'seo-1',
+            'resource-1',
             'en',
             [
                 'title' => 'title-1',
@@ -186,7 +186,7 @@ class ModifySeoMessageTest extends TestCase
     {
         $message = new ModifySeoMessage(
             self::RESOURCE_KEY,
-            'seo-1',
+            'resource-1',
             'en',
             [
                 'title' => 'title-1',
@@ -206,7 +206,7 @@ class ModifySeoMessageTest extends TestCase
     {
         $message = new ModifySeoMessage(
             self::RESOURCE_KEY,
-            'seo-1',
+            'resource-1',
             'en',
             [
                 'title' => 'title-1',
@@ -228,7 +228,7 @@ class ModifySeoMessageTest extends TestCase
 
         $message = new ModifySeoMessage(
             self::RESOURCE_KEY,
-            'seo-1',
+            'resource-1',
             'en',
             [
                 'title' => 'title-1',
@@ -248,7 +248,7 @@ class ModifySeoMessageTest extends TestCase
     {
         $message = new ModifySeoMessage(
             self::RESOURCE_KEY,
-            'seo-1',
+            'resource-1',
             'en',
             [
                 'title' => 'title-1',

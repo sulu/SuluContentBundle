@@ -21,7 +21,7 @@ use Sulu\Bundle\ContentBundle\Model\Seo\SeoDimensionRepositoryInterface;
 
 class RemoveSeoMessageHandlerTest extends TestCase
 {
-    const RESOURCE_KEY = 'seos';
+    const RESOURCE_KEY = 'test_resource_seos';
 
     public function testInvoke(): void
     {

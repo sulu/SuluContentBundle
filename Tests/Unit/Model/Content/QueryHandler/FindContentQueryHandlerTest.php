@@ -26,7 +26,7 @@ use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierRepos
 
 class FindContentQueryHandlerTest extends TestCase
 {
-    const RESOURCE_KEY = 'products';
+    const RESOURCE_KEY = 'test_resource_contents';
 
     public function testInvoke(): void
     {
@@ -41,7 +41,7 @@ class FindContentQueryHandlerTest extends TestCase
         );
 
         $query = $this->prophesize(FindContentQuery::class);
-        $query->getResourceId()->shouldBeCalled()->willReturn('product-1');
+        $query->getResourceId()->shouldBeCalled()->willReturn('resource-1');
         $query->getResourceKey()->shouldBeCalled()->willReturn(self::RESOURCE_KEY);
         $query->getLocale()->shouldBeCalled()->willReturn('de');
 
@@ -63,7 +63,7 @@ class FindContentQueryHandlerTest extends TestCase
 
         $contentDimensionRepository->findByDimensionIdentifiers(
             self::RESOURCE_KEY,
-            'product-1',
+            'resource-1',
             [$draftDimensionIdentifier->reveal(), $localizedDimensionIdentifier->reveal()]
         )->shouldBeCalled()->willReturn([$contentDimension1->reveal(), $contentDimension2->reveal()]);
 
@@ -93,7 +93,7 @@ class FindContentQueryHandlerTest extends TestCase
         );
 
         $query = $this->prophesize(FindContentQuery::class);
-        $query->getResourceId()->shouldBeCalled()->willReturn('product-1');
+        $query->getResourceId()->shouldBeCalled()->willReturn('resource-1');
         $query->getResourceKey()->shouldBeCalled()->willReturn(self::RESOURCE_KEY);
         $query->getLocale()->shouldBeCalled()->willReturn('de');
 
@@ -115,7 +115,7 @@ class FindContentQueryHandlerTest extends TestCase
 
         $contentDimensionRepository->findByDimensionIdentifiers(
             self::RESOURCE_KEY,
-            'product-1',
+            'resource-1',
             [$draftDimensionIdentifier->reveal(), $localizedDimensionIdentifier->reveal()]
         )->shouldBeCalled()->willReturn([$contentDimension1->reveal(), $contentDimension2->reveal()]);
 

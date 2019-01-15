@@ -18,19 +18,19 @@ use Sulu\Bundle\ContentBundle\Model\Content\Message\RemoveContentMessage;
 
 class RemoveContentMessageTest extends TestCase
 {
-    const RESOURCE_KEY = 'contents';
+    const RESOURCE_KEY = 'test_resource_contents';
 
     public function testGetResourceKey(): void
     {
-        $message = new RemoveContentMessage(self::RESOURCE_KEY, 'product-1');
+        $message = new RemoveContentMessage(self::RESOURCE_KEY, 'resource-1');
 
         $this->assertEquals(self::RESOURCE_KEY, $message->getResourceKey());
     }
 
     public function testGetResourceId(): void
     {
-        $message = new RemoveContentMessage(self::RESOURCE_KEY, 'product-1');
+        $message = new RemoveContentMessage(self::RESOURCE_KEY, 'resource-1');
 
-        $this->assertEquals('product-1', $message->getResourceId());
+        $this->assertEquals('resource-1', $message->getResourceId());
     }
 }

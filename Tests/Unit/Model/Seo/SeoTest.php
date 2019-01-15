@@ -19,12 +19,12 @@ use Sulu\Bundle\ContentBundle\Model\Seo\SeoDimension;
 
 class SeoTest extends TestCase
 {
-    const RESOURCE_KEY = 'seo';
+    const RESOURCE_KEY = 'test_resource_seos';
 
     public function testGetDimension(): void
     {
         $dimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
-        $seoDimension = new SeoDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'seo1');
+        $seoDimension = new SeoDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'resource-1');
 
         $this->assertEquals($dimensionIdentifier->reveal(), $seoDimension->getDimensionIdentifier());
     }
@@ -32,7 +32,7 @@ class SeoTest extends TestCase
     public function testGetResourceKey(): void
     {
         $dimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
-        $seoDimension = new SeoDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'seo1');
+        $seoDimension = new SeoDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'resource-1');
 
         $this->assertEquals(self::RESOURCE_KEY, $seoDimension->getResourceKey());
     }
@@ -40,15 +40,15 @@ class SeoTest extends TestCase
     public function testGetResourceId(): void
     {
         $dimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
-        $seoDimension = new SeoDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'seo1');
+        $seoDimension = new SeoDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'resource-1');
 
-        $this->assertEquals('seo1', $seoDimension->getResourceId());
+        $this->assertEquals('resource-1', $seoDimension->getResourceId());
     }
 
     public function testGetTitle(): void
     {
         $dimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
-        $seoDimension = new SeoDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'seo1');
+        $seoDimension = new SeoDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'resource-1');
 
         $this->assertNull($seoDimension->getTitle());
     }
@@ -56,7 +56,7 @@ class SeoTest extends TestCase
     public function testSetTitle(): void
     {
         $dimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
-        $seoDimension = new SeoDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'seo1');
+        $seoDimension = new SeoDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'resource-1');
 
         $this->assertEquals($seoDimension, $seoDimension->setTitle('title-1'));
         $this->assertEquals('title-1', $seoDimension->getTitle());
@@ -65,7 +65,7 @@ class SeoTest extends TestCase
     public function testGetDescription(): void
     {
         $dimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
-        $seoDimension = new SeoDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'seo1');
+        $seoDimension = new SeoDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'resource-1');
 
         $this->assertNull($seoDimension->getDescription());
     }
@@ -73,7 +73,7 @@ class SeoTest extends TestCase
     public function testSetDescription(): void
     {
         $dimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
-        $seoDimension = new SeoDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'seo1');
+        $seoDimension = new SeoDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'resource-1');
 
         $this->assertEquals($seoDimension, $seoDimension->setDescription('description-1'));
         $this->assertEquals('description-1', $seoDimension->getDescription());
@@ -82,7 +82,7 @@ class SeoTest extends TestCase
     public function testGetKeywords(): void
     {
         $dimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
-        $seoDimension = new SeoDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'seo1');
+        $seoDimension = new SeoDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'resource-1');
 
         $this->assertNull($seoDimension->getKeywords());
     }
@@ -90,7 +90,7 @@ class SeoTest extends TestCase
     public function testSetKeywords(): void
     {
         $dimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
-        $seoDimension = new SeoDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'seo1');
+        $seoDimension = new SeoDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'resource-1');
 
         $this->assertEquals($seoDimension, $seoDimension->setKeywords('keywords-1'));
         $this->assertEquals('keywords-1', $seoDimension->getKeywords());
@@ -99,7 +99,7 @@ class SeoTest extends TestCase
     public function testGetCanonicalUrl(): void
     {
         $dimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
-        $seoDimension = new SeoDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'seo1');
+        $seoDimension = new SeoDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'resource-1');
 
         $this->assertNull($seoDimension->getCanonicalUrl());
     }
@@ -107,7 +107,7 @@ class SeoTest extends TestCase
     public function testSetCanonicalUrl(): void
     {
         $dimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
-        $seoDimension = new SeoDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'seo1');
+        $seoDimension = new SeoDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'resource-1');
 
         $this->assertEquals($seoDimension, $seoDimension->setCanonicalUrl('url-1'));
         $this->assertEquals('url-1', $seoDimension->getCanonicalUrl());
@@ -116,7 +116,7 @@ class SeoTest extends TestCase
     public function testGetNoIndex(): void
     {
         $dimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
-        $seoDimension = new SeoDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'seo1');
+        $seoDimension = new SeoDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'resource-1');
 
         $this->assertNull($seoDimension->getNoIndex());
     }
@@ -124,7 +124,7 @@ class SeoTest extends TestCase
     public function testSetNoIndex(): void
     {
         $dimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
-        $seoDimension = new SeoDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'seo1');
+        $seoDimension = new SeoDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'resource-1');
 
         $this->assertEquals($seoDimension, $seoDimension->setNoIndex(false));
         $this->assertFalse($seoDimension->getNoIndex());
@@ -133,7 +133,7 @@ class SeoTest extends TestCase
     public function testGetNoFollow(): void
     {
         $dimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
-        $seoDimension = new SeoDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'seo1');
+        $seoDimension = new SeoDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'resource-1');
 
         $this->assertNull($seoDimension->getNoFollow());
     }
@@ -141,7 +141,7 @@ class SeoTest extends TestCase
     public function testSetNoFollow(): void
     {
         $dimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
-        $seoDimension = new SeoDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'seo1');
+        $seoDimension = new SeoDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'resource-1');
 
         $this->assertEquals($seoDimension, $seoDimension->setNoFollow(true));
         $this->assertTrue($seoDimension->getNoFollow());
@@ -150,7 +150,7 @@ class SeoTest extends TestCase
     public function testGetHideInSitemap(): void
     {
         $dimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
-        $seoDimension = new SeoDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'seo1');
+        $seoDimension = new SeoDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'resource-1');
 
         $this->assertNull($seoDimension->getHideInSitemap());
     }
@@ -158,7 +158,7 @@ class SeoTest extends TestCase
     public function testSetHideInSitemap(): void
     {
         $dimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
-        $seoDimension = new SeoDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'seo1');
+        $seoDimension = new SeoDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'resource-1');
 
         $this->assertEquals($seoDimension, $seoDimension->setHideInSitemap(false));
         $this->assertFalse($seoDimension->getHideInSitemap());
@@ -167,7 +167,7 @@ class SeoTest extends TestCase
     public function testCopyAttributesFrom(): void
     {
         $dimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
-        $seoDimension = new SeoDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'seo1');
+        $seoDimension = new SeoDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'resource-1');
 
         $otherDimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
         $otherSeo = new SeoDimension(
@@ -187,7 +187,7 @@ class SeoTest extends TestCase
 
         $this->assertEquals($dimensionIdentifier->reveal(), $seoDimension->getDimensionIdentifier());
         $this->assertEquals(self::RESOURCE_KEY, $seoDimension->getResourceKey());
-        $this->assertEquals('seo1', $seoDimension->getResourceId());
+        $this->assertEquals('resource-1', $seoDimension->getResourceId());
         $this->assertEquals('other-title', $seoDimension->getTitle());
         $this->assertEquals('other-description', $seoDimension->getDescription());
         $this->assertNull($seoDimension->getKeywords());

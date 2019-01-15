@@ -20,25 +20,25 @@ use Sulu\Bundle\ContentBundle\Model\Content\Query\FindContentQuery;
 
 class FindContentQueryTest extends TestCase
 {
-    const RESOURCE_KEY = 'products';
+    const RESOURCE_KEY = 'test_resource_contents';
 
     public function testGetResourceKey(): void
     {
-        $query = new FindContentQuery(self::RESOURCE_KEY, 'product-1', 'en');
+        $query = new FindContentQuery(self::RESOURCE_KEY, 'resource-1', 'en');
 
         $this->assertEquals(self::RESOURCE_KEY, $query->getResourceKey());
     }
 
     public function testGetResourceId(): void
     {
-        $query = new FindContentQuery(self::RESOURCE_KEY, 'product-1', 'en');
+        $query = new FindContentQuery(self::RESOURCE_KEY, 'resource-1', 'en');
 
-        $this->assertEquals('product-1', $query->getResourceId());
+        $this->assertEquals('resource-1', $query->getResourceId());
     }
 
     public function testGetLocale(): void
     {
-        $query = new FindContentQuery(self::RESOURCE_KEY, 'product-1', 'en');
+        $query = new FindContentQuery(self::RESOURCE_KEY, 'resource-1', 'en');
 
         $this->assertEquals('en', $query->getLocale());
     }
@@ -47,14 +47,14 @@ class FindContentQueryTest extends TestCase
     {
         $this->expectException(MissingResultException::class);
 
-        $query = new FindContentQuery(self::RESOURCE_KEY, 'product-1', 'en');
+        $query = new FindContentQuery(self::RESOURCE_KEY, 'resource-1', 'en');
 
         $query->getContent();
     }
 
     public function testSetContent(): void
     {
-        $query = new FindContentQuery(self::RESOURCE_KEY, 'product-1', 'en');
+        $query = new FindContentQuery(self::RESOURCE_KEY, 'resource-1', 'en');
 
         $content = $this->prophesize(ContentViewInterface::class);
 

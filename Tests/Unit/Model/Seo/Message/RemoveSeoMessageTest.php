@@ -18,19 +18,19 @@ use Sulu\Bundle\ContentBundle\Model\Seo\Message\RemoveSeoMessage;
 
 class RemoveSeoMessageTest extends TestCase
 {
-    const RESOURCE_KEY = 'seos';
+    const RESOURCE_KEY = 'test_resource_seos';
 
     public function testGetResourceKey(): void
     {
-        $message = new RemoveSeoMessage(self::RESOURCE_KEY, 'product-1');
+        $message = new RemoveSeoMessage(self::RESOURCE_KEY, 'resource-1');
 
         $this->assertEquals(self::RESOURCE_KEY, $message->getResourceKey());
     }
 
     public function testGetResourceId(): void
     {
-        $message = new RemoveSeoMessage(self::RESOURCE_KEY, 'product-1');
+        $message = new RemoveSeoMessage(self::RESOURCE_KEY, 'resource-1');
 
-        $this->assertEquals('product-1', $message->getResourceId());
+        $this->assertEquals('resource-1', $message->getResourceId());
     }
 }

@@ -21,7 +21,7 @@ use Sulu\Bundle\ContentBundle\Model\Content\MessageHandler\RemoveContentMessageH
 
 class RemoveContentMessageHandlerTest extends TestCase
 {
-    const RESOURCE_KEY = 'contents';
+    const RESOURCE_KEY = 'test_resource_contents';
 
     public function testInvoke(): void
     {
