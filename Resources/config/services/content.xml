@@ -4,11 +4,11 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
         <!-- repository -->
-        <service id="Sulu\Bundle\ContentBundle\Repository\ContentRepository">
+        <service id="Sulu\Bundle\ContentBundle\Repository\ContentDimensionRepository">
             <argument type="service" id="doctrine"/>
         </service>
-        <service id="Sulu\Bundle\ContentBundle\Model\Content\ContentRepositoryInterface"
-                 alias="Sulu\Bundle\ContentBundle\Repository\ContentRepository"/>
+        <service id="Sulu\Bundle\ContentBundle\Model\Content\ContentDimensionRepositoryInterface"
+                 alias="Sulu\Bundle\ContentBundle\Repository\ContentDimensionRepository"/>
 
         <!-- factory -->
         <service id="Sulu\Bundle\ContentBundle\Model\Content\Factory\ContentViewFactory"/>
@@ -17,8 +17,8 @@
 
         <!-- handler -->
         <service id="Sulu\Bundle\ContentBundle\Model\Content\MessageHandler\ModifyContentMessageHandler">
-            <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Content\ContentRepositoryInterface"/>
-            <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Dimension\DimensionRepositoryInterface"/>
+            <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Content\ContentDimensionRepositoryInterface"/>
+            <argument type="service" id="Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierRepositoryInterface"/>
             <argument type="service" id="sulu_page.structure.factory"/>
             <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Content\Factory\ContentViewFactoryInterface"/>
 
@@ -26,23 +26,23 @@
         </service>
 
         <service id="Sulu\Bundle\ContentBundle\Model\Content\MessageHandler\PublishContentMessageHandler">
-            <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Content\ContentRepositoryInterface"/>
-            <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Dimension\DimensionRepositoryInterface"/>
+            <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Content\ContentDimensionRepositoryInterface"/>
+            <argument type="service" id="Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierRepositoryInterface"/>
             <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Content\Factory\ContentViewFactoryInterface"/>
 
             <tag name="messenger.message_handler"/>
         </service>
 
         <service id="Sulu\Bundle\ContentBundle\Model\Content\QueryHandler\FindContentQueryHandler">
-            <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Content\ContentRepositoryInterface"/>
-            <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Dimension\DimensionRepositoryInterface"/>
+            <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Content\ContentDimensionRepositoryInterface"/>
+            <argument type="service" id="Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierRepositoryInterface"/>
             <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Content\Factory\ContentViewFactoryInterface"/>
 
             <tag name="messenger.message_handler"/>
         </service>
 
         <!-- serializer -->
-        <service id="Sulu\Bundle\ContentBundle\EventSubscriber\ContentSerializerSubscriber">
+        <service id="Sulu\Bundle\ContentBundle\EventSubscriber\ContentViewSerializationSubscriber">
             <argument type="service" id="sulu_page.structure.factory"/>
 
             <tag name="jms_serializer.event_subscriber"/>

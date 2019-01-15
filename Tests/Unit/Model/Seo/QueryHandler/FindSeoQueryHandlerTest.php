@@ -14,14 +14,14 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Model\Seo\QueryHandler;
 
 use PHPUnit\Framework\TestCase;
-use Sulu\Bundle\ContentBundle\Model\Dimension\DimensionInterface;
-use Sulu\Bundle\ContentBundle\Model\Dimension\DimensionRepositoryInterface;
+use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierInterface;
+use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Seo\Exception\SeoNotFoundException;
 use Sulu\Bundle\ContentBundle\Model\Seo\Factory\SeoViewFactoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Seo\Query\FindSeoQuery;
 use Sulu\Bundle\ContentBundle\Model\Seo\QueryHandler\FindSeoQueryHandler;
-use Sulu\Bundle\ContentBundle\Model\Seo\SeoInterface;
-use Sulu\Bundle\ContentBundle\Model\Seo\SeoRepositoryInterface;
+use Sulu\Bundle\ContentBundle\Model\Seo\SeoDimensionInterface;
+use Sulu\Bundle\ContentBundle\Model\Seo\SeoDimensionRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Seo\SeoViewInterface;
 
 class FindSeoQueryHandlerTest extends TestCase
@@ -30,13 +30,13 @@ class FindSeoQueryHandlerTest extends TestCase
 
     public function testInvoke(): void
     {
-        $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
-        $seoRepository = $this->prophesize(SeoRepositoryInterface::class);
+        $dimensionIdentifierRepository = $this->prophesize(DimensionIdentifierRepositoryInterface::class);
+        $seoDimensionRepository = $this->prophesize(SeoDimensionRepositoryInterface::class);
         $seoViewFactory = $this->prophesize(SeoViewFactoryInterface::class);
 
         $handler = new FindSeoQueryHandler(
-            $seoRepository->reveal(),
-            $dimensionRepository->reveal(),
+            $seoDimensionRepository->reveal(),
+            $dimensionIdentifierRepository->reveal(),
             $seoViewFactory->reveal()
         );
 
@@ -45,22 +45,22 @@ class FindSeoQueryHandlerTest extends TestCase
         $query->getResourceKey()->shouldBeCalled()->willReturn(self::RESOURCE_KEY);
         $query->getLocale()->shouldBeCalled()->willReturn('de');
 
-        $localizedDimension = $this->prophesize(DimensionInterface::class);
+        $localizedDimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
 
-        $dimensionRepository->findOrCreateByAttributes(
+        $dimensionIdentifierRepository->findOrCreateByAttributes(
             [
-                DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT,
-                DimensionInterface::ATTRIBUTE_KEY_LOCALE => 'de',
+                DimensionIdentifierInterface::ATTRIBUTE_KEY_STAGE => DimensionIdentifierInterface::ATTRIBUTE_VALUE_DRAFT,
+                DimensionIdentifierInterface::ATTRIBUTE_KEY_LOCALE => 'de',
             ]
-        )->shouldBeCalled()->willReturn($localizedDimension->reveal());
+        )->shouldBeCalled()->willReturn($localizedDimensionIdentifier->reveal());
 
-        $seoDimension1 = $this->prophesize(SeoInterface::class);
-        $seoDimension2 = $this->prophesize(SeoInterface::class);
+        $seoDimension1 = $this->prophesize(SeoDimensionInterface::class);
+        $seoDimension2 = $this->prophesize(SeoDimensionInterface::class);
 
-        $seoRepository->findByDimensions(
+        $seoDimensionRepository->findByDimensionIdentifiers(
             self::RESOURCE_KEY,
             'seo-1',
-            [$localizedDimension->reveal()]
+            [$localizedDimensionIdentifier->reveal()]
         )->shouldBeCalled()->willReturn([$seoDimension1->reveal(), $seoDimension2->reveal()]);
 
         $seoView = $this->prophesize(SeoViewInterface::class);
@@ -78,13 +78,13 @@ class FindSeoQueryHandlerTest extends TestCase
     {
         $this->expectException(SeoNotFoundException::class);
 
-        $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
-        $seoRepository = $this->prophesize(SeoRepositoryInterface::class);
+        $dimensionIdentifierRepository = $this->prophesize(DimensionIdentifierRepositoryInterface::class);
+        $seoDimensionRepository = $this->prophesize(SeoDimensionRepositoryInterface::class);
         $seoViewFactory = $this->prophesize(SeoViewFactoryInterface::class);
 
         $handler = new FindSeoQueryHandler(
-            $seoRepository->reveal(),
-            $dimensionRepository->reveal(),
+            $seoDimensionRepository->reveal(),
+            $dimensionIdentifierRepository->reveal(),
             $seoViewFactory->reveal()
         );
 
@@ -93,22 +93,22 @@ class FindSeoQueryHandlerTest extends TestCase
         $query->getResourceKey()->shouldBeCalled()->willReturn(self::RESOURCE_KEY);
         $query->getLocale()->shouldBeCalled()->willReturn('de');
 
-        $localizedDimension = $this->prophesize(DimensionInterface::class);
+        $localizedDimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
 
-        $dimensionRepository->findOrCreateByAttributes(
+        $dimensionIdentifierRepository->findOrCreateByAttributes(
             [
-                DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT,
-                DimensionInterface::ATTRIBUTE_KEY_LOCALE => 'de',
+                DimensionIdentifierInterface::ATTRIBUTE_KEY_STAGE => DimensionIdentifierInterface::ATTRIBUTE_VALUE_DRAFT,
+                DimensionIdentifierInterface::ATTRIBUTE_KEY_LOCALE => 'de',
             ]
-        )->shouldBeCalled()->willReturn($localizedDimension->reveal());
+        )->shouldBeCalled()->willReturn($localizedDimensionIdentifier->reveal());
 
-        $seoDimension1 = $this->prophesize(SeoInterface::class);
-        $seoDimension2 = $this->prophesize(SeoInterface::class);
+        $seoDimension1 = $this->prophesize(SeoDimensionInterface::class);
+        $seoDimension2 = $this->prophesize(SeoDimensionInterface::class);
 
-        $seoRepository->findByDimensions(
+        $seoDimensionRepository->findByDimensionIdentifiers(
             self::RESOURCE_KEY,
             'seo-1',
-            [$localizedDimension->reveal()]
+            [$localizedDimensionIdentifier->reveal()]
         )->shouldBeCalled()->willReturn([$seoDimension1->reveal(), $seoDimension2->reveal()]);
 
         $seoViewFactory->create(

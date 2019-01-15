@@ -5,6 +5,6 @@
     <imports>
         <import resource="./services/content.xml"/>
         <import resource="./services/seo.xml"/>
-        <import resource="./services/dimension.xml"/>
+        <import resource="./services/dimension_identifier.xml"/>
     </imports>
 </container>

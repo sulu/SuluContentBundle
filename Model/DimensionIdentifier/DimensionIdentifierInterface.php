@@ -11,9 +11,9 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Model\Dimension;
+namespace Sulu\Bundle\ContentBundle\Model\DimensionIdentifier;
 
-interface DimensionInterface
+interface DimensionIdentifierInterface
 {
     const ATTRIBUTE_KEY_STAGE = 'stage';
     const ATTRIBUTE_VALUE_DRAFT = 'draft';

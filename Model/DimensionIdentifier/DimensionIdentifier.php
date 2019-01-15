@@ -11,13 +11,13 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Model\Dimension;
+namespace Sulu\Bundle\ContentBundle\Model\DimensionIdentifier;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Sulu\Bundle\ContentBundle\Model\Dimension\Exception\DimensionAttributeNotFoundException;
+use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\Exception\DimensionIdentifierAttributeNotFoundException;
 
-class Dimension implements DimensionInterface
+class DimensionIdentifier implements DimensionIdentifierInterface
 {
     /**
      * @var string
@@ -25,7 +25,7 @@ class Dimension implements DimensionInterface
     private $id;
 
     /**
-     * @var Collection|DimensionAttributeInterface[]
+     * @var Collection|DimensionIdentifierAttributeInterface[]
      */
     private $attributes;
 
@@ -35,7 +35,7 @@ class Dimension implements DimensionInterface
     private $attributeCount;
 
     /**
-     * @param DimensionAttributeInterface[] $attributes
+     * @param DimensionIdentifierAttributeInterface[] $attributes
      */
     public function __construct(string $id, array $attributes = [])
     {
@@ -44,7 +44,7 @@ class Dimension implements DimensionInterface
         $this->attributeCount = $this->attributes->count();
 
         foreach ($this->attributes as $attribute) {
-            $attribute->setDimension($this);
+            $attribute->setDimensionIdentifier($this);
         }
     }
 
@@ -71,7 +71,7 @@ class Dimension implements DimensionInterface
             }
         }
 
-        throw new DimensionAttributeNotFoundException($this, $key);
+        throw new DimensionIdentifierAttributeNotFoundException($this, $key);
     }
 
     public function hasAttribute(string $key): bool

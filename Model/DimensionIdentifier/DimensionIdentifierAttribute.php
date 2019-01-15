@@ -11,14 +11,14 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Model\Dimension;
+namespace Sulu\Bundle\ContentBundle\Model\DimensionIdentifier;
 
-class DimensionAttribute implements DimensionAttributeInterface
+class DimensionIdentifierAttribute implements DimensionIdentifierAttributeInterface
 {
     /**
-     * @var DimensionInterface
+     * @var DimensionIdentifierInterface
      */
-    private $dimension;
+    private $dimensionIdentifier;
 
     /**
      * @var string
@@ -36,16 +36,16 @@ class DimensionAttribute implements DimensionAttributeInterface
         $this->value = $value;
     }
 
-    public function setDimension(DimensionInterface $dimension): DimensionAttributeInterface
+    public function setDimensionIdentifier(DimensionIdentifierInterface $dimensionIdentifier): DimensionIdentifierAttributeInterface
     {
-        $this->dimension = $dimension;
+        $this->dimensionIdentifier = $dimensionIdentifier;
 
         return $this;
     }
 
-    public function getDimension(): DimensionInterface
+    public function getDimensionIdentifier(): DimensionIdentifierInterface
     {
-        return $this->dimension;
+        return $this->dimensionIdentifier;
     }
 
     public function getKey(): string

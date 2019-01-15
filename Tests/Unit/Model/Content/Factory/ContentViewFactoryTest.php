@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Model\Content\Factory;
 
 use PHPUnit\Framework\TestCase;
-use Sulu\Bundle\ContentBundle\Model\Content\ContentInterface;
+use Sulu\Bundle\ContentBundle\Model\Content\ContentDimensionInterface;
 use Sulu\Bundle\ContentBundle\Model\Content\Factory\ContentViewFactory;
 
 class ContentViewFactoryTest extends TestCase
@@ -25,13 +25,13 @@ class ContentViewFactoryTest extends TestCase
     {
         $factory = new ContentViewFactory();
 
-        $contentDimension1 = $this->prophesize(ContentInterface::class);
+        $contentDimension1 = $this->prophesize(ContentDimensionInterface::class);
         $contentDimension1->getResourceKey()->shouldBeCalled()->willReturn(self::RESOURCE_KEY);
         $contentDimension1->getResourceId()->shouldBeCalled()->willReturn('product-1');
         $contentDimension1->getType()->shouldBeCalled()->willReturn('default');
         $contentDimension1->getData()->shouldBeCalled()->willReturn(['title' => 'Sulu']);
 
-        $contentDimension2 = $this->prophesize(ContentInterface::class);
+        $contentDimension2 = $this->prophesize(ContentDimensionInterface::class);
         $contentDimension2->getData()->shouldBeCalled()->willReturn(['article' => '<p>Sulu is awesome</p>']);
 
         $result = $factory->create([$contentDimension1->reveal(), $contentDimension2->reveal()], 'en');

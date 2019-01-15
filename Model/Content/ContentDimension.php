@@ -13,14 +13,14 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Model\Content;
 
-use Sulu\Bundle\ContentBundle\Model\Dimension\DimensionInterface;
+use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierInterface;
 
-class Content implements ContentInterface
+class ContentDimension implements ContentDimensionInterface
 {
     /**
-     * @var DimensionInterface
+     * @var DimensionIdentifierInterface
      */
-    private $dimension;
+    private $dimensionIdentifier;
 
     /**
      * @var string
@@ -42,18 +42,23 @@ class Content implements ContentInterface
      */
     private $data;
 
-    public function __construct(DimensionInterface $dimension, string $resourceKey, string $resourceId, ?string $type = null, array $data = [])
-    {
-        $this->dimension = $dimension;
+    public function __construct(
+        DimensionIdentifierInterface $dimensionIdentifier,
+        string $resourceKey,
+        string $resourceId,
+        ?string $type = null,
+        array $data = []
+    ) {
+        $this->dimensionIdentifier = $dimensionIdentifier;
         $this->resourceKey = $resourceKey;
         $this->resourceId = $resourceId;
         $this->type = $type;
         $this->data = $data;
     }
 
-    public function getDimension(): DimensionInterface
+    public function getDimensionIdentifier(): DimensionIdentifierInterface
     {
-        return $this->dimension;
+        return $this->dimensionIdentifier;
     }
 
     public function getResourceKey(): string
@@ -71,7 +76,7 @@ class Content implements ContentInterface
         return $this->type;
     }
 
-    public function setType(?string $type): ContentInterface
+    public function setType(?string $type): ContentDimensionInterface
     {
         $this->type = $type;
 
@@ -83,14 +88,14 @@ class Content implements ContentInterface
         return $this->data;
     }
 
-    public function setData(array $data): ContentInterface
+    public function setData(array $data): ContentDimensionInterface
     {
         $this->data = $data;
 
         return $this;
     }
 
-    public function copyAttributesFrom(ContentInterface $content): ContentInterface
+    public function copyAttributesFrom(ContentDimensionInterface $content): ContentDimensionInterface
     {
         $this->setType($content->getType());
         $this->setData($content->getData());

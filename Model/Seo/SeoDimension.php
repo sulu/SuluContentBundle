@@ -13,14 +13,14 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Model\Seo;
 
-use Sulu\Bundle\ContentBundle\Model\Dimension\DimensionInterface;
+use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierInterface;
 
-class Seo implements SeoInterface
+class SeoDimension implements SeoDimensionInterface
 {
     /**
-     * @var DimensionInterface
+     * @var DimensionIdentifierInterface
      */
-    private $dimension;
+    private $dimensionIdentifier;
 
     /**
      * @var string
@@ -68,7 +68,7 @@ class Seo implements SeoInterface
     private $hideInSitemap;
 
     public function __construct(
-        DimensionInterface $dimension,
+        DimensionIdentifierInterface $dimensionIdentifier,
         string $resourceKey,
         string $resourceId,
         string $title = null,
@@ -79,7 +79,7 @@ class Seo implements SeoInterface
         bool $noFollow = null,
         bool $hideInSitemap = null
     ) {
-        $this->dimension = $dimension;
+        $this->dimensionIdentifier = $dimensionIdentifier;
         $this->resourceKey = $resourceKey;
         $this->resourceId = $resourceId;
         $this->title = $title;
@@ -91,9 +91,9 @@ class Seo implements SeoInterface
         $this->hideInSitemap = $hideInSitemap;
     }
 
-    public function getDimension(): DimensionInterface
+    public function getDimensionIdentifier(): DimensionIdentifierInterface
     {
-        return $this->dimension;
+        return $this->dimensionIdentifier;
     }
 
     public function getResourceKey(): string
@@ -111,7 +111,7 @@ class Seo implements SeoInterface
         return $this->title;
     }
 
-    public function setTitle(?string $title): SeoInterface
+    public function setTitle(?string $title): SeoDimensionInterface
     {
         $this->title = $title;
 
@@ -123,7 +123,7 @@ class Seo implements SeoInterface
         return $this->description;
     }
 
-    public function setDescription(?string $description): SeoInterface
+    public function setDescription(?string $description): SeoDimensionInterface
     {
         $this->description = $description;
 
@@ -135,7 +135,7 @@ class Seo implements SeoInterface
         return $this->keywords;
     }
 
-    public function setKeywords(?string $keywords): SeoInterface
+    public function setKeywords(?string $keywords): SeoDimensionInterface
     {
         $this->keywords = $keywords;
 
@@ -147,7 +147,7 @@ class Seo implements SeoInterface
         return $this->canonicalUrl;
     }
 
-    public function setCanonicalUrl(?string $canonicalUrl): SeoInterface
+    public function setCanonicalUrl(?string $canonicalUrl): SeoDimensionInterface
     {
         $this->canonicalUrl = $canonicalUrl;
 
@@ -159,7 +159,7 @@ class Seo implements SeoInterface
         return $this->noIndex;
     }
 
-    public function setNoIndex(?bool $noIndex): SeoInterface
+    public function setNoIndex(?bool $noIndex): SeoDimensionInterface
     {
         $this->noIndex = $noIndex;
 
@@ -171,7 +171,7 @@ class Seo implements SeoInterface
         return $this->noFollow;
     }
 
-    public function setNoFollow(?bool $noFollow): SeoInterface
+    public function setNoFollow(?bool $noFollow): SeoDimensionInterface
     {
         $this->noFollow = $noFollow;
 
@@ -183,14 +183,14 @@ class Seo implements SeoInterface
         return $this->hideInSitemap;
     }
 
-    public function setHideInSitemap(?bool $hideInSitemap): SeoInterface
+    public function setHideInSitemap(?bool $hideInSitemap): SeoDimensionInterface
     {
         $this->hideInSitemap = $hideInSitemap;
 
         return $this;
     }
 
-    public function copyAttributesFrom(SeoInterface $seo): SeoInterface
+    public function copyAttributesFrom(SeoDimensionInterface $seo): SeoDimensionInterface
     {
         $this->setTitle($seo->getTitle());
         $this->setDescription($seo->getDescription());

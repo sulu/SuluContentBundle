@@ -13,25 +13,25 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Model\Content\MessageHandler;
 
-use Sulu\Bundle\ContentBundle\Model\Content\ContentInterface;
-use Sulu\Bundle\ContentBundle\Model\Content\ContentRepositoryInterface;
+use Sulu\Bundle\ContentBundle\Model\Content\ContentDimensionInterface;
+use Sulu\Bundle\ContentBundle\Model\Content\ContentDimensionRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Content\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Model\Content\Factory\ContentViewFactoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Content\Message\PublishContentMessage;
-use Sulu\Bundle\ContentBundle\Model\Dimension\DimensionInterface;
-use Sulu\Bundle\ContentBundle\Model\Dimension\DimensionRepositoryInterface;
+use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierInterface;
+use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierRepositoryInterface;
 
 class PublishContentMessageHandler
 {
     /**
-     * @var ContentRepositoryInterface
+     * @var ContentDimensionRepositoryInterface
      */
-    private $contentRepository;
+    private $contentDimensionRepository;
 
     /**
-     * @var DimensionRepositoryInterface
+     * @var DimensionIdentifierRepositoryInterface
      */
-    private $dimensionRepository;
+    private $dimensionIdentifierRepository;
 
     /**
      * @var ContentViewFactoryInterface
@@ -39,12 +39,12 @@ class PublishContentMessageHandler
     private $contentViewFactory;
 
     public function __construct(
-        ContentRepositoryInterface $contentRepository,
-        DimensionRepositoryInterface $dimensionRepository,
+        ContentDimensionRepositoryInterface $contentDimensionRepository,
+        DimensionIdentifierRepositoryInterface $dimensionIdentifierRepository,
         ContentViewFactoryInterface $contentViewFactory
     ) {
-        $this->contentRepository = $contentRepository;
-        $this->dimensionRepository = $dimensionRepository;
+        $this->contentDimensionRepository = $contentDimensionRepository;
+        $this->dimensionIdentifierRepository = $dimensionIdentifierRepository;
         $this->contentViewFactory = $contentViewFactory;
     }
 
@@ -54,16 +54,16 @@ class PublishContentMessageHandler
         $resourceId = $message->getResourceId();
         $mandatory = $message->isMandatory();
 
-        $contents = array_filter([
-            $this->publishContent($resourceKey, $resourceId, $mandatory),
-            $this->publishContent($resourceKey, $resourceId, $mandatory, $message->getLocale()),
+        $publishedContentDimensions = array_filter([
+            $this->publishContentDimension($resourceKey, $resourceId, $mandatory),
+            $this->publishContentDimension($resourceKey, $resourceId, $mandatory, $message->getLocale()),
         ]);
 
-        if (!$contents) {
+        if (!$publishedContentDimensions) {
             return;
         }
 
-        $contentView = $this->contentViewFactory->create($contents, $message->getLocale());
+        $contentView = $this->contentViewFactory->create($publishedContentDimensions, $message->getLocale());
         if (!$contentView) {
             throw new ContentNotFoundException($resourceKey, $resourceId);
         }
@@ -71,15 +71,14 @@ class PublishContentMessageHandler
         $message->setContent($contentView);
     }
 
-    protected function publishContent(
+    protected function publishContentDimension(
         string $resourceKey,
         string $resourceId,
         bool $mandatory,
         ?string $locale = null
-    ): ?ContentInterface {
-        $draftAttributes = $this->createAttributes(DimensionInterface::ATTRIBUTE_VALUE_DRAFT, $locale);
-        $draftDimension = $this->dimensionRepository->findOrCreateByAttributes($draftAttributes);
-        $draftContent = $this->contentRepository->findByResource($resourceKey, $resourceId, $draftDimension);
+    ): ?ContentDimensionInterface {
+        $draftDimensionIdentifier = $this->getDimensionIdentifier(DimensionIdentifierInterface::ATTRIBUTE_VALUE_DRAFT, $locale);
+        $draftContent = $this->contentDimensionRepository->findByResource($resourceKey, $resourceId, $draftDimensionIdentifier);
 
         if (!$draftContent) {
             if (!$mandatory) {
@@ -94,24 +93,21 @@ class PublishContentMessageHandler
             throw new \InvalidArgumentException('Content type cannot be null');
         }
 
-        $liveAttributes = $this->createAttributes(DimensionInterface::ATTRIBUTE_VALUE_LIVE, $locale);
-        $liveDimension = $this->dimensionRepository->findOrCreateByAttributes($liveAttributes);
-        $liveContent = $this->contentRepository->findOrCreate($resourceKey, $resourceId, $liveDimension);
+        $liveDimensionIdentifier = $this->getDimensionIdentifier(DimensionIdentifierInterface::ATTRIBUTE_VALUE_LIVE, $locale);
+        $liveContent = $this->contentDimensionRepository->findOrCreate($resourceKey, $resourceId, $liveDimensionIdentifier);
 
         $liveContent->copyAttributesFrom($draftContent);
 
         return $liveContent;
     }
 
-    protected function createAttributes(string $stage, ?string $locale = null): array
+    protected function getDimensionIdentifier(string $stage, ?string $locale = null): DimensionIdentifierInterface
     {
-        $attributes = [DimensionInterface::ATTRIBUTE_KEY_STAGE => $stage];
-        if (!$locale) {
-            return $attributes;
+        $attributes = [DimensionIdentifierInterface::ATTRIBUTE_KEY_STAGE => $stage];
+        if ($locale) {
+            $attributes[DimensionIdentifierInterface::ATTRIBUTE_KEY_LOCALE] = $locale;
         }
 
-        $attributes[DimensionInterface::ATTRIBUTE_KEY_LOCALE] = $locale;
-
-        return $attributes;
+        return $this->dimensionIdentifierRepository->findOrCreateByAttributes($attributes);
     }
 }

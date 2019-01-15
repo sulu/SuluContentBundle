@@ -13,11 +13,11 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Model\Seo;
 
-use Sulu\Bundle\ContentBundle\Model\Dimension\DimensionInterface;
+use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierInterface;
 
-interface SeoInterface
+interface SeoDimensionInterface
 {
-    public function getDimension(): DimensionInterface;
+    public function getDimensionIdentifier(): DimensionIdentifierInterface;
 
     public function getResourceKey(): string;
 
@@ -51,5 +51,5 @@ interface SeoInterface
 
     public function setHideInSitemap(?bool $hideInSitemap): self;
 
-    public function copyAttributesFrom(SeoInterface $seo): self;
+    public function copyAttributesFrom(SeoDimensionInterface $seo): self;
 }

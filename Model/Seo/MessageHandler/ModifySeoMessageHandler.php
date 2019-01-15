@@ -13,25 +13,25 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Model\Seo\MessageHandler;
 
-use Sulu\Bundle\ContentBundle\Model\Dimension\DimensionInterface;
-use Sulu\Bundle\ContentBundle\Model\Dimension\DimensionRepositoryInterface;
+use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierInterface;
+use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Seo\Exception\SeoNotFoundException;
 use Sulu\Bundle\ContentBundle\Model\Seo\Factory\SeoViewFactoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Seo\Message\ModifySeoMessage;
-use Sulu\Bundle\ContentBundle\Model\Seo\SeoInterface;
-use Sulu\Bundle\ContentBundle\Model\Seo\SeoRepositoryInterface;
+use Sulu\Bundle\ContentBundle\Model\Seo\SeoDimensionInterface;
+use Sulu\Bundle\ContentBundle\Model\Seo\SeoDimensionRepositoryInterface;
 
 class ModifySeoMessageHandler
 {
     /**
-     * @var SeoRepositoryInterface
+     * @var SeoDimensionRepositoryInterface
      */
-    private $seoRepository;
+    private $seoDimensionRepository;
 
     /**
-     * @var DimensionRepositoryInterface
+     * @var DimensionIdentifierRepositoryInterface
      */
-    private $dimensionRepository;
+    private $dimensionIdentifierRepository;
 
     /**
      * @var SeoViewFactoryInterface
@@ -39,18 +39,18 @@ class ModifySeoMessageHandler
     private $seoViewFactory;
 
     public function __construct(
-        SeoRepositoryInterface $seoRepository,
-        DimensionRepositoryInterface $dimensionRepository,
+        SeoDimensionRepositoryInterface $seoDimensionRepository,
+        DimensionIdentifierRepositoryInterface $dimensionIdentifierRepository,
         SeoViewFactoryInterface $seoViewFactory
     ) {
-        $this->seoRepository = $seoRepository;
-        $this->dimensionRepository = $dimensionRepository;
+        $this->seoDimensionRepository = $seoDimensionRepository;
+        $this->dimensionIdentifierRepository = $dimensionIdentifierRepository;
         $this->seoViewFactory = $seoViewFactory;
     }
 
     public function __invoke(ModifySeoMessage $message): void
     {
-        $localizedDraftSeo = $this->findOrCreateSeo(
+        $localizedDraftSeo = $this->findOrCreateDraftSeoDimension(
             $message->getResourceKey(),
             $message->getResourceId(),
             $message->getLocale()
@@ -67,7 +67,7 @@ class ModifySeoMessageHandler
 
     private function setData(
         ModifySeoMessage $message,
-        SeoInterface $localizedDraftSeo
+        SeoDimensionInterface $localizedDraftSeo
     ): void {
         $localizedDraftSeo->setTitle($message->getTitle());
         $localizedDraftSeo->setDescription($message->getDescription());
@@ -78,25 +78,22 @@ class ModifySeoMessageHandler
         $localizedDraftSeo->setHideInSitemap($message->getHideInSitemap());
     }
 
-    private function findOrCreateSeo(
+    private function findOrCreateDraftSeoDimension(
         string $resourceKey,
         string $resourceId,
         string $locale
-    ): SeoInterface {
-        $dimension = $this->dimensionRepository->findOrCreateByAttributes($this->createAttributes($locale));
+    ): SeoDimensionInterface {
+        $dimensionIdentifier = $this->getDraftDimensionIdentifier($locale);
 
-        return $this->seoRepository->findOrCreate($resourceKey, $resourceId, $dimension);
+        return $this->seoDimensionRepository->findOrCreate($resourceKey, $resourceId, $dimensionIdentifier);
     }
 
-    /**
-     * @return string[]
-     */
-    private function createAttributes(string $locale): array
+    private function getDraftDimensionIdentifier(string $locale): DimensionIdentifierInterface
     {
         $attributes = [];
-        $attributes[DimensionInterface::ATTRIBUTE_KEY_STAGE] = DimensionInterface::ATTRIBUTE_VALUE_DRAFT;
-        $attributes[DimensionInterface::ATTRIBUTE_KEY_LOCALE] = $locale;
+        $attributes[DimensionIdentifierInterface::ATTRIBUTE_KEY_STAGE] = DimensionIdentifierInterface::ATTRIBUTE_VALUE_DRAFT;
+        $attributes[DimensionIdentifierInterface::ATTRIBUTE_KEY_LOCALE] = $locale;
 
-        return $attributes;
+        return $this->dimensionIdentifierRepository->findOrCreateByAttributes($attributes);
     }
 }

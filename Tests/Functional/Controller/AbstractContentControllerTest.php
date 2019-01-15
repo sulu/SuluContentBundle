@@ -14,14 +14,14 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Functional\Controller;
 
 use Sulu\Bundle\ContentBundle\Tests\Application\Controller\HandlePublishCallbackInterface;
-use Sulu\Bundle\ContentBundle\Tests\Functional\Traits\ContentTrait;
-use Sulu\Bundle\ContentBundle\Tests\Functional\Traits\DimensionTrait;
+use Sulu\Bundle\ContentBundle\Tests\Functional\Traits\ContentDimensionTrait;
+use Sulu\Bundle\ContentBundle\Tests\Functional\Traits\DimensionIdentifierTrait;
 use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
 
 class AbstractContentControllerTest extends SuluTestCase
 {
-    use DimensionTrait;
-    use ContentTrait;
+    use DimensionIdentifierTrait;
+    use ContentDimensionTrait;
 
     public function setUp()
     {
@@ -32,7 +32,7 @@ class AbstractContentControllerTest extends SuluTestCase
 
     public function testGet(): void
     {
-        $this->createContent(
+        $this->createDraftContentDimension(
             'test_resource_contents',
             'test-resource-1',
             'en',
@@ -68,7 +68,7 @@ class AbstractContentControllerTest extends SuluTestCase
 
     public function testPut(): void
     {
-        $this->createContent('test_resource_contents', 'test-resource-1');
+        $this->createDraftContentDimension('test_resource_contents', 'test-resource-1');
 
         $handlePublishCallback = $this->prophesize(HandlePublishCallbackInterface::class);
         $handlePublishCallback->invoke()->shouldNotBeCalled();
@@ -118,7 +118,7 @@ class AbstractContentControllerTest extends SuluTestCase
 
     public function testPutWithPublishAction(): void
     {
-        $this->createContent('test_resource_contents', 'test-resource-1');
+        $this->createDraftContentDimension('test_resource_contents', 'test-resource-1');
 
         $handlePublishCallback = $this->prophesize(HandlePublishCallbackInterface::class);
         $handlePublishCallback->invoke('test-resource-1', 'en')->shouldBeCalled();

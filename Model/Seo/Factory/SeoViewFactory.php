@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Model\Seo\Factory;
 
-use Sulu\Bundle\ContentBundle\Model\Seo\SeoInterface;
+use Sulu\Bundle\ContentBundle\Model\Seo\SeoDimensionInterface;
 use Sulu\Bundle\ContentBundle\Model\Seo\SeoView;
 use Sulu\Bundle\ContentBundle\Model\Seo\SeoViewInterface;
 
@@ -37,7 +37,7 @@ class SeoViewFactory implements SeoViewFactoryInterface
         $noFollow = null;
         $hideInSitemap = null;
 
-        /** @var SeoInterface $seoDimension */
+        /** @var SeoDimensionInterface $seoDimension */
         foreach ($seoDimensions as $seoDimension) {
             $title = $seoDimension->getTitle() ?? $title;
             $description = $seoDimension->getDescription() ?? $description;

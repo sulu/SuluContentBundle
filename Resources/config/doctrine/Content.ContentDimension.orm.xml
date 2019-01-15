@@ -2,22 +2,22 @@
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                   xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
-    <entity name="Sulu\Bundle\ContentBundle\Model\Content\Content"
-            table="cs_contents"
-            repository-class="Sulu\Bundle\ContentBundle\Repository\Content\ContentRepository">
+    <entity name="Sulu\Bundle\ContentBundle\Model\Content\ContentDimension"
+            table="cs_content_dimensions"
+            repository-class="Sulu\Bundle\ContentBundle\Repository\Content\ContentDimensionRepository">
         <id name="resourceKey" type="string">
             <generator strategy="NONE"/>
         </id>
         <id name="resourceId" type="string">
             <generator strategy="NONE"/>
         </id>
-        <id name="dimension" type="guid" association-key="true">
+        <id name="dimensionIdentifier" type="guid" association-key="true">
             <generator strategy="NONE"/>
         </id>
 
         <field name="type" type="string" nullable="false"/>
         <field name="data" type="json" nullable="false"/>
 
-        <many-to-one field="dimension" target-entity="Sulu\Bundle\ContentBundle\Model\Dimension\Dimension"/>
+        <many-to-one field="dimensionIdentifier" target-entity="Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifier"/>
     </entity>
 </doctrine-mapping>

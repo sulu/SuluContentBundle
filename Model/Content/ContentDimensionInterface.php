@@ -13,11 +13,11 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Model\Content;
 
-use Sulu\Bundle\ContentBundle\Model\Dimension\DimensionInterface;
+use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierInterface;
 
-interface ContentInterface
+interface ContentDimensionInterface
 {
-    public function getDimension(): DimensionInterface;
+    public function getDimensionIdentifier(): DimensionIdentifierInterface;
 
     public function getResourceKey(): string;
 
@@ -31,5 +31,5 @@ interface ContentInterface
 
     public function setData(array $data): self;
 
-    public function copyAttributesFrom(ContentInterface $content): self;
+    public function copyAttributesFrom(ContentDimensionInterface $content): self;
 }
