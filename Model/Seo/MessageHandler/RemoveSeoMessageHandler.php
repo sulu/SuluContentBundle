@@ -45,7 +45,7 @@ class RemoveSeoMessageHandler
         $seoDimensions = $this->seoDimensionRepository->findByResource($resourceKey, $resourceId);
 
         foreach ($seoDimensions as $seoDimension) {
-            $this->seoDimensionRepository->remove($seoDimension);
+            $this->seoDimensionRepository->removeDimension($seoDimension);
         }
     }
 }

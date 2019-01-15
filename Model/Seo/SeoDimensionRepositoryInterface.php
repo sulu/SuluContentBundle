@@ -35,7 +35,7 @@ interface SeoDimensionRepositoryInterface
         DimensionIdentifierInterface $dimensionIdentifier
     ): ?SeoDimensionInterface;
 
-    public function remove(SeoDimensionInterface $contentDimension): void;
+    public function removeDimension(SeoDimensionInterface $contentDimension): void;
 
     /**
      * @return SeoDimensionInterface[]

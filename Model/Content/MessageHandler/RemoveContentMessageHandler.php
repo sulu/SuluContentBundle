@@ -43,7 +43,7 @@ class RemoveContentMessageHandler
         $contentDimensions = $this->contentDimensionRepository->findByResource($resourceKey, $resourceId);
 
         foreach ($contentDimensions as $contentDimension) {
-            $this->contentDimensionRepository->remove($contentDimension);
+            $this->contentDimensionRepository->removeDimension($contentDimension);
         }
     }
 }
