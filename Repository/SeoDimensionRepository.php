@@ -67,6 +67,11 @@ class SeoDimensionRepository extends ServiceEntityRepository implements SeoDimen
         return $seoDimension;
     }
 
+    public function remove(SeoDimensionInterface $contentDimension): void
+    {
+        $this->getEntityManager()->remove($contentDimension);
+    }
+
     public function findByResource(string $resourceKey, string $resourceId): array
     {
         return $this->findBy(['resourceKey' => $resourceKey, 'resourceId' => $resourceId]);
