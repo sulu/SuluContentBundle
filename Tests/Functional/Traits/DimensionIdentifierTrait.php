@@ -13,22 +13,23 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Tests\Functional\Traits;
 
+use Doctrine\ORM\EntityManagerInterface;
+use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifier;
 use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierInterface;
 use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierRepositoryInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 trait DimensionIdentifierTrait
 {
     protected function findOrCreateDimensionIdentifier(array $attributes): DimensionIdentifierInterface
     {
         /** @var DimensionIdentifierRepositoryInterface */
-        $dimensionIdentifierRepository = $this->getContainer()->get(DimensionIdentifierRepositoryInterface::class);
+        $dimensionIdentifierRepository = $this->getEntityManager()->getRepository(DimensionIdentifier::class);
 
         return $dimensionIdentifierRepository->findOrCreateByAttributes($attributes);
     }
 
     /**
-     * @return ContainerInterface
+     * @return EntityManagerInterface
      */
-    abstract protected function getContainer();
+    abstract protected function getEntityManager();
 }

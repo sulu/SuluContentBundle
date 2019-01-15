@@ -6,6 +6,8 @@
         <!-- repository -->
         <service id="Sulu\Bundle\ContentBundle\Repository\ContentDimensionRepository">
             <argument type="service" id="doctrine"/>
+
+            <tag name="doctrine.repository_service"/>
         </service>
         <service id="Sulu\Bundle\ContentBundle\Model\Content\ContentDimensionRepositoryInterface"
                  alias="Sulu\Bundle\ContentBundle\Repository\ContentDimensionRepository"/>
@@ -29,6 +31,12 @@
             <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Content\ContentDimensionRepositoryInterface"/>
             <argument type="service" id="Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierRepositoryInterface"/>
             <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Content\Factory\ContentViewFactoryInterface"/>
+
+            <tag name="messenger.message_handler"/>
+        </service>
+
+        <service id="Sulu\Bundle\ContentBundle\Model\Content\MessageHandler\RemoveContentMessageHandler">
+            <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Content\ContentDimensionRepositoryInterface"/>
 
             <tag name="messenger.message_handler"/>
         </service>
