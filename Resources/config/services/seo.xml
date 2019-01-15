@@ -34,6 +34,12 @@
             <tag name="messenger.message_handler"/>
         </service>
 
+        <service id="Sulu\Bundle\ContentBundle\Model\Seo\MessageHandler\RemoveSeoMessageHandler">
+            <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Seo\SeoDimensionRepositoryInterface"/>
+
+            <tag name="messenger.message_handler"/>
+        </service>
+
         <service id="Sulu\Bundle\ContentBundle\Model\Seo\QueryHandler\FindSeoQueryHandler">
             <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Seo\SeoDimensionRepositoryInterface"/>
             <argument type="service" id="Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierRepositoryInterface"/>
