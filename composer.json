@@ -15,7 +15,7 @@
         "doctrine/doctrine-bundle": "^1.6",
         "friendsofsymfony/rest-bundle": "^2.2",
         "jms/serializer": "^1.13",
-        "sulu/sulu": "dev-enhancement/rename-content-bundle",
+        "sulu/sulu": "dev-develop",
         "symfony/config": "^4.1",
         "symfony/dependency-injection": "^4.1",
         "symfony/http-foundation": "^4.1",
@@ -69,6 +69,5 @@
         "branch-alias": {
             "dev-master": "1.0-dev"
         }
-    },
-    "repositories":[{"type": "git", "url": "https://github.com/wachterjohannes/sulu.git"}]
+    }
 }
