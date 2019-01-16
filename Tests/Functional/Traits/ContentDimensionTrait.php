@@ -16,6 +16,7 @@ namespace Sulu\Bundle\ContentBundle\Tests\Functional\Traits;
 use Doctrine\ORM\EntityManagerInterface;
 use Sulu\Bundle\ContentBundle\Model\Content\ContentDimension;
 use Sulu\Bundle\ContentBundle\Model\Content\ContentDimensionInterface;
+use Sulu\Bundle\ContentBundle\Model\Content\ContentDimensionRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierInterface;
 
 trait ContentDimensionTrait
@@ -50,13 +51,10 @@ trait ContentDimensionTrait
             ]
         );
 
-        /** @var ContentDimension $contentDimension */
-        $contentDimension = $this->getEntityManager()->find(
-            ContentDimension::class,
-            ['resourceKey' => $resourceKey, 'resourceId' => $resourceId, 'dimensionIdentifier' => $dimensionIdentifier]
-        );
+        /** @var ContentDimensionRepositoryInterface */
+        $contentDimensionRepository = $this->getEntityManager()->getRepository(ContentDimension::class);
 
-        return $contentDimension;
+        return $contentDimensionRepository->findDimension($resourceKey, $resourceId, $dimensionIdentifier);
     }
 
     abstract protected function findOrCreateDimensionIdentifier(array $attributes): DimensionIdentifierInterface;

@@ -17,6 +17,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierInterface;
 use Sulu\Bundle\ContentBundle\Model\Seo\SeoDimension;
 use Sulu\Bundle\ContentBundle\Model\Seo\SeoDimensionInterface;
+use Sulu\Bundle\ContentBundle\Model\Seo\SeoDimensionRepositoryInterface;
 
 trait SeoDimensionTrait
 {
@@ -66,13 +67,10 @@ trait SeoDimensionTrait
             ]
         );
 
-        /** @var SeoDimension $seoDimension */
-        $seoDimension = $this->getEntityManager()->find(
-            SeoDimension::class,
-            ['resourceKey' => $resourceKey, 'resourceId' => $resourceId, 'dimensionIdentifier' => $dimensionIdentifier]
-        );
+        /** @var SeoDimensionRepositoryInterface */
+        $seoDimensionRepository = $this->getEntityManager()->getRepository(SeoDimension::class);
 
-        return $seoDimension;
+        return $seoDimensionRepository->findDimension($resourceKey, $resourceId, $dimensionIdentifier);
     }
 
     abstract protected function findOrCreateDimensionIdentifier(array $attributes): DimensionIdentifierInterface;
