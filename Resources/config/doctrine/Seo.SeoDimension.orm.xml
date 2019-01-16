@@ -5,15 +5,16 @@
     <entity name="Sulu\Bundle\ContentBundle\Model\Seo\SeoDimension"
             table="cn_seo_dimensions"
             repository-class="Sulu\Bundle\ContentBundle\Repository\SeoDimensionRepository">
-        <id name="resourceKey" type="string">
-            <generator strategy="NONE"/>
+        <id name="no" type="integer">
+            <generator strategy="AUTO"/>
         </id>
-        <id name="resourceId" type="string">
-            <generator strategy="NONE"/>
-        </id>
-        <id name="dimensionIdentifier" type="guid" association-key="true">
-            <generator strategy="NONE"/>
-        </id>
+
+        <unique-constraints>
+            <unique-constraint columns="resourceKey,resourceId,dimensionIdentifier"/>
+        </unique-constraints>
+
+        <field name="resourceKey" column="resourceKey" type="string" nullable="false"/>
+        <field name="resourceId" column="resourceId" type="string" nullable="false"/>
 
         <field name="title" type="string" nullable="true"/>
         <field name="description" type="string" nullable="true"/>
@@ -23,6 +24,9 @@
         <field name="noFollow" type="boolean" nullable="true"/>
         <field name="hideInSitemap" type="boolean" nullable="true"/>
 
-        <many-to-one field="dimensionIdentifier" target-entity="Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifier"/>
+        <many-to-one field="dimensionIdentifier"
+                     target-entity="Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifier">
+            <join-column name="dimensionIdentifier" referenced-column-name="no" nullable="false"/>
+        </many-to-one>
     </entity>
 </doctrine-mapping>

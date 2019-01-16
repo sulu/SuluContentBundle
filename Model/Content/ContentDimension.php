@@ -18,6 +18,11 @@ use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierInter
 class ContentDimension implements ContentDimensionInterface
 {
     /**
+     * @var int
+     */
+    private $no;
+
+    /**
      * @var DimensionIdentifierInterface
      */
     private $dimensionIdentifier;
@@ -33,7 +38,7 @@ class ContentDimension implements ContentDimensionInterface
     private $resourceId;
 
     /**
-     * @var string|null
+     * @var ?string
      */
     private $type;
 

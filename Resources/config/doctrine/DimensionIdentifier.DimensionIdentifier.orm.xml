@@ -5,10 +5,15 @@
     <entity name="Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifier"
             table="cn_dimension_identifiers"
             repository-class="Sulu\Bundle\ContentBundle\Repository\DimensionIdentifierRepository">
-        <id name="id" type="guid">
-            <generator strategy="NONE"/>
+        <id name="no" type="integer">
+            <generator strategy="AUTO"/>
         </id>
 
+        <unique-constraints>
+            <unique-constraint columns="id"/>
+        </unique-constraints>
+
+        <field name="id" type="guid" nullable="false"/>
         <field name="attributeCount" type="integer" nullable="false"/>
 
         <one-to-many field="attributes"
