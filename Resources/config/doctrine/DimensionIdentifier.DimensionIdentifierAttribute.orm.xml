@@ -3,7 +3,7 @@
                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                   xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
     <entity name="Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierAttribute"
-            table="cs_dimension_identifier_attributes">
+            table="cn_dimension_identifier_attributes">
         <id name="dimensionIdentifier" type="string" association-key="true">
             <generator strategy="NONE"/>
         </id>
