@@ -51,5 +51,5 @@ interface SeoDimensionInterface
 
     public function setHideInSitemap(?bool $hideInSitemap): self;
 
-    public function copyAttributesFrom(SeoDimensionInterface $seo): self;
+    public function copyAttributesFrom(SeoDimensionInterface $seoDimension): self;
 }

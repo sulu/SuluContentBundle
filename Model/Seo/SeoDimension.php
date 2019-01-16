@@ -76,13 +76,13 @@ class SeoDimension implements SeoDimensionInterface
         DimensionIdentifierInterface $dimensionIdentifier,
         string $resourceKey,
         string $resourceId,
-        string $title = null,
-        string $description = null,
-        string $keywords = null,
-        string $canonicalUrl = null,
-        bool $noIndex = null,
-        bool $noFollow = null,
-        bool $hideInSitemap = null
+        ?string $title = null,
+        ?string $description = null,
+        ?string $keywords = null,
+        ?string $canonicalUrl = null,
+        ?bool $noIndex = null,
+        ?bool $noFollow = null,
+        ?bool $hideInSitemap = null
     ) {
         $this->dimensionIdentifier = $dimensionIdentifier;
         $this->resourceKey = $resourceKey;
@@ -195,15 +195,15 @@ class SeoDimension implements SeoDimensionInterface
         return $this;
     }
 
-    public function copyAttributesFrom(SeoDimensionInterface $seo): SeoDimensionInterface
+    public function copyAttributesFrom(SeoDimensionInterface $seoDimension): SeoDimensionInterface
     {
-        $this->setTitle($seo->getTitle());
-        $this->setDescription($seo->getDescription());
-        $this->setKeywords($seo->getKeywords());
-        $this->setCanonicalUrl($seo->getCanonicalUrl());
-        $this->setNoIndex($seo->getNoIndex());
-        $this->setNoFollow($seo->getNoFollow());
-        $this->setHideInSitemap($seo->getHideInSitemap());
+        $this->setTitle($seoDimension->getTitle());
+        $this->setDescription($seoDimension->getDescription());
+        $this->setKeywords($seoDimension->getKeywords());
+        $this->setCanonicalUrl($seoDimension->getCanonicalUrl());
+        $this->setNoIndex($seoDimension->getNoIndex());
+        $this->setNoFollow($seoDimension->getNoFollow());
+        $this->setHideInSitemap($seoDimension->getHideInSitemap());
 
         return $this;
     }

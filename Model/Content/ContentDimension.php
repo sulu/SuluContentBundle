@@ -100,10 +100,10 @@ class ContentDimension implements ContentDimensionInterface
         return $this;
     }
 
-    public function copyAttributesFrom(ContentDimensionInterface $content): ContentDimensionInterface
+    public function copyAttributesFrom(ContentDimensionInterface $contentDimension): ContentDimensionInterface
     {
-        $this->setType($content->getType());
-        $this->setData($content->getData());
+        $this->setType($contentDimension->getType());
+        $this->setData($contentDimension->getData());
 
         return $this;
     }

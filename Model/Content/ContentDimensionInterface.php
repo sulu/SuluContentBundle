@@ -31,5 +31,5 @@ interface ContentDimensionInterface
 
     public function setData(array $data): self;
 
-    public function copyAttributesFrom(ContentDimensionInterface $content): self;
+    public function copyAttributesFrom(ContentDimensionInterface $contentDimension): self;
 }
