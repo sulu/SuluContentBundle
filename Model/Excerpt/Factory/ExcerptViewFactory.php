@@ -46,7 +46,6 @@ class ExcerptViewFactory implements ExcerptViewFactoryInterface
             $tags = array_merge($tags, $excerptDimension->getTags());
             $icons = array_merge($icons, $excerptDimension->getIcons());
             $images = array_merge($images, $excerptDimension->getImages());
-
         }
 
         return new ExcerptView(
