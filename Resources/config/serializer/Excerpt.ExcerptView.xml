@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<serializer>
+    <class name="Sulu\Bundle\ContentBundle\Model\Seo\SeoView" exclusion-policy="ALL">
+        <virtual-property method="getTitle" serialized-name="title" expose="true"/>
+        <virtual-property method="getMore" serialized-name="more" expose="true"/>
+        <virtual-property method="getDescription" serialized-name="description" expose="true"/>
+        <virtual-property method="getCategoriesIds" serialized-name="categories" expose="true"/>
+        <virtual-property method="getTagNames" serialized-name="tags" expose="true"/>
+        <virtual-property method="getIconsData" serialized-name="icons" expose="true"/>
+        <virtual-property method="getImagesData" serialized-name="images" expose="true"/>
+    </class>
+</serializer>
