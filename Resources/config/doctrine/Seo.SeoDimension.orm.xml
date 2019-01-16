@@ -5,7 +5,7 @@
     <entity name="Sulu\Bundle\ContentBundle\Model\Seo\SeoDimension"
             table="cn_seo_dimensions"
             repository-class="Sulu\Bundle\ContentBundle\Repository\SeoDimensionRepository">
-        <id name="no" type="integer">
+        <id name="no" column="no" type="integer">
             <generator strategy="AUTO"/>
         </id>
 
@@ -16,13 +16,13 @@
         <field name="resourceKey" column="resourceKey" type="string" nullable="false"/>
         <field name="resourceId" column="resourceId" type="string" nullable="false"/>
 
-        <field name="title" type="string" nullable="true"/>
-        <field name="description" type="string" nullable="true"/>
-        <field name="keywords" type="string" nullable="true"/>
-        <field name="canonicalUrl" type="string" nullable="true"/>
-        <field name="noIndex" type="boolean" nullable="true"/>
-        <field name="noFollow" type="boolean" nullable="true"/>
-        <field name="hideInSitemap" type="boolean" nullable="true"/>
+        <field name="title" column="title" type="string" nullable="true"/>
+        <field name="description" column="description" type="string" nullable="true"/>
+        <field name="keywords" column="keywords" type="string" nullable="true"/>
+        <field name="canonicalUrl" column="canonicalUrl" type="string" nullable="true"/>
+        <field name="noIndex" column="noIndex" type="boolean" nullable="true"/>
+        <field name="noFollow" column="noFollow" type="boolean" nullable="true"/>
+        <field name="hideInSitemap" column="hideInSitemap" type="boolean" nullable="true"/>
 
         <many-to-one field="dimensionIdentifier"
                      target-entity="Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifier">

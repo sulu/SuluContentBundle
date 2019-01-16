@@ -5,7 +5,7 @@
     <entity name="Sulu\Bundle\ContentBundle\Model\Content\ContentDimension"
             table="cn_content_dimensions"
             repository-class="Sulu\Bundle\ContentBundle\Repository\ContentDimensionRepository">
-        <id name="no" type="integer">
+        <id name="no" column="no" type="integer">
             <generator strategy="AUTO"/>
         </id>
 
@@ -16,8 +16,8 @@
         <field name="resourceKey" column="resourceKey" type="string" nullable="false"/>
         <field name="resourceId" column="resourceId" type="string" nullable="false"/>
 
-        <field name="type" type="string" nullable="true"/>
-        <field name="data" type="json" nullable="false"/>
+        <field name="type" column="type" type="string" nullable="true"/>
+        <field name="data" column="data" type="json" nullable="false"/>
 
         <many-to-one field="dimensionIdentifier"
                      target-entity="Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifier">
