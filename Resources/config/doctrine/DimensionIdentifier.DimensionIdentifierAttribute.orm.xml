@@ -9,10 +9,10 @@
         </id>
 
         <unique-constraints>
-            <unique-constraint columns="dimensionIdentifier,key"/>
+            <unique-constraint columns="dimensionIdentifier,attributeKey"/>
         </unique-constraints>
 
-        <field name="key" column="key" type="string" nullable="false"/>
+        <field name="key" column="attributeKey" type="string" nullable="false"/>
         <field name="value" column="value" type="string" nullable="false"/>
 
         <many-to-one field="dimensionIdentifier"
