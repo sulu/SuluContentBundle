@@ -14,13 +14,22 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Functional\Traits;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Sulu\Bundle\CategoryBundle\Entity\CategoryInterface;
 use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierInterface;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptDimension;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptDimensionInterface;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptDimensionRepositoryInterface;
+use Sulu\Bundle\MediaBundle\Entity\MediaInterface;
+use Sulu\Bundle\TagBundle\Tag\TagInterface;
 
 trait ExcerptDimensionTrait
 {
+    /**
+     * @param CategoryInterface[] $categories
+     * @param TagInterface[] $tags
+     * @param MediaInterface[] $icons
+     * @param MediaInterface[] $images
+     */
     protected function createDraftExcerptDimension(
         string $resourceKey,
         string $resourceId,
@@ -28,10 +37,10 @@ trait ExcerptDimensionTrait
         ?string $title = null,
         ?string $more = null,
         ?string $description = null,
-        ?array $categories = [],
-        ?array $tags = [],
-        ?array $icons = [],
-        ?array $images = []
+        array $categories = [],
+        array $tags = [],
+        array $icons = [],
+        array $images = []
     ): ExcerptDimensionInterface {
         $dimensionIdentifier = $this->findOrCreateDimensionIdentifier(
             [
