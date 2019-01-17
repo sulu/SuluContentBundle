@@ -31,7 +31,7 @@
             </join-table>
         </many-to-many>
 
-        <many-to-many field="tags" target-entity="Sulu\Bundle\TagBundle\Entity\Tag">
+        <many-to-many field="tags" target-entity="Sulu\Bundle\TagBundle\Tag\TagInterface">
             <join-table name="cs_excerpt_dimension_tags">
                 <join-columns>
                     <join-column name="excerptDimension" referenced-column-name="no" on-delete="CASCADE" nullable="false"/>
