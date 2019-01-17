@@ -52,13 +52,18 @@ class AbstractSeoControllerTest extends SuluTestCase
         $result = json_decode($client->getResponse()->getContent(), true);
         $this->assertSame(200, $response->getStatusCode());
 
-        $this->assertSame('seo-title', $result['title']);
-        $this->assertSame('seo-description', $result['description']);
-        $this->assertSame('seo-keywords', $result['keywords']);
-        $this->assertSame('seo-url', $result['canonicalUrl']);
-        $this->assertFalse($result['noIndex']);
-        $this->assertTrue($result['noFollow']);
-        $this->assertFalse($result['hideInSitemap']);
+        $this->assertSame(
+            [
+                'title' => 'seo-title',
+                'description' => 'seo-description',
+                'keywords' => 'seo-keywords',
+                'canonicalUrl' => 'seo-url',
+                'noIndex' => false,
+                'noFollow' => true,
+                'hideInSitemap' => false,
+            ],
+            $result
+        );
     }
 
     public function testGetAbsent(): void
@@ -70,13 +75,18 @@ class AbstractSeoControllerTest extends SuluTestCase
         $result = json_decode($client->getResponse()->getContent(), true);
         $this->assertSame(200, $response->getStatusCode());
 
-        $this->assertNull($result['title']);
-        $this->assertNull($result['description']);
-        $this->assertNull($result['keywords']);
-        $this->assertNull($result['canonicalUrl']);
-        $this->assertFalse($result['noIndex']);
-        $this->assertFalse($result['noFollow']);
-        $this->assertFalse($result['hideInSitemap']);
+        $this->assertSame(
+            [
+                'title' => null,
+                'description' => null,
+                'keywords' => null,
+                'canonicalUrl' => null,
+                'noIndex' => false,
+                'noFollow' => false,
+                'hideInSitemap' => false,
+            ],
+            $result
+        );
     }
 
     public function testPut(): void
@@ -108,13 +118,18 @@ class AbstractSeoControllerTest extends SuluTestCase
         $result = json_decode($client->getResponse()->getContent(), true);
         $this->assertSame(200, $response->getStatusCode());
 
-        $this->assertSame('new-title', $result['title']);
-        $this->assertSame('new-description', $result['description']);
-        $this->assertSame('new-keywords', $result['keywords']);
-        $this->assertSame('new-url', $result['canonicalUrl']);
-        $this->assertTrue($result['noIndex']);
-        $this->assertFalse($result['noFollow']);
-        $this->assertTrue($result['hideInSitemap']);
+        $this->assertSame(
+            [
+                'title' => 'new-title',
+                'description' => 'new-description',
+                'keywords' => 'new-keywords',
+                'canonicalUrl' => 'new-url',
+                'noIndex' => true,
+                'noFollow' => false,
+                'hideInSitemap' => true,
+            ],
+            $result
+        );
     }
 
     public function testPutAbsent(): void
@@ -144,13 +159,18 @@ class AbstractSeoControllerTest extends SuluTestCase
         $result = json_decode($client->getResponse()->getContent(), true);
         $this->assertSame(200, $response->getStatusCode());
 
-        $this->assertSame('new-title', $result['title']);
-        $this->assertSame('new-description', $result['description']);
-        $this->assertSame('new-keywords', $result['keywords']);
-        $this->assertSame('new-url', $result['canonicalUrl']);
-        $this->assertTrue($result['noIndex']);
-        $this->assertFalse($result['noFollow']);
-        $this->assertTrue($result['hideInSitemap']);
+        $this->assertSame(
+            [
+                'title' => 'new-title',
+                'description' => 'new-description',
+                'keywords' => 'new-keywords',
+                'canonicalUrl' => 'new-url',
+                'noIndex' => true,
+                'noFollow' => false,
+                'hideInSitemap' => true,
+            ],
+            $result
+        );
     }
 
     public function testPutWithPublishAction(): void
@@ -182,12 +202,17 @@ class AbstractSeoControllerTest extends SuluTestCase
         $result = json_decode($client->getResponse()->getContent(), true);
         $this->assertSame(200, $response->getStatusCode());
 
-        $this->assertSame('new-title', $result['title']);
-        $this->assertSame('new-description', $result['description']);
-        $this->assertSame('new-keywords', $result['keywords']);
-        $this->assertSame('new-url', $result['canonicalUrl']);
-        $this->assertTrue($result['noIndex']);
-        $this->assertFalse($result['noFollow']);
-        $this->assertTrue($result['hideInSitemap']);
+        $this->assertSame(
+            [
+                'title' => 'new-title',
+                'description' => 'new-description',
+                'keywords' => 'new-keywords',
+                'canonicalUrl' => 'new-url',
+                'noIndex' => true,
+                'noFollow' => false,
+                'hideInSitemap' => true,
+            ],
+            $result
+        );
     }
 }
