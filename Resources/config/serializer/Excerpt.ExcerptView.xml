@@ -4,7 +4,7 @@
         <virtual-property method="getTitle" serialized-name="title" expose="true"/>
         <virtual-property method="getMore" serialized-name="more" expose="true"/>
         <virtual-property method="getDescription" serialized-name="description" expose="true"/>
-        <virtual-property method="getCategoriesIds" serialized-name="categories" expose="true"/>
+        <virtual-property method="getCategoryIds" serialized-name="categories" expose="true"/>
         <virtual-property method="getTagNames" serialized-name="tags" expose="true"/>
         <virtual-property method="getIconsData" serialized-name="icons" expose="true"/>
         <virtual-property method="getImagesData" serialized-name="images" expose="true"/>

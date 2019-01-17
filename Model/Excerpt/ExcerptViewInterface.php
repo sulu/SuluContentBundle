@@ -27,7 +27,7 @@ interface ExcerptViewInterface
 
     public function getDescription(): ?string;
 
-    public function getCategoriesIds(): array;
+    public function getCategoryIds(): array;
 
     public function getTagNames(): array;
 

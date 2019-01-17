@@ -15,7 +15,7 @@ namespace Sulu\Bundle\ContentBundle\Model\Excerpt;
 
 use Sulu\Bundle\CategoryBundle\Entity\CategoryInterface;
 use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierInterface;
-use Sulu\Bundle\MediaBundle\Entity\Media;
+use Sulu\Bundle\MediaBundle\Entity\MediaInterface;
 use Sulu\Bundle\TagBundle\Tag\TagInterface;
 
 interface ExcerptDimensionInterface
@@ -57,22 +57,22 @@ interface ExcerptDimensionInterface
     public function addTag(TagInterface $tag): self;
 
     /**
-     * @return Media[]
+     * @return MediaInterface[]
      */
     public function getIcons(): array;
 
     public function clearIcons(): self;
 
-    public function addIcon(Media $icon): self;
+    public function addIcon(MediaInterface $icon): self;
 
     /**
-     * @return Media[]
+     * @return MediaInterface[]
      */
     public function getImages(): array;
 
     public function clearImages(): self;
 
-    public function addImage(Media $image): self;
+    public function addImage(MediaInterface $image): self;
 
     public function copyAttributesFrom(ExcerptDimensionInterface $excerptDimension): self;
 }

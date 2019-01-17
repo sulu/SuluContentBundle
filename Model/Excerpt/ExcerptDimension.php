@@ -18,6 +18,7 @@ use Doctrine\Common\Collections\Collection;
 use Sulu\Bundle\CategoryBundle\Entity\CategoryInterface;
 use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierInterface;
 use Sulu\Bundle\MediaBundle\Entity\Media;
+use Sulu\Bundle\MediaBundle\Entity\MediaInterface;
 use Sulu\Bundle\TagBundle\Tag\TagInterface;
 
 class ExcerptDimension implements ExcerptDimensionInterface
@@ -198,7 +199,7 @@ class ExcerptDimension implements ExcerptDimensionInterface
         return $this;
     }
 
-    public function addIcon(Media $icon): ExcerptDimensionInterface
+    public function addIcon(MediaInterface $icon): ExcerptDimensionInterface
     {
         $this->icons[] = $icon;
 
@@ -217,7 +218,7 @@ class ExcerptDimension implements ExcerptDimensionInterface
         return $this;
     }
 
-    public function addImage(Media $image): ExcerptDimensionInterface
+    public function addImage(MediaInterface $image): ExcerptDimensionInterface
     {
         $this->images[] = $image;
 
