@@ -18,5 +18,37 @@
                  alias="Sulu\Bundle\ContentBundle\Model\Excerpt\Factory\ExcerptViewFactory"/>
 
         <!-- handler -->
+        <service id="Sulu\Bundle\ContentBundle\Model\Excerpt\MessageHandler\ModifyExcerptMessageHandler">
+            <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptDimensionRepositoryInterface"/>
+            <argument type="service" id="Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierRepositoryInterface"/>
+            <argument type="service" id="sulu.repository.category"/>
+            <argument type="service" id="sulu.repository.tag"/>
+            <argument type="service" id="sulu.repository.media"/>
+            <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Excerpt\Factory\ExcerptViewFactoryInterface"/>
+
+            <tag name="messenger.message_handler"/>
+        </service>
+
+        <service id="Sulu\Bundle\ContentBundle\Model\Excerpt\MessageHandler\PublishExcerptMessageHandler">
+            <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptDimensionRepositoryInterface"/>
+            <argument type="service" id="Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierRepositoryInterface"/>
+            <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Excerpt\Factory\ExcerptViewFactoryInterface"/>
+
+            <tag name="messenger.message_handler"/>
+        </service>
+
+        <service id="Sulu\Bundle\ContentBundle\Model\Excerpt\MessageHandler\RemoveExcerptMessageHandler">
+            <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptDimensionRepositoryInterface"/>
+
+            <tag name="messenger.message_handler"/>
+        </service>
+
+        <service id="Sulu\Bundle\ContentBundle\Model\Excerpt\QueryHandler\FindExcerptQueryHandler">
+            <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptDimensionRepositoryInterface"/>
+            <argument type="service" id="Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierRepositoryInterface"/>
+            <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Excerpt\Factory\ExcerptViewFactoryInterface"/>
+
+            <tag name="messenger.message_handler"/>
+        </service>
     </services>
 </container>
