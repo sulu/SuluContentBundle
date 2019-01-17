@@ -123,7 +123,7 @@ class ExcerptView implements ExcerptViewInterface
         return $this->description;
     }
 
-    public function getCategoriesIds(): array
+    public function getCategoryIds(): array
     {
         $categoryIds = [];
         foreach ($this->categories as $category) {
