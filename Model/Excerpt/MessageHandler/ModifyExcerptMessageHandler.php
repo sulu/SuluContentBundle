@@ -127,6 +127,7 @@ class ModifyExcerptMessageHandler
             $localizedDraftExcerpt->addTag($tag);
         }
 
+        $localizedDraftExcerpt->clearIcons();
         foreach ($message->getIconMediaIds() as $iconMediaId) {
             /** @var ?Media */
             $media = $this->mediaRepository->findMediaById($iconMediaId);
@@ -140,6 +141,7 @@ class ModifyExcerptMessageHandler
             $localizedDraftExcerpt->addIcon($media);
         }
 
+        $localizedDraftExcerpt->clearImages();
         foreach ($message->getImageMediaIds() as $imageMediaId) {
             /** @var ?Media */
             $media = $this->mediaRepository->findMediaById($imageMediaId);
