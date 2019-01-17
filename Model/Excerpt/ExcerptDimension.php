@@ -249,5 +249,7 @@ class ExcerptDimension implements ExcerptDimensionInterface
         foreach ($excerptDimension->getImages() as $image) {
             $this->addImage($image);
         }
+
+        return $this;
     }
 }
