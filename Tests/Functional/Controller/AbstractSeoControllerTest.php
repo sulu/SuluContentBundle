@@ -183,8 +183,8 @@ class AbstractSeoControllerTest extends SuluTestCase
         $client = $this->createAuthenticatedClient();
         $container = $client->getContainer();
         if ($container) {
-            $contentController = $container->get('sulu_content.controller.test_resource_seos');
-            $contentController->setHandlePublishCallback($handlePublishCallback->reveal());
+            $seoController = $container->get('sulu_content.controller.test_resource_seos');
+            $seoController->setHandlePublishCallback($handlePublishCallback->reveal());
         }
 
         $payload = [
