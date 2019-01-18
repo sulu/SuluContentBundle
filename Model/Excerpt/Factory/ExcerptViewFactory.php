@@ -49,9 +49,9 @@ class ExcerptViewFactory implements ExcerptViewFactoryInterface
                 }
             }
 
-            foreach ($excerptDimension->getTags() as $dimensionTag) {
-                if (!in_array($dimensionTag, $tags, true)) {
-                    $tags[] = $dimensionTag;
+            foreach ($excerptDimension->getTagReferences() as $tagReference) {
+                if (!in_array($tagReference->getTag(), $tags, true)) {
+                    $tags[] = $tagReference->getTag();
                 }
             }
 

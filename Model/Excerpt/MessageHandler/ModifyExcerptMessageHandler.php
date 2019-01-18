@@ -23,6 +23,7 @@ use Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptDimensionInterface;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptDimensionRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\Factory\ExcerptViewFactoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\Message\ModifyExcerptMessage;
+use Sulu\Bundle\ContentBundle\Model\Excerpt\TagReferenceRepositoryInterface;
 use Sulu\Bundle\MediaBundle\Entity\Media;
 use Sulu\Bundle\MediaBundle\Entity\MediaRepositoryInterface;
 use Sulu\Bundle\TagBundle\Entity\Tag;
@@ -51,6 +52,11 @@ class ModifyExcerptMessageHandler
     private $tagRepository;
 
     /**
+     * @var TagReferenceRepositoryInterface
+     */
+    private $tagReferenceRepository;
+
+    /**
      * @var MediaRepositoryInterface
      */
     private $mediaRepository;
@@ -65,6 +71,7 @@ class ModifyExcerptMessageHandler
         DimensionIdentifierRepositoryInterface $dimensionIdentifierRepository,
         CategoryRepositoryInterface $categoryRepository,
         TagRepositoryInterface $tagRepository,
+        TagReferenceRepositoryInterface $tagReferenceRepository,
         MediaRepositoryInterface $mediaRepository,
         ExcerptViewFactoryInterface $excerptViewFactory
     ) {
@@ -72,6 +79,7 @@ class ModifyExcerptMessageHandler
         $this->dimensionIdentifierRepository = $dimensionIdentifierRepository;
         $this->categoryRepository = $categoryRepository;
         $this->tagRepository = $tagRepository;
+        $this->tagReferenceRepository = $tagReferenceRepository;
         $this->mediaRepository = $mediaRepository;
         $this->excerptViewFactory = $excerptViewFactory;
     }
@@ -114,18 +122,7 @@ class ModifyExcerptMessageHandler
             $localizedDraftExcerpt->addCategory($category);
         }
 
-        $localizedDraftExcerpt->clearTags();
-        foreach ($message->getTagNames() as $tagName) {
-            $tag = $this->tagRepository->findTagByName($tagName);
-            if (!$tag) {
-                throw EntityNotFoundException::fromClassNameAndIdentifier(
-                    Tag::class,
-                    ['name' => $tagName]
-                );
-            }
-
-            $localizedDraftExcerpt->addTag($tag);
-        }
+        $this->updateTagReferences($message, $localizedDraftExcerpt);
 
         $localizedDraftExcerpt->clearIcons();
         foreach ($message->getIconMediaIds() as $iconMediaId) {
@@ -173,5 +170,36 @@ class ModifyExcerptMessageHandler
         $attributes[DimensionIdentifierInterface::ATTRIBUTE_KEY_LOCALE] = $locale;
 
         return $this->dimensionIdentifierRepository->findOrCreateByAttributes($attributes);
+    }
+
+    private function updateTagReferences(ModifyExcerptMessage $message, ExcerptDimensionInterface $localizedDraftExcerpt): void
+    {
+        $findTagByName = function ($tagName) {
+            $tag = $this->tagRepository->findTagByName($tagName);
+            if (!$tag) {
+                throw EntityNotFoundException::fromClassNameAndIdentifier(
+                    Tag::class,
+                    ['name' => $tagName]
+                );
+            }
+
+            return $tag;
+        };
+
+        foreach ($message->getTagNames() as $tagName) {
+            $tagReference = $localizedDraftExcerpt->getTagReferenceByName($tagName);
+            if (!$tagReference) {
+                $tag = $findTagByName($tagName);
+                $tagReference = $this->tagReferenceRepository->create($localizedDraftExcerpt, $tag);
+                $localizedDraftExcerpt->addTagReference($tagReference);
+            }
+        }
+
+        foreach ($localizedDraftExcerpt->getTagReferences() as $persistedTagReference) {
+            if (!in_array($persistedTagReference->getTag()->getName(), $message->getTagNames(), true)) {
+                $localizedDraftExcerpt->removeTagReference($persistedTagReference);
+                $this->tagReferenceRepository->remove($persistedTagReference);
+            }
+        }
     }
 }

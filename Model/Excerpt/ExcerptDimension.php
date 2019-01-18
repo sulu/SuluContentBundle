@@ -19,7 +19,6 @@ use Sulu\Bundle\CategoryBundle\Entity\CategoryInterface;
 use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierInterface;
 use Sulu\Bundle\MediaBundle\Entity\Media;
 use Sulu\Bundle\MediaBundle\Entity\MediaInterface;
-use Sulu\Bundle\TagBundle\Tag\TagInterface;
 
 class ExcerptDimension implements ExcerptDimensionInterface
 {
@@ -64,9 +63,9 @@ class ExcerptDimension implements ExcerptDimensionInterface
     private $categories;
 
     /**
-     * @var Collection|TagInterface[]
+     * @var Collection|TagReferenceInterface[]
      */
-    private $tags;
+    private $tagReferences;
 
     /**
      * @var Collection|Media[]
@@ -93,7 +92,7 @@ class ExcerptDimension implements ExcerptDimensionInterface
         $this->more = $more;
         $this->description = $description;
         $this->categories = new ArrayCollection();
-        $this->tags = new ArrayCollection();
+        $this->tagReferences = new ArrayCollection();
         $this->icons = new ArrayCollection();
         $this->images = new ArrayCollection();
     }
@@ -168,21 +167,32 @@ class ExcerptDimension implements ExcerptDimensionInterface
         return $this;
     }
 
-    public function getTags(): array
+    public function getTagReferences(): array
     {
-        return $this->tags->getValues();
+        return $this->tagReferences->getValues();
     }
 
-    public function clearTags(): ExcerptDimensionInterface
+    public function getTagReferenceByName(string $tagName): ?TagReferenceInterface
     {
-        $this->tags->clear();
+        foreach ($this->tagReferences as $tag) {
+            if ($tagName === $tag->getTag()->getName()) {
+                return $tag;
+            }
+        }
+
+        return null;
+    }
+
+    public function addTagReference(TagReferenceInterface $tag): ExcerptDimensionInterface
+    {
+        $this->tagReferences->add($tag);
 
         return $this;
     }
 
-    public function addTag(TagInterface $tag): ExcerptDimensionInterface
+    public function removeTagReference(TagReferenceInterface $tag): ExcerptDimensionInterface
     {
-        $this->tags[] = $tag;
+        $this->tagReferences->removeElement($tag);
 
         return $this;
     }
@@ -225,8 +235,10 @@ class ExcerptDimension implements ExcerptDimensionInterface
         return $this;
     }
 
-    public function copyAttributesFrom(ExcerptDimensionInterface $excerptDimension): ExcerptDimensionInterface
-    {
+    public function copyAttributesFrom(
+        ExcerptDimensionInterface $excerptDimension,
+        TagReferenceRepositoryInterface $tagReferenceRepository
+    ): ExcerptDimensionInterface {
         $this->setTitle($excerptDimension->getTitle());
         $this->setMore($excerptDimension->getMore());
         $this->setDescription($excerptDimension->getDescription());
@@ -236,9 +248,16 @@ class ExcerptDimension implements ExcerptDimensionInterface
             $this->addCategory($category);
         }
 
-        $this->clearTags();
-        foreach ($excerptDimension->getTags() as $tag) {
-            $this->addTag($tag);
+        foreach ($this->tagReferences as $currentTagReference) {
+            $this->removeTagReference($currentTagReference);
+            $tagReferenceRepository->remove($currentTagReference);
+        }
+        foreach ($excerptDimension->getTagReferences() as $tagReference) {
+            $newTagReference = $tagReferenceRepository->create(
+                $tagReference->getExcerptDimension(),
+                $tagReference->getTag()
+            );
+            $this->addTagReference($newTagReference);
         }
 
         $this->clearIcons();

@@ -20,6 +20,7 @@ use Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptDimensionInterface;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptDimensionRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\Factory\ExcerptViewFactoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\Message\PublishExcerptMessage;
+use Sulu\Bundle\ContentBundle\Model\Excerpt\TagReferenceRepositoryInterface;
 
 class PublishExcerptMessageHandler
 {
@@ -34,6 +35,11 @@ class PublishExcerptMessageHandler
     private $dimensionIdentifierRepository;
 
     /**
+     * @var TagReferenceRepositoryInterface
+     */
+    private $tagReferenceRepository;
+
+    /**
      * @var ExcerptViewFactoryInterface
      */
     private $excerptViewFactory;
@@ -41,10 +47,12 @@ class PublishExcerptMessageHandler
     public function __construct(
         ExcerptDimensionRepositoryInterface $excerptDimensionRepository,
         DimensionIdentifierRepositoryInterface $dimensionIdentifierRepository,
+        TagReferenceRepositoryInterface $tagReferenceRepository,
         ExcerptViewFactoryInterface $excerptViewFactory
     ) {
         $this->excerptDimensionRepository = $excerptDimensionRepository;
         $this->dimensionIdentifierRepository = $dimensionIdentifierRepository;
+        $this->tagReferenceRepository = $tagReferenceRepository;
         $this->excerptViewFactory = $excerptViewFactory;
     }
 
@@ -90,7 +98,7 @@ class PublishExcerptMessageHandler
         $liveDimensionIdentifier = $this->getDimensionIdentifier(DimensionIdentifierInterface::ATTRIBUTE_VALUE_LIVE, $locale);
         $liveExcerpt = $this->excerptDimensionRepository->findOrCreateDimension($resourceKey, $resourceId, $liveDimensionIdentifier);
 
-        $liveExcerpt->copyAttributesFrom($draftExcerpt);
+        $liveExcerpt->copyAttributesFrom($draftExcerpt, $this->tagReferenceRepository);
 
         return $liveExcerpt;
     }

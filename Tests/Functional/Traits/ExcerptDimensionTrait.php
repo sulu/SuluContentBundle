@@ -19,6 +19,8 @@ use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierInter
 use Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptDimension;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptDimensionInterface;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptDimensionRepositoryInterface;
+use Sulu\Bundle\ContentBundle\Model\Excerpt\TagReference;
+use Sulu\Bundle\ContentBundle\Model\Excerpt\TagReferenceInterface;
 use Sulu\Bundle\MediaBundle\Entity\MediaInterface;
 use Sulu\Bundle\TagBundle\Tag\TagInterface;
 
@@ -57,11 +59,14 @@ trait ExcerptDimensionTrait
             $description
         );
 
+        $this->getEntityManager()->persist($excerptDimension);
+
         foreach ($categories as $category) {
             $excerptDimension->addCategory($category);
         }
         foreach ($tags as $tag) {
-            $excerptDimension->addTag($tag);
+            $tagReference = $this->createTagReference($excerptDimension, $tag);
+            $excerptDimension->addTagReference($tagReference);
         }
         foreach ($icons as $icon) {
             $excerptDimension->addIcon($icon);
@@ -70,10 +75,18 @@ trait ExcerptDimensionTrait
             $excerptDimension->addImage($image);
         }
 
-        $this->getEntityManager()->persist($excerptDimension);
         $this->getEntityManager()->flush();
 
         return $excerptDimension;
+    }
+
+    protected function createTagReference(ExcerptDimensionInterface $excerptDimension, TagInterface $tag): TagReferenceInterface {
+        $tagReference = new TagReference($excerptDimension, $tag);
+
+        $this->getEntityManager()->persist($tagReference);
+        $this->getEntityManager()->flush();
+
+        return $tagReference;
     }
 
     protected function findDraftExcerptDimension(string $resourceKey, string $resourceId, string $locale): ?ExcerptDimensionInterface
