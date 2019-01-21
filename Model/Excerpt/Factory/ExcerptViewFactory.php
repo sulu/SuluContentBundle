@@ -17,6 +17,7 @@ use Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptDimensionInterface;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptView;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptViewInterface;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\IconReferenceInterface;
+use Sulu\Bundle\ContentBundle\Model\Excerpt\ImageReferenceInterface;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\TagReferenceInterface;
 
 class ExcerptViewFactory implements ExcerptViewFactoryInterface
@@ -45,6 +46,7 @@ class ExcerptViewFactory implements ExcerptViewFactoryInterface
             $more = $excerptDimension->getMore() ?? $more;
             $description = $excerptDimension->getDescription() ?? $description;
 
+            // append categories to the categories array
             foreach ($excerptDimension->getCategories() as $dimensionCategory) {
                 if (!in_array($dimensionCategory, $categories, true)) {
                     $categories[] = $dimensionCategory;
@@ -62,7 +64,7 @@ class ExcerptViewFactory implements ExcerptViewFactoryInterface
                 }
             }
 
-            // sort tags by order and append to icons array
+            // sort images by order and append to icons array
             $dimensionIcons = $excerptDimension->getIcons();
             usort($dimensionIcons, function (IconReferenceInterface $icon1, IconReferenceInterface $icon2) {
                 return $icon1->getOrder() - $icon2->getOrder();
@@ -73,9 +75,14 @@ class ExcerptViewFactory implements ExcerptViewFactoryInterface
                 }
             }
 
+            // sort images by order and append to images array
+            $dimensionImages = $excerptDimension->getImages();
+            usort($dimensionImages, function (ImageReferenceInterface $image1, ImageReferenceInterface $image2) {
+                return $image1->getOrder() - $image2->getOrder();
+            });
             foreach ($excerptDimension->getImages() as $dimensionImage) {
-                if (!in_array($dimensionImage, $images, true)) {
-                    $images[] = $dimensionImage;
+                if (!in_array($dimensionImage->getMedia(), $images, true)) {
+                    $images[] = $dimensionImage->getMedia();
                 }
             }
         }

@@ -45,16 +45,12 @@
                 index-by="media"
         />
 
-        <many-to-many field="images" target-entity="Sulu\Bundle\MediaBundle\Entity\MediaInterface" index-by="id">
-            <join-table name="cn_excerpt_images">
-                <join-columns>
-                    <join-column name="excerptDimension" referenced-column-name="no" on-delete="CASCADE" nullable="false"/>
-                </join-columns>
-                <inverse-join-columns>
-                    <join-column name="mediaId" referenced-column-name="id" on-delete="CASCADE" nullable="false"/>
-                </inverse-join-columns>
-            </join-table>
-        </many-to-many>
+        <one-to-many
+                field="images"
+                target-entity="Sulu\Bundle\ContentBundle\Model\Excerpt\ImageReference"
+                mapped-by="excerptDimension"
+                index-by="media"
+        />
 
         <many-to-one field="dimensionIdentifier"
                      target-entity="Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifier">

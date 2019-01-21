@@ -23,6 +23,7 @@ use Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptDimensionInterface;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptDimensionRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\Factory\ExcerptViewFactoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\IconReferenceRepositoryInterface;
+use Sulu\Bundle\ContentBundle\Model\Excerpt\ImageReferenceRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\Message\ModifyExcerptMessage;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\TagReferenceRepositoryInterface;
 use Sulu\Bundle\MediaBundle\Entity\MediaInterface;
@@ -53,6 +54,11 @@ class ModifyExcerptMessageHandler
     private $iconReferenceRepository;
 
     /**
+     * @var ImageReferenceRepositoryInterface
+     */
+    private $imageReferenceRepository;
+
+    /**
      * @var CategoryRepositoryInterface
      */
     private $categoryRepository;
@@ -77,6 +83,7 @@ class ModifyExcerptMessageHandler
         DimensionIdentifierRepositoryInterface $dimensionIdentifierRepository,
         TagReferenceRepositoryInterface $tagReferenceRepository,
         IconReferenceRepositoryInterface $iconReferenceRepository,
+        ImageReferenceRepositoryInterface $imageReferenceRepository,
         CategoryRepositoryInterface $categoryRepository,
         TagRepositoryInterface $tagRepository,
         MediaRepositoryInterface $mediaRepository,
@@ -86,6 +93,7 @@ class ModifyExcerptMessageHandler
         $this->dimensionIdentifierRepository = $dimensionIdentifierRepository;
         $this->tagReferenceRepository = $tagReferenceRepository;
         $this->iconReferenceRepository = $iconReferenceRepository;
+        $this->imageReferenceRepository = $imageReferenceRepository;
         $this->categoryRepository = $categoryRepository;
         $this->tagRepository = $tagRepository;
         $this->mediaRepository = $mediaRepository;
@@ -182,17 +190,20 @@ class ModifyExcerptMessageHandler
 
     private function updateImages(ModifyExcerptMessage $message, ExcerptDimensionInterface $localizedDraftExcerpt): void
     {
-        foreach ($message->getImageMediaIds() as $imageMediaId) {
-            $messageImageMedia = $localizedDraftExcerpt->getImage($imageMediaId);
-            if (!$messageImageMedia) {
+        foreach ($message->getImageMediaIds() as $index=>$imageMediaId) {
+            $messageImageReference = $localizedDraftExcerpt->getImage($imageMediaId);
+            if (!$messageImageReference) {
                 $messageImageMedia = $this->findMediaById($imageMediaId);
-                $localizedDraftExcerpt->addImage($messageImageMedia);
+                $messageImageReference = $this->imageReferenceRepository->create($localizedDraftExcerpt, $messageImageMedia);
+                $localizedDraftExcerpt->addImage($messageImageReference);
             }
+            $messageImageReference->setOrder($index);
         }
 
-        foreach ($localizedDraftExcerpt->getImages() as $persistedImageMedia) {
-            if (!in_array($persistedImageMedia->getId(), $message->getImageMediaIds(), true)) {
-                $localizedDraftExcerpt->removeImage($persistedImageMedia);
+        foreach ($localizedDraftExcerpt->getImages() as $persistedImageReference) {
+            if (!in_array($persistedImageReference->getMedia()->getId(), $message->getImageMediaIds(), true)) {
+                $localizedDraftExcerpt->removeImage($persistedImageReference);
+                $this->imageReferenceRepository->remove($persistedImageReference);
             }
         }
     }

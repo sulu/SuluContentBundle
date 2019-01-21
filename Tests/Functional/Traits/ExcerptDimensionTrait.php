@@ -21,6 +21,8 @@ use Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptDimensionInterface;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptDimensionRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\IconReference;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\IconReferenceInterface;
+use Sulu\Bundle\ContentBundle\Model\Excerpt\ImageReference;
+use Sulu\Bundle\ContentBundle\Model\Excerpt\ImageReferenceInterface;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\TagReference;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\TagReferenceInterface;
 use Sulu\Bundle\MediaBundle\Entity\MediaInterface;
@@ -73,8 +75,9 @@ trait ExcerptDimensionTrait
             $iconReference = $this->createIconReference($excerptDimension, $icon, $index);
             $excerptDimension->addIcon($iconReference);
         }
-        foreach ($images as $image) {
-            $excerptDimension->addImage($image);
+        foreach ($images as $index => $image) {
+            $imageReference = $this->createImageReference($excerptDimension, $image, $index);
+            $excerptDimension->addImage($imageReference);
         }
 
         $this->getEntityManager()->flush();
@@ -106,6 +109,19 @@ trait ExcerptDimensionTrait
         $this->getEntityManager()->flush();
 
         return $iconReference;
+    }
+
+    protected function createImageReference(
+        ExcerptDimensionInterface $excerptDimension,
+        MediaInterface $media,
+        int $order
+    ): ImageReferenceInterface {
+        $imageReference = new ImageReference($excerptDimension, $media, $order);
+
+        $this->getEntityManager()->persist($imageReference);
+        $this->getEntityManager()->flush();
+
+        return $imageReference;
     }
 
     protected function findDraftExcerptDimension(string $resourceKey, string $resourceId, string $locale): ?ExcerptDimensionInterface
