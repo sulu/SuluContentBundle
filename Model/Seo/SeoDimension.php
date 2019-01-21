@@ -18,6 +18,11 @@ use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierInter
 class SeoDimension implements SeoDimensionInterface
 {
     /**
+     * @var int
+     */
+    private $no;
+
+    /**
      * @var DimensionIdentifierInterface
      */
     private $dimensionIdentifier;

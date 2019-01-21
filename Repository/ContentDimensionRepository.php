@@ -60,7 +60,7 @@ class ContentDimensionRepository extends ServiceEntityRepository implements Cont
         DimensionIdentifierInterface $dimensionIdentifier
     ): ?ContentDimensionInterface {
         /** @var ContentDimensionInterface|null $contentDimension */
-        $contentDimension = $this->find(
+        $contentDimension = $this->findOneBy(
             ['resourceKey' => $resourceKey, 'resourceId' => $resourceId, 'dimensionIdentifier' => $dimensionIdentifier]
         );
 

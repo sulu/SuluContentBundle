@@ -3,26 +3,30 @@
                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                   xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
     <entity name="Sulu\Bundle\ContentBundle\Model\Seo\SeoDimension"
-            table="cs_seo_dimensions"
+            table="cn_seo_dimensions"
             repository-class="Sulu\Bundle\ContentBundle\Repository\SeoDimensionRepository">
-        <id name="resourceKey" type="string">
-            <generator strategy="NONE"/>
-        </id>
-        <id name="resourceId" type="string">
-            <generator strategy="NONE"/>
-        </id>
-        <id name="dimensionIdentifier" type="guid" association-key="true">
-            <generator strategy="NONE"/>
+        <id name="no" column="no" type="integer">
+            <generator strategy="AUTO"/>
         </id>
 
-        <field name="title" type="string" nullable="true"/>
-        <field name="description" type="string" nullable="true"/>
-        <field name="keywords" type="string" nullable="true"/>
-        <field name="canonicalUrl" type="string" nullable="true"/>
-        <field name="noIndex" type="boolean" nullable="true"/>
-        <field name="noFollow" type="boolean" nullable="true"/>
-        <field name="hideInSitemap" type="boolean" nullable="true"/>
+        <unique-constraints>
+            <unique-constraint columns="resourceKey,resourceId,dimensionIdentifier"/>
+        </unique-constraints>
 
-        <many-to-one field="dimensionIdentifier" target-entity="Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifier"/>
+        <field name="resourceKey" column="resourceKey" type="string" nullable="false"/>
+        <field name="resourceId" column="resourceId" type="string" nullable="false"/>
+
+        <field name="title" column="title" type="string" nullable="true"/>
+        <field name="description" column="description" type="string" nullable="true"/>
+        <field name="keywords" column="keywords" type="string" nullable="true"/>
+        <field name="canonicalUrl" column="canonicalUrl" type="string" nullable="true"/>
+        <field name="noIndex" column="noIndex" type="boolean" nullable="true"/>
+        <field name="noFollow" column="noFollow" type="boolean" nullable="true"/>
+        <field name="hideInSitemap" column="hideInSitemap" type="boolean" nullable="true"/>
+
+        <many-to-one field="dimensionIdentifier"
+                     target-entity="Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifier">
+            <join-column name="dimensionIdentifier" referenced-column-name="no" nullable="false"/>
+        </many-to-one>
     </entity>
 </doctrine-mapping>

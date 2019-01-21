@@ -20,6 +20,11 @@ use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\Exception\DimensionIdent
 class DimensionIdentifier implements DimensionIdentifierInterface
 {
     /**
+     * @var int
+     */
+    private $no;
+
+    /**
      * @var string
      */
     private $id;

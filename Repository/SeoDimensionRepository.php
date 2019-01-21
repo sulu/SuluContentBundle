@@ -60,7 +60,7 @@ class SeoDimensionRepository extends ServiceEntityRepository implements SeoDimen
         DimensionIdentifierInterface $dimensionIdentifier
     ): ?SeoDimensionInterface {
         /** @var SeoDimensionInterface|null $seoDimension */
-        $seoDimension = $this->find(
+        $seoDimension = $this->findOneBy(
             ['resourceKey' => $resourceKey, 'resourceId' => $resourceId, 'dimensionIdentifier' => $dimensionIdentifier]
         );
 

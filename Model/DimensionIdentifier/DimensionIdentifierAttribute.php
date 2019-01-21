@@ -16,6 +16,11 @@ namespace Sulu\Bundle\ContentBundle\Model\DimensionIdentifier;
 class DimensionIdentifierAttribute implements DimensionIdentifierAttributeInterface
 {
     /**
+     * @var int
+     */
+    private $no;
+
+    /**
      * @var DimensionIdentifierInterface
      */
     private $dimensionIdentifier;
