@@ -154,16 +154,25 @@ class ExcerptDimension implements ExcerptDimensionInterface
         return $this->categories->getValues();
     }
 
-    public function clearCategories(): ExcerptDimensionInterface
+    public function getCategory(int $categoryId): ?CategoryInterface
     {
-        $this->categories->clear();
+        if ($this->categories->containsKey($categoryId)) {
+            return $this->categories->get($categoryId);
+        }
 
-        return $this;
+        return null;
     }
 
     public function addCategory(CategoryInterface $category): ExcerptDimensionInterface
     {
-        $this->categories[] = $category;
+        $this->categories->set($category->getId(), $category);
+
+        return $this;
+    }
+
+    public function removeCategory(CategoryInterface $category): ExcerptDimensionInterface
+    {
+        $this->categories->removeElement($category);
 
         return $this;
     }
@@ -173,16 +182,27 @@ class ExcerptDimension implements ExcerptDimensionInterface
         return $this->tags->getValues();
     }
 
-    public function clearTags(): ExcerptDimensionInterface
+    public function getTag(string $tagName): ?TagInterface
     {
-        $this->tags->clear();
+        foreach ($this->tags as $tag) {
+            if ($tagName === $tag->getName()) {
+                return $tag;
+            }
+        }
 
-        return $this;
+        return null;
     }
 
     public function addTag(TagInterface $tag): ExcerptDimensionInterface
     {
-        $this->tags[] = $tag;
+        $this->tags->set($tag->getId(), $tag);
+
+        return $this;
+    }
+
+    public function removeTag(TagInterface $tag): ExcerptDimensionInterface
+    {
+        $this->tags->removeElement($tag);
 
         return $this;
     }
@@ -192,16 +212,25 @@ class ExcerptDimension implements ExcerptDimensionInterface
         return $this->icons->getValues();
     }
 
-    public function clearIcons(): ExcerptDimensionInterface
+    public function getIcon(int $mediaId): ?MediaInterface
     {
-        $this->icons->clear();
+        if ($this->icons->containsKey($mediaId)) {
+            return $this->icons->get($mediaId);
+        }
 
-        return $this;
+        return null;
     }
 
     public function addIcon(MediaInterface $icon): ExcerptDimensionInterface
     {
-        $this->icons[] = $icon;
+        $this->icons->set($icon->getId(), $icon);
+
+        return $this;
+    }
+
+    public function removeIcon(MediaInterface $icon): ExcerptDimensionInterface
+    {
+        $this->icons->removeElement($icon);
 
         return $this;
     }
@@ -211,16 +240,25 @@ class ExcerptDimension implements ExcerptDimensionInterface
         return $this->images->getValues();
     }
 
-    public function clearImages(): ExcerptDimensionInterface
+    public function getImage(int $mediaId): ?MediaInterface
     {
-        $this->images->clear();
+        if ($this->images->containsKey($mediaId)) {
+            return $this->images->get($mediaId);
+        }
 
-        return $this;
+        return null;
     }
 
     public function addImage(MediaInterface $image): ExcerptDimensionInterface
     {
-        $this->images[] = $image;
+        $this->images->set($image->getId(), $image);
+
+        return $this;
+    }
+
+    public function removeImage(MediaInterface $image): ExcerptDimensionInterface
+    {
+        $this->images->removeElement($image);
 
         return $this;
     }
@@ -231,22 +269,22 @@ class ExcerptDimension implements ExcerptDimensionInterface
         $this->setMore($excerptDimension->getMore());
         $this->setDescription($excerptDimension->getDescription());
 
-        $this->clearCategories();
+        $this->categories->clear();
         foreach ($excerptDimension->getCategories() as $category) {
             $this->addCategory($category);
         }
 
-        $this->clearTags();
+        $this->tags->clear();
         foreach ($excerptDimension->getTags() as $tag) {
             $this->addTag($tag);
         }
 
-        $this->clearIcons();
+        $this->icons->clear();
         foreach ($excerptDimension->getIcons() as $icon) {
             $this->addIcon($icon);
         }
 
-        $this->clearImages();
+        $this->images->clear();
         foreach ($excerptDimension->getImages() as $image) {
             $this->addImage($image);
         }

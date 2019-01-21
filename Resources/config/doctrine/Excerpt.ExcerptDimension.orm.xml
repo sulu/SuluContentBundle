@@ -20,8 +20,8 @@
         <field name="more" type="string" nullable="true"/>
         <field name="description" type="string" nullable="true"/>
 
-        <many-to-many field="categories" target-entity="Sulu\Bundle\CategoryBundle\Entity\CategoryInterface">
-            <join-table name="cn_excerpt_dimension_categories">
+        <many-to-many field="categories" target-entity="Sulu\Bundle\CategoryBundle\Entity\CategoryInterface" index-by="id">
+            <join-table name="cn_excerpt_categories">
                 <join-columns>
                     <join-column name="excerptDimension" referenced-column-name="no" on-delete="CASCADE" nullable="false"/>
                 </join-columns>
@@ -31,8 +31,8 @@
             </join-table>
         </many-to-many>
 
-        <many-to-many field="tags" target-entity="Sulu\Bundle\TagBundle\Tag\TagInterface">
-            <join-table name="cn_excerpt_dimension_tags">
+        <many-to-many field="tags" target-entity="Sulu\Bundle\TagBundle\Tag\TagInterface" index-by="id">
+            <join-table name="cn_excerpt_tags">
                 <join-columns>
                     <join-column name="excerptDimension" referenced-column-name="no" on-delete="CASCADE" nullable="false"/>
                 </join-columns>
@@ -42,8 +42,8 @@
             </join-table>
         </many-to-many>
 
-        <many-to-many field="images" target-entity="Sulu\Bundle\MediaBundle\Entity\MediaInterface">
-            <join-table name="cn_excerpt_dimension_images">
+        <many-to-many field="images" target-entity="Sulu\Bundle\MediaBundle\Entity\MediaInterface" index-by="id">
+            <join-table name="cn_excerpt_images">
                 <join-columns>
                     <join-column name="excerptDimension" referenced-column-name="no" on-delete="CASCADE" nullable="false"/>
                 </join-columns>
@@ -53,8 +53,8 @@
             </join-table>
         </many-to-many>
 
-        <many-to-many field="icons" target-entity="Sulu\Bundle\MediaBundle\Entity\MediaInterface">
-            <join-table name="cn_excerpt_dimension_icons">
+        <many-to-many field="icons" target-entity="Sulu\Bundle\MediaBundle\Entity\MediaInterface" index-by="id">
+            <join-table name="cn_excerpt_icons">
                 <join-columns>
                     <join-column name="excerptDimension" referenced-column-name="no" on-delete="CASCADE" nullable="false"/>
                 </join-columns>

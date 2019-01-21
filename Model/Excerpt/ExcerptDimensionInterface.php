@@ -43,36 +43,44 @@ interface ExcerptDimensionInterface
      */
     public function getCategories(): array;
 
-    public function clearCategories(): self;
+    public function getCategory(int $categoryId): ?CategoryInterface;
 
     public function addCategory(CategoryInterface $category): self;
+
+    public function removeCategory(CategoryInterface $category): self;
 
     /**
      * @return TagInterface[]
      */
     public function getTags(): array;
 
-    public function clearTags(): self;
+    public function getTag(string $tagName): ?TagInterface;
 
     public function addTag(TagInterface $tag): self;
+
+    public function removeTag(TagInterface $tag): self;
 
     /**
      * @return MediaInterface[]
      */
     public function getIcons(): array;
 
-    public function clearIcons(): self;
+    public function getIcon(int $mediaId): ?MediaInterface;
 
     public function addIcon(MediaInterface $icon): self;
+
+    public function removeIcon(MediaInterface $icon): self;
 
     /**
      * @return MediaInterface[]
      */
     public function getImages(): array;
 
-    public function clearImages(): self;
+    public function getImage(int $mediaId): ?MediaInterface;
 
     public function addImage(MediaInterface $image): self;
+
+    public function removeImage(MediaInterface $image): self;
 
     public function copyAttributesFrom(ExcerptDimensionInterface $excerptDimension): self;
 }
