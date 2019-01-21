@@ -21,8 +21,11 @@ use Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptDimensionInterface;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptDimensionRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptViewInterface;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\Factory\ExcerptViewFactoryInterface;
+use Sulu\Bundle\ContentBundle\Model\Excerpt\IconReferenceRepositoryInterface;
+use Sulu\Bundle\ContentBundle\Model\Excerpt\ImageReferenceRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\Message\PublishExcerptMessage;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\MessageHandler\PublishExcerptMessageHandler;
+use Sulu\Bundle\ContentBundle\Model\Excerpt\TagReferenceRepositoryInterface;
 
 class PublishExcerptMessageHandlerTest extends TestCase
 {
@@ -32,11 +35,17 @@ class PublishExcerptMessageHandlerTest extends TestCase
     {
         $excerptDimensionRepository = $this->prophesize(ExcerptDimensionRepositoryInterface::class);
         $dimensionIdentifierRepository = $this->prophesize(DimensionIdentifierRepositoryInterface::class);
+        $tagReferenceRepository = $this->prophesize(TagReferenceRepositoryInterface::class);
+        $iconReferenceRepository = $this->prophesize(IconReferenceRepositoryInterface::class);
+        $imageReferenceRepository = $this->prophesize(ImageReferenceRepositoryInterface::class);
         $excerptViewFactory = $this->prophesize(ExcerptViewFactoryInterface::class);
 
         $handler = new PublishExcerptMessageHandler(
             $excerptDimensionRepository->reveal(),
             $dimensionIdentifierRepository->reveal(),
+            $tagReferenceRepository->reveal(),
+            $iconReferenceRepository->reveal(),
+            $imageReferenceRepository->reveal(),
             $excerptViewFactory->reveal()
         );
 
@@ -89,11 +98,17 @@ class PublishExcerptMessageHandlerTest extends TestCase
 
         $excerptDimensionRepository = $this->prophesize(ExcerptDimensionRepositoryInterface::class);
         $dimensionIdentifierRepository = $this->prophesize(DimensionIdentifierRepositoryInterface::class);
+        $tagReferenceRepository = $this->prophesize(TagReferenceRepositoryInterface::class);
+        $iconReferenceRepository = $this->prophesize(IconReferenceRepositoryInterface::class);
+        $imageReferenceRepository = $this->prophesize(ImageReferenceRepositoryInterface::class);
         $excerptViewFactory = $this->prophesize(ExcerptViewFactoryInterface::class);
 
         $handler = new PublishExcerptMessageHandler(
             $excerptDimensionRepository->reveal(),
             $dimensionIdentifierRepository->reveal(),
+            $tagReferenceRepository->reveal(),
+            $iconReferenceRepository->reveal(),
+            $imageReferenceRepository->reveal(),
             $excerptViewFactory->reveal()
         );
 

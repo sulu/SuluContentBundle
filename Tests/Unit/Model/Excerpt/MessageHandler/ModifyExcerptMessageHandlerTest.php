@@ -23,8 +23,11 @@ use Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptDimensionInterface;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptDimensionRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptViewInterface;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\Factory\ExcerptViewFactoryInterface;
+use Sulu\Bundle\ContentBundle\Model\Excerpt\IconReferenceRepositoryInterface;
+use Sulu\Bundle\ContentBundle\Model\Excerpt\ImageReferenceRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\Message\ModifyExcerptMessage;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\MessageHandler\ModifyExcerptMessageHandler;
+use Sulu\Bundle\ContentBundle\Model\Excerpt\TagReferenceRepositoryInterface;
 use Sulu\Bundle\MediaBundle\Entity\MediaInterface;
 use Sulu\Bundle\MediaBundle\Entity\MediaRepositoryInterface;
 use Sulu\Bundle\TagBundle\Tag\TagInterface;
@@ -38,6 +41,9 @@ class ModifyExcerptMessageHandlerTest extends TestCase
     {
         $excerptDimensionRepository = $this->prophesize(ExcerptDimensionRepositoryInterface::class);
         $dimensionIdentifierRepository = $this->prophesize(DimensionIdentifierRepositoryInterface::class);
+        $tagReferenceRepository = $this->prophesize(TagReferenceRepositoryInterface::class);
+        $iconReferenceRepository = $this->prophesize(IconReferenceRepositoryInterface::class);
+        $imageReferenceRepository = $this->prophesize(ImageReferenceRepositoryInterface::class);
         $categoryRepository = $this->prophesize(CategoryRepositoryInterface::class);
         $tagRepository = $this->prophesize(TagRepositoryInterface::class);
         $mediaRepository = $this->prophesize(MediaRepositoryInterface::class);
@@ -46,6 +52,9 @@ class ModifyExcerptMessageHandlerTest extends TestCase
         $handler = new ModifyExcerptMessageHandler(
             $excerptDimensionRepository->reveal(),
             $dimensionIdentifierRepository->reveal(),
+            $tagReferenceRepository->reveal(),
+            $iconReferenceRepository->reveal(),
+            $imageReferenceRepository->reveal(),
             $categoryRepository->reveal(),
             $tagRepository->reveal(),
             $mediaRepository->reveal(),
@@ -119,6 +128,9 @@ class ModifyExcerptMessageHandlerTest extends TestCase
 
         $excerptDimensionRepository = $this->prophesize(ExcerptDimensionRepositoryInterface::class);
         $dimensionIdentifierRepository = $this->prophesize(DimensionIdentifierRepositoryInterface::class);
+        $tagReferenceRepository = $this->prophesize(TagReferenceRepositoryInterface::class);
+        $iconReferenceRepository = $this->prophesize(IconReferenceRepositoryInterface::class);
+        $imageReferenceRepository = $this->prophesize(ImageReferenceRepositoryInterface::class);
         $categoryRepository = $this->prophesize(CategoryRepositoryInterface::class);
         $tagRepository = $this->prophesize(TagRepositoryInterface::class);
         $mediaRepository = $this->prophesize(MediaRepositoryInterface::class);
@@ -127,6 +139,9 @@ class ModifyExcerptMessageHandlerTest extends TestCase
         $handler = new ModifyExcerptMessageHandler(
             $excerptDimensionRepository->reveal(),
             $dimensionIdentifierRepository->reveal(),
+            $tagReferenceRepository->reveal(),
+            $iconReferenceRepository->reveal(),
+            $imageReferenceRepository->reveal(),
             $categoryRepository->reveal(),
             $tagRepository->reveal(),
             $mediaRepository->reveal(),
