@@ -51,7 +51,7 @@ class ExcerptViewFactoryTest extends TestCase
         $excerptDimension1->getMore()->shouldBeCalled()->willReturn('more-1');
         $excerptDimension1->getDescription()->shouldBeCalled()->willReturn('description-1');
         $excerptDimension1->getCategories()->shouldBeCalled()->willReturn([$category1->reveal()]);
-        $excerptDimension1->getTags()->shouldBeCalled()->willReturn([]);
+        $excerptDimension1->getTagReferences()->shouldBeCalled()->willReturn([]);
         $excerptDimension1->getIcons()->shouldBeCalled()->willReturn([$media1->reveal(), $media2->reveal()]);
         $excerptDimension1->getImages()->shouldBeCalled()->willReturn([]);
 
@@ -62,7 +62,7 @@ class ExcerptViewFactoryTest extends TestCase
         $excerptDimension2->getMore()->shouldBeCalled()->willReturn('more-2');
         $excerptDimension2->getDescription()->shouldBeCalled()->willReturn(null);
         $excerptDimension2->getCategories()->shouldBeCalled()->willReturn([$category2->reveal()]);
-        $excerptDimension2->getTags()->shouldBeCalled()->willReturn([]);
+        $excerptDimension2->getTagReferences()->shouldBeCalled()->willReturn([]);
         $excerptDimension2->getIcons()->shouldBeCalled()->willReturn([$media3->reveal()]);
         $excerptDimension2->getImages()->shouldBeCalled()->willReturn([$media4->reveal()]);
 

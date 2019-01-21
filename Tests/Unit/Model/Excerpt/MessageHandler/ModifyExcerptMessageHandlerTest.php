@@ -25,6 +25,7 @@ use Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptViewInterface;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\Factory\ExcerptViewFactoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\Message\ModifyExcerptMessage;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\MessageHandler\ModifyExcerptMessageHandler;
+use Sulu\Bundle\ContentBundle\Model\Excerpt\TagReferenceRepositoryInterface;
 use Sulu\Bundle\MediaBundle\Entity\MediaInterface;
 use Sulu\Bundle\MediaBundle\Entity\MediaRepositoryInterface;
 use Sulu\Bundle\TagBundle\Tag\TagInterface;
@@ -40,6 +41,7 @@ class ModifyExcerptMessageHandlerTest extends TestCase
         $dimensionIdentifierRepository = $this->prophesize(DimensionIdentifierRepositoryInterface::class);
         $categoryRepository = $this->prophesize(CategoryRepositoryInterface::class);
         $tagRepository = $this->prophesize(TagRepositoryInterface::class);
+        $tagReferenceRepository = $this->prophesize(TagReferenceRepositoryInterface::class);
         $mediaRepository = $this->prophesize(MediaRepositoryInterface::class);
         $excerptViewFactory = $this->prophesize(ExcerptViewFactoryInterface::class);
 
@@ -48,6 +50,7 @@ class ModifyExcerptMessageHandlerTest extends TestCase
             $dimensionIdentifierRepository->reveal(),
             $categoryRepository->reveal(),
             $tagRepository->reveal(),
+            $tagReferenceRepository->reveal(),
             $mediaRepository->reveal(),
             $excerptViewFactory->reveal()
         );
@@ -121,6 +124,7 @@ class ModifyExcerptMessageHandlerTest extends TestCase
         $dimensionIdentifierRepository = $this->prophesize(DimensionIdentifierRepositoryInterface::class);
         $categoryRepository = $this->prophesize(CategoryRepositoryInterface::class);
         $tagRepository = $this->prophesize(TagRepositoryInterface::class);
+        $tagReferenceRepository = $this->prophesize(TagReferenceRepositoryInterface::class);
         $mediaRepository = $this->prophesize(MediaRepositoryInterface::class);
         $excerptViewFactory = $this->prophesize(ExcerptViewFactoryInterface::class);
 
@@ -129,6 +133,7 @@ class ModifyExcerptMessageHandlerTest extends TestCase
             $dimensionIdentifierRepository->reveal(),
             $categoryRepository->reveal(),
             $tagRepository->reveal(),
+            $tagReferenceRepository->reveal(),
             $mediaRepository->reveal(),
             $excerptViewFactory->reveal()
         );

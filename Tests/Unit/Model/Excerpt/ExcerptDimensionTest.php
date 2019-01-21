@@ -17,6 +17,7 @@ use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\CategoryBundle\Entity\CategoryInterface;
 use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierInterface;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptDimension;
+use Sulu\Bundle\ContentBundle\Model\Excerpt\TagReferenceInterface;
 use Sulu\Bundle\MediaBundle\Entity\MediaInterface;
 use Sulu\Bundle\TagBundle\Tag\TagInterface;
 
@@ -130,35 +131,61 @@ class ExcerptDimensionTest extends TestCase
         $this->assertEquals([], $excerptDimension->getCategories());
     }
 
-    public function testGetTags(): void
+    public function testGetTagReferences(): void
     {
         $dimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
         $excerptDimension = new ExcerptDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'resource-1');
 
-        $this->assertEquals([], $excerptDimension->getTags());
+        $this->assertEquals([], $excerptDimension->getTagReferences());
     }
 
-    public function testAddTag(): void
+    public function testGetTagReferenceByName(): void
+    {
+        $dimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
+        $excerptDimension = new ExcerptDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'resource-1');
+
+        $tag1 = $this->prophesize(TagInterface::class);
+        $tag1->getName()->willReturn('tag-1');
+        $tagReference1 = $this->prophesize(TagReferenceInterface::class);
+        $tagReference1->getTag()->willReturn($tag1->reveal());
+
+        $tag2 = $this->prophesize(TagInterface::class);
+        $tag2->getName()->willReturn('tag-2');
+        $tagReference2 = $this->prophesize(TagReferenceInterface::class);
+        $tagReference2->getTag()->willReturn($tag2->reveal());
+
+        $this->assertEquals($excerptDimension, $excerptDimension->addTagReference($tagReference1->reveal()));
+        $this->assertEquals($excerptDimension, $excerptDimension->addTagReference($tagReference2->reveal()));
+        $this->assertEquals($tagReference2->reveal(), $excerptDimension->getTagReferenceByName('tag-2'));
+    }
+
+    public function testAddTagReference(): void
     {
         $dimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
         $excerptDimension = new ExcerptDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'resource-1');
 
         $tag = $this->prophesize(TagInterface::class);
+        $tag->getName()->willReturn('tag-1');
+        $tagReference = $this->prophesize(TagReferenceInterface::class);
+        $tagReference->getTag()->willReturn($tag->reveal());
 
-        $this->assertEquals($excerptDimension, $excerptDimension->addTag($tag->reveal()));
-        $this->assertEquals([$tag->reveal()], $excerptDimension->getTags());
+        $this->assertEquals($excerptDimension, $excerptDimension->addTagReference($tagReference->reveal()));
+        $this->assertEquals([$tagReference->reveal()], $excerptDimension->getTagReferences());
     }
 
-    public function testClearTags(): void
+    public function testRemoveTagReference(): void
     {
         $dimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
         $excerptDimension = new ExcerptDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'resource-1');
 
         $tag = $this->prophesize(TagInterface::class);
+        $tag->getName()->willReturn('tag-1');
+        $tagReference = $this->prophesize(TagReferenceInterface::class);
+        $tagReference->getTag()->willReturn($tag->reveal());
 
-        $this->assertEquals($excerptDimension, $excerptDimension->addTag($tag->reveal()));
-        $this->assertEquals($excerptDimension, $excerptDimension->clearTags());
-        $this->assertEquals([], $excerptDimension->getTags());
+        $this->assertEquals($excerptDimension, $excerptDimension->addTagReference($tagReference->reveal()));
+        $this->assertEquals($excerptDimension, $excerptDimension->removeTagReference($tagReference->reveal()));
+        $this->assertEquals([], $excerptDimension->getTagReferences());
     }
 
     public function testGetIcons(): void

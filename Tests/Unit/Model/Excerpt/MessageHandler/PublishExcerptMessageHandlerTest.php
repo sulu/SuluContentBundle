@@ -23,6 +23,7 @@ use Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptViewInterface;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\Factory\ExcerptViewFactoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\Message\PublishExcerptMessage;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\MessageHandler\PublishExcerptMessageHandler;
+use Sulu\Bundle\ContentBundle\Model\Excerpt\TagReferenceRepositoryInterface;
 
 class PublishExcerptMessageHandlerTest extends TestCase
 {
@@ -32,11 +33,13 @@ class PublishExcerptMessageHandlerTest extends TestCase
     {
         $excerptDimensionRepository = $this->prophesize(ExcerptDimensionRepositoryInterface::class);
         $dimensionIdentifierRepository = $this->prophesize(DimensionIdentifierRepositoryInterface::class);
+        $tagReferenceRepository = $this->prophesize(TagReferenceRepositoryInterface::class);
         $excerptViewFactory = $this->prophesize(ExcerptViewFactoryInterface::class);
 
         $handler = new PublishExcerptMessageHandler(
             $excerptDimensionRepository->reveal(),
             $dimensionIdentifierRepository->reveal(),
+            $tagReferenceRepository->reveal(),
             $excerptViewFactory->reveal()
         );
 
@@ -65,7 +68,7 @@ class PublishExcerptMessageHandlerTest extends TestCase
 
         $localizedDraftExcerpt = $this->prophesize(ExcerptDimensionInterface::class);
         $localizedLiveExcerpt = $this->prophesize(ExcerptDimensionInterface::class);
-        $localizedLiveExcerpt->copyAttributesFrom($localizedDraftExcerpt->reveal())
+        $localizedLiveExcerpt->copyAttributesFrom($localizedDraftExcerpt->reveal(), $tagReferenceRepository->reveal())
             ->shouldBeCalled()->willReturn($localizedLiveExcerpt->reveal());
 
         $excerptDimensionRepository->findDimension(self::RESOURCE_KEY, 'resource-1', $localizedDraftDimensionIdentifier->reveal())
@@ -89,11 +92,13 @@ class PublishExcerptMessageHandlerTest extends TestCase
 
         $excerptDimensionRepository = $this->prophesize(ExcerptDimensionRepositoryInterface::class);
         $dimensionIdentifierRepository = $this->prophesize(DimensionIdentifierRepositoryInterface::class);
+        $tagReferenceRepository = $this->prophesize(TagReferenceRepositoryInterface::class);
         $excerptViewFactory = $this->prophesize(ExcerptViewFactoryInterface::class);
 
         $handler = new PublishExcerptMessageHandler(
             $excerptDimensionRepository->reveal(),
             $dimensionIdentifierRepository->reveal(),
+            $tagReferenceRepository->reveal(),
             $excerptViewFactory->reveal()
         );
 
