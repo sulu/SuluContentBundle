@@ -115,6 +115,7 @@ class PublishExcerptMessageHandler
         $liveExcerpt = $this->excerptDimensionRepository->findOrCreateDimension($resourceKey, $resourceId, $liveDimensionIdentifier);
 
         $liveExcerpt->copyAttributesFrom($draftExcerpt);
+        $this->copyCategories($draftExcerpt, $liveExcerpt);
         $this->copyTags($draftExcerpt, $liveExcerpt);
         $this->copyIcons($draftExcerpt, $liveExcerpt);
         $this->copyImages($draftExcerpt, $liveExcerpt);
@@ -129,6 +130,17 @@ class PublishExcerptMessageHandler
         $attributes[DimensionIdentifierInterface::ATTRIBUTE_KEY_LOCALE] = $locale;
 
         return $this->dimensionIdentifierRepository->findOrCreateByAttributes($attributes);
+    }
+
+    private function copyCategories(ExcerptDimensionInterface $draftExcerpt, ExcerptDimensionInterface $liveExcerpt): void
+    {
+        foreach ($liveExcerpt->getCategories() as $oldLiveCategory) {
+            $liveExcerpt->removeCategory($oldLiveCategory);
+        }
+
+        foreach ($draftExcerpt->getCategories() as $draftCategory) {
+            $liveExcerpt->addCategory($draftCategory);
+        }
     }
 
     private function copyTags(ExcerptDimensionInterface $draftExcerpt, ExcerptDimensionInterface $liveExcerpt): void

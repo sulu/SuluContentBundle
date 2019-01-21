@@ -190,7 +190,7 @@ class ModifyExcerptMessageHandler
 
     private function updateImages(ModifyExcerptMessage $message, ExcerptDimensionInterface $localizedDraftExcerpt): void
     {
-        foreach ($message->getImageMediaIds() as $index=>$imageMediaId) {
+        foreach ($message->getImageMediaIds() as $index => $imageMediaId) {
             $messageImageReference = $localizedDraftExcerpt->getImage($imageMediaId);
             if (!$messageImageReference) {
                 $messageImageMedia = $this->findMediaById($imageMediaId);

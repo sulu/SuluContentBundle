@@ -17,8 +17,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Sulu\Bundle\CategoryBundle\Entity\CategoryInterface;
 use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierInterface;
-use Sulu\Bundle\MediaBundle\Entity\Media;
-use Sulu\Bundle\MediaBundle\Entity\MediaInterface;
 
 class ExcerptDimension implements ExcerptDimensionInterface
 {
@@ -68,12 +66,12 @@ class ExcerptDimension implements ExcerptDimensionInterface
     private $tags;
 
     /**
-     * @var Collection|Media[]
+     * @var Collection|IconReferenceInterface[]
      */
     private $icons;
 
     /**
-     * @var Collection|Media[]
+     * @var Collection|ImageReferenceInterface[]
      */
     private $images;
 
@@ -267,11 +265,6 @@ class ExcerptDimension implements ExcerptDimensionInterface
         $this->setTitle($excerptDimension->getTitle());
         $this->setMore($excerptDimension->getMore());
         $this->setDescription($excerptDimension->getDescription());
-
-        $this->categories->clear();
-        foreach ($excerptDimension->getCategories() as $category) {
-            $this->addCategory($category);
-        }
 
         return $this;
     }

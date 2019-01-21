@@ -16,9 +16,6 @@ namespace Sulu\Bundle\ContentBundle\Model\Excerpt\Factory;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptDimensionInterface;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptView;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptViewInterface;
-use Sulu\Bundle\ContentBundle\Model\Excerpt\IconReferenceInterface;
-use Sulu\Bundle\ContentBundle\Model\Excerpt\ImageReferenceInterface;
-use Sulu\Bundle\ContentBundle\Model\Excerpt\TagReferenceInterface;
 
 class ExcerptViewFactory implements ExcerptViewFactoryInterface
 {
@@ -46,44 +43,20 @@ class ExcerptViewFactory implements ExcerptViewFactoryInterface
             $more = $excerptDimension->getMore() ?? $more;
             $description = $excerptDimension->getDescription() ?? $description;
 
-            // append categories to the categories array
             foreach ($excerptDimension->getCategories() as $dimensionCategory) {
-                if (!in_array($dimensionCategory, $categories, true)) {
-                    $categories[] = $dimensionCategory;
-                }
+                $categories[$dimensionCategory->getId()] = $dimensionCategory;
             }
 
-            // sort tags by order and append to tags array
-            $dimensionTags = $excerptDimension->getTags();
-            usort($dimensionTags, function (TagReferenceInterface $tag1, TagReferenceInterface $tag2) {
-                return $tag1->getOrder() - $tag2->getOrder();
-            });
-            foreach ($dimensionTags as $dimensionTag) {
-                if (!in_array($dimensionTag->getTag(), $tags, true)) {
-                    $tags[] = $dimensionTag->getTag();
-                }
+            foreach ($excerptDimension->getTags() as $dimensionTag) {
+                $tags[$dimensionTag->getTag()->getId()] = $dimensionTag;
             }
 
-            // sort images by order and append to icons array
-            $dimensionIcons = $excerptDimension->getIcons();
-            usort($dimensionIcons, function (IconReferenceInterface $icon1, IconReferenceInterface $icon2) {
-                return $icon1->getOrder() - $icon2->getOrder();
-            });
-            foreach ($dimensionIcons as $dimensionIcon) {
-                if (!in_array($dimensionIcon->getMedia(), $icons, true)) {
-                    $icons[] = $dimensionIcon->getMedia();
-                }
+            foreach ($excerptDimension->getIcons() as $dimensionIcon) {
+                $icons[$dimensionIcon->getMedia()->getId()] = $dimensionIcon;
             }
 
-            // sort images by order and append to images array
-            $dimensionImages = $excerptDimension->getImages();
-            usort($dimensionImages, function (ImageReferenceInterface $image1, ImageReferenceInterface $image2) {
-                return $image1->getOrder() - $image2->getOrder();
-            });
             foreach ($excerptDimension->getImages() as $dimensionImage) {
-                if (!in_array($dimensionImage->getMedia(), $images, true)) {
-                    $images[] = $dimensionImage->getMedia();
-                }
+                $images[$dimensionImage->getMedia()->getId()] = $dimensionImage;
             }
         }
 
@@ -94,10 +67,10 @@ class ExcerptViewFactory implements ExcerptViewFactoryInterface
             $title,
             $more,
             $description,
-            $categories,
-            $tags,
-            $icons,
-            $images
+            array_values($categories),
+                array_values($tags),
+                    array_values($icons),
+                        array_values($images)
         );
     }
 }

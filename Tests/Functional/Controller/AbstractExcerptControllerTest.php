@@ -38,6 +38,11 @@ class AbstractExcerptControllerTest extends SuluTestCase
     private $category1;
 
     /**
+     * @var CategoryInterface
+     */
+    private $category2;
+
+    /**
      * @var TagInterface
      */
     private $tag1;
@@ -73,6 +78,7 @@ class AbstractExcerptControllerTest extends SuluTestCase
         $mediaTpe = $this->createMediaType('media-type-1');
 
         $this->category1 = $this->createCategory();
+        $this->category2 = $this->createCategory();
         $this->tag1 = $this->createTag('tag-1');
         $this->tag2 = $this->createTag('tag-2');
         $this->media1 = $this->createMedia($mediaTpe, $collection);
@@ -156,7 +162,7 @@ class AbstractExcerptControllerTest extends SuluTestCase
             'excerpt-title',
             'excerpt-more',
             'excerpt-description',
-            [$this->category1],
+            [$this->category1, $this->category2],
             [$this->tag1],
             [$this->media1, $this->media2],
             [$this->media2, $this->media3]
@@ -176,7 +182,7 @@ class AbstractExcerptControllerTest extends SuluTestCase
             'title' => 'new-title',
             'more' => 'new-more',
             'description' => null,
-            'categories' => [],
+            'categories' => [$this->category2->getId()],
             'tags' => [$this->tag2->getName()],
             'icons' => [
                 'ids' => [$this->media2->getId(), $this->media1->getId()],
@@ -196,7 +202,7 @@ class AbstractExcerptControllerTest extends SuluTestCase
                 'title' => 'new-title',
                 'more' => 'new-more',
                 'description' => null,
-                'categories' => [],
+                'categories' => [$this->category2->getId()],
                 'tags' => [$this->tag2->getName()],
                 'icons' => [
                     'ids' => [$this->media2->getId(), $this->media1->getId()],
@@ -225,7 +231,7 @@ class AbstractExcerptControllerTest extends SuluTestCase
             'title' => 'new-title',
             'more' => 'new-more',
             'description' => null,
-            'categories' => [],
+            'categories' => [$this->category1->getId(), $this->category2->getId()],
             'tags' => [$this->tag1->getName()],
             'icons' => [
                 'ids' => [],
@@ -245,7 +251,7 @@ class AbstractExcerptControllerTest extends SuluTestCase
                 'title' => 'new-title',
                 'more' => 'new-more',
                 'description' => null,
-                'categories' => [],
+                'categories' => [$this->category1->getId(), $this->category2->getId()],
                 'tags' => [$this->tag1->getName()],
                 'icons' => [
                     'ids' => [],
