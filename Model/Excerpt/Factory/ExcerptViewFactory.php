@@ -16,6 +16,7 @@ namespace Sulu\Bundle\ContentBundle\Model\Excerpt\Factory;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptDimensionInterface;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptView;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptViewInterface;
+use Sulu\Bundle\ContentBundle\Model\Excerpt\TagReferenceInterface;
 
 class ExcerptViewFactory implements ExcerptViewFactoryInterface
 {
@@ -49,9 +50,14 @@ class ExcerptViewFactory implements ExcerptViewFactoryInterface
                 }
             }
 
-            foreach ($excerptDimension->getTags() as $dimensionTag) {
-                if (!in_array($dimensionTag, $tags, true)) {
-                    $tags[] = $dimensionTag;
+            // sort tags by order and append to tags array
+            $dimensionTags = $excerptDimension->getTags();
+            usort($dimensionTags, function(TagReferenceInterface $tag1, TagReferenceInterface $tag2) {
+               return $tag1->getOrder() - $tag2->getOrder();
+            });
+            foreach ($dimensionTags as $dimensionTag) {
+                if (!in_array($dimensionTag->getTag(), $tags, true)) {
+                    $tags[] = $dimensionTag->getTag();
                 }
             }
 

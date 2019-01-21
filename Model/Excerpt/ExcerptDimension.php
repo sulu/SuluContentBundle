@@ -19,7 +19,6 @@ use Sulu\Bundle\CategoryBundle\Entity\CategoryInterface;
 use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierInterface;
 use Sulu\Bundle\MediaBundle\Entity\Media;
 use Sulu\Bundle\MediaBundle\Entity\MediaInterface;
-use Sulu\Bundle\TagBundle\Tag\TagInterface;
 
 class ExcerptDimension implements ExcerptDimensionInterface
 {
@@ -64,7 +63,7 @@ class ExcerptDimension implements ExcerptDimensionInterface
     private $categories;
 
     /**
-     * @var Collection|TagInterface[]
+     * @var Collection|TagReferenceInterface[]
      */
     private $tags;
 
@@ -182,10 +181,10 @@ class ExcerptDimension implements ExcerptDimensionInterface
         return $this->tags->getValues();
     }
 
-    public function getTag(string $tagName): ?TagInterface
+    public function getTag(string $tagName): ?TagReferenceInterface
     {
         foreach ($this->tags as $tag) {
-            if ($tagName === $tag->getName()) {
+            if ($tagName === $tag->getTag()->getName()) {
                 return $tag;
             }
         }
@@ -193,14 +192,14 @@ class ExcerptDimension implements ExcerptDimensionInterface
         return null;
     }
 
-    public function addTag(TagInterface $tag): ExcerptDimensionInterface
+    public function addTag(TagReferenceInterface $tag): ExcerptDimensionInterface
     {
-        $this->tags->set($tag->getId(), $tag);
+        $this->tags->set($tag->getTag()->getId(), $tag);
 
         return $this;
     }
 
-    public function removeTag(TagInterface $tag): ExcerptDimensionInterface
+    public function removeTag(TagReferenceInterface $tag): ExcerptDimensionInterface
     {
         $this->tags->removeElement($tag);
 

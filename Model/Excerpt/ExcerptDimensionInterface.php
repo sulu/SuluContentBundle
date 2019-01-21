@@ -50,15 +50,15 @@ interface ExcerptDimensionInterface
     public function removeCategory(CategoryInterface $category): self;
 
     /**
-     * @return TagInterface[]
+     * @return TagReferenceInterface[]
      */
     public function getTags(): array;
 
-    public function getTag(string $tagName): ?TagInterface;
+    public function getTag(string $tagName): ?TagReferenceInterface;
 
-    public function addTag(TagInterface $tag): self;
+    public function addTag(TagReferenceInterface $tag): self;
 
-    public function removeTag(TagInterface $tag): self;
+    public function removeTag(TagReferenceInterface $tag): self;
 
     /**
      * @return MediaInterface[]

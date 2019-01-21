@@ -31,16 +31,12 @@
             </join-table>
         </many-to-many>
 
-        <many-to-many field="tags" target-entity="Sulu\Bundle\TagBundle\Tag\TagInterface" index-by="id">
-            <join-table name="cn_excerpt_tags">
-                <join-columns>
-                    <join-column name="excerptDimension" referenced-column-name="no" on-delete="CASCADE" nullable="false"/>
-                </join-columns>
-                <inverse-join-columns>
-                    <join-column name="tagId" referenced-column-name="id" on-delete="CASCADE" nullable="false"/>
-                </inverse-join-columns>
-            </join-table>
-        </many-to-many>
+        <one-to-many
+                field="tags"
+                target-entity="Sulu\Bundle\ContentBundle\Model\Excerpt\TagReference"
+                mapped-by="excerptDimension"
+                index-by="id"
+        />
 
         <many-to-many field="images" target-entity="Sulu\Bundle\MediaBundle\Entity\MediaInterface" index-by="id">
             <join-table name="cn_excerpt_images">

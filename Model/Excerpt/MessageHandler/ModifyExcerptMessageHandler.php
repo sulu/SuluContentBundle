@@ -23,6 +23,7 @@ use Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptDimensionInterface;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptDimensionRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\Factory\ExcerptViewFactoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\Message\ModifyExcerptMessage;
+use Sulu\Bundle\ContentBundle\Model\Excerpt\TagReferenceRepositoryInterface;
 use Sulu\Bundle\MediaBundle\Entity\MediaInterface;
 use Sulu\Bundle\MediaBundle\Entity\MediaRepositoryInterface;
 use Sulu\Bundle\TagBundle\Tag\TagInterface;
@@ -39,6 +40,11 @@ class ModifyExcerptMessageHandler
      * @var DimensionIdentifierRepositoryInterface
      */
     private $dimensionIdentifierRepository;
+
+    /**
+     * @var TagReferenceRepositoryInterface
+     */
+    private $tagReferenceRepository;
 
     /**
      * @var CategoryRepositoryInterface
@@ -63,6 +69,7 @@ class ModifyExcerptMessageHandler
     public function __construct(
         ExcerptDimensionRepositoryInterface $excerptDimensionRepository,
         DimensionIdentifierRepositoryInterface $dimensionIdentifierRepository,
+        TagReferenceRepositoryInterface $tagReferenceRepository,
         CategoryRepositoryInterface $categoryRepository,
         TagRepositoryInterface $tagRepository,
         MediaRepositoryInterface $mediaRepository,
@@ -70,6 +77,7 @@ class ModifyExcerptMessageHandler
     ) {
         $this->excerptDimensionRepository = $excerptDimensionRepository;
         $this->dimensionIdentifierRepository = $dimensionIdentifierRepository;
+        $this->tagReferenceRepository = $tagReferenceRepository;
         $this->categoryRepository = $categoryRepository;
         $this->tagRepository = $tagRepository;
         $this->mediaRepository = $mediaRepository;
@@ -126,17 +134,20 @@ class ModifyExcerptMessageHandler
 
     private function updateTags(ModifyExcerptMessage $message, ExcerptDimensionInterface $localizedDraftExcerpt): void
     {
-        foreach ($message->getTagNames() as $tagName) {
-            $messageTag = $localizedDraftExcerpt->getTag($tagName);
-            if (!$messageTag) {
+        foreach ($message->getTagNames() as $index=>$tagName) {
+            $messageTagReference = $localizedDraftExcerpt->getTag($tagName);
+            if (!$messageTagReference) {
                 $messageTag = $this->findTagByName($tagName);
-                $localizedDraftExcerpt->addTag($messageTag);
+                $messageTagReference = $this->tagReferenceRepository->create($localizedDraftExcerpt, $messageTag);
+                $localizedDraftExcerpt->addTag($messageTagReference);
             }
+            $messageTagReference->setOrder($index);
         }
 
-        foreach ($localizedDraftExcerpt->getTags() as $persistedTag) {
-            if (!in_array($persistedTag->getName(), $message->getTagNames(), true)) {
-                $localizedDraftExcerpt->removeTag($persistedTag);
+        foreach ($localizedDraftExcerpt->getTags() as $persistedTagReference) {
+            if (!in_array($persistedTagReference->getTag()->getName(), $message->getTagNames(), true)) {
+                $localizedDraftExcerpt->removeTag($persistedTagReference);
+                $this->tagReferenceRepository->remove($persistedTagReference);
             }
         }
     }
