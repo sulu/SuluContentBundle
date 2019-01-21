@@ -57,6 +57,11 @@ class AbstractExcerptControllerTest extends SuluTestCase
      */
     private $media2;
 
+    /**
+     * @var MediaInterface
+     */
+    private $media3;
+
     public function setUp()
     {
         parent::setUp();
@@ -72,6 +77,7 @@ class AbstractExcerptControllerTest extends SuluTestCase
         $this->tag2 = $this->createTag('tag-2');
         $this->media1 = $this->createMedia($mediaTpe, $collection);
         $this->media2 = $this->createMedia($mediaTpe, $collection);
+        $this->media3 = $this->createMedia($mediaTpe, $collection);
     }
 
     public function testGet(): void
@@ -85,8 +91,8 @@ class AbstractExcerptControllerTest extends SuluTestCase
             'excerpt-description',
             [$this->category1],
             [$this->tag2, $this->tag1],
-            [$this->media1],
-            [$this->media2]
+            [$this->media3, $this->media2],
+            [$this->media1]
         );
 
         $client = $this->createAuthenticatedClient();
@@ -104,10 +110,10 @@ class AbstractExcerptControllerTest extends SuluTestCase
                 'categories' => [$this->category1->getId()],
                 'tags' => [$this->tag2->getName(), $this->tag1->getName()],
                 'icons' => [
-                    'ids' => [$this->media1->getId()],
+                    'ids' => [$this->media3->getId(), $this->media2->getId()],
                 ],
                 'images' => [
-                    'ids' => [$this->media2->getId()],
+                    'ids' => [$this->media1->getId()],
                 ],
             ],
             $result
@@ -152,8 +158,8 @@ class AbstractExcerptControllerTest extends SuluTestCase
             'excerpt-description',
             [$this->category1],
             [$this->tag1],
-            [$this->media1],
-            [$this->media2]
+            [$this->media1, $this->media2],
+            [$this->media2, $this->media3]
         );
 
         $handlePublishCallback = $this->prophesize(HandlePublishCallbackInterface::class);
@@ -173,7 +179,7 @@ class AbstractExcerptControllerTest extends SuluTestCase
             'categories' => [],
             'tags' => [$this->tag2->getName()],
             'icons' => [
-                'ids' => [],
+                'ids' => [$this->media2->getId(), $this->media1->getId()],
             ],
             'images' => [
                 'ids' => [],
@@ -193,7 +199,7 @@ class AbstractExcerptControllerTest extends SuluTestCase
                 'categories' => [],
                 'tags' => [$this->tag2->getName()],
                 'icons' => [
-                    'ids' => [],
+                    'ids' => [$this->media2->getId(), $this->media1->getId()],
                 ],
                 'images' => [
                     'ids' => [],
@@ -225,7 +231,7 @@ class AbstractExcerptControllerTest extends SuluTestCase
                 'ids' => [],
             ],
             'images' => [
-                'ids' => [$this->media1->getId()],
+                'ids' => [$this->media2->getId(), $this->media1->getId()],
             ],
         ];
         $client->request('PUT', '/api/test-resource-excerpts/absent-resource?locale=en', $payload);
@@ -245,7 +251,7 @@ class AbstractExcerptControllerTest extends SuluTestCase
                     'ids' => [],
                 ],
                 'images' => [
-                    'ids' => [$this->media1->getId()],
+                    'ids' => [$this->media2->getId(), $this->media1->getId()],
                 ],
             ],
             $result

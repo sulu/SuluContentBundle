@@ -22,6 +22,7 @@ use Sulu\Bundle\ContentBundle\Model\Excerpt\Exception\ExcerptNotFoundException;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptDimensionInterface;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptDimensionRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\Factory\ExcerptViewFactoryInterface;
+use Sulu\Bundle\ContentBundle\Model\Excerpt\IconReferenceRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\Message\ModifyExcerptMessage;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\TagReferenceRepositoryInterface;
 use Sulu\Bundle\MediaBundle\Entity\MediaInterface;
@@ -47,6 +48,11 @@ class ModifyExcerptMessageHandler
     private $tagReferenceRepository;
 
     /**
+     * @var IconReferenceRepositoryInterface
+     */
+    private $iconReferenceRepository;
+
+    /**
      * @var CategoryRepositoryInterface
      */
     private $categoryRepository;
@@ -70,6 +76,7 @@ class ModifyExcerptMessageHandler
         ExcerptDimensionRepositoryInterface $excerptDimensionRepository,
         DimensionIdentifierRepositoryInterface $dimensionIdentifierRepository,
         TagReferenceRepositoryInterface $tagReferenceRepository,
+        IconReferenceRepositoryInterface $iconReferenceRepository,
         CategoryRepositoryInterface $categoryRepository,
         TagRepositoryInterface $tagRepository,
         MediaRepositoryInterface $mediaRepository,
@@ -78,6 +85,7 @@ class ModifyExcerptMessageHandler
         $this->excerptDimensionRepository = $excerptDimensionRepository;
         $this->dimensionIdentifierRepository = $dimensionIdentifierRepository;
         $this->tagReferenceRepository = $tagReferenceRepository;
+        $this->iconReferenceRepository = $iconReferenceRepository;
         $this->categoryRepository = $categoryRepository;
         $this->tagRepository = $tagRepository;
         $this->mediaRepository = $mediaRepository;
@@ -134,7 +142,7 @@ class ModifyExcerptMessageHandler
 
     private function updateTags(ModifyExcerptMessage $message, ExcerptDimensionInterface $localizedDraftExcerpt): void
     {
-        foreach ($message->getTagNames() as $index=>$tagName) {
+        foreach ($message->getTagNames() as $index => $tagName) {
             $messageTagReference = $localizedDraftExcerpt->getTag($tagName);
             if (!$messageTagReference) {
                 $messageTag = $this->findTagByName($tagName);
@@ -154,17 +162,20 @@ class ModifyExcerptMessageHandler
 
     private function updateIcons(ModifyExcerptMessage $message, ExcerptDimensionInterface $localizedDraftExcerpt): void
     {
-        foreach ($message->getIconMediaIds() as $iconMediaId) {
-            $messageIconMedia = $localizedDraftExcerpt->getIcon($iconMediaId);
-            if (!$messageIconMedia) {
+        foreach ($message->getIconMediaIds() as $index => $iconMediaId) {
+            $messageIconReference = $localizedDraftExcerpt->getIcon($iconMediaId);
+            if (!$messageIconReference) {
                 $messageIconMedia = $this->findMediaById($iconMediaId);
-                $localizedDraftExcerpt->addIcon($messageIconMedia);
+                $messageIconReference = $this->iconReferenceRepository->create($localizedDraftExcerpt, $messageIconMedia);
+                $localizedDraftExcerpt->addIcon($messageIconReference);
             }
+            $messageIconReference->setOrder($index);
         }
 
-        foreach ($localizedDraftExcerpt->getIcons() as $persistedIconMedia) {
-            if (!in_array($persistedIconMedia->getId(), $message->getIconMediaIds(), true)) {
-                $localizedDraftExcerpt->removeIcon($persistedIconMedia);
+        foreach ($localizedDraftExcerpt->getIcons() as $persistedIconReference) {
+            if (!in_array($persistedIconReference->getMedia()->getId(), $message->getIconMediaIds(), true)) {
+                $localizedDraftExcerpt->removeIcon($persistedIconReference);
+                $this->iconReferenceRepository->remove($persistedIconReference);
             }
         }
     }

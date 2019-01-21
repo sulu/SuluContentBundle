@@ -211,7 +211,7 @@ class ExcerptDimension implements ExcerptDimensionInterface
         return $this->icons->getValues();
     }
 
-    public function getIcon(int $mediaId): ?MediaInterface
+    public function getIcon(int $mediaId): ?IconReferenceInterface
     {
         if ($this->icons->containsKey($mediaId)) {
             return $this->icons->get($mediaId);
@@ -220,14 +220,14 @@ class ExcerptDimension implements ExcerptDimensionInterface
         return null;
     }
 
-    public function addIcon(MediaInterface $icon): ExcerptDimensionInterface
+    public function addIcon(IconReferenceInterface $icon): ExcerptDimensionInterface
     {
-        $this->icons->set($icon->getId(), $icon);
+        $this->icons->set($icon->getMedia()->getId(), $icon);
 
         return $this;
     }
 
-    public function removeIcon(MediaInterface $icon): ExcerptDimensionInterface
+    public function removeIcon(IconReferenceInterface $icon): ExcerptDimensionInterface
     {
         $this->icons->removeElement($icon);
 
@@ -271,16 +271,6 @@ class ExcerptDimension implements ExcerptDimensionInterface
         $this->categories->clear();
         foreach ($excerptDimension->getCategories() as $category) {
             $this->addCategory($category);
-        }
-
-        $this->tags->clear();
-        foreach ($excerptDimension->getTags() as $tag) {
-            $this->addTag($tag);
-        }
-
-        $this->icons->clear();
-        foreach ($excerptDimension->getIcons() as $icon) {
-            $this->addIcon($icon);
         }
 
         $this->images->clear();

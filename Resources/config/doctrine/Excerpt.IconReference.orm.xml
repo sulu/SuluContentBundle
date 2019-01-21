@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <entity name="Sulu\Bundle\ContentBundle\Model\Excerpt\IconReference"
+            table="cn_excerpt_icon_references"
+            repository-class="Sulu\Bundle\ContentBundle\Repository\IconReferenceRepository">
+        <id name="no" column="no" type="integer">
+            <generator strategy="AUTO"/>
+        </id>
+
+        <unique-constraints>
+            <unique-constraint columns="excerptDimension,media"/>
+        </unique-constraints>
+
+        <field name="order" column="iconOrder" type="integer" nullable="false"/>
+
+        <many-to-one field="excerptDimension"
+                     target-entity="Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptDimension"
+                     inversed-by="icons">
+            <join-column name="excerptDimension" referenced-column-name="no" nullable="false" on-delete="CASCADE"/>
+        </many-to-one>
+
+        <one-to-one field="media" target-entity="Sulu\Bundle\MediaBundle\Entity\MediaInterface">
+            <join-column name="media" referenced-column-name="id" nullable="false" on-delete="CASCADE"/>
+        </one-to-one>
+    </entity>
+</doctrine-mapping>
