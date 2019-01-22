@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Functional\Controller;
 
 use Sulu\Bundle\CategoryBundle\Entity\CategoryInterface;
-use Sulu\Bundle\ContentBundle\Tests\Application\Controller\HandlePublishCallbackInterface;
+use Sulu\Bundle\ContentBundle\Tests\Application\Controller\TestControllerCallbackInterface;
 use Sulu\Bundle\ContentBundle\Tests\Functional\Traits\CategoryTrait;
 use Sulu\Bundle\ContentBundle\Tests\Functional\Traits\DimensionIdentifierTrait;
 use Sulu\Bundle\ContentBundle\Tests\Functional\Traits\ExcerptDimensionTrait;
@@ -110,6 +110,7 @@ class AbstractExcerptControllerTest extends SuluTestCase
 
         $this->assertSame(
             [
+                'id' => 'test-resource-1',
                 'title' => 'excerpt-title',
                 'more' => 'excerpt-more',
                 'description' => 'excerpt-description',
@@ -137,6 +138,7 @@ class AbstractExcerptControllerTest extends SuluTestCase
 
         $this->assertSame(
             [
+                'id' => 'absent-resource',
                 'title' => null,
                 'more' => null,
                 'description' => null,
@@ -168,7 +170,7 @@ class AbstractExcerptControllerTest extends SuluTestCase
             [$this->media2, $this->media3]
         );
 
-        $handlePublishCallback = $this->prophesize(HandlePublishCallbackInterface::class);
+        $handlePublishCallback = $this->prophesize(TestControllerCallbackInterface::class);
         $handlePublishCallback->invoke()->shouldNotBeCalled();
 
         $client = $this->createAuthenticatedClient();
@@ -199,6 +201,7 @@ class AbstractExcerptControllerTest extends SuluTestCase
 
         $this->assertSame(
             [
+                'id' => 'test-resource-1',
                 'title' => 'new-title',
                 'more' => 'new-more',
                 'description' => null,
@@ -217,7 +220,7 @@ class AbstractExcerptControllerTest extends SuluTestCase
 
     public function testPutAbsent(): void
     {
-        $handlePublishCallback = $this->prophesize(HandlePublishCallbackInterface::class);
+        $handlePublishCallback = $this->prophesize(TestControllerCallbackInterface::class);
         $handlePublishCallback->invoke()->shouldNotBeCalled();
 
         $client = $this->createAuthenticatedClient();
@@ -248,6 +251,7 @@ class AbstractExcerptControllerTest extends SuluTestCase
 
         $this->assertSame(
             [
+                'id' => 'absent-resource',
                 'title' => 'new-title',
                 'more' => 'new-more',
                 'description' => null,
@@ -268,7 +272,7 @@ class AbstractExcerptControllerTest extends SuluTestCase
     {
         $this->createDraftExcerptDimension('test_resource_excerpts', 'test-resource-1');
 
-        $handlePublishCallback = $this->prophesize(HandlePublishCallbackInterface::class);
+        $handlePublishCallback = $this->prophesize(TestControllerCallbackInterface::class);
         $handlePublishCallback->invoke('test-resource-1', 'en')->shouldBeCalled();
 
         $client = $this->createAuthenticatedClient();
@@ -299,6 +303,7 @@ class AbstractExcerptControllerTest extends SuluTestCase
 
         $this->assertSame(
             [
+                'id' => 'test-resource-1',
                 'title' => 'new-title',
                 'more' => 'new-more',
                 'description' => null,
@@ -313,5 +318,23 @@ class AbstractExcerptControllerTest extends SuluTestCase
             ],
             $result
         );
+    }
+
+    public function testDelete(): void
+    {
+        $handleDeleteCallback = $this->prophesize(TestControllerCallbackInterface::class);
+        $handleDeleteCallback->invoke('test-resource-1', 'en')->shouldBeCalled();
+
+        $client = $this->createAuthenticatedClient();
+        $container = $client->getContainer();
+        if ($container) {
+            $contentController = $container->get('sulu_content.controller.test_resource_excerpts');
+            $contentController->setHandleDeleteCallback($handleDeleteCallback->reveal());
+        }
+
+        $client->request('DELETE', '/api/test-resource-excerpts/test-resource-1?locale=en');
+
+        $response = $client->getResponse();
+        $this->assertSame(204, $response->getStatusCode());
     }
 }

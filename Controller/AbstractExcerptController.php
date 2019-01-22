@@ -83,6 +83,13 @@ abstract class AbstractExcerptController implements ClassResourceInterface
         return $this->handleView($this->view($excerpt));
     }
 
+    public function deleteAction(Request $request, string $resourceId): Response
+    {
+        $this->handleDelete($resourceId, $request->query->get('locale'));
+
+        return $this->handleView($this->view());
+    }
+
     protected function handleAction(string $resourceId, string $locale, string $action): void
     {
         if ('publish' === $action) {
@@ -91,6 +98,8 @@ abstract class AbstractExcerptController implements ClassResourceInterface
     }
 
     abstract protected function handlePublish(string $resourceId, string $locale): void;
+
+    abstract protected function handleDelete(string $resourceId, string $locale): void;
 
     abstract protected function getExcerptResourceKey(): string;
 }

@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Tests\Functional\Controller;
 
-use Sulu\Bundle\ContentBundle\Tests\Application\Controller\HandlePublishCallbackInterface;
+use Sulu\Bundle\ContentBundle\Tests\Application\Controller\TestControllerCallbackInterface;
 use Sulu\Bundle\ContentBundle\Tests\Functional\Traits\ContentDimensionTrait;
 use Sulu\Bundle\ContentBundle\Tests\Functional\Traits\DimensionIdentifierTrait;
 use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
@@ -49,6 +49,7 @@ class AbstractContentControllerTest extends SuluTestCase
 
         $this->assertSame(
             [
+                'id' => 'test-resource-1',
                 'template' => 'default',
                 'title' => 'content-title',
                 'article' => 'content-article',
@@ -68,6 +69,7 @@ class AbstractContentControllerTest extends SuluTestCase
 
         $this->assertSame(
             [
+                'id' => 'absent-resource',
                 'template' => 'default',
             ],
             $result
@@ -78,7 +80,7 @@ class AbstractContentControllerTest extends SuluTestCase
     {
         $this->createDraftContentDimension('test_resource_contents', 'test-resource-1');
 
-        $handlePublishCallback = $this->prophesize(HandlePublishCallbackInterface::class);
+        $handlePublishCallback = $this->prophesize(TestControllerCallbackInterface::class);
         $handlePublishCallback->invoke()->shouldNotBeCalled();
 
         $client = $this->createAuthenticatedClient();
@@ -97,6 +99,7 @@ class AbstractContentControllerTest extends SuluTestCase
 
         $this->assertSame(
             [
+                'id' => 'test-resource-1',
                 'template' => 'default',
                 'title' => 'new-title',
                 'article' => 'new-article',
@@ -107,7 +110,7 @@ class AbstractContentControllerTest extends SuluTestCase
 
     public function testPutAbsent(): void
     {
-        $handlePublishCallback = $this->prophesize(HandlePublishCallbackInterface::class);
+        $handlePublishCallback = $this->prophesize(TestControllerCallbackInterface::class);
         $handlePublishCallback->invoke()->shouldNotBeCalled();
 
         $client = $this->createAuthenticatedClient();
@@ -126,6 +129,7 @@ class AbstractContentControllerTest extends SuluTestCase
 
         $this->assertSame(
             [
+                'id' => 'absent-resource',
                 'template' => 'default',
                 'title' => 'new-title',
                 'article' => 'new-article',
@@ -138,7 +142,7 @@ class AbstractContentControllerTest extends SuluTestCase
     {
         $this->createDraftContentDimension('test_resource_contents', 'test-resource-1');
 
-        $handlePublishCallback = $this->prophesize(HandlePublishCallbackInterface::class);
+        $handlePublishCallback = $this->prophesize(TestControllerCallbackInterface::class);
         $handlePublishCallback->invoke('test-resource-1', 'en')->shouldBeCalled();
 
         $client = $this->createAuthenticatedClient();
@@ -157,11 +161,30 @@ class AbstractContentControllerTest extends SuluTestCase
 
         $this->assertSame(
             [
+                'id' => 'test-resource-1',
                 'template' => 'default',
                 'title' => 'new-title',
                 'article' => 'new-article',
             ],
             $result
         );
+    }
+
+    public function testDelete(): void
+    {
+        $handleDeleteCallback = $this->prophesize(TestControllerCallbackInterface::class);
+        $handleDeleteCallback->invoke('test-resource-1', 'en')->shouldBeCalled();
+
+        $client = $this->createAuthenticatedClient();
+        $container = $client->getContainer();
+        if ($container) {
+            $contentController = $container->get('sulu_content.controller.test_resource_contents');
+            $contentController->setHandleDeleteCallback($handleDeleteCallback->reveal());
+        }
+
+        $client->request('DELETE', '/api/test-resource-contents/test-resource-1?locale=en');
+
+        $response = $client->getResponse();
+        $this->assertSame(204, $response->getStatusCode());
     }
 }

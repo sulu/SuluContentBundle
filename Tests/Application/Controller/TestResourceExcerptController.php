@@ -22,9 +22,14 @@ use Sulu\Bundle\ContentBundle\Controller\AbstractExcerptController;
 class TestResourceExcerptController extends AbstractExcerptController
 {
     /**
-     * @var HandlePublishCallbackInterface
+     * @var TestControllerCallbackInterface
      */
     private $handlePublishCallback;
+
+    /**
+     * @var TestControllerCallbackInterface
+     */
+    private $handleDeleteCallback;
 
     protected function handlePublish(string $resourceId, string $locale): void
     {
@@ -36,8 +41,18 @@ class TestResourceExcerptController extends AbstractExcerptController
         return 'test_resource_excerpts';
     }
 
-    public function setHandlePublishCallback(HandlePublishCallbackInterface $handlePublishCallback): void
+    protected function handleDelete(string $resourceId, string $locale): void
+    {
+        $this->handleDeleteCallback->invoke($resourceId, $locale);
+    }
+
+    public function setHandlePublishCallback(TestControllerCallbackInterface $handlePublishCallback): void
     {
         $this->handlePublishCallback = $handlePublishCallback;
+    }
+
+    public function setHandleDeleteCallback(TestControllerCallbackInterface $handleDeleteCallback): void
+    {
+        $this->handleDeleteCallback = $handleDeleteCallback;
     }
 }

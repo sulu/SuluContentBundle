@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Tests\Functional\Controller;
 
-use Sulu\Bundle\ContentBundle\Tests\Application\Controller\HandlePublishCallbackInterface;
+use Sulu\Bundle\ContentBundle\Tests\Application\Controller\TestControllerCallbackInterface;
 use Sulu\Bundle\ContentBundle\Tests\Functional\Traits\DimensionIdentifierTrait;
 use Sulu\Bundle\ContentBundle\Tests\Functional\Traits\SeoDimensionTrait;
 use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
@@ -54,6 +54,7 @@ class AbstractSeoControllerTest extends SuluTestCase
 
         $this->assertSame(
             [
+                'id' => 'test-resource-1',
                 'title' => 'seo-title',
                 'description' => 'seo-description',
                 'keywords' => 'seo-keywords',
@@ -77,6 +78,7 @@ class AbstractSeoControllerTest extends SuluTestCase
 
         $this->assertSame(
             [
+                'id' => 'absent-resource',
                 'title' => null,
                 'description' => null,
                 'keywords' => null,
@@ -93,7 +95,7 @@ class AbstractSeoControllerTest extends SuluTestCase
     {
         $this->createDraftSeoDimension('test_resource_seos', 'test-resource-1');
 
-        $handlePublishCallback = $this->prophesize(HandlePublishCallbackInterface::class);
+        $handlePublishCallback = $this->prophesize(TestControllerCallbackInterface::class);
         $handlePublishCallback->invoke()->shouldNotBeCalled();
 
         $client = $this->createAuthenticatedClient();
@@ -120,6 +122,7 @@ class AbstractSeoControllerTest extends SuluTestCase
 
         $this->assertSame(
             [
+                'id' => 'test-resource-1',
                 'title' => 'new-title',
                 'description' => 'new-description',
                 'keywords' => 'new-keywords',
@@ -134,7 +137,7 @@ class AbstractSeoControllerTest extends SuluTestCase
 
     public function testPutAbsent(): void
     {
-        $handlePublishCallback = $this->prophesize(HandlePublishCallbackInterface::class);
+        $handlePublishCallback = $this->prophesize(TestControllerCallbackInterface::class);
         $handlePublishCallback->invoke()->shouldNotBeCalled();
 
         $client = $this->createAuthenticatedClient();
@@ -161,6 +164,7 @@ class AbstractSeoControllerTest extends SuluTestCase
 
         $this->assertSame(
             [
+                'id' => 'absent-resource',
                 'title' => 'new-title',
                 'description' => 'new-description',
                 'keywords' => 'new-keywords',
@@ -177,7 +181,7 @@ class AbstractSeoControllerTest extends SuluTestCase
     {
         $this->createDraftSeoDimension('test_resource_seos', 'test-resource-1');
 
-        $handlePublishCallback = $this->prophesize(HandlePublishCallbackInterface::class);
+        $handlePublishCallback = $this->prophesize(TestControllerCallbackInterface::class);
         $handlePublishCallback->invoke('test-resource-1', 'en')->shouldBeCalled();
 
         $client = $this->createAuthenticatedClient();
@@ -204,6 +208,7 @@ class AbstractSeoControllerTest extends SuluTestCase
 
         $this->assertSame(
             [
+                'id' => 'test-resource-1',
                 'title' => 'new-title',
                 'description' => 'new-description',
                 'keywords' => 'new-keywords',
@@ -214,5 +219,23 @@ class AbstractSeoControllerTest extends SuluTestCase
             ],
             $result
         );
+    }
+
+    public function testDelete(): void
+    {
+        $handleDeleteCallback = $this->prophesize(TestControllerCallbackInterface::class);
+        $handleDeleteCallback->invoke('test-resource-1', 'en')->shouldBeCalled();
+
+        $client = $this->createAuthenticatedClient();
+        $container = $client->getContainer();
+        if ($container) {
+            $contentController = $container->get('sulu_content.controller.test_resource_seos');
+            $contentController->setHandleDeleteCallback($handleDeleteCallback->reveal());
+        }
+
+        $client->request('DELETE', '/api/test-resource-seos/test-resource-1?locale=en');
+
+        $response = $client->getResponse();
+        $this->assertSame(204, $response->getStatusCode());
     }
 }
