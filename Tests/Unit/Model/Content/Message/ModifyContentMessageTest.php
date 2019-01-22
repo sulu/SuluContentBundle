@@ -31,7 +31,7 @@ class ModifyContentMessageTest extends TestCase
             ['type' => 'default', 'data' => ['title' => 'Sulu is awesome']]
         );
 
-        $this->assertEquals(self::RESOURCE_KEY, $message->getResourceKey());
+        $this->assertSame(self::RESOURCE_KEY, $message->getResourceKey());
     }
 
     public function testGetResourceId(): void
@@ -43,7 +43,7 @@ class ModifyContentMessageTest extends TestCase
             ['type' => 'default', 'data' => ['title' => 'Sulu is awesome']]
         );
 
-        $this->assertEquals('resource-1', $message->getResourceId());
+        $this->assertSame('resource-1', $message->getResourceId());
     }
 
     public function testGetLocale(): void
@@ -55,7 +55,7 @@ class ModifyContentMessageTest extends TestCase
             ['type' => 'default', 'data' => ['title' => 'Sulu is awesome']]
         );
 
-        $this->assertEquals('en', $message->getLocale());
+        $this->assertSame('en', $message->getLocale());
     }
 
     public function testGetType(): void
@@ -67,7 +67,7 @@ class ModifyContentMessageTest extends TestCase
             ['type' => 'default', 'data' => ['title' => 'Sulu is awesome']]
         );
 
-        $this->assertEquals('default', $message->getType());
+        $this->assertSame('default', $message->getType());
     }
 
     public function testGetData(): void
@@ -79,7 +79,7 @@ class ModifyContentMessageTest extends TestCase
             ['type' => 'default', 'data' => ['title' => 'Sulu is awesome']]
         );
 
-        $this->assertEquals(['title' => 'Sulu is awesome'], $message->getData());
+        $this->assertSame(['title' => 'Sulu is awesome'], $message->getData());
     }
 
     public function testGetContent(): void
@@ -107,7 +107,7 @@ class ModifyContentMessageTest extends TestCase
 
         $content = $this->prophesize(ContentViewInterface::class);
 
-        $this->assertEquals($message, $message->setContent($content->reveal()));
-        $this->assertEquals($content->reveal(), $message->getContent());
+        $this->assertSame($message, $message->setContent($content->reveal()));
+        $this->assertSame($content->reveal(), $message->getContent());
     }
 }

@@ -15,7 +15,7 @@ namespace Sulu\Bundle\ContentBundle\Model\DimensionIdentifier;
 
 interface DimensionIdentifierAttributeInterface
 {
-    public function setDimensionIdentifier(DimensionIdentifierInterface $dimension): DimensionIdentifierAttributeInterface;
+    public function setDimensionIdentifier(DimensionIdentifierInterface $dimension): self;
 
     public function getDimensionIdentifier(): DimensionIdentifierInterface;
 

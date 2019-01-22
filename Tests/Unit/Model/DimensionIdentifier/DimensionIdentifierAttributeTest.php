@@ -27,9 +27,9 @@ class DimensionIdentifierAttributeTest extends TestCase
             DimensionIdentifierInterface::ATTRIBUTE_KEY_STAGE,
             DimensionIdentifierInterface::ATTRIBUTE_VALUE_DRAFT
         );
-        $this->assertEquals($attribute, $attribute->setDimensionIdentifier($dimensionIdentifier->reveal()));
+        $this->assertSame($attribute, $attribute->setDimensionIdentifier($dimensionIdentifier->reveal()));
 
-        $this->assertEquals($dimensionIdentifier->reveal(), $attribute->getDimensionIdentifier());
+        $this->assertSame($dimensionIdentifier->reveal(), $attribute->getDimensionIdentifier());
     }
 
     public function testGetKey(): void
@@ -39,7 +39,7 @@ class DimensionIdentifierAttributeTest extends TestCase
             DimensionIdentifierInterface::ATTRIBUTE_VALUE_DRAFT
         );
 
-        $this->assertEquals(DimensionIdentifierInterface::ATTRIBUTE_KEY_STAGE, $attribute->getKey());
+        $this->assertSame(DimensionIdentifierInterface::ATTRIBUTE_KEY_STAGE, $attribute->getKey());
     }
 
     public function testGetValue(): void
@@ -49,6 +49,6 @@ class DimensionIdentifierAttributeTest extends TestCase
             DimensionIdentifierInterface::ATTRIBUTE_VALUE_DRAFT
         );
 
-        $this->assertEquals(DimensionIdentifierInterface::ATTRIBUTE_VALUE_DRAFT, $attribute->getValue());
+        $this->assertSame(DimensionIdentifierInterface::ATTRIBUTE_VALUE_DRAFT, $attribute->getValue());
     }
 }

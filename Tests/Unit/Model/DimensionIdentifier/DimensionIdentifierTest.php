@@ -26,14 +26,14 @@ class DimensionIdentifierTest extends TestCase
     {
         $dimensionIdentifier = new DimensionIdentifier('123-123-123');
 
-        $this->assertEquals('123-123-123', $dimensionIdentifier->getId());
+        $this->assertSame('123-123-123', $dimensionIdentifier->getId());
     }
 
     public function testGetAttributeCount(): void
     {
         $dimensionIdentifier = new DimensionIdentifier('123-123-123');
 
-        $this->assertEquals(0, $dimensionIdentifier->getAttributeCount());
+        $this->assertSame(0, $dimensionIdentifier->getAttributeCount());
     }
 
     public function testGetAttributes(): void
@@ -49,8 +49,8 @@ class DimensionIdentifierTest extends TestCase
 
         $dimensionIdentifier = new DimensionIdentifier('123-123-123', [$attribute->reveal()]);
 
-        $this->assertEquals(1, $dimensionIdentifier->getAttributeCount());
-        $this->assertEquals([$attribute->reveal()], $dimensionIdentifier->getAttributes());
+        $this->assertSame(1, $dimensionIdentifier->getAttributeCount());
+        $this->assertSame([$attribute->reveal()], $dimensionIdentifier->getAttributes());
     }
 
     public function testGetAttributeValue(): void
@@ -62,7 +62,7 @@ class DimensionIdentifierTest extends TestCase
 
         $dimensionIdentifier = new DimensionIdentifier('123-123-123', [$attribute->reveal()]);
 
-        $this->assertEquals('live', $dimensionIdentifier->getAttributeValue(DimensionIdentifierInterface::ATTRIBUTE_KEY_STAGE));
+        $this->assertSame('live', $dimensionIdentifier->getAttributeValue(DimensionIdentifierInterface::ATTRIBUTE_KEY_STAGE));
     }
 
     public function testGetAttributeValueNotFound(): void

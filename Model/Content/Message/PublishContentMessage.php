@@ -75,7 +75,7 @@ class PublishContentMessage
         return $this->content;
     }
 
-    public function setContent(ContentViewInterface $content): PublishContentMessage
+    public function setContent(ContentViewInterface $content): self
     {
         $this->content = $content;
 

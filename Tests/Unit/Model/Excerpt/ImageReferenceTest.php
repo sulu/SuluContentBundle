@@ -26,7 +26,7 @@ class ImageReferenceTest extends TestCase
         $media = $this->prophesize(MediaInterface::class);
         $imageReference = new ImageReference($excerptDimension->reveal(), $media->reveal(), 2);
 
-        $this->assertEquals($excerptDimension->reveal(), $imageReference->getExcerptDimension());
+        $this->assertSame($excerptDimension->reveal(), $imageReference->getExcerptDimension());
     }
 
     public function testGetMedia(): void
@@ -35,7 +35,7 @@ class ImageReferenceTest extends TestCase
         $media = $this->prophesize(MediaInterface::class);
         $imageReference = new ImageReference($excerptDimension->reveal(), $media->reveal(), 2);
 
-        $this->assertEquals($media->reveal(), $imageReference->getMedia());
+        $this->assertSame($media->reveal(), $imageReference->getMedia());
     }
 
     public function testGetOrder(): void
@@ -44,7 +44,7 @@ class ImageReferenceTest extends TestCase
         $media = $this->prophesize(MediaInterface::class);
         $imageReference = new ImageReference($excerptDimension->reveal(), $media->reveal(), 2);
 
-        $this->assertEquals(2, $imageReference->getOrder());
+        $this->assertSame(2, $imageReference->getOrder());
     }
 
     public function testSetOrder(): void
@@ -53,7 +53,7 @@ class ImageReferenceTest extends TestCase
         $media = $this->prophesize(MediaInterface::class);
         $imageReference = new ImageReference($excerptDimension->reveal(), $media->reveal(), 2);
 
-        $this->assertEquals($imageReference, $imageReference->setOrder(5));
-        $this->assertEquals(5, $imageReference->getOrder());
+        $this->assertSame($imageReference, $imageReference->setOrder(5));
+        $this->assertSame(5, $imageReference->getOrder());
     }
 }

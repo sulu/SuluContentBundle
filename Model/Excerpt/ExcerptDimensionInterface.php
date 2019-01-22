@@ -80,5 +80,5 @@ interface ExcerptDimensionInterface
 
     public function removeImage(ImageReferenceInterface $image): self;
 
-    public function copyAttributesFrom(ExcerptDimensionInterface $excerptDimension): self;
+    public function copyAttributesFrom(self $excerptDimension): self;
 }

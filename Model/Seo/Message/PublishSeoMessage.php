@@ -75,7 +75,7 @@ class PublishSeoMessage
         return $this->seo;
     }
 
-    public function setSeo(SeoViewInterface $seo): PublishSeoMessage
+    public function setSeo(SeoViewInterface $seo): self
     {
         $this->seo = $seo;
 

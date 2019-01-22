@@ -24,13 +24,13 @@ class RemoveContentMessageTest extends TestCase
     {
         $message = new RemoveContentMessage(self::RESOURCE_KEY, 'resource-1');
 
-        $this->assertEquals(self::RESOURCE_KEY, $message->getResourceKey());
+        $this->assertSame(self::RESOURCE_KEY, $message->getResourceKey());
     }
 
     public function testGetResourceId(): void
     {
         $message = new RemoveContentMessage(self::RESOURCE_KEY, 'resource-1');
 
-        $this->assertEquals('resource-1', $message->getResourceId());
+        $this->assertSame('resource-1', $message->getResourceId());
     }
 }

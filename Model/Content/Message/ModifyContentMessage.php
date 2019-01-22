@@ -86,7 +86,7 @@ class ModifyContentMessage
         return $this->content;
     }
 
-    public function setContent(ContentViewInterface $content): ModifyContentMessage
+    public function setContent(ContentViewInterface $content): self
     {
         $this->content = $content;
 

@@ -20,8 +20,6 @@ interface ExcerptViewFactoryInterface
 {
     /**
      * @param ExcerptDimensionInterface[] $excerptDimensions
-     *
-     * @return ExcerptViewInterface|null
      */
     public function create(array $excerptDimensions, string $locale): ?ExcerptViewInterface;
 }

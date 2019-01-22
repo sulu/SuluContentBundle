@@ -63,17 +63,17 @@ class ContentViewSerializationSubscriber implements EventSubscriberInterface
         $visitor = $event->getVisitor();
         foreach ($metadata->getProperties() as $property) {
             $name = $property->getName();
-            if (is_float($name)) {
-                $name = strval($name);
+            if (\is_float($name)) {
+                $name = (string) $name;
             }
 
             if (array_key_exists($name, $data)) {
-                $visitor->setData(strval($name), $data[$name]);
+                $visitor->setData((string) $name, $data[$name]);
 
                 continue;
             }
 
-            $visitor->setData(strval($name), null);
+            $visitor->setData((string) $name, null);
         }
     }
 }

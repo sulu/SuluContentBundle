@@ -142,7 +142,7 @@ class ModifyExcerptMessageHandler
         }
 
         foreach ($localizedDraftExcerpt->getCategories() as $persistedCategory) {
-            if (!in_array($persistedCategory->getId(), $message->getCategoryIds(), true)) {
+            if (!\in_array($persistedCategory->getId(), $message->getCategoryIds(), true)) {
                 $localizedDraftExcerpt->removeCategory($persistedCategory);
             }
         }
@@ -161,7 +161,7 @@ class ModifyExcerptMessageHandler
         }
 
         foreach ($localizedDraftExcerpt->getTags() as $persistedTagReference) {
-            if (!in_array($persistedTagReference->getTag()->getName(), $message->getTagNames(), true)) {
+            if (!\in_array($persistedTagReference->getTag()->getName(), $message->getTagNames(), true)) {
                 $localizedDraftExcerpt->removeTag($persistedTagReference);
                 $this->tagReferenceRepository->remove($persistedTagReference);
             }
@@ -181,7 +181,7 @@ class ModifyExcerptMessageHandler
         }
 
         foreach ($localizedDraftExcerpt->getIcons() as $persistedIconReference) {
-            if (!in_array($persistedIconReference->getMedia()->getId(), $message->getIconMediaIds(), true)) {
+            if (!\in_array($persistedIconReference->getMedia()->getId(), $message->getIconMediaIds(), true)) {
                 $localizedDraftExcerpt->removeIcon($persistedIconReference);
                 $this->iconReferenceRepository->remove($persistedIconReference);
             }
@@ -201,7 +201,7 @@ class ModifyExcerptMessageHandler
         }
 
         foreach ($localizedDraftExcerpt->getImages() as $persistedImageReference) {
-            if (!in_array($persistedImageReference->getMedia()->getId(), $message->getImageMediaIds(), true)) {
+            if (!\in_array($persistedImageReference->getMedia()->getId(), $message->getImageMediaIds(), true)) {
                 $localizedDraftExcerpt->removeImage($persistedImageReference);
                 $this->imageReferenceRepository->remove($persistedImageReference);
             }

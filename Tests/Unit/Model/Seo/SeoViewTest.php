@@ -35,7 +35,7 @@ class SeoViewTest extends TestCase
             false
         );
 
-        $this->assertEquals(self::RESOURCE_KEY, $seoView->getResourceKey());
+        $this->assertSame(self::RESOURCE_KEY, $seoView->getResourceKey());
     }
 
     public function testGetResourceId(): void
@@ -53,7 +53,7 @@ class SeoViewTest extends TestCase
             false
         );
 
-        $this->assertEquals('resource-1', $seoView->getResourceId());
+        $this->assertSame('resource-1', $seoView->getResourceId());
     }
 
     public function testGetLocale(): void
@@ -71,7 +71,7 @@ class SeoViewTest extends TestCase
             false
         );
 
-        $this->assertEquals('en', $seoView->getLocale());
+        $this->assertSame('en', $seoView->getLocale());
     }
 
     public function testGetTitle(): void
@@ -89,7 +89,7 @@ class SeoViewTest extends TestCase
             false
         );
 
-        $this->assertEquals('title-1', $seoView->getTitle());
+        $this->assertSame('title-1', $seoView->getTitle());
     }
 
     public function testGetDescription(): void
@@ -107,7 +107,7 @@ class SeoViewTest extends TestCase
             false
         );
 
-        $this->assertEquals('description-1', $seoView->getDescription());
+        $this->assertSame('description-1', $seoView->getDescription());
     }
 
     public function testGetKeywords(): void
@@ -125,7 +125,7 @@ class SeoViewTest extends TestCase
             false
         );
 
-        $this->assertEquals('keywords-1', $seoView->getKeywords());
+        $this->assertSame('keywords-1', $seoView->getKeywords());
     }
 
     public function testGetCanonicalUrl(): void

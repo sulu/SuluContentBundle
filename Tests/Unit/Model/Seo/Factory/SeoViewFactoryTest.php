@@ -50,11 +50,11 @@ class SeoViewFactoryTest extends TestCase
         $result = $factory->create([$seoDimension1->reveal(), $seoDimension2->reveal()], 'en');
 
         $this->assertNotNull($result);
-        $this->assertEquals(self::RESOURCE_KEY, $result->getResourceKey());
-        $this->assertEquals('resource-1', $result->getResourceId());
-        $this->assertEquals('title-1', $result->getTitle());
-        $this->assertEquals('description-1', $result->getDescription());
-        $this->assertEquals('keywords-2', $result->getKeywords());
+        $this->assertSame(self::RESOURCE_KEY, $result->getResourceKey());
+        $this->assertSame('resource-1', $result->getResourceId());
+        $this->assertSame('title-1', $result->getTitle());
+        $this->assertSame('description-1', $result->getDescription());
+        $this->assertSame('keywords-2', $result->getKeywords());
         $this->assertNull($result->getCanonicalUrl());
         $this->assertTrue($result->getNoIndex());
         $this->assertTrue($result->getNoFollow());

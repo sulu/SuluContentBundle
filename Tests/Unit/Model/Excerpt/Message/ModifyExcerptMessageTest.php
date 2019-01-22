@@ -39,7 +39,7 @@ class ModifyExcerptMessageTest extends TestCase
             ]
         );
 
-        $this->assertEquals(self::RESOURCE_KEY, $message->getResourceKey());
+        $this->assertSame(self::RESOURCE_KEY, $message->getResourceKey());
     }
 
     public function testGetResourceId(): void
@@ -59,7 +59,7 @@ class ModifyExcerptMessageTest extends TestCase
             ]
         );
 
-        $this->assertEquals('resource-1', $message->getResourceId());
+        $this->assertSame('resource-1', $message->getResourceId());
     }
 
     public function testGetLocale(): void
@@ -79,7 +79,7 @@ class ModifyExcerptMessageTest extends TestCase
             ]
         );
 
-        $this->assertEquals('en', $message->getLocale());
+        $this->assertSame('en', $message->getLocale());
     }
 
     public function testGetTitle(): void
@@ -99,7 +99,7 @@ class ModifyExcerptMessageTest extends TestCase
             ]
         );
 
-        $this->assertEquals('title-1', $message->getTitle());
+        $this->assertSame('title-1', $message->getTitle());
     }
 
     public function testGetMore(): void
@@ -119,7 +119,7 @@ class ModifyExcerptMessageTest extends TestCase
             ]
         );
 
-        $this->assertEquals('more-1', $message->getMore());
+        $this->assertSame('more-1', $message->getMore());
     }
 
     public function testGetDescription(): void
@@ -159,7 +159,7 @@ class ModifyExcerptMessageTest extends TestCase
             ]
         );
 
-        $this->assertEquals([1, 2, 3], $message->getCategoryIds());
+        $this->assertSame([1, 2, 3], $message->getCategoryIds());
     }
 
     public function testGetTagNames(): void
@@ -179,7 +179,7 @@ class ModifyExcerptMessageTest extends TestCase
             ]
         );
 
-        $this->assertEquals(['tag-1', 'tag-2'], $message->getTagNames());
+        $this->assertSame(['tag-1', 'tag-2'], $message->getTagNames());
     }
 
     public function testGetIconMediaIds(): void
@@ -199,7 +199,7 @@ class ModifyExcerptMessageTest extends TestCase
             ]
         );
 
-        $this->assertEquals([], $message->getIconMediaIds());
+        $this->assertSame([], $message->getIconMediaIds());
     }
 
     public function testGetImageMediaIds(): void
@@ -219,7 +219,7 @@ class ModifyExcerptMessageTest extends TestCase
             ]
         );
 
-        $this->assertEquals([5, 6], $message->getImageMediaIds());
+        $this->assertSame([5, 6], $message->getImageMediaIds());
     }
 
     public function testGetExcerpt(): void
@@ -263,7 +263,7 @@ class ModifyExcerptMessageTest extends TestCase
 
         $excerpt = $this->prophesize(ExcerptViewInterface::class);
 
-        $this->assertEquals($message, $message->setExcerpt($excerpt->reveal()));
-        $this->assertEquals($excerpt->reveal(), $message->getExcerpt());
+        $this->assertSame($message, $message->setExcerpt($excerpt->reveal()));
+        $this->assertSame($excerpt->reveal(), $message->getExcerpt());
     }
 }

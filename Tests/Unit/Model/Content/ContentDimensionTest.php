@@ -26,7 +26,7 @@ class ContentDimensionTest extends TestCase
         $dimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
         $contentDimension = new ContentDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'resource-1');
 
-        $this->assertEquals($dimensionIdentifier->reveal(), $contentDimension->getDimensionIdentifier());
+        $this->assertSame($dimensionIdentifier->reveal(), $contentDimension->getDimensionIdentifier());
     }
 
     public function testGetResourceKey(): void
@@ -34,7 +34,7 @@ class ContentDimensionTest extends TestCase
         $dimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
         $contentDimension = new ContentDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'resource-1');
 
-        $this->assertEquals(self::RESOURCE_KEY, $contentDimension->getResourceKey());
+        $this->assertSame(self::RESOURCE_KEY, $contentDimension->getResourceKey());
     }
 
     public function testGetResourceId(): void
@@ -42,7 +42,7 @@ class ContentDimensionTest extends TestCase
         $dimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
         $contentDimension = new ContentDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'resource-1');
 
-        $this->assertEquals('resource-1', $contentDimension->getResourceId());
+        $this->assertSame('resource-1', $contentDimension->getResourceId());
     }
 
     public function testGetType(): void
@@ -50,7 +50,7 @@ class ContentDimensionTest extends TestCase
         $dimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
         $contentDimension = new ContentDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'resource-1', 'default');
 
-        $this->assertEquals('default', $contentDimension->getType());
+        $this->assertSame('default', $contentDimension->getType());
     }
 
     public function testGetData(): void
@@ -64,7 +64,7 @@ class ContentDimensionTest extends TestCase
             ['title' => 'Sulu is awesome']
         );
 
-        $this->assertEquals(['title' => 'Sulu is awesome'], $contentDimension->getData());
+        $this->assertSame(['title' => 'Sulu is awesome'], $contentDimension->getData());
     }
 
     public function testSetType(): void
@@ -72,8 +72,8 @@ class ContentDimensionTest extends TestCase
         $dimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
         $contentDimension = new ContentDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'resource-1', 'default');
 
-        $this->assertEquals($contentDimension, $contentDimension->setType('homepage'));
-        $this->assertEquals('homepage', $contentDimension->getType());
+        $this->assertSame($contentDimension, $contentDimension->setType('homepage'));
+        $this->assertSame('homepage', $contentDimension->getType());
     }
 
     public function testSetData(): void
@@ -87,8 +87,8 @@ class ContentDimensionTest extends TestCase
             ['title' => 'Sulu is great']
         );
 
-        $this->assertEquals($contentDimension, $contentDimension->setData(['title' => 'Sulu is awesome']));
-        $this->assertEquals(['title' => 'Sulu is awesome'], $contentDimension->getData());
+        $this->assertSame($contentDimension, $contentDimension->setData(['title' => 'Sulu is awesome']));
+        $this->assertSame(['title' => 'Sulu is awesome'], $contentDimension->getData());
     }
 
     public function testCopyAttributesFrom(): void
@@ -105,12 +105,12 @@ class ContentDimensionTest extends TestCase
             ['title' => 'other-title']
         );
 
-        $this->assertEquals($contentDimension, $contentDimension->copyAttributesFrom($otherContent));
+        $this->assertSame($contentDimension, $contentDimension->copyAttributesFrom($otherContent));
 
-        $this->assertEquals($dimensionIdentifier->reveal(), $contentDimension->getDimensionIdentifier());
-        $this->assertEquals(self::RESOURCE_KEY, $contentDimension->getResourceKey());
-        $this->assertEquals('resource-1', $contentDimension->getResourceId());
-        $this->assertEquals('other-type', $contentDimension->getType());
-        $this->assertEquals(['title' => 'other-title'], $contentDimension->getData());
+        $this->assertSame($dimensionIdentifier->reveal(), $contentDimension->getDimensionIdentifier());
+        $this->assertSame(self::RESOURCE_KEY, $contentDimension->getResourceKey());
+        $this->assertSame('resource-1', $contentDimension->getResourceId());
+        $this->assertSame('other-type', $contentDimension->getType());
+        $this->assertSame(['title' => 'other-title'], $contentDimension->getData());
     }
 }

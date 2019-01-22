@@ -26,21 +26,21 @@ class FindSeoQueryTest extends TestCase
     {
         $query = new FindSeoQuery(self::RESOURCE_KEY, 'resource-1', 'en');
 
-        $this->assertEquals(self::RESOURCE_KEY, $query->getResourceKey());
+        $this->assertSame(self::RESOURCE_KEY, $query->getResourceKey());
     }
 
     public function testGetResourceId(): void
     {
         $query = new FindSeoQuery(self::RESOURCE_KEY, 'resource-1', 'en');
 
-        $this->assertEquals('resource-1', $query->getResourceId());
+        $this->assertSame('resource-1', $query->getResourceId());
     }
 
     public function testGetLocale(): void
     {
         $query = new FindSeoQuery(self::RESOURCE_KEY, 'resource-1', 'en');
 
-        $this->assertEquals('en', $query->getLocale());
+        $this->assertSame('en', $query->getLocale());
     }
 
     public function testGetSeo(): void
@@ -58,7 +58,7 @@ class FindSeoQueryTest extends TestCase
 
         $seo = $this->prophesize(SeoViewInterface::class);
 
-        $this->assertEquals($query, $query->setSeo($seo->reveal()));
-        $this->assertEquals($seo->reveal(), $query->getSeo());
+        $this->assertSame($query, $query->setSeo($seo->reveal()));
+        $this->assertSame($seo->reveal(), $query->getSeo());
     }
 }

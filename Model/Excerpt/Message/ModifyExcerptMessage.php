@@ -115,7 +115,7 @@ class ModifyExcerptMessage
         return $this->excerpt;
     }
 
-    public function setExcerpt(ExcerptViewInterface $excerpt): ModifyExcerptMessage
+    public function setExcerpt(ExcerptViewInterface $excerpt): self
     {
         $this->excerpt = $excerpt;
 

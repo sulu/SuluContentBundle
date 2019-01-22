@@ -26,7 +26,7 @@ class IconReferenceTest extends TestCase
         $media = $this->prophesize(MediaInterface::class);
         $iconReference = new IconReference($excerptDimension->reveal(), $media->reveal(), 2);
 
-        $this->assertEquals($excerptDimension->reveal(), $iconReference->getExcerptDimension());
+        $this->assertSame($excerptDimension->reveal(), $iconReference->getExcerptDimension());
     }
 
     public function testGetMedia(): void
@@ -35,7 +35,7 @@ class IconReferenceTest extends TestCase
         $media = $this->prophesize(MediaInterface::class);
         $iconReference = new IconReference($excerptDimension->reveal(), $media->reveal(), 2);
 
-        $this->assertEquals($media->reveal(), $iconReference->getMedia());
+        $this->assertSame($media->reveal(), $iconReference->getMedia());
     }
 
     public function testGetOrder(): void
@@ -44,7 +44,7 @@ class IconReferenceTest extends TestCase
         $media = $this->prophesize(MediaInterface::class);
         $iconReference = new IconReference($excerptDimension->reveal(), $media->reveal(), 2);
 
-        $this->assertEquals(2, $iconReference->getOrder());
+        $this->assertSame(2, $iconReference->getOrder());
     }
 
     public function testSetOrder(): void
@@ -53,7 +53,7 @@ class IconReferenceTest extends TestCase
         $media = $this->prophesize(MediaInterface::class);
         $iconReference = new IconReference($excerptDimension->reveal(), $media->reveal(), 2);
 
-        $this->assertEquals($iconReference, $iconReference->setOrder(5));
-        $this->assertEquals(5, $iconReference->getOrder());
+        $this->assertSame($iconReference, $iconReference->setOrder(5));
+        $this->assertSame(5, $iconReference->getOrder());
     }
 }

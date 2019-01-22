@@ -37,7 +37,7 @@ class ExcerptViewTest extends TestCase
             null
         );
 
-        $this->assertEquals(self::RESOURCE_KEY, $excerptView->getResourceKey());
+        $this->assertSame(self::RESOURCE_KEY, $excerptView->getResourceKey());
     }
 
     public function testGetResourceId(): void
@@ -51,7 +51,7 @@ class ExcerptViewTest extends TestCase
             null
         );
 
-        $this->assertEquals('resource-1', $excerptView->getResourceId());
+        $this->assertSame('resource-1', $excerptView->getResourceId());
     }
 
     public function testGetLocale(): void
@@ -65,7 +65,7 @@ class ExcerptViewTest extends TestCase
             null
         );
 
-        $this->assertEquals('en', $excerptView->getLocale());
+        $this->assertSame('en', $excerptView->getLocale());
     }
 
     public function testGetTitle(): void
@@ -79,7 +79,7 @@ class ExcerptViewTest extends TestCase
             null
         );
 
-        $this->assertEquals('title-1', $excerptView->getTitle());
+        $this->assertSame('title-1', $excerptView->getTitle());
     }
 
     public function testGetMore(): void
@@ -93,7 +93,7 @@ class ExcerptViewTest extends TestCase
             null
         );
 
-        $this->assertEquals('more-1', $excerptView->getMore());
+        $this->assertSame('more-1', $excerptView->getMore());
     }
 
     public function testGetDescription(): void
@@ -128,7 +128,7 @@ class ExcerptViewTest extends TestCase
             [$category1->reveal(), $category2->reveal()]
         );
 
-        $this->assertEquals([1, 2], $excerptView->getCategoryIds());
+        $this->assertSame([1, 2], $excerptView->getCategoryIds());
     }
 
     public function testGetTagNames(): void
@@ -156,7 +156,7 @@ class ExcerptViewTest extends TestCase
             [$tagReference1->reveal(), $tagReference2->reveal()]
         );
 
-        $this->assertEquals(['tag-2', 'tag-1'], $excerptView->getTagNames());
+        $this->assertSame(['tag-2', 'tag-1'], $excerptView->getTagNames());
     }
 
     public function testGetIconsData(): void
@@ -191,7 +191,7 @@ class ExcerptViewTest extends TestCase
             [$iconReference2->reveal(), $iconReference1->reveal(), $iconReference3->reveal()]
         );
 
-        $this->assertEquals(['ids' => [2, 3, 1]], $excerptView->getIconsData());
+        $this->assertSame(['ids' => [2, 3, 1]], $excerptView->getIconsData());
     }
 
     public function testGetImagesData(): void
@@ -221,6 +221,6 @@ class ExcerptViewTest extends TestCase
             [$imageReference1->reveal(), $imageReference2->reveal()]
         );
 
-        $this->assertEquals(['ids' => [2, 1]], $excerptView->getImagesData());
+        $this->assertSame(['ids' => [2, 1]], $excerptView->getImagesData());
     }
 }

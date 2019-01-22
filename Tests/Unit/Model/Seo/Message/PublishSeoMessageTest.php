@@ -25,21 +25,21 @@ class PublishSeoMessageTest extends TestCase
     {
         $message = new PublishSeoMessage(self::RESOURCE_KEY, 'resource-1', 'en');
 
-        $this->assertEquals(self::RESOURCE_KEY, $message->getResourceKey());
+        $this->assertSame(self::RESOURCE_KEY, $message->getResourceKey());
     }
 
     public function testGetResourceId(): void
     {
         $message = new PublishSeoMessage(self::RESOURCE_KEY, 'resource-1', 'en');
 
-        $this->assertEquals('resource-1', $message->getResourceId());
+        $this->assertSame('resource-1', $message->getResourceId());
     }
 
     public function testGetLocale(): void
     {
         $message = new PublishSeoMessage(self::RESOURCE_KEY, 'resource-1', 'en');
 
-        $this->assertEquals('en', $message->getLocale());
+        $this->assertSame('en', $message->getLocale());
     }
 
     public function testGetSeo(): void
@@ -55,7 +55,7 @@ class PublishSeoMessageTest extends TestCase
 
         $content = $this->prophesize(SeoViewInterface::class);
 
-        $this->assertEquals($message, $message->setSeo($content->reveal()));
-        $this->assertEquals($content->reveal(), $message->getSeo());
+        $this->assertSame($message, $message->setSeo($content->reveal()));
+        $this->assertSame($content->reveal(), $message->getSeo());
     }
 }

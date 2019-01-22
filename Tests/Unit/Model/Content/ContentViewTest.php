@@ -30,7 +30,7 @@ class ContentViewTest extends TestCase
             ['key-1' => 'value-1']
         );
 
-        $this->assertEquals(self::RESOURCE_KEY, $contentView->getResourceKey());
+        $this->assertSame(self::RESOURCE_KEY, $contentView->getResourceKey());
     }
 
     public function testGetResourceId(): void
@@ -43,7 +43,7 @@ class ContentViewTest extends TestCase
             ['key-1' => 'value-1']
         );
 
-        $this->assertEquals('resource-1', $contentView->getResourceId());
+        $this->assertSame('resource-1', $contentView->getResourceId());
     }
 
     public function testGetLocale(): void
@@ -56,7 +56,7 @@ class ContentViewTest extends TestCase
             ['key-1' => 'value-1']
         );
 
-        $this->assertEquals('en', $contentView->getLocale());
+        $this->assertSame('en', $contentView->getLocale());
     }
 
     public function testGetType(): void
@@ -69,7 +69,7 @@ class ContentViewTest extends TestCase
             ['key-1' => 'value-1']
         );
 
-        $this->assertEquals('type-1', $contentView->getType());
+        $this->assertSame('type-1', $contentView->getType());
     }
 
     public function testGetData(): void
@@ -82,6 +82,6 @@ class ContentViewTest extends TestCase
             ['key-1' => 'value-1']
         );
 
-        $this->assertEquals(['key-1' => 'value-1'], $contentView->getData());
+        $this->assertSame(['key-1' => 'value-1'], $contentView->getData());
     }
 }

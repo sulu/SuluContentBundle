@@ -92,15 +92,15 @@ class ExcerptViewFactoryTest extends TestCase
         $result = $factory->create([$excerptDimension1->reveal(), $excerptDimension2->reveal()], 'en');
 
         $this->assertNotNull($result);
-        $this->assertEquals(self::RESOURCE_KEY, $result->getResourceKey());
-        $this->assertEquals('resource-1', $result->getResourceId());
-        $this->assertEquals('title-1', $result->getTitle());
-        $this->assertEquals('more-2', $result->getMore());
-        $this->assertEquals('description-1', $result->getDescription());
-        $this->assertEquals([1, 2], $result->getCategoryIds());
-        $this->assertEquals(['tag-1'], $result->getTagNames());
-        $this->assertEquals(['ids' => [1, 2, 3]], $result->getIconsData());
-        $this->assertEquals(['ids' => [3, 1]], $result->getImagesData());
+        $this->assertSame(self::RESOURCE_KEY, $result->getResourceKey());
+        $this->assertSame('resource-1', $result->getResourceId());
+        $this->assertSame('title-1', $result->getTitle());
+        $this->assertSame('more-2', $result->getMore());
+        $this->assertSame('description-1', $result->getDescription());
+        $this->assertSame([1, 2], $result->getCategoryIds());
+        $this->assertSame(['tag-1'], $result->getTagNames());
+        $this->assertSame(['ids' => [1, 2, 3]], $result->getIconsData());
+        $this->assertSame(['ids' => [3, 1]], $result->getImagesData());
     }
 
     public function testCreateNull(): void

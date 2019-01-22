@@ -95,8 +95,8 @@ class ModifyContentMessageHandler
             $value = null;
 
             $name = $property->getName();
-            if (is_float($name)) {
-                $name = strval($name);
+            if (\is_float($name)) {
+                $name = (string) $name;
             }
 
             if (array_key_exists($name, $data)) {

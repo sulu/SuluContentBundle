@@ -25,21 +25,21 @@ class PublishExcerptMessageTest extends TestCase
     {
         $message = new PublishExcerptMessage(self::RESOURCE_KEY, 'resource-1', 'en');
 
-        $this->assertEquals(self::RESOURCE_KEY, $message->getResourceKey());
+        $this->assertSame(self::RESOURCE_KEY, $message->getResourceKey());
     }
 
     public function testGetResourceId(): void
     {
         $message = new PublishExcerptMessage(self::RESOURCE_KEY, 'resource-1', 'en');
 
-        $this->assertEquals('resource-1', $message->getResourceId());
+        $this->assertSame('resource-1', $message->getResourceId());
     }
 
     public function testGetLocale(): void
     {
         $message = new PublishExcerptMessage(self::RESOURCE_KEY, 'resource-1', 'en');
 
-        $this->assertEquals('en', $message->getLocale());
+        $this->assertSame('en', $message->getLocale());
     }
 
     public function testGetExcerpt(): void
@@ -55,7 +55,7 @@ class PublishExcerptMessageTest extends TestCase
 
         $content = $this->prophesize(ExcerptViewInterface::class);
 
-        $this->assertEquals($message, $message->setExcerpt($content->reveal()));
-        $this->assertEquals($content->reveal(), $message->getExcerpt());
+        $this->assertSame($message, $message->setExcerpt($content->reveal()));
+        $this->assertSame($content->reveal(), $message->getExcerpt());
     }
 }
