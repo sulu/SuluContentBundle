@@ -54,6 +54,7 @@ class AbstractSeoControllerTest extends SuluTestCase
 
         $this->assertSame(
             [
+                'id' => 'test-resource-1',
                 'title' => 'seo-title',
                 'description' => 'seo-description',
                 'keywords' => 'seo-keywords',
@@ -77,6 +78,7 @@ class AbstractSeoControllerTest extends SuluTestCase
 
         $this->assertSame(
             [
+                'id' => 'absent-resource',
                 'title' => null,
                 'description' => null,
                 'keywords' => null,
@@ -120,6 +122,7 @@ class AbstractSeoControllerTest extends SuluTestCase
 
         $this->assertSame(
             [
+                'id' => 'test-resource-1',
                 'title' => 'new-title',
                 'description' => 'new-description',
                 'keywords' => 'new-keywords',
@@ -161,6 +164,7 @@ class AbstractSeoControllerTest extends SuluTestCase
 
         $this->assertSame(
             [
+                'id' => 'absent-resource',
                 'title' => 'new-title',
                 'description' => 'new-description',
                 'keywords' => 'new-keywords',
@@ -204,6 +208,7 @@ class AbstractSeoControllerTest extends SuluTestCase
 
         $this->assertSame(
             [
+                'id' => 'test-resource-1',
                 'title' => 'new-title',
                 'description' => 'new-description',
                 'keywords' => 'new-keywords',

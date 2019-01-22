@@ -49,6 +49,7 @@ class AbstractContentControllerTest extends SuluTestCase
 
         $this->assertSame(
             [
+                'id' => 'test-resource-1',
                 'template' => 'default',
                 'title' => 'content-title',
                 'article' => 'content-article',
@@ -68,6 +69,7 @@ class AbstractContentControllerTest extends SuluTestCase
 
         $this->assertSame(
             [
+                'id' => 'absent-resource',
                 'template' => 'default',
             ],
             $result
@@ -97,6 +99,7 @@ class AbstractContentControllerTest extends SuluTestCase
 
         $this->assertSame(
             [
+                'id' => 'test-resource-1',
                 'template' => 'default',
                 'title' => 'new-title',
                 'article' => 'new-article',
@@ -126,6 +129,7 @@ class AbstractContentControllerTest extends SuluTestCase
 
         $this->assertSame(
             [
+                'id' => 'absent-resource',
                 'template' => 'default',
                 'title' => 'new-title',
                 'article' => 'new-article',
@@ -157,6 +161,7 @@ class AbstractContentControllerTest extends SuluTestCase
 
         $this->assertSame(
             [
+                'id' => 'test-resource-1',
                 'template' => 'default',
                 'title' => 'new-title',
                 'article' => 'new-article',

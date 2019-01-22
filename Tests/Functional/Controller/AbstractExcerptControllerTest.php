@@ -110,6 +110,7 @@ class AbstractExcerptControllerTest extends SuluTestCase
 
         $this->assertSame(
             [
+                'id' => 'test-resource-1',
                 'title' => 'excerpt-title',
                 'more' => 'excerpt-more',
                 'description' => 'excerpt-description',
@@ -137,6 +138,7 @@ class AbstractExcerptControllerTest extends SuluTestCase
 
         $this->assertSame(
             [
+                'id' => 'absent-resource',
                 'title' => null,
                 'more' => null,
                 'description' => null,
@@ -199,6 +201,7 @@ class AbstractExcerptControllerTest extends SuluTestCase
 
         $this->assertSame(
             [
+                'id' => 'test-resource-1',
                 'title' => 'new-title',
                 'more' => 'new-more',
                 'description' => null,
@@ -248,6 +251,7 @@ class AbstractExcerptControllerTest extends SuluTestCase
 
         $this->assertSame(
             [
+                'id' => 'absent-resource',
                 'title' => 'new-title',
                 'more' => 'new-more',
                 'description' => null,
@@ -299,6 +303,7 @@ class AbstractExcerptControllerTest extends SuluTestCase
 
         $this->assertSame(
             [
+                'id' => 'test-resource-1',
                 'title' => 'new-title',
                 'more' => 'new-more',
                 'description' => null,
