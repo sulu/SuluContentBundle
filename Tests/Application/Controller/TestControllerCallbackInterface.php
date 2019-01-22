@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Tests\Application\Controller;
 
-interface HandlePublishCallbackInterface
+interface TestControllerCallbackInterface
 {
     public function invoke($resourceId, $locale);
 }

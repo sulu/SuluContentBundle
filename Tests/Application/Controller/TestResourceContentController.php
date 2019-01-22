@@ -22,9 +22,14 @@ use Sulu\Bundle\ContentBundle\Controller\AbstractContentController;
 class TestResourceContentController extends AbstractContentController
 {
     /**
-     * @var HandlePublishCallbackInterface
+     * @var TestControllerCallbackInterface
      */
     private $handlePublishCallback;
+
+    /**
+     * @var TestControllerCallbackInterface
+     */
+    private $handleRemoveCallback;
 
     protected function handlePublish(string $resourceId, string $locale): void
     {
@@ -36,8 +41,18 @@ class TestResourceContentController extends AbstractContentController
         return 'test_resource_contents';
     }
 
-    public function setHandlePublishCallback(HandlePublishCallbackInterface $handlePublishCallback): void
+    protected function handleRemove(string $resourceId, string $locale): void
+    {
+        $this->handleRemoveCallback->invoke($resourceId, $locale);
+    }
+
+    public function setHandlePublishCallback(TestControllerCallbackInterface $handlePublishCallback): void
     {
         $this->handlePublishCallback = $handlePublishCallback;
+    }
+
+    public function setHandleRemoveCallback(TestControllerCallbackInterface $handleRemoveCallback): void
+    {
+        $this->handleRemoveCallback = $handleRemoveCallback;
     }
 }

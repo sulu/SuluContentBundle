@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Tests\Functional\Controller;
 
-use Sulu\Bundle\ContentBundle\Tests\Application\Controller\HandlePublishCallbackInterface;
+use Sulu\Bundle\ContentBundle\Tests\Application\Controller\TestControllerCallbackInterface;
 use Sulu\Bundle\ContentBundle\Tests\Functional\Traits\ContentDimensionTrait;
 use Sulu\Bundle\ContentBundle\Tests\Functional\Traits\DimensionIdentifierTrait;
 use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
@@ -78,7 +78,7 @@ class AbstractContentControllerTest extends SuluTestCase
     {
         $this->createDraftContentDimension('test_resource_contents', 'test-resource-1');
 
-        $handlePublishCallback = $this->prophesize(HandlePublishCallbackInterface::class);
+        $handlePublishCallback = $this->prophesize(TestControllerCallbackInterface::class);
         $handlePublishCallback->invoke()->shouldNotBeCalled();
 
         $client = $this->createAuthenticatedClient();
@@ -107,7 +107,7 @@ class AbstractContentControllerTest extends SuluTestCase
 
     public function testPutAbsent(): void
     {
-        $handlePublishCallback = $this->prophesize(HandlePublishCallbackInterface::class);
+        $handlePublishCallback = $this->prophesize(TestControllerCallbackInterface::class);
         $handlePublishCallback->invoke()->shouldNotBeCalled();
 
         $client = $this->createAuthenticatedClient();
@@ -138,7 +138,7 @@ class AbstractContentControllerTest extends SuluTestCase
     {
         $this->createDraftContentDimension('test_resource_contents', 'test-resource-1');
 
-        $handlePublishCallback = $this->prophesize(HandlePublishCallbackInterface::class);
+        $handlePublishCallback = $this->prophesize(TestControllerCallbackInterface::class);
         $handlePublishCallback->invoke('test-resource-1', 'en')->shouldBeCalled();
 
         $client = $this->createAuthenticatedClient();
@@ -163,5 +163,23 @@ class AbstractContentControllerTest extends SuluTestCase
             ],
             $result
         );
+    }
+
+    public function testDelete(): void
+    {
+        $handleRemoveCallback = $this->prophesize(TestControllerCallbackInterface::class);
+        $handleRemoveCallback->invoke('test-resource-1', 'en')->shouldBeCalled();
+
+        $client = $this->createAuthenticatedClient();
+        $container = $client->getContainer();
+        if ($container) {
+            $contentController = $container->get('sulu_content.controller.test_resource_contents');
+            $contentController->setHandleRemoveCallback($handleRemoveCallback->reveal());
+        }
+
+        $client->request('DELETE', '/api/test-resource-contents/test-resource-1?locale=en');
+
+        $response = $client->getResponse();
+        $this->assertSame(204, $response->getStatusCode());
     }
 }
