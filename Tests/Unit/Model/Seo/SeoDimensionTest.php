@@ -17,7 +17,7 @@ use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierInterface;
 use Sulu\Bundle\ContentBundle\Model\Seo\SeoDimension;
 
-class SeoTest extends TestCase
+class SeoDimensionTest extends TestCase
 {
     const RESOURCE_KEY = 'test_resource_seos';
 

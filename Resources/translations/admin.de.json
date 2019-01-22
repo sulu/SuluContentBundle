@@ -9,5 +9,8 @@
     "sulu_content.canonical_url": "Canonical URL  (Canonical tag)",
     "sulu_content.no_index": "no-index (Seite wird nicht von Suchmaschinen indiziert)",
     "sulu_content.no_follow": "no-follow (Links auf der Seite wird von Suchmaschinen nicht gefolgt)",
-    "sulu_content.hide_in_sitemap": "In Sitemap ausblenden"
+    "sulu_content.hide_in_sitemap": "In Sitemap ausblenden",
+    "sulu_content.text_for_more_link": "Text für weiterführenden Link",
+    "sulu_content.icons": "Icons",
+    "sulu_content.images": "Bilder"
 }

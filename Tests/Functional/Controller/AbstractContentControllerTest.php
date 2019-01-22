@@ -47,9 +47,14 @@ class AbstractContentControllerTest extends SuluTestCase
         $result = json_decode($client->getResponse()->getContent(), true);
         $this->assertSame(200, $response->getStatusCode());
 
-        $this->assertSame('default', $result['template']);
-        $this->assertSame('content-title', $result['title']);
-        $this->assertSame('content-article', $result['article']);
+        $this->assertSame(
+            [
+                'template' => 'default',
+                'title' => 'content-title',
+                'article' => 'content-article',
+            ],
+            $result
+        );
     }
 
     public function testGetAbsent(): void
@@ -61,9 +66,12 @@ class AbstractContentControllerTest extends SuluTestCase
         $result = json_decode($client->getResponse()->getContent(), true);
         $this->assertSame(200, $response->getStatusCode());
 
-        $this->assertSame('default', $result['template']);
-        $this->assertArrayNotHasKey('title', $result);
-        $this->assertArrayNotHasKey('article', $result);
+        $this->assertSame(
+            [
+                'template' => 'default',
+            ],
+            $result
+        );
     }
 
     public function testPut(): void
@@ -87,9 +95,14 @@ class AbstractContentControllerTest extends SuluTestCase
         $result = json_decode($client->getResponse()->getContent(), true);
         $this->assertSame(200, $response->getStatusCode());
 
-        $this->assertSame('default', $result['template']);
-        $this->assertSame('new-title', $result['title']);
-        $this->assertSame('new-article', $result['article']);
+        $this->assertSame(
+            [
+                'template' => 'default',
+                'title' => 'new-title',
+                'article' => 'new-article',
+            ],
+            $result
+        );
     }
 
     public function testPutAbsent(): void
@@ -111,9 +124,14 @@ class AbstractContentControllerTest extends SuluTestCase
         $result = json_decode($client->getResponse()->getContent(), true);
         $this->assertSame(200, $response->getStatusCode());
 
-        $this->assertSame('default', $result['template']);
-        $this->assertSame('new-title', $result['title']);
-        $this->assertSame('new-article', $result['article']);
+        $this->assertSame(
+            [
+                'template' => 'default',
+                'title' => 'new-title',
+                'article' => 'new-article',
+            ],
+            $result
+        );
     }
 
     public function testPutWithPublishAction(): void
@@ -137,8 +155,13 @@ class AbstractContentControllerTest extends SuluTestCase
         $result = json_decode($client->getResponse()->getContent(), true);
         $this->assertSame(200, $response->getStatusCode());
 
-        $this->assertSame('default', $result['template']);
-        $this->assertSame('new-title', $result['title']);
-        $this->assertSame('new-article', $result['article']);
+        $this->assertSame(
+            [
+                'template' => 'default',
+                'title' => 'new-title',
+                'article' => 'new-article',
+            ],
+            $result
+        );
     }
 }
