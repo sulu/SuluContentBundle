@@ -29,7 +29,7 @@ class TestResourceContentController extends AbstractContentController
     /**
      * @var TestControllerCallbackInterface
      */
-    private $handleRemoveCallback;
+    private $handleDeleteCallback;
 
     protected function handlePublish(string $resourceId, string $locale): void
     {
@@ -41,9 +41,9 @@ class TestResourceContentController extends AbstractContentController
         return 'test_resource_contents';
     }
 
-    protected function handleRemove(string $resourceId, string $locale): void
+    protected function handleDelete(string $resourceId, string $locale): void
     {
-        $this->handleRemoveCallback->invoke($resourceId, $locale);
+        $this->handleDeleteCallback->invoke($resourceId, $locale);
     }
 
     public function setHandlePublishCallback(TestControllerCallbackInterface $handlePublishCallback): void
@@ -51,8 +51,8 @@ class TestResourceContentController extends AbstractContentController
         $this->handlePublishCallback = $handlePublishCallback;
     }
 
-    public function setHandleRemoveCallback(TestControllerCallbackInterface $handleRemoveCallback): void
+    public function setHandleDeleteCallback(TestControllerCallbackInterface $handleDeleteCallback): void
     {
-        $this->handleRemoveCallback = $handleRemoveCallback;
+        $this->handleDeleteCallback = $handleDeleteCallback;
     }
 }

@@ -218,14 +218,14 @@ class AbstractSeoControllerTest extends SuluTestCase
 
     public function testDelete(): void
     {
-        $handleRemoveCallback = $this->prophesize(TestControllerCallbackInterface::class);
-        $handleRemoveCallback->invoke('test-resource-1', 'en')->shouldBeCalled();
+        $handleDeleteCallback = $this->prophesize(TestControllerCallbackInterface::class);
+        $handleDeleteCallback->invoke('test-resource-1', 'en')->shouldBeCalled();
 
         $client = $this->createAuthenticatedClient();
         $container = $client->getContainer();
         if ($container) {
             $contentController = $container->get('sulu_content.controller.test_resource_seos');
-            $contentController->setHandleRemoveCallback($handleRemoveCallback->reveal());
+            $contentController->setHandleDeleteCallback($handleDeleteCallback->reveal());
         }
 
         $client->request('DELETE', '/api/test-resource-seos/test-resource-1?locale=en');
