@@ -38,5 +38,5 @@ jobs:
               - ~/.composer
               key: v1-dependencies-{{ checksum "composer.json" }}
 
-        - run: composer initialize
+        - run: composer bootstrap-test-environment
         - run: composer test
