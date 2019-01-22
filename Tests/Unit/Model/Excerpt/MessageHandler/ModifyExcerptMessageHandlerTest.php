@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Model\Excerpt\MessageHandler;
 
 use PHPUnit\Framework\TestCase;
-use Prophecy\Argument;
 use Sulu\Bundle\CategoryBundle\Entity\CategoryInterface;
 use Sulu\Bundle\CategoryBundle\Entity\CategoryRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierInterface;
@@ -219,11 +218,6 @@ class ModifyExcerptMessageHandlerTest extends TestCase
                 DimensionIdentifierInterface::ATTRIBUTE_KEY_LOCALE => 'de',
             ]
         )->shouldBeCalled()->willReturn($localizedDimensionIdentifier->reveal());
-
-        $tag1 = $this->prophesize(TagInterface::class);
-        $media1 = $this->prophesize(MediaInterface::class);
-        $media2 = $this->prophesize(MediaInterface::class);
-        $media3 = $this->prophesize(MediaInterface::class);
 
         $localizedExcerpt = $this->prophesize(ExcerptDimensionInterface::class);
         $localizedExcerpt->setTitle('title-1')->shouldBeCalled()->willReturn($localizedExcerpt->reveal());

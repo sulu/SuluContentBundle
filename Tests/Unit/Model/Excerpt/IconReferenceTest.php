@@ -14,16 +14,9 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Model\Excerpt;
 
 use PHPUnit\Framework\TestCase;
-use Sulu\Bundle\CategoryBundle\Entity\CategoryInterface;
-use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierInterface;
-use Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptDimension;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptDimensionInterface;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\IconReference;
-use Sulu\Bundle\ContentBundle\Model\Excerpt\IconReferenceInterface;
-use Sulu\Bundle\ContentBundle\Model\Excerpt\ImageReferenceInterface;
-use Sulu\Bundle\ContentBundle\Model\Excerpt\TagReferenceInterface;
 use Sulu\Bundle\MediaBundle\Entity\MediaInterface;
-use Sulu\Bundle\TagBundle\Tag\TagInterface;
 
 class IconReferenceTest extends TestCase
 {

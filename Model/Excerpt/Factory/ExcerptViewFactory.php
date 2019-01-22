@@ -68,9 +68,9 @@ class ExcerptViewFactory implements ExcerptViewFactoryInterface
             $more,
             $description,
             array_values($categories),
-                array_values($tags),
-                    array_values($icons),
-                        array_values($images)
+            array_values($tags),
+            array_values($icons),
+            array_values($images)
         );
     }
 }
