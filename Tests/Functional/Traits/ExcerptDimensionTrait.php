@@ -19,6 +19,12 @@ use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierInter
 use Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptDimension;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptDimensionInterface;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptDimensionRepositoryInterface;
+use Sulu\Bundle\ContentBundle\Model\Excerpt\IconReference;
+use Sulu\Bundle\ContentBundle\Model\Excerpt\IconReferenceInterface;
+use Sulu\Bundle\ContentBundle\Model\Excerpt\ImageReference;
+use Sulu\Bundle\ContentBundle\Model\Excerpt\ImageReferenceInterface;
+use Sulu\Bundle\ContentBundle\Model\Excerpt\TagReference;
+use Sulu\Bundle\ContentBundle\Model\Excerpt\TagReferenceInterface;
 use Sulu\Bundle\MediaBundle\Entity\MediaInterface;
 use Sulu\Bundle\TagBundle\Tag\TagInterface;
 
@@ -56,24 +62,66 @@ trait ExcerptDimensionTrait
             $more,
             $description
         );
+        $this->getEntityManager()->persist($excerptDimension);
 
         foreach ($categories as $category) {
             $excerptDimension->addCategory($category);
         }
-        foreach ($tags as $tag) {
-            $excerptDimension->addTag($tag);
+        foreach ($tags as $index => $tag) {
+            $tagReference = $this->createTagReference($excerptDimension, $tag, $index);
+            $excerptDimension->addTag($tagReference);
         }
-        foreach ($icons as $icon) {
-            $excerptDimension->addIcon($icon);
+        foreach ($icons as $index => $icon) {
+            $iconReference = $this->createIconReference($excerptDimension, $icon, $index);
+            $excerptDimension->addIcon($iconReference);
         }
-        foreach ($images as $image) {
-            $excerptDimension->addImage($image);
+        foreach ($images as $index => $image) {
+            $imageReference = $this->createImageReference($excerptDimension, $image, $index);
+            $excerptDimension->addImage($imageReference);
         }
 
-        $this->getEntityManager()->persist($excerptDimension);
         $this->getEntityManager()->flush();
 
         return $excerptDimension;
+    }
+
+    protected function createTagReference(
+        ExcerptDimensionInterface $excerptDimension,
+        TagInterface $tag,
+        int $order
+    ): TagReferenceInterface {
+        $tagReference = new TagReference($excerptDimension, $tag, $order);
+
+        $this->getEntityManager()->persist($tagReference);
+        $this->getEntityManager()->flush();
+
+        return $tagReference;
+    }
+
+    protected function createIconReference(
+        ExcerptDimensionInterface $excerptDimension,
+        MediaInterface $media,
+        int $order
+    ): IconReferenceInterface {
+        $iconReference = new IconReference($excerptDimension, $media, $order);
+
+        $this->getEntityManager()->persist($iconReference);
+        $this->getEntityManager()->flush();
+
+        return $iconReference;
+    }
+
+    protected function createImageReference(
+        ExcerptDimensionInterface $excerptDimension,
+        MediaInterface $media,
+        int $order
+    ): ImageReferenceInterface {
+        $imageReference = new ImageReference($excerptDimension, $media, $order);
+
+        $this->getEntityManager()->persist($imageReference);
+        $this->getEntityManager()->flush();
+
+        return $imageReference;
     }
 
     protected function findDraftExcerptDimension(string $resourceKey, string $resourceId, string $locale): ?ExcerptDimensionInterface

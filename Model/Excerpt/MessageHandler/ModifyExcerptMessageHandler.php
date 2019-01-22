@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Model\Excerpt\MessageHandler;
 
 use Doctrine\ORM\EntityNotFoundException;
-use Sulu\Bundle\CategoryBundle\Entity\Category;
+use Sulu\Bundle\CategoryBundle\Entity\CategoryInterface;
 use Sulu\Bundle\CategoryBundle\Entity\CategoryRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierInterface;
 use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierRepositoryInterface;
@@ -22,10 +22,13 @@ use Sulu\Bundle\ContentBundle\Model\Excerpt\Exception\ExcerptNotFoundException;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptDimensionInterface;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptDimensionRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\Factory\ExcerptViewFactoryInterface;
+use Sulu\Bundle\ContentBundle\Model\Excerpt\IconReferenceRepositoryInterface;
+use Sulu\Bundle\ContentBundle\Model\Excerpt\ImageReferenceRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\Message\ModifyExcerptMessage;
-use Sulu\Bundle\MediaBundle\Entity\Media;
+use Sulu\Bundle\ContentBundle\Model\Excerpt\TagReferenceRepositoryInterface;
+use Sulu\Bundle\MediaBundle\Entity\MediaInterface;
 use Sulu\Bundle\MediaBundle\Entity\MediaRepositoryInterface;
-use Sulu\Bundle\TagBundle\Entity\Tag;
+use Sulu\Bundle\TagBundle\Tag\TagInterface;
 use Sulu\Bundle\TagBundle\Tag\TagRepositoryInterface;
 
 class ModifyExcerptMessageHandler
@@ -39,6 +42,21 @@ class ModifyExcerptMessageHandler
      * @var DimensionIdentifierRepositoryInterface
      */
     private $dimensionIdentifierRepository;
+
+    /**
+     * @var TagReferenceRepositoryInterface
+     */
+    private $tagReferenceRepository;
+
+    /**
+     * @var IconReferenceRepositoryInterface
+     */
+    private $iconReferenceRepository;
+
+    /**
+     * @var ImageReferenceRepositoryInterface
+     */
+    private $imageReferenceRepository;
 
     /**
      * @var CategoryRepositoryInterface
@@ -63,6 +81,9 @@ class ModifyExcerptMessageHandler
     public function __construct(
         ExcerptDimensionRepositoryInterface $excerptDimensionRepository,
         DimensionIdentifierRepositoryInterface $dimensionIdentifierRepository,
+        TagReferenceRepositoryInterface $tagReferenceRepository,
+        IconReferenceRepositoryInterface $iconReferenceRepository,
+        ImageReferenceRepositoryInterface $imageReferenceRepository,
         CategoryRepositoryInterface $categoryRepository,
         TagRepositoryInterface $tagRepository,
         MediaRepositoryInterface $mediaRepository,
@@ -70,6 +91,9 @@ class ModifyExcerptMessageHandler
     ) {
         $this->excerptDimensionRepository = $excerptDimensionRepository;
         $this->dimensionIdentifierRepository = $dimensionIdentifierRepository;
+        $this->tagReferenceRepository = $tagReferenceRepository;
+        $this->iconReferenceRepository = $iconReferenceRepository;
+        $this->imageReferenceRepository = $imageReferenceRepository;
         $this->categoryRepository = $categoryRepository;
         $this->tagRepository = $tagRepository;
         $this->mediaRepository = $mediaRepository;
@@ -101,58 +125,86 @@ class ModifyExcerptMessageHandler
         $localizedDraftExcerpt->setMore($message->getMore());
         $localizedDraftExcerpt->setDescription($message->getDescription());
 
-        $localizedDraftExcerpt->clearCategories();
+        $this->updateCategories($message, $localizedDraftExcerpt);
+        $this->updateTags($message, $localizedDraftExcerpt);
+        $this->updateIcons($message, $localizedDraftExcerpt);
+        $this->updateImages($message, $localizedDraftExcerpt);
+    }
+
+    private function updateCategories(ModifyExcerptMessage $message, ExcerptDimensionInterface $localizedDraftExcerpt): void
+    {
         foreach ($message->getCategoryIds() as $categoryId) {
-            $category = $this->categoryRepository->findCategoryById($categoryId);
-            if (!$category) {
-                throw EntityNotFoundException::fromClassNameAndIdentifier(
-                    Category::class,
-                    ['id' => $categoryId]
-                );
+            $messageCategory = $localizedDraftExcerpt->getCategory($categoryId);
+            if (!$messageCategory) {
+                $messageCategory = $this->findCategoryById($categoryId);
+                $localizedDraftExcerpt->addCategory($messageCategory);
             }
-
-            $localizedDraftExcerpt->addCategory($category);
         }
 
-        $localizedDraftExcerpt->clearTags();
-        foreach ($message->getTagNames() as $tagName) {
-            $tag = $this->tagRepository->findTagByName($tagName);
-            if (!$tag) {
-                throw EntityNotFoundException::fromClassNameAndIdentifier(
-                    Tag::class,
-                    ['name' => $tagName]
-                );
+        foreach ($localizedDraftExcerpt->getCategories() as $persistedCategory) {
+            if (!in_array($persistedCategory->getId(), $message->getCategoryIds(), true)) {
+                $localizedDraftExcerpt->removeCategory($persistedCategory);
             }
+        }
+    }
 
-            $localizedDraftExcerpt->addTag($tag);
+    private function updateTags(ModifyExcerptMessage $message, ExcerptDimensionInterface $localizedDraftExcerpt): void
+    {
+        foreach ($message->getTagNames() as $index => $tagName) {
+            $messageTagReference = $localizedDraftExcerpt->getTag($tagName);
+            if (!$messageTagReference) {
+                $messageTag = $this->findTagByName($tagName);
+                $messageTagReference = $this->tagReferenceRepository->create($localizedDraftExcerpt, $messageTag);
+                $localizedDraftExcerpt->addTag($messageTagReference);
+            }
+            $messageTagReference->setOrder($index);
         }
 
-        $localizedDraftExcerpt->clearIcons();
-        foreach ($message->getIconMediaIds() as $iconMediaId) {
-            /** @var ?Media */
-            $media = $this->mediaRepository->findMediaById($iconMediaId);
-            if (!$media) {
-                throw EntityNotFoundException::fromClassNameAndIdentifier(
-                    Tag::class,
-                    ['id' => $iconMediaId]
-                );
+        foreach ($localizedDraftExcerpt->getTags() as $persistedTagReference) {
+            if (!in_array($persistedTagReference->getTag()->getName(), $message->getTagNames(), true)) {
+                $localizedDraftExcerpt->removeTag($persistedTagReference);
+                $this->tagReferenceRepository->remove($persistedTagReference);
             }
+        }
+    }
 
-            $localizedDraftExcerpt->addIcon($media);
+    private function updateIcons(ModifyExcerptMessage $message, ExcerptDimensionInterface $localizedDraftExcerpt): void
+    {
+        foreach ($message->getIconMediaIds() as $index => $iconMediaId) {
+            $messageIconReference = $localizedDraftExcerpt->getIcon($iconMediaId);
+            if (!$messageIconReference) {
+                $messageIconMedia = $this->findMediaById($iconMediaId);
+                $messageIconReference = $this->iconReferenceRepository->create($localizedDraftExcerpt, $messageIconMedia);
+                $localizedDraftExcerpt->addIcon($messageIconReference);
+            }
+            $messageIconReference->setOrder($index);
         }
 
-        $localizedDraftExcerpt->clearImages();
-        foreach ($message->getImageMediaIds() as $imageMediaId) {
-            /** @var ?Media */
-            $media = $this->mediaRepository->findMediaById($imageMediaId);
-            if (!$media) {
-                throw EntityNotFoundException::fromClassNameAndIdentifier(
-                    Tag::class,
-                    ['id' => $imageMediaId]
-                );
+        foreach ($localizedDraftExcerpt->getIcons() as $persistedIconReference) {
+            if (!in_array($persistedIconReference->getMedia()->getId(), $message->getIconMediaIds(), true)) {
+                $localizedDraftExcerpt->removeIcon($persistedIconReference);
+                $this->iconReferenceRepository->remove($persistedIconReference);
             }
+        }
+    }
 
-            $localizedDraftExcerpt->addImage($media);
+    private function updateImages(ModifyExcerptMessage $message, ExcerptDimensionInterface $localizedDraftExcerpt): void
+    {
+        foreach ($message->getImageMediaIds() as $index => $imageMediaId) {
+            $messageImageReference = $localizedDraftExcerpt->getImage($imageMediaId);
+            if (!$messageImageReference) {
+                $messageImageMedia = $this->findMediaById($imageMediaId);
+                $messageImageReference = $this->imageReferenceRepository->create($localizedDraftExcerpt, $messageImageMedia);
+                $localizedDraftExcerpt->addImage($messageImageReference);
+            }
+            $messageImageReference->setOrder($index);
+        }
+
+        foreach ($localizedDraftExcerpt->getImages() as $persistedImageReference) {
+            if (!in_array($persistedImageReference->getMedia()->getId(), $message->getImageMediaIds(), true)) {
+                $localizedDraftExcerpt->removeImage($persistedImageReference);
+                $this->imageReferenceRepository->remove($persistedImageReference);
+            }
         }
     }
 
@@ -173,5 +225,45 @@ class ModifyExcerptMessageHandler
         $attributes[DimensionIdentifierInterface::ATTRIBUTE_KEY_LOCALE] = $locale;
 
         return $this->dimensionIdentifierRepository->findOrCreateByAttributes($attributes);
+    }
+
+    private function findTagByName(string $tagName): TagInterface
+    {
+        $tag = $this->tagRepository->findTagByName($tagName);
+        if (!$tag) {
+            throw EntityNotFoundException::fromClassNameAndIdentifier(
+                TagInterface::class,
+                ['name' => $tagName]
+            );
+        }
+
+        return $tag;
+    }
+
+    private function findCategoryById(int $categoryId): CategoryInterface
+    {
+        $category = $this->categoryRepository->findCategoryById($categoryId);
+        if (!$category) {
+            throw EntityNotFoundException::fromClassNameAndIdentifier(
+                CategoryInterface::class,
+                ['id' => (string) $categoryId]
+            );
+        }
+
+        return $category;
+    }
+
+    private function findMediaById(int $mediaId): MediaInterface
+    {
+        /** @var ?MediaInterface */
+        $media = $this->mediaRepository->findMediaById($mediaId);
+        if (!$media) {
+            throw EntityNotFoundException::fromClassNameAndIdentifier(
+                MediaInterface::class,
+                ['id' => (string) $mediaId]
+            );
+        }
+
+        return $media;
     }
 }

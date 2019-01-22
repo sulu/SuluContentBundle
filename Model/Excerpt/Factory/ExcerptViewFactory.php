@@ -44,27 +44,19 @@ class ExcerptViewFactory implements ExcerptViewFactoryInterface
             $description = $excerptDimension->getDescription() ?? $description;
 
             foreach ($excerptDimension->getCategories() as $dimensionCategory) {
-                if (!in_array($dimensionCategory, $categories, true)) {
-                    $categories[] = $dimensionCategory;
-                }
+                $categories[$dimensionCategory->getId()] = $dimensionCategory;
             }
 
             foreach ($excerptDimension->getTags() as $dimensionTag) {
-                if (!in_array($dimensionTag, $tags, true)) {
-                    $tags[] = $dimensionTag;
-                }
+                $tags[$dimensionTag->getTag()->getId()] = $dimensionTag;
             }
 
             foreach ($excerptDimension->getIcons() as $dimensionIcon) {
-                if (!in_array($dimensionIcon, $icons, true)) {
-                    $icons[] = $dimensionIcon;
-                }
+                $icons[$dimensionIcon->getMedia()->getId()] = $dimensionIcon;
             }
 
             foreach ($excerptDimension->getImages() as $dimensionImage) {
-                if (!in_array($dimensionImage, $images, true)) {
-                    $images[] = $dimensionImage;
-                }
+                $images[$dimensionImage->getMedia()->getId()] = $dimensionImage;
             }
         }
 
@@ -75,10 +67,10 @@ class ExcerptViewFactory implements ExcerptViewFactoryInterface
             $title,
             $more,
             $description,
-            $categories,
-            $tags,
-            $icons,
-            $images
+            array_values($categories),
+            array_values($tags),
+            array_values($icons),
+            array_values($images)
         );
     }
 }

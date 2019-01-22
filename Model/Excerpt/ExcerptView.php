@@ -14,8 +14,6 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Model\Excerpt;
 
 use Sulu\Bundle\CategoryBundle\Entity\CategoryInterface;
-use Sulu\Bundle\MediaBundle\Entity\Media;
-use Sulu\Bundle\TagBundle\Tag\TagInterface;
 
 class ExcerptView implements ExcerptViewInterface
 {
@@ -55,17 +53,17 @@ class ExcerptView implements ExcerptViewInterface
     private $categories;
 
     /**
-     * @var TagInterface[]
+     * @var TagReferenceInterface[]
      */
     private $tags;
 
     /**
-     * @var Media[]
+     * @var IconReferenceInterface[]
      */
     private $icons;
 
     /**
-     * @var Media[]
+     * @var ImageReferenceInterface[]
      */
     private $images;
 
@@ -126,6 +124,7 @@ class ExcerptView implements ExcerptViewInterface
     public function getCategoryIds(): array
     {
         $categoryIds = [];
+
         foreach ($this->categories as $category) {
             $categoryIds[] = $category->getId();
         }
@@ -136,8 +135,12 @@ class ExcerptView implements ExcerptViewInterface
     public function getTagNames(): array
     {
         $tagNames = [];
+
+        usort($this->tags, function (TagReferenceInterface $t1, TagReferenceInterface $t2) {
+            return $t1->getOrder() - $t2->getOrder();
+        });
         foreach ($this->tags as $tag) {
-            $tagNames[] = $tag->getName();
+            $tagNames[] = $tag->getTag()->getName();
         }
 
         return $tagNames;
@@ -146,8 +149,12 @@ class ExcerptView implements ExcerptViewInterface
     public function getIconsData(): array
     {
         $mediaIds = [];
+
+        usort($this->icons, function (IconReferenceInterface $i1, IconReferenceInterface $i2) {
+            return $i1->getOrder() - $i2->getOrder();
+        });
         foreach ($this->icons as $icon) {
-            $mediaIds[] = $icon->getId();
+            $mediaIds[] = $icon->getMedia()->getId();
         }
 
         return ['ids' => $mediaIds];
@@ -156,8 +163,12 @@ class ExcerptView implements ExcerptViewInterface
     public function getImagesData(): array
     {
         $mediaIds = [];
+
+        usort($this->images, function (ImageReferenceInterface $i1, ImageReferenceInterface $i2) {
+            return $i1->getOrder() - $i2->getOrder();
+        });
         foreach ($this->images as $image) {
-            $mediaIds[] = $image->getId();
+            $mediaIds[] = $image->getMedia()->getId();
         }
 
         return ['ids' => $mediaIds];

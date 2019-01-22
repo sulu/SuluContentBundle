@@ -12,6 +12,30 @@
         <service id="Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptDimensionRepositoryInterface"
                  alias="Sulu\Bundle\ContentBundle\Repository\ExcerptDimensionRepository"/>
 
+        <service id="Sulu\Bundle\ContentBundle\Repository\TagReferenceRepository">
+            <argument type="service" id="doctrine"/>
+
+            <tag name="doctrine.repository_service"/>
+        </service>
+        <service id="Sulu\Bundle\ContentBundle\Model\Excerpt\TagReferenceRepositoryInterface"
+                 alias="Sulu\Bundle\ContentBundle\Repository\TagReferenceRepository"/>
+
+        <service id="Sulu\Bundle\ContentBundle\Repository\IconReferenceRepository">
+            <argument type="service" id="doctrine"/>
+
+            <tag name="doctrine.repository_service"/>
+        </service>
+        <service id="Sulu\Bundle\ContentBundle\Model\Excerpt\IconReferenceRepositoryInterface"
+                 alias="Sulu\Bundle\ContentBundle\Repository\IconReferenceRepository"/>
+
+        <service id="Sulu\Bundle\ContentBundle\Repository\ImageReferenceRepository">
+            <argument type="service" id="doctrine"/>
+
+            <tag name="doctrine.repository_service"/>
+        </service>
+        <service id="Sulu\Bundle\ContentBundle\Model\Excerpt\ImageReferenceRepositoryInterface"
+                 alias="Sulu\Bundle\ContentBundle\Repository\ImageReferenceRepository"/>
+
         <!-- factory -->
         <service id="Sulu\Bundle\ContentBundle\Model\Excerpt\Factory\ExcerptViewFactory"/>
         <service id="Sulu\Bundle\ContentBundle\Model\Excerpt\Factory\ExcerptViewFactoryInterface"
@@ -21,6 +45,9 @@
         <service id="Sulu\Bundle\ContentBundle\Model\Excerpt\MessageHandler\ModifyExcerptMessageHandler">
             <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptDimensionRepositoryInterface"/>
             <argument type="service" id="Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierRepositoryInterface"/>
+            <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Excerpt\TagReferenceRepositoryInterface"/>
+            <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Excerpt\IconReferenceRepositoryInterface"/>
+            <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Excerpt\ImageReferenceRepositoryInterface"/>
             <argument type="service" id="sulu.repository.category"/>
             <argument type="service" id="sulu.repository.tag"/>
             <argument type="service" id="sulu.repository.media"/>
@@ -32,6 +59,9 @@
         <service id="Sulu\Bundle\ContentBundle\Model\Excerpt\MessageHandler\PublishExcerptMessageHandler">
             <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptDimensionRepositoryInterface"/>
             <argument type="service" id="Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierRepositoryInterface"/>
+            <argument type="service" id="Sulu\Bundle\ContentBundle\Repository\TagReferenceRepository"/>
+            <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Excerpt\IconReferenceRepositoryInterface"/>
+            <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Excerpt\ImageReferenceRepositoryInterface"/>
             <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Excerpt\Factory\ExcerptViewFactoryInterface"/>
 
             <tag name="messenger.message_handler"/>

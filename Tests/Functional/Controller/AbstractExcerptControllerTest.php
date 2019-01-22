@@ -38,9 +38,19 @@ class AbstractExcerptControllerTest extends SuluTestCase
     private $category1;
 
     /**
+     * @var CategoryInterface
+     */
+    private $category2;
+
+    /**
      * @var TagInterface
      */
     private $tag1;
+
+    /**
+     * @var TagInterface
+     */
+    private $tag2;
 
     /**
      * @var MediaInterface
@@ -51,6 +61,11 @@ class AbstractExcerptControllerTest extends SuluTestCase
      * @var MediaInterface
      */
     private $media2;
+
+    /**
+     * @var MediaInterface
+     */
+    private $media3;
 
     public function setUp()
     {
@@ -63,9 +78,12 @@ class AbstractExcerptControllerTest extends SuluTestCase
         $mediaTpe = $this->createMediaType('media-type-1');
 
         $this->category1 = $this->createCategory();
+        $this->category2 = $this->createCategory();
         $this->tag1 = $this->createTag('tag-1');
+        $this->tag2 = $this->createTag('tag-2');
         $this->media1 = $this->createMedia($mediaTpe, $collection);
         $this->media2 = $this->createMedia($mediaTpe, $collection);
+        $this->media3 = $this->createMedia($mediaTpe, $collection);
     }
 
     public function testGet(): void
@@ -78,9 +96,9 @@ class AbstractExcerptControllerTest extends SuluTestCase
             'excerpt-more',
             'excerpt-description',
             [$this->category1],
-            [$this->tag1],
-            [$this->media1],
-            [$this->media2]
+            [$this->tag2, $this->tag1],
+            [$this->media3, $this->media2],
+            [$this->media1]
         );
 
         $client = $this->createAuthenticatedClient();
@@ -96,12 +114,12 @@ class AbstractExcerptControllerTest extends SuluTestCase
                 'more' => 'excerpt-more',
                 'description' => 'excerpt-description',
                 'categories' => [$this->category1->getId()],
-                'tags' => [$this->tag1->getName()],
+                'tags' => [$this->tag2->getName(), $this->tag1->getName()],
                 'icons' => [
-                    'ids' => [$this->media1->getId()],
+                    'ids' => [$this->media3->getId(), $this->media2->getId()],
                 ],
                 'images' => [
-                    'ids' => [$this->media2->getId()],
+                    'ids' => [$this->media1->getId()],
                 ],
             ],
             $result
@@ -144,10 +162,10 @@ class AbstractExcerptControllerTest extends SuluTestCase
             'excerpt-title',
             'excerpt-more',
             'excerpt-description',
-            [$this->category1],
+            [$this->category1, $this->category2],
             [$this->tag1],
-            [$this->media1],
-            [$this->media2]
+            [$this->media1, $this->media2],
+            [$this->media2, $this->media3]
         );
 
         $handlePublishCallback = $this->prophesize(HandlePublishCallbackInterface::class);
@@ -164,10 +182,10 @@ class AbstractExcerptControllerTest extends SuluTestCase
             'title' => 'new-title',
             'more' => 'new-more',
             'description' => null,
-            'categories' => [],
-            'tags' => [],
+            'categories' => [$this->category2->getId()],
+            'tags' => [$this->tag2->getName()],
             'icons' => [
-                'ids' => [],
+                'ids' => [$this->media2->getId(), $this->media1->getId()],
             ],
             'images' => [
                 'ids' => [],
@@ -184,10 +202,10 @@ class AbstractExcerptControllerTest extends SuluTestCase
                 'title' => 'new-title',
                 'more' => 'new-more',
                 'description' => null,
-                'categories' => [],
-                'tags' => [],
+                'categories' => [$this->category2->getId()],
+                'tags' => [$this->tag2->getName()],
                 'icons' => [
-                    'ids' => [],
+                    'ids' => [$this->media2->getId(), $this->media1->getId()],
                 ],
                 'images' => [
                     'ids' => [],
@@ -213,13 +231,13 @@ class AbstractExcerptControllerTest extends SuluTestCase
             'title' => 'new-title',
             'more' => 'new-more',
             'description' => null,
-            'categories' => [],
+            'categories' => [$this->category1->getId(), $this->category2->getId()],
             'tags' => [$this->tag1->getName()],
             'icons' => [
                 'ids' => [],
             ],
             'images' => [
-                'ids' => [$this->media1->getId()],
+                'ids' => [$this->media2->getId(), $this->media1->getId()],
             ],
         ];
         $client->request('PUT', '/api/test-resource-excerpts/absent-resource?locale=en', $payload);
@@ -233,13 +251,13 @@ class AbstractExcerptControllerTest extends SuluTestCase
                 'title' => 'new-title',
                 'more' => 'new-more',
                 'description' => null,
-                'categories' => [],
+                'categories' => [$this->category1->getId(), $this->category2->getId()],
                 'tags' => [$this->tag1->getName()],
                 'icons' => [
                     'ids' => [],
                 ],
                 'images' => [
-                    'ids' => [$this->media1->getId()],
+                    'ids' => [$this->media2->getId(), $this->media1->getId()],
                 ],
             ],
             $result
@@ -265,7 +283,7 @@ class AbstractExcerptControllerTest extends SuluTestCase
             'more' => 'new-more',
             'description' => null,
             'categories' => [$this->category1->getId()],
-            'tags' => [$this->tag1->getName()],
+            'tags' => [$this->tag2->getName(), $this->tag1->getName()],
             'icons' => [
                 'ids' => [$this->media1->getId()],
             ],
@@ -285,7 +303,7 @@ class AbstractExcerptControllerTest extends SuluTestCase
                 'more' => 'new-more',
                 'description' => null,
                 'categories' => [$this->category1->getId()],
-                'tags' => [$this->tag1->getName()],
+                'tags' => [$this->tag2->getName(), $this->tag1->getName()],
                 'icons' => [
                     'ids' => [$this->media1->getId()],
                 ],

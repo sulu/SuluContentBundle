@@ -16,46 +16,15 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\Model\Excerpt;
 use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\CategoryBundle\Entity\CategoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptView;
+use Sulu\Bundle\ContentBundle\Model\Excerpt\IconReferenceInterface;
+use Sulu\Bundle\ContentBundle\Model\Excerpt\ImageReferenceInterface;
+use Sulu\Bundle\ContentBundle\Model\Excerpt\TagReferenceInterface;
 use Sulu\Bundle\MediaBundle\Entity\MediaInterface;
 use Sulu\Bundle\TagBundle\Tag\TagInterface;
 
 class ExcerptViewTest extends TestCase
 {
     const RESOURCE_KEY = 'test_resource_excerpts';
-
-    private $category1;
-    private $category2;
-    private $tag1;
-    private $tag2;
-    private $media1;
-    private $media2;
-    private $media3;
-
-    public function setUp()
-    {
-        parent::setUp();
-
-        $this->category1 = $this->prophesize(CategoryInterface::class);
-        $this->category1->getId()->willReturn(1);
-
-        $this->category2 = $this->prophesize(CategoryInterface::class);
-        $this->category2->getId()->willReturn(2);
-
-        $this->tag1 = $this->prophesize(TagInterface::class);
-        $this->tag1->getName()->willReturn('tag-1');
-
-        $this->tag2 = $this->prophesize(TagInterface::class);
-        $this->tag2->getName()->willReturn('tag-2');
-
-        $this->media1 = $this->prophesize(MediaInterface::class);
-        $this->media1->getId()->willReturn(1);
-
-        $this->media2 = $this->prophesize(MediaInterface::class);
-        $this->media2->getId()->willReturn(2);
-
-        $this->media3 = $this->prophesize(MediaInterface::class);
-        $this->media3->getId()->willReturn(3);
-    }
 
     public function testGetResourceKey(): void
     {
@@ -65,11 +34,7 @@ class ExcerptViewTest extends TestCase
             'en',
             'title-1',
             'more-1',
-            null,
-            [$this->category1->reveal(), $this->category2->reveal()],
-            [$this->tag1->reveal(), $this->tag2->reveal()],
-            [$this->media1->reveal(), $this->media2->reveal()],
-            [$this->media2->reveal(), $this->media3->reveal()]
+            null
         );
 
         $this->assertEquals(self::RESOURCE_KEY, $excerptView->getResourceKey());
@@ -83,11 +48,7 @@ class ExcerptViewTest extends TestCase
             'en',
             'title-1',
             'more-1',
-            null,
-            [$this->category1->reveal(), $this->category2->reveal()],
-            [$this->tag1->reveal(), $this->tag2->reveal()],
-            [$this->media1->reveal(), $this->media2->reveal()],
-            [$this->media2->reveal(), $this->media3->reveal()]
+            null
         );
 
         $this->assertEquals('resource-1', $excerptView->getResourceId());
@@ -101,11 +62,7 @@ class ExcerptViewTest extends TestCase
             'en',
             'title-1',
             'more-1',
-            null,
-            [$this->category1->reveal(), $this->category2->reveal()],
-            [$this->tag1->reveal(), $this->tag2->reveal()],
-            [$this->media1->reveal(), $this->media2->reveal()],
-            [$this->media2->reveal(), $this->media3->reveal()]
+            null
         );
 
         $this->assertEquals('en', $excerptView->getLocale());
@@ -119,11 +76,7 @@ class ExcerptViewTest extends TestCase
             'en',
             'title-1',
             'more-1',
-            null,
-            [$this->category1->reveal(), $this->category2->reveal()],
-            [$this->tag1->reveal(), $this->tag2->reveal()],
-            [$this->media1->reveal(), $this->media2->reveal()],
-            [$this->media2->reveal(), $this->media3->reveal()]
+            null
         );
 
         $this->assertEquals('title-1', $excerptView->getTitle());
@@ -137,11 +90,7 @@ class ExcerptViewTest extends TestCase
             'en',
             'title-1',
             'more-1',
-            null,
-            [$this->category1->reveal(), $this->category2->reveal()],
-            [$this->tag1->reveal(), $this->tag2->reveal()],
-            [$this->media1->reveal(), $this->media2->reveal()],
-            [$this->media2->reveal(), $this->media3->reveal()]
+            null
         );
 
         $this->assertEquals('more-1', $excerptView->getMore());
@@ -155,11 +104,7 @@ class ExcerptViewTest extends TestCase
             'en',
             'title-1',
             'more-1',
-            null,
-            [$this->category1->reveal(), $this->category2->reveal()],
-            [$this->tag1->reveal(), $this->tag2->reveal()],
-            [$this->media1->reveal(), $this->media2->reveal()],
-            [$this->media2->reveal(), $this->media3->reveal()]
+            null
         );
 
         $this->assertNull($excerptView->getDescription());
@@ -167,6 +112,12 @@ class ExcerptViewTest extends TestCase
 
     public function testGetCategoryIds(): void
     {
+        $category1 = $this->prophesize(CategoryInterface::class);
+        $category1->getId()->shouldbeCalled()->willReturn(1);
+
+        $category2 = $this->prophesize(CategoryInterface::class);
+        $category2->getId()->shouldbeCalled()->willReturn(2);
+
         $excerptView = new ExcerptView(
             self::RESOURCE_KEY,
             'resource-1',
@@ -174,10 +125,7 @@ class ExcerptViewTest extends TestCase
             'title-1',
             'more-1',
             null,
-            [$this->category1->reveal(), $this->category2->reveal()],
-            [$this->tag1->reveal(), $this->tag2->reveal()],
-            [$this->media1->reveal(), $this->media2->reveal()],
-            [$this->media2->reveal(), $this->media3->reveal()]
+            [$category1->reveal(), $category2->reveal()]
         );
 
         $this->assertEquals([1, 2], $excerptView->getCategoryIds());
@@ -185,6 +133,18 @@ class ExcerptViewTest extends TestCase
 
     public function testGetTagNames(): void
     {
+        $tag1 = $this->prophesize(TagInterface::class);
+        $tag1->getName()->shouldBeCalled()->willReturn('tag-1');
+        $tagReference1 = $this->prophesize(TagReferenceInterface::class);
+        $tagReference1->getOrder()->shouldBeCalled()->willReturn(3);
+        $tagReference1->getTag()->shouldBeCalled()->willReturn($tag1->reveal());
+
+        $tag2 = $this->prophesize(TagInterface::class);
+        $tag2->getName()->shouldBeCalled()->willReturn('tag-2');
+        $tagReference2 = $this->prophesize(TagReferenceInterface::class);
+        $tagReference2->getOrder()->shouldBeCalled()->willReturn(1);
+        $tagReference2->getTag()->shouldBeCalled()->willReturn($tag2->reveal());
+
         $excerptView = new ExcerptView(
             self::RESOURCE_KEY,
             'resource-1',
@@ -192,17 +152,33 @@ class ExcerptViewTest extends TestCase
             'title-1',
             'more-1',
             null,
-            [$this->category1->reveal(), $this->category2->reveal()],
-            [$this->tag1->reveal(), $this->tag2->reveal()],
-            [$this->media1->reveal(), $this->media2->reveal()],
-            [$this->media2->reveal(), $this->media3->reveal()]
+            [],
+            [$tagReference1->reveal(), $tagReference2->reveal()]
         );
 
-        $this->assertEquals(['tag-1', 'tag-2'], $excerptView->getTagNames());
+        $this->assertEquals(['tag-2', 'tag-1'], $excerptView->getTagNames());
     }
 
     public function testGetIconsData(): void
     {
+        $media1 = $this->prophesize(MediaInterface::class);
+        $media1->getId()->shouldBeCalled()->willReturn(1);
+        $iconReference1 = $this->prophesize(IconReferenceInterface::class);
+        $iconReference1->getOrder()->shouldBeCalled()->willReturn(3);
+        $iconReference1->getMedia()->shouldBeCalled()->willReturn($media1->reveal());
+
+        $media2 = $this->prophesize(MediaInterface::class);
+        $media2->getId()->shouldBeCalled()->willReturn(2);
+        $iconReference2 = $this->prophesize(IconReferenceInterface::class);
+        $iconReference2->getOrder()->shouldBeCalled()->willReturn(1);
+        $iconReference2->getMedia()->shouldBeCalled()->willReturn($media2->reveal());
+
+        $media3 = $this->prophesize(MediaInterface::class);
+        $media3->getId()->shouldBeCalled()->willReturn(3);
+        $iconReference3 = $this->prophesize(IconReferenceInterface::class);
+        $iconReference3->getOrder()->shouldBeCalled()->willReturn(2);
+        $iconReference3->getMedia()->shouldBeCalled()->willReturn($media3->reveal());
+
         $excerptView = new ExcerptView(
             self::RESOURCE_KEY,
             'resource-1',
@@ -210,17 +186,28 @@ class ExcerptViewTest extends TestCase
             'title-1',
             'more-1',
             null,
-            [$this->category1->reveal(), $this->category2->reveal()],
-            [$this->tag1->reveal(), $this->tag2->reveal()],
-            [$this->media1->reveal(), $this->media2->reveal()],
-            [$this->media2->reveal(), $this->media3->reveal()]
+            [],
+            [],
+            [$iconReference2->reveal(), $iconReference1->reveal(), $iconReference3->reveal()]
         );
 
-        $this->assertEquals(['ids' => [1, 2]], $excerptView->getIconsData());
+        $this->assertEquals(['ids' => [2, 3, 1]], $excerptView->getIconsData());
     }
 
     public function testGetImagesData(): void
     {
+        $media1 = $this->prophesize(MediaInterface::class);
+        $media1->getId()->shouldBeCalled()->willReturn(1);
+        $imageReference1 = $this->prophesize(ImageReferenceInterface::class);
+        $imageReference1->getOrder()->shouldBeCalled()->willReturn(3);
+        $imageReference1->getMedia()->shouldBeCalled()->willReturn($media1->reveal());
+
+        $media2 = $this->prophesize(MediaInterface::class);
+        $media2->getId()->shouldBeCalled()->willReturn(2);
+        $imageReference2 = $this->prophesize(ImageReferenceInterface::class);
+        $imageReference2->getOrder()->shouldBeCalled()->willReturn(1);
+        $imageReference2->getMedia()->shouldBeCalled()->willReturn($media2->reveal());
+
         $excerptView = new ExcerptView(
             self::RESOURCE_KEY,
             'resource-1',
@@ -228,12 +215,12 @@ class ExcerptViewTest extends TestCase
             'title-1',
             'more-1',
             null,
-            [$this->category1->reveal(), $this->category2->reveal()],
-            [$this->tag1->reveal(), $this->tag2->reveal()],
-            [$this->media1->reveal(), $this->media2->reveal()],
-            [$this->media2->reveal(), $this->media3->reveal()]
+            [],
+            [],
+            [],
+            [$imageReference1->reveal(), $imageReference2->reveal()]
         );
 
-        $this->assertEquals(['ids' => [2, 3]], $excerptView->getImagesData());
+        $this->assertEquals(['ids' => [2, 1]], $excerptView->getImagesData());
     }
 }

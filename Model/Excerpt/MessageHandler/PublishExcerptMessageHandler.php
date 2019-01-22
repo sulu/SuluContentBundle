@@ -19,7 +19,10 @@ use Sulu\Bundle\ContentBundle\Model\Excerpt\Exception\ExcerptNotFoundException;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptDimensionInterface;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptDimensionRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\Factory\ExcerptViewFactoryInterface;
+use Sulu\Bundle\ContentBundle\Model\Excerpt\IconReferenceRepositoryInterface;
+use Sulu\Bundle\ContentBundle\Model\Excerpt\ImageReferenceRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\Message\PublishExcerptMessage;
+use Sulu\Bundle\ContentBundle\Model\Excerpt\TagReferenceRepositoryInterface;
 
 class PublishExcerptMessageHandler
 {
@@ -34,6 +37,21 @@ class PublishExcerptMessageHandler
     private $dimensionIdentifierRepository;
 
     /**
+     * @var TagReferenceRepositoryInterface
+     */
+    private $tagReferenceRepository;
+
+    /**
+     * @var IconReferenceRepositoryInterface
+     */
+    private $iconReferenceRepository;
+
+    /**
+     * @var ImageReferenceRepositoryInterface
+     */
+    private $imageReferenceRepository;
+
+    /**
      * @var ExcerptViewFactoryInterface
      */
     private $excerptViewFactory;
@@ -41,10 +59,16 @@ class PublishExcerptMessageHandler
     public function __construct(
         ExcerptDimensionRepositoryInterface $excerptDimensionRepository,
         DimensionIdentifierRepositoryInterface $dimensionIdentifierRepository,
+        TagReferenceRepositoryInterface $tagReferenceRepository,
+        IconReferenceRepositoryInterface $iconReferenceRepository,
+        ImageReferenceRepositoryInterface $imageReferenceRepository,
         ExcerptViewFactoryInterface $excerptViewFactory
     ) {
         $this->excerptDimensionRepository = $excerptDimensionRepository;
         $this->dimensionIdentifierRepository = $dimensionIdentifierRepository;
+        $this->tagReferenceRepository = $tagReferenceRepository;
+        $this->iconReferenceRepository = $iconReferenceRepository;
+        $this->imageReferenceRepository = $imageReferenceRepository;
         $this->excerptViewFactory = $excerptViewFactory;
     }
 
@@ -91,6 +115,10 @@ class PublishExcerptMessageHandler
         $liveExcerpt = $this->excerptDimensionRepository->findOrCreateDimension($resourceKey, $resourceId, $liveDimensionIdentifier);
 
         $liveExcerpt->copyAttributesFrom($draftExcerpt);
+        $this->copyCategories($draftExcerpt, $liveExcerpt);
+        $this->copyTags($draftExcerpt, $liveExcerpt);
+        $this->copyIcons($draftExcerpt, $liveExcerpt);
+        $this->copyImages($draftExcerpt, $liveExcerpt);
 
         return $liveExcerpt;
     }
@@ -102,5 +130,55 @@ class PublishExcerptMessageHandler
         $attributes[DimensionIdentifierInterface::ATTRIBUTE_KEY_LOCALE] = $locale;
 
         return $this->dimensionIdentifierRepository->findOrCreateByAttributes($attributes);
+    }
+
+    private function copyCategories(ExcerptDimensionInterface $draftExcerpt, ExcerptDimensionInterface $liveExcerpt): void
+    {
+        foreach ($liveExcerpt->getCategories() as $oldLiveCategory) {
+            $liveExcerpt->removeCategory($oldLiveCategory);
+        }
+
+        foreach ($draftExcerpt->getCategories() as $draftCategory) {
+            $liveExcerpt->addCategory($draftCategory);
+        }
+    }
+
+    private function copyTags(ExcerptDimensionInterface $draftExcerpt, ExcerptDimensionInterface $liveExcerpt): void
+    {
+        foreach ($liveExcerpt->getTags() as $oldLiveTag) {
+            $liveExcerpt->removeTag($oldLiveTag);
+            $this->tagReferenceRepository->remove($oldLiveTag);
+        }
+
+        foreach ($draftExcerpt->getTags() as $draftTag) {
+            $newLiveTag = $this->tagReferenceRepository->create($liveExcerpt, $draftTag->getTag(), $draftTag->getOrder());
+            $liveExcerpt->addTag($newLiveTag);
+        }
+    }
+
+    private function copyIcons(ExcerptDimensionInterface $draftExcerpt, ExcerptDimensionInterface $liveExcerpt): void
+    {
+        foreach ($liveExcerpt->getIcons() as $oldLiveIcon) {
+            $liveExcerpt->removeIcon($oldLiveIcon);
+            $this->iconReferenceRepository->remove($oldLiveIcon);
+        }
+
+        foreach ($draftExcerpt->getIcons() as $draftIcon) {
+            $newLiveIcon = $this->iconReferenceRepository->create($liveExcerpt, $draftIcon->getMedia(), $draftIcon->getOrder());
+            $liveExcerpt->addIcon($newLiveIcon);
+        }
+    }
+
+    private function copyImages(ExcerptDimensionInterface $draftExcerpt, ExcerptDimensionInterface $liveExcerpt): void
+    {
+        foreach ($liveExcerpt->getImages() as $oldLiveImage) {
+            $liveExcerpt->removeImage($oldLiveImage);
+            $this->imageReferenceRepository->remove($oldLiveImage);
+        }
+
+        foreach ($draftExcerpt->getImages() as $draftImage) {
+            $newLiveImage = $this->imageReferenceRepository->create($liveExcerpt, $draftImage->getMedia(), $draftImage->getOrder());
+            $liveExcerpt->addImage($newLiveImage);
+        }
     }
 }

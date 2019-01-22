@@ -15,8 +15,6 @@ namespace Sulu\Bundle\ContentBundle\Model\Excerpt;
 
 use Sulu\Bundle\CategoryBundle\Entity\CategoryInterface;
 use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierInterface;
-use Sulu\Bundle\MediaBundle\Entity\MediaInterface;
-use Sulu\Bundle\TagBundle\Tag\TagInterface;
 
 interface ExcerptDimensionInterface
 {
@@ -43,36 +41,44 @@ interface ExcerptDimensionInterface
      */
     public function getCategories(): array;
 
-    public function clearCategories(): self;
+    public function getCategory(int $categoryId): ?CategoryInterface;
 
     public function addCategory(CategoryInterface $category): self;
 
+    public function removeCategory(CategoryInterface $category): self;
+
     /**
-     * @return TagInterface[]
+     * @return TagReferenceInterface[]
      */
     public function getTags(): array;
 
-    public function clearTags(): self;
+    public function getTag(string $tagName): ?TagReferenceInterface;
 
-    public function addTag(TagInterface $tag): self;
+    public function addTag(TagReferenceInterface $tag): self;
+
+    public function removeTag(TagReferenceInterface $tag): self;
 
     /**
-     * @return MediaInterface[]
+     * @return IconReferenceInterface[]
      */
     public function getIcons(): array;
 
-    public function clearIcons(): self;
+    public function getIcon(int $mediaId): ?IconReferenceInterface;
 
-    public function addIcon(MediaInterface $icon): self;
+    public function addIcon(IconReferenceInterface $icon): self;
+
+    public function removeIcon(IconReferenceInterface $icon): self;
 
     /**
-     * @return MediaInterface[]
+     * @return ImageReferenceInterface[]
      */
     public function getImages(): array;
 
-    public function clearImages(): self;
+    public function getImage(int $mediaId): ?ImageReferenceInterface;
 
-    public function addImage(MediaInterface $image): self;
+    public function addImage(ImageReferenceInterface $image): self;
+
+    public function removeImage(ImageReferenceInterface $image): self;
 
     public function copyAttributesFrom(ExcerptDimensionInterface $excerptDimension): self;
 }
