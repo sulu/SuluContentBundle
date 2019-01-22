@@ -75,7 +75,7 @@ class PublishExcerptMessage
         return $this->excerpt;
     }
 
-    public function setExcerpt(ExcerptViewInterface $excerpt): PublishExcerptMessage
+    public function setExcerpt(ExcerptViewInterface $excerpt): self
     {
         $this->excerpt = $excerpt;
 

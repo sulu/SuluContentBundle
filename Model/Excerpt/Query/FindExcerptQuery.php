@@ -69,7 +69,7 @@ class FindExcerptQuery
         return $this->excerpt;
     }
 
-    public function setExcerpt(ExcerptViewInterface $excerpt): FindExcerptQuery
+    public function setExcerpt(ExcerptViewInterface $excerpt): self
     {
         $this->excerpt = $excerpt;
 

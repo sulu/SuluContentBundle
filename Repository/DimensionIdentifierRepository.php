@@ -65,7 +65,7 @@ class DimensionIdentifierRepository extends ServiceEntityRepository implements D
     protected function findOneByAttributes(array $attributes): ?DimensionIdentifierInterface
     {
         $queryBuilder = $this->createQueryBuilder('dimension_identifier')
-            ->where('dimension_identifier.attributeCount = ' . count($attributes));
+            ->where('dimension_identifier.attributeCount = ' . \count($attributes));
 
         foreach ($attributes as $key => $value) {
             $queryBuilder->join('dimension_identifier.attributes', $key)

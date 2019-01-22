@@ -69,7 +69,7 @@ class FindContentQuery
         return $this->content;
     }
 
-    public function setContent(ContentViewInterface $content): FindContentQuery
+    public function setContent(ContentViewInterface $content): self
     {
         $this->content = $content;
 

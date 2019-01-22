@@ -111,7 +111,7 @@ class ModifySeoMessage
         return $this->seo;
     }
 
-    public function setSeo(SeoViewInterface $seo): ModifySeoMessage
+    public function setSeo(SeoViewInterface $seo): self
     {
         $this->seo = $seo;
 

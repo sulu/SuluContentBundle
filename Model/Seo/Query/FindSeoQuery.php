@@ -69,7 +69,7 @@ class FindSeoQuery
         return $this->seo;
     }
 
-    public function setSeo(SeoViewInterface $seo): FindSeoQuery
+    public function setSeo(SeoViewInterface $seo): self
     {
         $this->seo = $seo;
 

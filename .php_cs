@@ -13,6 +13,7 @@ return PhpCsFixer\Config::create()
     ->setRiskyAllowed(true)
     ->setRules([
         '@Symfony' => true,
+        '@Symfony:risky' => true,
         'ordered_imports' => true,
         'concat_space' => ['spacing' => 'one'],
         'array_syntax' => ['syntax' => 'short'],
