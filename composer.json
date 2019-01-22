@@ -51,7 +51,7 @@
         }
     },
     "scripts": {
-        "initialize": [
+        "bootstrap-test-environment": [
             "@php Tests/Application/bin/console doctrine:database:create --if-not-exists -e test",
             "@php Tests/Application/bin/console doctrine:schema:update --force -e test"
         ],
