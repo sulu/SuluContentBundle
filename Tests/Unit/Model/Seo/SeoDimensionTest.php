@@ -26,7 +26,7 @@ class SeoDimensionTest extends TestCase
         $dimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
         $seoDimension = new SeoDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'resource-1');
 
-        $this->assertEquals($dimensionIdentifier->reveal(), $seoDimension->getDimensionIdentifier());
+        $this->assertSame($dimensionIdentifier->reveal(), $seoDimension->getDimensionIdentifier());
     }
 
     public function testGetResourceKey(): void
@@ -34,7 +34,7 @@ class SeoDimensionTest extends TestCase
         $dimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
         $seoDimension = new SeoDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'resource-1');
 
-        $this->assertEquals(self::RESOURCE_KEY, $seoDimension->getResourceKey());
+        $this->assertSame(self::RESOURCE_KEY, $seoDimension->getResourceKey());
     }
 
     public function testGetResourceId(): void
@@ -42,7 +42,7 @@ class SeoDimensionTest extends TestCase
         $dimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
         $seoDimension = new SeoDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'resource-1');
 
-        $this->assertEquals('resource-1', $seoDimension->getResourceId());
+        $this->assertSame('resource-1', $seoDimension->getResourceId());
     }
 
     public function testGetTitle(): void
@@ -58,8 +58,8 @@ class SeoDimensionTest extends TestCase
         $dimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
         $seoDimension = new SeoDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'resource-1');
 
-        $this->assertEquals($seoDimension, $seoDimension->setTitle('title-1'));
-        $this->assertEquals('title-1', $seoDimension->getTitle());
+        $this->assertSame($seoDimension, $seoDimension->setTitle('title-1'));
+        $this->assertSame('title-1', $seoDimension->getTitle());
     }
 
     public function testGetDescription(): void
@@ -75,8 +75,8 @@ class SeoDimensionTest extends TestCase
         $dimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
         $seoDimension = new SeoDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'resource-1');
 
-        $this->assertEquals($seoDimension, $seoDimension->setDescription('description-1'));
-        $this->assertEquals('description-1', $seoDimension->getDescription());
+        $this->assertSame($seoDimension, $seoDimension->setDescription('description-1'));
+        $this->assertSame('description-1', $seoDimension->getDescription());
     }
 
     public function testGetKeywords(): void
@@ -92,8 +92,8 @@ class SeoDimensionTest extends TestCase
         $dimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
         $seoDimension = new SeoDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'resource-1');
 
-        $this->assertEquals($seoDimension, $seoDimension->setKeywords('keywords-1'));
-        $this->assertEquals('keywords-1', $seoDimension->getKeywords());
+        $this->assertSame($seoDimension, $seoDimension->setKeywords('keywords-1'));
+        $this->assertSame('keywords-1', $seoDimension->getKeywords());
     }
 
     public function testGetCanonicalUrl(): void
@@ -109,8 +109,8 @@ class SeoDimensionTest extends TestCase
         $dimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
         $seoDimension = new SeoDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'resource-1');
 
-        $this->assertEquals($seoDimension, $seoDimension->setCanonicalUrl('url-1'));
-        $this->assertEquals('url-1', $seoDimension->getCanonicalUrl());
+        $this->assertSame($seoDimension, $seoDimension->setCanonicalUrl('url-1'));
+        $this->assertSame('url-1', $seoDimension->getCanonicalUrl());
     }
 
     public function testGetNoIndex(): void
@@ -126,7 +126,7 @@ class SeoDimensionTest extends TestCase
         $dimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
         $seoDimension = new SeoDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'resource-1');
 
-        $this->assertEquals($seoDimension, $seoDimension->setNoIndex(false));
+        $this->assertSame($seoDimension, $seoDimension->setNoIndex(false));
         $this->assertFalse($seoDimension->getNoIndex());
     }
 
@@ -143,7 +143,7 @@ class SeoDimensionTest extends TestCase
         $dimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
         $seoDimension = new SeoDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'resource-1');
 
-        $this->assertEquals($seoDimension, $seoDimension->setNoFollow(true));
+        $this->assertSame($seoDimension, $seoDimension->setNoFollow(true));
         $this->assertTrue($seoDimension->getNoFollow());
     }
 
@@ -160,7 +160,7 @@ class SeoDimensionTest extends TestCase
         $dimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
         $seoDimension = new SeoDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'resource-1');
 
-        $this->assertEquals($seoDimension, $seoDimension->setHideInSitemap(false));
+        $this->assertSame($seoDimension, $seoDimension->setHideInSitemap(false));
         $this->assertFalse($seoDimension->getHideInSitemap());
     }
 
@@ -183,15 +183,15 @@ class SeoDimensionTest extends TestCase
             null
         );
 
-        $this->assertEquals($seoDimension, $seoDimension->copyAttributesFrom($otherSeo));
+        $this->assertSame($seoDimension, $seoDimension->copyAttributesFrom($otherSeo));
 
-        $this->assertEquals($dimensionIdentifier->reveal(), $seoDimension->getDimensionIdentifier());
-        $this->assertEquals(self::RESOURCE_KEY, $seoDimension->getResourceKey());
-        $this->assertEquals('resource-1', $seoDimension->getResourceId());
-        $this->assertEquals('other-title', $seoDimension->getTitle());
-        $this->assertEquals('other-description', $seoDimension->getDescription());
+        $this->assertSame($dimensionIdentifier->reveal(), $seoDimension->getDimensionIdentifier());
+        $this->assertSame(self::RESOURCE_KEY, $seoDimension->getResourceKey());
+        $this->assertSame('resource-1', $seoDimension->getResourceId());
+        $this->assertSame('other-title', $seoDimension->getTitle());
+        $this->assertSame('other-description', $seoDimension->getDescription());
         $this->assertNull($seoDimension->getKeywords());
-        $this->assertEquals('other-url', $seoDimension->getCanonicalUrl());
+        $this->assertSame('other-url', $seoDimension->getCanonicalUrl());
         $this->assertFalse($seoDimension->getNoIndex());
         $this->assertTrue($seoDimension->getNoFollow());
         $this->assertNull($seoDimension->getHideInSitemap());

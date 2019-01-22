@@ -17,12 +17,22 @@ return PhpCsFixer\Config::create()
         'ordered_imports' => true,
         'concat_space' => ['spacing' => 'one'],
         'array_syntax' => ['syntax' => 'short'],
-        'php_unit_construct' => true,
         'phpdoc_align' => false,
         'class_definition' => [
             'multiLineExtendsEachSingleLine' => true,
         ],
+        'linebreak_after_opening_tag' => true,
         'declare_strict_types' => true,
+        'mb_str_functions' => true,
+        'no_php4_constructor' => true,
+        'no_superfluous_phpdoc_tags' => true,
+        'no_unreachable_default_argument_value' => true,
+        'no_useless_else' => true,
+        'no_useless_return' => true,
+        'php_unit_strict' => true,
+        'phpdoc_order' => true,
+        'strict_comparison' => true,
+        'strict_param' => true,
         'header_comment' => ['header' => $header],
     ])
     ->setFinder(

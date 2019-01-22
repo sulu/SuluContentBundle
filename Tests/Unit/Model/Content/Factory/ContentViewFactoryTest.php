@@ -37,11 +37,11 @@ class ContentViewFactoryTest extends TestCase
         $result = $factory->create([$contentDimension1->reveal(), $contentDimension2->reveal()], 'en');
 
         $this->assertNotNull($result);
-        $this->assertEquals(self::RESOURCE_KEY, $result->getResourceKey());
-        $this->assertEquals('resource-1', $result->getResourceId());
-        $this->assertEquals('default', $result->getType());
-        $this->assertEquals(['title' => 'Sulu', 'article' => '<p>Sulu is awesome</p>'], $result->getData());
-        $this->assertEquals('en', $result->getLocale());
+        $this->assertSame(self::RESOURCE_KEY, $result->getResourceKey());
+        $this->assertSame('resource-1', $result->getResourceId());
+        $this->assertSame('default', $result->getType());
+        $this->assertSame(['title' => 'Sulu', 'article' => '<p>Sulu is awesome</p>'], $result->getData());
+        $this->assertSame('en', $result->getLocale());
     }
 
     public function testCreateNull(): void

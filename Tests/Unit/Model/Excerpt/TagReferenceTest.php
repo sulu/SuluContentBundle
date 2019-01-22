@@ -26,7 +26,7 @@ class TagReferenceTest extends TestCase
         $tag = $this->prophesize(TagInterface::class);
         $tagReference = new TagReference($excerptDimension->reveal(), $tag->reveal(), 2);
 
-        $this->assertEquals($excerptDimension->reveal(), $tagReference->getExcerptDimension());
+        $this->assertSame($excerptDimension->reveal(), $tagReference->getExcerptDimension());
     }
 
     public function testGetTag(): void
@@ -35,7 +35,7 @@ class TagReferenceTest extends TestCase
         $tag = $this->prophesize(TagInterface::class);
         $tagReference = new TagReference($excerptDimension->reveal(), $tag->reveal(), 2);
 
-        $this->assertEquals($tag->reveal(), $tagReference->getTag());
+        $this->assertSame($tag->reveal(), $tagReference->getTag());
     }
 
     public function testGetOrder(): void
@@ -44,7 +44,7 @@ class TagReferenceTest extends TestCase
         $tag = $this->prophesize(TagInterface::class);
         $tagReference = new TagReference($excerptDimension->reveal(), $tag->reveal(), 2);
 
-        $this->assertEquals(2, $tagReference->getOrder());
+        $this->assertSame(2, $tagReference->getOrder());
     }
 
     public function testSetOrder(): void
@@ -53,7 +53,7 @@ class TagReferenceTest extends TestCase
         $tag = $this->prophesize(TagInterface::class);
         $tagReference = new TagReference($excerptDimension->reveal(), $tag->reveal(), 2);
 
-        $this->assertEquals($tagReference, $tagReference->setOrder(5));
-        $this->assertEquals(5, $tagReference->getOrder());
+        $this->assertSame($tagReference, $tagReference->setOrder(5));
+        $this->assertSame(5, $tagReference->getOrder());
     }
 }

@@ -26,21 +26,21 @@ class FindExcerptQueryTest extends TestCase
     {
         $query = new FindExcerptQuery(self::RESOURCE_KEY, 'resource-1', 'en');
 
-        $this->assertEquals(self::RESOURCE_KEY, $query->getResourceKey());
+        $this->assertSame(self::RESOURCE_KEY, $query->getResourceKey());
     }
 
     public function testGetResourceId(): void
     {
         $query = new FindExcerptQuery(self::RESOURCE_KEY, 'resource-1', 'en');
 
-        $this->assertEquals('resource-1', $query->getResourceId());
+        $this->assertSame('resource-1', $query->getResourceId());
     }
 
     public function testGetLocale(): void
     {
         $query = new FindExcerptQuery(self::RESOURCE_KEY, 'resource-1', 'en');
 
-        $this->assertEquals('en', $query->getLocale());
+        $this->assertSame('en', $query->getLocale());
     }
 
     public function testGetExcerpt(): void
@@ -58,7 +58,7 @@ class FindExcerptQueryTest extends TestCase
 
         $excerpt = $this->prophesize(ExcerptViewInterface::class);
 
-        $this->assertEquals($query, $query->setExcerpt($excerpt->reveal()));
-        $this->assertEquals($excerpt->reveal(), $query->getExcerpt());
+        $this->assertSame($query, $query->setExcerpt($excerpt->reveal()));
+        $this->assertSame($excerpt->reveal(), $query->getExcerpt());
     }
 }

@@ -26,21 +26,21 @@ class FindContentQueryTest extends TestCase
     {
         $query = new FindContentQuery(self::RESOURCE_KEY, 'resource-1', 'en');
 
-        $this->assertEquals(self::RESOURCE_KEY, $query->getResourceKey());
+        $this->assertSame(self::RESOURCE_KEY, $query->getResourceKey());
     }
 
     public function testGetResourceId(): void
     {
         $query = new FindContentQuery(self::RESOURCE_KEY, 'resource-1', 'en');
 
-        $this->assertEquals('resource-1', $query->getResourceId());
+        $this->assertSame('resource-1', $query->getResourceId());
     }
 
     public function testGetLocale(): void
     {
         $query = new FindContentQuery(self::RESOURCE_KEY, 'resource-1', 'en');
 
-        $this->assertEquals('en', $query->getLocale());
+        $this->assertSame('en', $query->getLocale());
     }
 
     public function testGetContent(): void
@@ -58,7 +58,7 @@ class FindContentQueryTest extends TestCase
 
         $content = $this->prophesize(ContentViewInterface::class);
 
-        $this->assertEquals($query, $query->setContent($content->reveal()));
-        $this->assertEquals($content->reveal(), $query->getContent());
+        $this->assertSame($query, $query->setContent($content->reveal()));
+        $this->assertSame($content->reveal(), $query->getContent());
     }
 }

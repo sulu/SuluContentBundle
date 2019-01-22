@@ -25,21 +25,21 @@ class PublishContentMessageTest extends TestCase
     {
         $message = new PublishContentMessage(self::RESOURCE_KEY, 'resource-1', 'en');
 
-        $this->assertEquals(self::RESOURCE_KEY, $message->getResourceKey());
+        $this->assertSame(self::RESOURCE_KEY, $message->getResourceKey());
     }
 
     public function testGetResourceId(): void
     {
         $message = new PublishContentMessage(self::RESOURCE_KEY, 'resource-1', 'en');
 
-        $this->assertEquals('resource-1', $message->getResourceId());
+        $this->assertSame('resource-1', $message->getResourceId());
     }
 
     public function testGetLocale(): void
     {
         $message = new PublishContentMessage(self::RESOURCE_KEY, 'resource-1', 'en');
 
-        $this->assertEquals('en', $message->getLocale());
+        $this->assertSame('en', $message->getLocale());
     }
 
     public function testGetContent(): void
@@ -55,7 +55,7 @@ class PublishContentMessageTest extends TestCase
 
         $content = $this->prophesize(ContentViewInterface::class);
 
-        $this->assertEquals($message, $message->setContent($content->reveal()));
-        $this->assertEquals($content->reveal(), $message->getContent());
+        $this->assertSame($message, $message->setContent($content->reveal()));
+        $this->assertSame($content->reveal(), $message->getContent());
     }
 }

@@ -39,7 +39,7 @@ class ModifySeoMessageTest extends TestCase
             ]
         );
 
-        $this->assertEquals(self::RESOURCE_KEY, $message->getResourceKey());
+        $this->assertSame(self::RESOURCE_KEY, $message->getResourceKey());
     }
 
     public function testGetResourceId(): void
@@ -59,7 +59,7 @@ class ModifySeoMessageTest extends TestCase
             ]
         );
 
-        $this->assertEquals('resource-1', $message->getResourceId());
+        $this->assertSame('resource-1', $message->getResourceId());
     }
 
     public function testGetLocale(): void
@@ -79,7 +79,7 @@ class ModifySeoMessageTest extends TestCase
             ]
         );
 
-        $this->assertEquals('en', $message->getLocale());
+        $this->assertSame('en', $message->getLocale());
     }
 
     public function testGetTitle(): void
@@ -99,7 +99,7 @@ class ModifySeoMessageTest extends TestCase
             ]
         );
 
-        $this->assertEquals('title-1', $message->getTitle());
+        $this->assertSame('title-1', $message->getTitle());
     }
 
     public function testGetDescription(): void
@@ -119,7 +119,7 @@ class ModifySeoMessageTest extends TestCase
             ]
         );
 
-        $this->assertEquals('description-1', $message->getDescription());
+        $this->assertSame('description-1', $message->getDescription());
     }
 
     public function testGetKeywords(): void
@@ -139,7 +139,7 @@ class ModifySeoMessageTest extends TestCase
             ]
         );
 
-        $this->assertEquals('keywords-1', $message->getKeywords());
+        $this->assertSame('keywords-1', $message->getKeywords());
     }
 
     public function testGetCanonicalUrl(): void
@@ -263,7 +263,7 @@ class ModifySeoMessageTest extends TestCase
 
         $seo = $this->prophesize(SeoViewInterface::class);
 
-        $this->assertEquals($message, $message->setSeo($seo->reveal()));
-        $this->assertEquals($seo->reveal(), $message->getSeo());
+        $this->assertSame($message, $message->setSeo($seo->reveal()));
+        $this->assertSame($seo->reveal(), $message->getSeo());
     }
 }
