@@ -102,6 +102,13 @@ abstract class AbstractContentController implements ClassResourceInterface
         return $this->handleView($this->view($content));
     }
 
+    public function deleteAction(Request $request, string $resourceId): Response
+    {
+        $this->handleRemove($resourceId, $request->query->get('locale'));
+
+        return $this->handleView($this->view());
+    }
+
     protected function handleAction(string $resourceId, string $locale, string $action): void
     {
         if ('publish' === $action) {
@@ -110,6 +117,8 @@ abstract class AbstractContentController implements ClassResourceInterface
     }
 
     abstract protected function handlePublish(string $resourceId, string $locale): void;
+
+    abstract protected function handleRemove(string $resourceId, string $locale): void;
 
     abstract protected function getContentResourceKey(): string;
 }
