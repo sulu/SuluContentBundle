@@ -12,6 +12,8 @@ jobs:
         environment:
             APP_ENV: test
             DATABASE_URL: mysql://root:@127.0.0.1:3306/su_content_test
+            DATABASE_CHARSET: utf8mb4
+            DATABASE_COLLATE: utf8mb4_unicode_ci
         working_directory: ~/repo
 
         steps:
