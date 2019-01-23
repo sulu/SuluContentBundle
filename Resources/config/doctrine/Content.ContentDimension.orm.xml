@@ -13,8 +13,8 @@
             <unique-constraint columns="resourceKey,resourceId,dimensionIdentifier"/>
         </unique-constraints>
 
-        <field name="resourceKey" column="resourceKey" type="string" nullable="false"/>
-        <field name="resourceId" column="resourceId" type="string" nullable="false"/>
+        <field name="resourceKey" column="resourceKey" length="50" type="string" nullable="false"/>
+        <field name="resourceId" column="resourceId" length="50" type="string" nullable="false"/>
 
         <field name="type" column="type" type="string" nullable="true"/>
         <field name="data" column="data" type="json" nullable="false"/>

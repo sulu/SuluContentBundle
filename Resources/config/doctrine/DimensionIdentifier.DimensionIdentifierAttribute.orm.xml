@@ -12,7 +12,7 @@
             <unique-constraint columns="dimensionIdentifier,attributeKey"/>
         </unique-constraints>
 
-        <field name="key" column="attributeKey" type="string" nullable="false"/>
+        <field name="key" column="attributeKey" length="50" type="string" nullable="false"/>
         <field name="value" column="value" type="string" nullable="false"/>
 
         <many-to-one field="dimensionIdentifier"
