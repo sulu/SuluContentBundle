@@ -32,19 +32,19 @@ trait PayloadTrait
         return $this->payload;
     }
 
-    protected function keyExists(string $key): bool
+    public function keyExists(string $key): bool
     {
         return array_key_exists($key, $this->payload);
     }
 
-    protected function getValue(string $key)
+    public function getValue(string $key)
     {
         Assert::keyExists($this->payload, $key);
 
         return $this->payload[$key];
     }
 
-    protected function getBoolValue(string $key): bool
+    public function getBoolValue(string $key): bool
     {
         $value = $this->getValue($key);
 
@@ -53,7 +53,7 @@ trait PayloadTrait
         return $value;
     }
 
-    protected function getNullableBoolValue(string $key): ?bool
+    public function getNullableBoolValue(string $key): ?bool
     {
         $value = $this->getValue($key);
         if (null === $value) {
@@ -65,7 +65,7 @@ trait PayloadTrait
         return $value;
     }
 
-    protected function getStringValue(string $key): string
+    public function getStringValue(string $key): string
     {
         $value = $this->getValue($key);
 
@@ -74,7 +74,7 @@ trait PayloadTrait
         return $value;
     }
 
-    protected function getNullableStringValue(string $key): ?string
+    public function getNullableStringValue(string $key): ?string
     {
         $value = $this->getValue($key);
         if (null === $value) {
@@ -86,7 +86,22 @@ trait PayloadTrait
         return $value;
     }
 
-    protected function getFloatValue(string $key): float
+    public function getDateTimeValueValue(string $key): \DateTimeImmutable
+    {
+        return new \DateTimeImmutable($this->getStringValue($key));
+    }
+
+    public function getNullableDateTimeValue(string $key): ?\DateTimeImmutable
+    {
+        $value = $this->getNullableStringValue($key);
+        if (!$value) {
+            return null;
+        }
+
+        return new \DateTimeImmutable($value);
+    }
+
+    public function getFloatValue(string $key): float
     {
         $value = $this->getValue($key);
 
@@ -99,7 +114,7 @@ trait PayloadTrait
         return $value;
     }
 
-    protected function getNullableFloatValue(string $key): ?float
+    public function getNullableFloatValue(string $key): ?float
     {
         $value = $this->getValue($key);
         if (null === $value) {
@@ -111,7 +126,7 @@ trait PayloadTrait
         return $value;
     }
 
-    protected function getIntValue(string $key): int
+    public function getIntValue(string $key): int
     {
         $value = $this->getValue($key);
 
@@ -120,7 +135,7 @@ trait PayloadTrait
         return $value;
     }
 
-    protected function getNullableIntValue(string $key): ?int
+    public function getNullableIntValue(string $key): ?int
     {
         $value = $this->getValue($key);
         if (null === $value) {
@@ -132,7 +147,7 @@ trait PayloadTrait
         return $value;
     }
 
-    protected function getArrayValue(string $key): array
+    public function getArrayValue(string $key): array
     {
         $value = $this->getValue($key);
 
@@ -141,7 +156,7 @@ trait PayloadTrait
         return $value;
     }
 
-    protected function getNullableArrayValue(string $key): ?array
+    public function getNullableArrayValue(string $key): ?array
     {
         $value = $this->getValue($key);
         if (null === $value) {
