@@ -25,7 +25,7 @@ if (!isset($_SERVER['APP_ENV']) && !isset($_ENV['APP_ENV'])) {
         throw new \RuntimeException('Add "symfony/dotenv" as a Composer dependency to load variables from a .env file.');
     }
 
-    (new Dotenv())->load(__DIR__ . '/Application/.env');
+    (new Dotenv())->loadEnv(__DIR__ . '/Application/.env', 'APP_ENV', 'test');
 }
 
 return $result;
