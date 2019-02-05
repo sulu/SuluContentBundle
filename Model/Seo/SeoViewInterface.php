@@ -34,4 +34,6 @@ interface SeoViewInterface
     public function getNoFollow(): bool;
 
     public function getHideInSitemap(): bool;
+
+    public function withResource(string $resourceKey, string $resourceId, string $locale): self;
 }

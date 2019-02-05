@@ -24,4 +24,6 @@ interface ContentViewInterface
     public function getType(): ?string;
 
     public function getData(): ?array;
+
+    public function withResource(string $resourceKey, string $resourceId, string $locale): self;
 }

@@ -199,4 +199,34 @@ class SeoViewTest extends TestCase
 
         $this->assertFalse($seoView->getHideInSitemap());
     }
+
+    public function testWithResource(): void
+    {
+        $seoView = new SeoView(
+            self::RESOURCE_KEY,
+            'resource-1',
+            'en',
+            'title-1',
+            'description-1',
+            'keywords-1',
+            null,
+            false,
+            true,
+            false
+        );
+
+        $result = $seoView->withResource(self::RESOURCE_KEY, '123-123-123', 'de');
+        $this->assertNotSame($seoView, $result);
+        $this->assertSame(self::RESOURCE_KEY, $result->getResourceKey());
+        $this->assertSame('123-123-123', $result->getResourceId());
+        $this->assertSame('de', $result->getLocale());
+
+        $this->assertSame($seoView->getTitle(), $result->getTitle());
+        $this->assertSame($seoView->getDescription(), $result->getDescription());
+        $this->assertSame($seoView->getKeywords(), $result->getKeywords());
+        $this->assertSame($seoView->getCanonicalUrl(), $result->getCanonicalUrl());
+        $this->assertSame($seoView->getNoFollow(), $result->getNoFollow());
+        $this->assertSame($seoView->getNoIndex(), $result->getNoIndex());
+        $this->assertSame($seoView->getHideInSitemap(), $result->getHideInSitemap());
+    }
 }

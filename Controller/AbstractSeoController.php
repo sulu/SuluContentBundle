@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Controller;
 
+use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\Controller\ControllerTrait;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\ViewHandlerInterface;
@@ -65,7 +66,7 @@ abstract class AbstractSeoController implements ClassResourceInterface
             $seo = new SeoView($this->getSeoResourceKey(), $resourceId, $request->query->get('locale'));
         }
 
-        return $this->handleView($this->view($seo));
+        return $this->handleView($this->view($seo)->setContext($this->createSerializationContext()));
     }
 
     public function putAction(Request $request, string $resourceId): Response
@@ -80,7 +81,7 @@ abstract class AbstractSeoController implements ClassResourceInterface
             $this->handleAction($resourceId, $locale, $action);
         }
 
-        return $this->handleView($this->view($seo));
+        return $this->handleView($this->view($seo)->setContext($this->createSerializationContext()));
     }
 
     public function deleteAction(Request $request, string $resourceId): Response
@@ -95,6 +96,11 @@ abstract class AbstractSeoController implements ClassResourceInterface
         if ('publish' === $action) {
             $this->handlePublish($resourceId, $locale);
         }
+    }
+
+    protected function createSerializationContext(): Context
+    {
+        return (new Context())->setGroups(['fullSeo']);
     }
 
     abstract protected function handlePublish(string $resourceId, string $locale): void;

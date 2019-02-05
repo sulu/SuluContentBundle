@@ -138,4 +138,20 @@ class SeoView implements SeoViewInterface
     {
         return $this->hideInSitemap;
     }
+
+    public function withResource(string $resourceKey, string $resourceId, string $locale): SeoViewInterface
+    {
+        return new static(
+            $resourceKey,
+            $resourceId,
+            $locale,
+            $this->title,
+            $this->description,
+            $this->keywords,
+            $this->canonicalUrl,
+            $this->noIndex ?? false,
+            $this->noFollow ?? false,
+            $this->hideInSitemap ?? false
+        );
+    }
 }
