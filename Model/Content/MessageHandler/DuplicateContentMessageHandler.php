@@ -44,7 +44,7 @@ class DuplicateContentMessageHandler
         $attributes = [
             DimensionIdentifierInterface::ATTRIBUTE_KEY_STAGE => DimensionIdentifierInterface::ATTRIBUTE_VALUE_DRAFT,
         ];
-        $dimensionIdentifier = $this->dimensionIdentifierRepository->findOrCreateByAttributes($attributes);
+        $dimensionIdentifier = $this->dimensionIdentifierRepository->findByPartialAttributes($attributes);
 
         $contentDimensions = $this->contentDimensionRepository->findByDimensionIdentifiers(
             $message->getResourceKey(),
