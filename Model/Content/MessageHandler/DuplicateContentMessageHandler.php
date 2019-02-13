@@ -15,6 +15,7 @@ namespace Sulu\Bundle\ContentBundle\Model\Content\MessageHandler;
 
 use Sulu\Bundle\ContentBundle\Model\Content\ContentDimensionRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Content\Exception\ContentNotFoundException;
+use Sulu\Bundle\ContentBundle\Model\Content\Message\DuplicateContentMessage;
 use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierInterface;
 use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierRepositoryInterface;
 
