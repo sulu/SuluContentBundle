@@ -20,6 +20,18 @@ use Sulu\Bundle\TagBundle\Tag\TagInterface;
 
 class TagReferenceTest extends TestCase
 {
+    public function testCreateClone(): void
+    {
+        $excerptDimension = $this->prophesize(ExcerptDimensionInterface::class);
+        $tag = $this->prophesize(TagInterface::class);
+        $tagReference = new TagReference($excerptDimension->reveal(), $tag->reveal(), 2);
+
+        $newExcerptDimension = $this->prophesize(ExcerptDimensionInterface::class);
+        $newIconReference = $tagReference->createClone($newExcerptDimension->reveal());
+
+        $this->assertSame($newExcerptDimension->reveal(), $newIconReference->getExcerptDimension());
+    }
+
     public function testGetExcerptDimension(): void
     {
         $excerptDimension = $this->prophesize(ExcerptDimensionInterface::class);
