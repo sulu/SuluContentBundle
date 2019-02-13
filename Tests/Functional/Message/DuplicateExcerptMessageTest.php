@@ -14,10 +14,8 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Functional\Message;
 
 use Sulu\Bundle\CategoryBundle\Entity\CategoryInterface;
-use Sulu\Bundle\ContentBundle\Model\Content\Message\DuplicateContentMessage;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\Message\DuplicateExcerptMessage;
 use Sulu\Bundle\ContentBundle\Tests\Functional\Traits\CategoryTrait;
-use Sulu\Bundle\ContentBundle\Tests\Functional\Traits\ContentDimensionTrait;
 use Sulu\Bundle\ContentBundle\Tests\Functional\Traits\DimensionIdentifierTrait;
 use Sulu\Bundle\ContentBundle\Tests\Functional\Traits\ExcerptDimensionTrait;
 use Sulu\Bundle\ContentBundle\Tests\Functional\Traits\MediaTrait;
@@ -122,25 +120,25 @@ class DuplicateExcerptMessageTest extends SuluTestCase
 
         $this->assertNotSame('test-resource-1', $message->getNewResourceId());
 
-        $newExcerpttEN = $this->findDraftExcerptDimension(
+        $newExcerptEN = $this->findDraftExcerptDimension(
             'test_resource_excerpts',
             $message->getNewResourceId(),
             'en'
         );
-        $newExcerpttDE = $this->findDraftExcerptDimension(
+        $newExcerptDE = $this->findDraftExcerptDimension(
             'test_resource_excerpts',
             $message->getNewResourceId(),
             'de'
         );
 
-        $this->assertNotNull($newExcerpttEN);
-        $this->assertNotNull($newExcerpttDE);
+        $this->assertNotNull($newExcerptEN);
+        $this->assertNotNull($newExcerptDE);
 
-        $this->assertSame($excerptEN->getResourceKey(), $newExcerpttEN->getResourceKey());
-        $this->assertSame($excerptDE->getResourceKey(), $newExcerpttDE->getResourceKey());
+        $this->assertSame($excerptEN->getResourceKey(), $newExcerptEN->getResourceKey());
+        $this->assertSame($excerptDE->getResourceKey(), $newExcerptDE->getResourceKey());
 
-        $this->assertSame($excerptEN->getDimensionIdentifier(), $newExcerpttEN->getDimensionIdentifier());
-        $this->assertSame($excerptDE->getDimensionIdentifier(), $newExcerpttDE->getDimensionIdentifier());
+        $this->assertSame($excerptEN->getDimensionIdentifier(), $newExcerptEN->getDimensionIdentifier());
+        $this->assertSame($excerptDE->getDimensionIdentifier(), $newExcerptDE->getDimensionIdentifier());
     }
 
     private function getMessageBus(): MessageBusInterface

@@ -34,6 +34,13 @@
             <tag name="messenger.message_handler"/>
         </service>
 
+        <service id="Sulu\Bundle\ContentBundle\Model\Seo\MessageHandler\DuplicateSeoMessageHandler">
+            <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Seo\SeoDimensionRepositoryInterface"/>
+            <argument type="service" id="Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierRepositoryInterface"/>
+
+            <tag name="messenger.message_handler"/>
+        </service>
+
         <service id="Sulu\Bundle\ContentBundle\Model\Seo\MessageHandler\RemoveSeoMessageHandler">
             <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Seo\SeoDimensionRepositoryInterface"/>
 

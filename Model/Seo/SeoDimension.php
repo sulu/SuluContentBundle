@@ -96,6 +96,19 @@ class SeoDimension implements SeoDimensionInterface
         $this->hideInSitemap = $hideInSitemap;
     }
 
+    public function __clone()
+    {
+        $this->no = null;
+    }
+
+    public function createClone(string $resourceId): SeoDimensionInterface
+    {
+        $new = clone $this;
+        $new->resourceId = $resourceId;
+
+        return $new;
+    }
+
     public function getDimensionIdentifier(): DimensionIdentifierInterface
     {
         return $this->dimensionIdentifier;
