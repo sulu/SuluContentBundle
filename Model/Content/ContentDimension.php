@@ -18,7 +18,7 @@ use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierInter
 class ContentDimension implements ContentDimensionInterface
 {
     /**
-     * @var int
+     * @var null|int
      */
     private $no;
 
@@ -59,6 +59,19 @@ class ContentDimension implements ContentDimensionInterface
         $this->resourceId = $resourceId;
         $this->type = $type;
         $this->data = $data;
+    }
+
+    public function __clone()
+    {
+        $this->no = null;
+    }
+
+    public function createClone(string $resourceId): ContentDimensionInterface
+    {
+        $new = clone $this;
+        $new->resourceId = $resourceId;
+
+        return $new;
     }
 
     public function getDimensionIdentifier(): DimensionIdentifierInterface

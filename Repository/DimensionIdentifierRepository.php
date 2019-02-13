@@ -15,6 +15,7 @@ namespace Sulu\Bundle\ContentBundle\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NoResultException;
+use Doctrine\ORM\QueryBuilder;
 use Ramsey\Uuid\Uuid;
 use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifier;
 use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierAttribute;
@@ -62,23 +63,40 @@ class DimensionIdentifierRepository extends ServiceEntityRepository implements D
         return $this->create($attributes);
     }
 
+    /**
+     * @return DimensionIdentifierInterface[]
+     */
+    public function findByPartialAttributes(array $attributes): array
+    {
+        $queryBuilder = $this->createQueryBuilder('dimension_identifier');
+
+        $this->addAttributesFilter($queryBuilder, $attributes);
+
+        return $queryBuilder->getQuery()->getScalarResult();
+    }
+
     protected function findOneByAttributes(array $attributes): ?DimensionIdentifierInterface
     {
         $queryBuilder = $this->createQueryBuilder('dimension_identifier')
             ->where('dimension_identifier.attributeCount = ' . \count($attributes));
 
+        $this->addAttributesFilter($queryBuilder, $attributes);
+
+        try {
+            return $queryBuilder->getQuery()->getSingleResult();
+        } catch (NoResultException $exception) {
+            return null;
+        }
+    }
+
+    protected function addAttributesFilter(QueryBuilder $queryBuilder, array $attributes): void
+    {
         foreach ($attributes as $key => $value) {
             $queryBuilder->join('dimension_identifier.attributes', $key)
                 ->andWhere($key . '.value = :' . $key . 'Value')
                 ->andWhere($key . '.key = :' . $key . 'Key')
                 ->setParameter($key . 'Key', $key)
                 ->setParameter($key . 'Value', $value);
-        }
-
-        try {
-            return $queryBuilder->getQuery()->getSingleResult();
-        } catch (NoResultException $exception) {
-            return null;
         }
     }
 }

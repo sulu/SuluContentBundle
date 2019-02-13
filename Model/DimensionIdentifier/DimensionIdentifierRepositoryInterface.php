@@ -18,4 +18,9 @@ interface DimensionIdentifierRepositoryInterface
     public function create(array $attributes = []): DimensionIdentifierInterface;
 
     public function findOrCreateByAttributes(array $attributes): DimensionIdentifierInterface;
+
+    /**
+     * @return DimensionIdentifierInterface[]
+     */
+    public function findByPartialAttributes(array $attributes): array;
 }

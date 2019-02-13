@@ -27,6 +27,17 @@ class ContentDimensionRepository extends ServiceEntityRepository implements Cont
         parent::__construct($registry, ContentDimension::class);
     }
 
+    public function createClone(
+        ContentDimensionInterface $contentDimesion,
+        string $newResourceId
+    ): ContentDimensionInterface {
+        $newContentDimension = $contentDimesion->createClone($newResourceId);
+
+        $this->getEntityManager()->persist($newContentDimension);
+
+        return $newContentDimension;
+    }
+
     public function createDimension(
         string $resourceKey,
         string $resourceId,
@@ -77,8 +88,17 @@ class ContentDimensionRepository extends ServiceEntityRepository implements Cont
         return $this->findBy(['resourceKey' => $resourceKey, 'resourceId' => $resourceId]);
     }
 
-    public function findByDimensionIdentifiers(string $resourceKey, string $resourceId, array $dimensionIdentifiers): array
-    {
-        return $this->findBy(['resourceKey' => $resourceKey, 'resourceId' => $resourceId, 'dimensionIdentifier' => $dimensionIdentifiers]);
+    public function findByDimensionIdentifiers(
+        string $resourceKey,
+        string $resourceId,
+        array $dimensionIdentifiers
+    ): array {
+        return $this->findBy(
+            [
+                'resourceKey' => $resourceKey,
+                'resourceId' => $resourceId,
+                'dimensionIdentifier' => $dimensionIdentifiers
+            ]
+        );
     }
 }
