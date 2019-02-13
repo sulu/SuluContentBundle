@@ -60,10 +60,16 @@ class DuplicateContentMessageTest extends SuluTestCase
         $this->assertNotNull($newContentEN);
         $this->assertNotNull($newContentDE);
 
-        $this->assertSame($contentEN->getData(), $newContentEN->getData());
-        $this->assertSame($contentDE->getData(), $newContentDE->getData());
-
         $this->assertSame($contentEN->getResourceKey(), $newContentEN->getResourceKey());
         $this->assertSame($contentDE->getResourceKey(), $newContentDE->getResourceKey());
+
+        $this->assertSame($contentEN->getDimensionIdentifier(), $newContentEN->getDimensionIdentifier());
+        $this->assertSame($contentDE->getDimensionIdentifier(), $newContentDE->getDimensionIdentifier());
+
+        $this->assertSame($contentEN->getType(), $newContentEN->getType());
+        $this->assertSame($contentDE->getType(), $newContentDE->getType());
+
+        $this->assertSame($contentEN->getData(), $newContentEN->getData());
+        $this->assertSame($contentDE->getData(), $newContentDE->getData());
     }
 }
