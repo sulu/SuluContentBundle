@@ -47,6 +47,19 @@ class ImageReference implements ImageReferenceInterface
         $this->order = $order;
     }
 
+    public function __clone()
+    {
+        $this->no = null;
+    }
+
+    public function createClone(ExcerptDimensionInterface $excerptDimension): ImageReferenceInterface
+    {
+        $new = clone $this;
+        $new->excerptDimension = $excerptDimension;
+
+        return $new;
+    }
+
     public function getExcerptDimension(): ExcerptDimensionInterface
     {
         return $this->excerptDimension;

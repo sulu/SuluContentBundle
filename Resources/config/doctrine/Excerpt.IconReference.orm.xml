@@ -21,8 +21,8 @@
             <join-column name="excerptDimension" referenced-column-name="no" nullable="false" on-delete="CASCADE"/>
         </many-to-one>
 
-        <one-to-one field="media" target-entity="Sulu\Bundle\MediaBundle\Entity\MediaInterface">
+        <many-to-one field="media" target-entity="Sulu\Bundle\MediaBundle\Entity\MediaInterface">
             <join-column name="media" referenced-column-name="id" nullable="false" on-delete="CASCADE"/>
-        </one-to-one>
+        </many-to-one>
     </entity>
 </doctrine-mapping>

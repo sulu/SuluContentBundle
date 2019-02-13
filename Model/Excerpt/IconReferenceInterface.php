@@ -17,6 +17,8 @@ use Sulu\Bundle\MediaBundle\Entity\MediaInterface;
 
 interface IconReferenceInterface
 {
+    public function createClone(ExcerptDimensionInterface $excerptDimension): self;
+
     public function getExcerptDimension(): ExcerptDimensionInterface;
 
     public function getMedia(): MediaInterface;

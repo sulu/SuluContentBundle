@@ -21,6 +21,10 @@ services:
         class: Sulu\Bundle\ContentBundle\Tests\Application\Controller\TestResourceExcerptController
         public: true
         autowire: true
+    messenger.middleware.doctrine_transaction:
+        class: Symfony\Bridge\Doctrine\Messenger\DoctrineTransactionMiddleware
+        abstract: true
+        arguments: ['@doctrine']
 
 sulu_core:
     content:
@@ -31,3 +35,10 @@ sulu_core:
                 test_resource_contents:
                     path: '%kernel.project_dir%/config/templates/test_resources'
                     type: 'test_resource_contents'
+
+framework:
+    messenger:
+        buses:
+            command_bus:
+                middleware:
+                    - doctrine_transaction

@@ -11,20 +11,20 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Model\Content\MessageHandler;
+namespace Sulu\Bundle\ContentBundle\Model\Excerpt\MessageHandler;
 
-use Sulu\Bundle\ContentBundle\Model\Content\ContentDimensionRepositoryInterface;
-use Sulu\Bundle\ContentBundle\Model\Content\Exception\ContentNotFoundException;
-use Sulu\Bundle\ContentBundle\Model\Content\Message\DuplicateContentMessage;
 use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierInterface;
 use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierRepositoryInterface;
+use Sulu\Bundle\ContentBundle\Model\Excerpt\Exception\ExcerptNotFoundException;
+use Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptDimensionRepositoryInterface;
+use Sulu\Bundle\ContentBundle\Model\Excerpt\Message\DuplicateExcerptMessage;
 
-class DuplicateContentMessageHandler
+class DuplicateExcerptMessageHandler
 {
     /**
-     * @var ContentDimensionRepositoryInterface
+     * @var ExcerptDimensionRepositoryInterface
      */
-    private $contentDimensionRepository;
+    private $excerptDimensionRepository;
 
     /**
      * @var DimensionIdentifierRepositoryInterface
@@ -32,14 +32,14 @@ class DuplicateContentMessageHandler
     private $dimensionIdentifierRepository;
 
     public function __construct(
-        ContentDimensionRepositoryInterface $contentDimensionRepository,
+        ExcerptDimensionRepositoryInterface $excerptDimensionRepository,
         DimensionIdentifierRepositoryInterface $dimensionIdentifierRepository
     ) {
-        $this->contentDimensionRepository = $contentDimensionRepository;
+        $this->excerptDimensionRepository = $excerptDimensionRepository;
         $this->dimensionIdentifierRepository = $dimensionIdentifierRepository;
     }
 
-    public function __invoke(DuplicateContentMessage $message): void
+    public function __invoke(DuplicateExcerptMessage $message): void
     {
         $attributes = [
             DimensionIdentifierInterface::ATTRIBUTE_KEY_STAGE => DimensionIdentifierInterface::ATTRIBUTE_VALUE_DRAFT,
@@ -50,17 +50,17 @@ class DuplicateContentMessageHandler
             return;
         }
 
-        $contentDimensions = $this->contentDimensionRepository->findByDimensionIdentifiers(
+        $excerptDimensions = $this->excerptDimensionRepository->findByDimensionIdentifiers(
             $message->getResourceKey(),
             $message->getResourceId(),
             $dimensionIdentifiers
         );
-        if (!$contentDimensions) {
-            throw new ContentNotFoundException($message->getResourceKey(), $message->getResourceId());
+        if (!$excerptDimensions) {
+            throw new ExcerptNotFoundException($message->getResourceKey(), $message->getResourceId());
         }
 
-        foreach ($contentDimensions as $contentDimension) {
-            $this->contentDimensionRepository->createClone($contentDimension, $message->getNewResourceId());
+        foreach ($excerptDimensions as $excerptDimension) {
+            $this->excerptDimensionRepository->createClone($excerptDimension, $message->getNewResourceId());
         }
     }
 }

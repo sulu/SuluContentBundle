@@ -21,8 +21,8 @@
             <join-column name="excerptDimension" referenced-column-name="no" nullable="false" on-delete="CASCADE"/>
         </many-to-one>
 
-        <one-to-one field="tag" target-entity="Sulu\Bundle\TagBundle\Tag\TagInterface">
+        <many-to-one field="tag" target-entity="Sulu\Bundle\TagBundle\Tag\TagInterface">
             <join-column name="tag" referenced-column-name="id" nullable="false" on-delete="CASCADE"/>
-        </one-to-one>
+        </many-to-one>
     </entity>
 </doctrine-mapping>

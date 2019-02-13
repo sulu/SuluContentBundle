@@ -72,7 +72,7 @@ class DimensionIdentifierRepository extends ServiceEntityRepository implements D
 
         $this->addAttributesFilter($queryBuilder, $attributes);
 
-        return $queryBuilder->getQuery()->getScalarResult();
+        return $queryBuilder->getQuery()->getResult();
     }
 
     protected function findOneByAttributes(array $attributes): ?DimensionIdentifierInterface

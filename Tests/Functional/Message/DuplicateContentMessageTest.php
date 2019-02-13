@@ -24,6 +24,13 @@ class DuplicateContentMessageTest extends SuluTestCase
     use ContentDimensionTrait;
     use DimensionIdentifierTrait;
 
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->purgeDatabase();
+    }
+
     public function testDuplicate(): void
     {
         $contentEN = $this->createDraftContentDimension(
@@ -39,7 +46,7 @@ class DuplicateContentMessageTest extends SuluTestCase
             'test-resource-1',
             'de',
             'default',
-            ['title' => 'Sulu', 'article' => 'Sulu is awesome']
+            ['title' => 'Sulu', 'article' => 'Sulu ist toll!']
         );
 
         $message = new DuplicateContentMessage('test_resource_contents', 'test-resource-1');

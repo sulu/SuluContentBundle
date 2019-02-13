@@ -17,6 +17,8 @@ use Sulu\Bundle\TagBundle\Tag\TagInterface;
 
 interface TagReferenceInterface
 {
+    public function createClone(ExcerptDimensionInterface $excerptDimension): self;
+
     public function getExcerptDimension(): ExcerptDimensionInterface;
 
     public function getTag(): TagInterface;

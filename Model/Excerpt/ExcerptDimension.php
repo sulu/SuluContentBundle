@@ -95,6 +95,42 @@ class ExcerptDimension implements ExcerptDimensionInterface
         $this->images = new ArrayCollection();
     }
 
+    public function __clone()
+    {
+        $this->no = null;
+        $this->categories = new ArrayCollection();
+        $this->tags = new ArrayCollection();
+        $this->icons = new ArrayCollection();
+        $this->images = new ArrayCollection();
+    }
+
+    public function createClone(string $resourceId): ExcerptDimensionInterface
+    {
+        $new = clone $this;
+        $new->resourceId = $resourceId;
+
+        foreach ($this->categories as $category) {
+            $new->addCategory($category);
+        }
+
+        foreach ($this->tags as $tagReference) {
+            $newTagReference = $tagReference->createClone($new);
+            $new->addTag($newTagReference);
+        }
+
+        foreach ($this->icons as $iconReference) {
+            $newIconReference = $iconReference->createClone($new);
+            $new->addIcon($newIconReference);
+        }
+
+        foreach ($this->images as $imageReference) {
+            $newImageReference = $imageReference->createClone($new);
+            $new->addImage($newImageReference);
+        }
+
+        return $new;
+    }
+
     public function getDimensionIdentifier(): DimensionIdentifierInterface
     {
         return $this->dimensionIdentifier;
