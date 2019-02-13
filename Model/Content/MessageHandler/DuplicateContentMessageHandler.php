@@ -44,12 +44,15 @@ class DuplicateContentMessageHandler
         $attributes = [
             DimensionIdentifierInterface::ATTRIBUTE_KEY_STAGE => DimensionIdentifierInterface::ATTRIBUTE_VALUE_DRAFT,
         ];
-        $dimensionIdentifier = $this->dimensionIdentifierRepository->findByPartialAttributes($attributes);
+        $dimensionIdentifiers = $this->dimensionIdentifierRepository->findByPartialAttributes($attributes);
+        if (!$dimensionIdentifiers) {
+            return;
+        }
 
         $contentDimensions = $this->contentDimensionRepository->findByDimensionIdentifiers(
             $message->getResourceKey(),
             $message->getNewResourceId(),
-            [$dimensionIdentifier]
+            $dimensionIdentifiers
         );
         if (!$contentDimensions) {
             throw new ContentNotFoundException($message->getResourceKey(), $message->getNewResourceId());
