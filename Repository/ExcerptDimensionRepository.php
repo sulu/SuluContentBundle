@@ -97,7 +97,7 @@ class ExcerptDimensionRepository extends ServiceEntityRepository implements Exce
             [
                 'resourceKey' => $resourceKey,
                 'resourceId' => $resourceId,
-                'dimensionIdentifier' => $dimensionIdentifiers
+                'dimensionIdentifier' => $dimensionIdentifiers,
             ]
         );
     }

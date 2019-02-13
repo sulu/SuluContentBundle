@@ -21,7 +21,7 @@ use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierInter
 class ExcerptDimension implements ExcerptDimensionInterface
 {
     /**
-     * @var int
+     * @var null|int
      */
     private $no;
 

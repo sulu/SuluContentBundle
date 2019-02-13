@@ -97,7 +97,7 @@ class ContentDimensionRepository extends ServiceEntityRepository implements Cont
             [
                 'resourceKey' => $resourceKey,
                 'resourceId' => $resourceId,
-                'dimensionIdentifier' => $dimensionIdentifiers
+                'dimensionIdentifier' => $dimensionIdentifiers,
             ]
         );
     }

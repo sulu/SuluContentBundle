@@ -18,7 +18,7 @@ use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierInter
 class SeoDimension implements SeoDimensionInterface
 {
     /**
-     * @var int
+     * @var null|int
      */
     private $no;
 
