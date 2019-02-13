@@ -11,7 +11,7 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Tests\Unit\Model\Excerpt\Message;
+namespace Sulu\Bundle\ContentBundle\Tests\Unit\Model\Seo\Message;
 
 use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\ContentBundle\Model\Seo\Message\DuplicateSeoMessage;

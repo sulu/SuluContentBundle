@@ -27,6 +27,16 @@ class ExcerptDimensionTest extends TestCase
 {
     const RESOURCE_KEY = 'test_resource_excerpts';
 
+    public function testCreateClone(): void
+    {
+        $dimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
+        $excerptDimension = new ExcerptDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'resource-1');
+
+        $newExcerptDimension = $excerptDimension->createClone('new-resource-1');
+
+        $this->assertSame('new-resource-1', $newExcerptDimension->getResourceId());
+    }
+
     public function testGetDimension(): void
     {
         $dimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
