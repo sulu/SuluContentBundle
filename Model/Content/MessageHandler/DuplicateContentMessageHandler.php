@@ -11,7 +11,7 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Model\Content\Message;
+namespace Sulu\Bundle\ContentBundle\Model\Content\MessageHandler;
 
 use Sulu\Bundle\ContentBundle\Model\Content\ContentDimensionRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Model\Content\Exception\ContentNotFoundException;

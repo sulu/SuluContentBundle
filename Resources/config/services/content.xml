@@ -27,6 +27,13 @@
             <tag name="messenger.message_handler"/>
         </service>
 
+        <service id="Sulu\Bundle\ContentBundle\Model\Content\MessageHandler\DuplicateContentMessageHandler">
+            <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Content\ContentDimensionRepositoryInterface"/>
+            <argument type="service" id="Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierRepositoryInterface"/>
+
+            <tag name="messenger.message_handler"/>
+        </service>
+
         <service id="Sulu\Bundle\ContentBundle\Model\Content\MessageHandler\PublishContentMessageHandler">
             <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Content\ContentDimensionRepositoryInterface"/>
             <argument type="service" id="Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierRepositoryInterface"/>
