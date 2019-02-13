@@ -18,7 +18,7 @@ use Sulu\Bundle\TagBundle\Tag\TagInterface;
 class TagReference implements TagReferenceInterface
 {
     /**
-     * @var null|int
+     * @var int|null
      */
     private $no;
 

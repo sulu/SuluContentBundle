@@ -18,7 +18,7 @@ use Sulu\Bundle\MediaBundle\Entity\MediaInterface;
 class IconReference implements IconReferenceInterface
 {
     /**
-     * @var null|int
+     * @var int|null
      */
     private $no;
 
