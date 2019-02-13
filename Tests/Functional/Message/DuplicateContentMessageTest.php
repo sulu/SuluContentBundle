@@ -17,6 +17,7 @@ use Sulu\Bundle\ContentBundle\Model\Content\Message\DuplicateContentMessage;
 use Sulu\Bundle\ContentBundle\Tests\Functional\Traits\ContentDimensionTrait;
 use Sulu\Bundle\ContentBundle\Tests\Functional\Traits\DimensionIdentifierTrait;
 use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 class DuplicateContentMessageTest extends SuluTestCase
 {
@@ -71,5 +72,13 @@ class DuplicateContentMessageTest extends SuluTestCase
 
         $this->assertSame($contentEN->getData(), $newContentEN->getData());
         $this->assertSame($contentDE->getData(), $newContentDE->getData());
+    }
+
+    private function getMessageBus(): MessageBusInterface
+    {
+        /** @var MessageBusInterface $messageBus */
+        $messageBus = $this->getContainer()->get('message_bus');
+
+        return $messageBus;
     }
 }
