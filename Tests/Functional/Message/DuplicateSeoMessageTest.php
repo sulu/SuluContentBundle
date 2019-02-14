@@ -64,12 +64,12 @@ class DuplicateSeoMessageTest extends SuluTestCase
 
         $newSeoEN = $this->findDraftSeoDimension(
             'test_resource_seos',
-            $message->getNewResourceId(),
+            'new-resource-1',
             'en'
         );
         $newSeoDE = $this->findDraftSeoDimension(
             'test_resource_seos',
-            $message->getNewResourceId(),
+            'new-resource-1',
             'de'
         );
 

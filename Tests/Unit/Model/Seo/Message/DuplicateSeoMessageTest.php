@@ -38,6 +38,6 @@ class DuplicateSeoMessageTest extends TestCase
     {
         $message = new DuplicateSeoMessage(self::RESOURCE_KEY, 'resource-1', 'new-resource-1');
 
-        $this->assertSame('resource-1', $message->getNewResourceId());
+        $this->assertSame('new-resource-1', $message->getNewResourceId());
     }
 }
