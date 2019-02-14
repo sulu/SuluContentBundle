@@ -115,19 +115,17 @@ class DuplicateExcerptMessageTest extends SuluTestCase
             [$this->media1]
         );
 
-        $message = new DuplicateExcerptMessage('test_resource_excerpts', 'test-resource-1');
+        $message = new DuplicateExcerptMessage('test_resource_excerpts', 'test-resource-1', 'new-resource-1');
         $this->getMessageBus()->dispatch($message);
-
-        $this->assertNotSame('test-resource-1', $message->getNewResourceId());
 
         $newExcerptEN = $this->findDraftExcerptDimension(
             'test_resource_excerpts',
-            $message->getNewResourceId(),
+            'new-resource-1',
             'en'
         );
         $newExcerptDE = $this->findDraftExcerptDimension(
             'test_resource_excerpts',
-            $message->getNewResourceId(),
+            'new-resource-1',
             'de'
         );
 

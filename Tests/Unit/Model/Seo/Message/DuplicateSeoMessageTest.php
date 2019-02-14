@@ -22,22 +22,22 @@ class DuplicateSeoMessageTest extends TestCase
 
     public function testGetResourceKey(): void
     {
-        $message = new DuplicateSeoMessage(self::RESOURCE_KEY, 'resource-1');
+        $message = new DuplicateSeoMessage(self::RESOURCE_KEY, 'resource-1', 'new-resource-1');
 
         $this->assertSame(self::RESOURCE_KEY, $message->getResourceKey());
     }
 
     public function testGetResourceId(): void
     {
-        $message = new DuplicateSeoMessage(self::RESOURCE_KEY, 'resource-1');
+        $message = new DuplicateSeoMessage(self::RESOURCE_KEY, 'resource-1', 'new-resource-1');
 
         $this->assertSame('resource-1', $message->getResourceId());
     }
 
-    public function testGetLocale(): void
+    public function testGetNewResourceId(): void
     {
-        $message = new DuplicateSeoMessage(self::RESOURCE_KEY, 'resource-1');
+        $message = new DuplicateSeoMessage(self::RESOURCE_KEY, 'resource-1', 'new-resource-1');
 
-        $this->assertTrue(\is_string($message->getNewResourceId()));
+        $this->assertSame('new-resource-1', $message->getNewResourceId());
     }
 }

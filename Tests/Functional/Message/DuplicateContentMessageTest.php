@@ -49,19 +49,17 @@ class DuplicateContentMessageTest extends SuluTestCase
             ['title' => 'Sulu', 'article' => 'Sulu ist toll!']
         );
 
-        $message = new DuplicateContentMessage('test_resource_contents', 'test-resource-1');
+        $message = new DuplicateContentMessage('test_resource_contents', 'test-resource-1', 'new-resource-1');
         $this->getMessageBus()->dispatch($message);
-
-        $this->assertNotSame('test-resource-1', $message->getNewResourceId());
 
         $newContentEN = $this->findDraftContentDimension(
             'test_resource_contents',
-            $message->getNewResourceId(),
+            'new-resource-1',
             'en'
         );
         $newContentDE = $this->findDraftContentDimension(
             'test_resource_contents',
-            $message->getNewResourceId(),
+            'new-resource-1',
             'de'
         );
 

@@ -59,19 +59,17 @@ class DuplicateSeoMessageTest extends SuluTestCase
             false
         );
 
-        $message = new DuplicateSeoMessage('test_resource_seos', 'test-resource-1');
+        $message = new DuplicateSeoMessage('test_resource_seos', 'test-resource-1', 'new-resource-1');
         $this->getMessageBus()->dispatch($message);
-
-        $this->assertNotSame('test-resource-1', $message->getNewResourceId());
 
         $newSeoEN = $this->findDraftSeoDimension(
             'test_resource_seos',
-            $message->getNewResourceId(),
+            'new-resource-1',
             'en'
         );
         $newSeoDE = $this->findDraftSeoDimension(
             'test_resource_seos',
-            $message->getNewResourceId(),
+            'new-resource-1',
             'de'
         );
 

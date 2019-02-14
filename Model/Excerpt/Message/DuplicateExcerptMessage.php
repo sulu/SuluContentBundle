@@ -13,8 +13,6 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Model\Excerpt\Message;
 
-use Ramsey\Uuid\Uuid;
-
 class DuplicateExcerptMessage
 {
     /**
@@ -32,11 +30,11 @@ class DuplicateExcerptMessage
      */
     private $newResourceId;
 
-    public function __construct(string $resourceKey, string $resourceId)
+    public function __construct(string $resourceKey, string $resourceId, string $newResourceId)
     {
         $this->resourceKey = $resourceKey;
         $this->resourceId = $resourceId;
-        $this->newResourceId = Uuid::uuid4()->toString();
+        $this->newResourceId = $newResourceId;
     }
 
     public function getResourceKey(): string
