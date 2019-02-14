@@ -79,20 +79,18 @@ class ExcerptDimension implements ExcerptDimensionInterface
         DimensionIdentifierInterface $dimensionIdentifier,
         string $resourceKey,
         string $resourceId,
-        ?string $title = null,
-        ?string $more = null,
-        ?string $description = null
+        ?array $categories = null,
+        ?array $tags = null,
+        ?array $icons = null,
+        ?array $images = null
     ) {
         $this->dimensionIdentifier = $dimensionIdentifier;
         $this->resourceKey = $resourceKey;
         $this->resourceId = $resourceId;
-        $this->title = $title;
-        $this->more = $more;
-        $this->description = $description;
-        $this->categories = new ArrayCollection();
-        $this->tags = new ArrayCollection();
-        $this->icons = new ArrayCollection();
-        $this->images = new ArrayCollection();
+        $this->categories = new ArrayCollection($categories ?: []);
+        $this->tags = new ArrayCollection($tags ?: []);
+        $this->icons = new ArrayCollection($icons ?: []);
+        $this->images = new ArrayCollection($images ?: []);
     }
 
     public function __clone()
