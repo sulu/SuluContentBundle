@@ -390,7 +390,7 @@ class ExcerptDimensionTest extends TestCase
         );
         $excerptDimension->setTitle('title-1');
         $excerptDimension->setMore('more-1');
-        $excerptDimension->setMore('discription-1');
+        $excerptDimension->setDescription('discription-1');
 
         $category1 = $this->prophesize(CategoryInterface::class);
         $category1->getId()->shouldBeCalled()->willReturn(1);
@@ -416,9 +416,9 @@ class ExcerptDimensionTest extends TestCase
             'other-resource-key',
             'other-resource-id'
         );
-        $excerptDimension->setTitle('other-title');
-        $excerptDimension->setMore('other-more');
-        $excerptDimension->setMore('other-description');
+        $otherExcerptDimension->setTitle('other-title');
+        $otherExcerptDimension->setMore('other-more');
+        $otherExcerptDimension->setDescription('other-description');
 
         $otherExcerptDimension->addCategory($category1->reveal());
         $otherExcerptDimension->addTag($tagReference1->reveal());
