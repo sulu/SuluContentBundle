@@ -91,7 +91,7 @@ class ContentViewSerializationSubscriber implements EventSubscriberInterface
                 $name = (string) $name;
             }
 
-            if (array_key_exists($name, $data)) {
+            if (\array_key_exists($name, $data)) {
                 $visitor->setData((string) $name, $data[$name]);
 
                 continue;
@@ -138,7 +138,7 @@ class ContentViewSerializationSubscriber implements EventSubscriberInterface
     {
         $view = [];
         foreach ($structure->getProperties(true) as $child) {
-            if (array_key_exists($child->getName(), $data)) {
+            if (\array_key_exists($child->getName(), $data)) {
                 $child->setValue($data[$child->getName()]);
             }
 
@@ -153,7 +153,7 @@ class ContentViewSerializationSubscriber implements EventSubscriberInterface
     {
         $content = [];
         foreach ($structure->getProperties(true) as $child) {
-            if (array_key_exists($child->getName(), $data)) {
+            if (\array_key_exists($child->getName(), $data)) {
                 $child->setValue($data[$child->getName()]);
             }
 

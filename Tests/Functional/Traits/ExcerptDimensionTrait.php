@@ -57,11 +57,12 @@ trait ExcerptDimensionTrait
         $excerptDimension = new ExcerptDimension(
             $dimensionIdentifier,
             $resourceKey,
-            $resourceId,
-            $title,
-            $more,
-            $description
+            $resourceId
         );
+        $excerptDimension->setTitle($title);
+        $excerptDimension->setMore($more);
+        $excerptDimension->setDescription($description);
+
         $this->getEntityManager()->persist($excerptDimension);
 
         foreach ($categories as $category) {

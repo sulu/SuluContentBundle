@@ -20,6 +20,18 @@ use Sulu\Bundle\MediaBundle\Entity\MediaInterface;
 
 class IconReferenceTest extends TestCase
 {
+    public function testCreateClone(): void
+    {
+        $excerptDimension = $this->prophesize(ExcerptDimensionInterface::class);
+        $media = $this->prophesize(MediaInterface::class);
+        $iconReference = new IconReference($excerptDimension->reveal(), $media->reveal(), 2);
+
+        $newExcerptDimension = $this->prophesize(ExcerptDimensionInterface::class);
+        $newIconReference = $iconReference->createClone($newExcerptDimension->reveal());
+
+        $this->assertSame($newExcerptDimension->reveal(), $newIconReference->getExcerptDimension());
+    }
+
     public function testGetExcerptDimension(): void
     {
         $excerptDimension = $this->prophesize(ExcerptDimensionInterface::class);

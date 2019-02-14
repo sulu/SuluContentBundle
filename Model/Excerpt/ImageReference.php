@@ -18,7 +18,7 @@ use Sulu\Bundle\MediaBundle\Entity\MediaInterface;
 class ImageReference implements ImageReferenceInterface
 {
     /**
-     * @var int
+     * @var int|null
      */
     private $no;
 
@@ -45,6 +45,19 @@ class ImageReference implements ImageReferenceInterface
         $this->excerptDimension = $excerptDimension;
         $this->media = $media;
         $this->order = $order;
+    }
+
+    public function __clone()
+    {
+        $this->no = null;
+    }
+
+    public function createClone(ExcerptDimensionInterface $excerptDimension): ImageReferenceInterface
+    {
+        $new = clone $this;
+        $new->excerptDimension = $excerptDimension;
+
+        return $new;
     }
 
     public function getExcerptDimension(): ExcerptDimensionInterface

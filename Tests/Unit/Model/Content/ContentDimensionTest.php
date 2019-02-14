@@ -21,6 +21,16 @@ class ContentDimensionTest extends TestCase
 {
     const RESOURCE_KEY = 'test_resource_contents';
 
+    public function testCreateClone(): void
+    {
+        $dimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
+        $contentDimension = new ContentDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'resource-1');
+
+        $newContentDimension = $contentDimension->createClone('new-resource-1');
+
+        $this->assertSame('new-resource-1', $newContentDimension->getResourceId());
+    }
+
     public function testGetDimension(): void
     {
         $dimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);

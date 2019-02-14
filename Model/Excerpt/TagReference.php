@@ -18,7 +18,7 @@ use Sulu\Bundle\TagBundle\Tag\TagInterface;
 class TagReference implements TagReferenceInterface
 {
     /**
-     * @var int
+     * @var int|null
      */
     private $no;
 
@@ -45,6 +45,19 @@ class TagReference implements TagReferenceInterface
         $this->excerptDimension = $excerptDimension;
         $this->tag = $tag;
         $this->order = $order;
+    }
+
+    public function __clone()
+    {
+        $this->no = null;
+    }
+
+    public function createClone(ExcerptDimensionInterface $excerptDimension): TagReferenceInterface
+    {
+        $new = clone $this;
+        $new->excerptDimension = $excerptDimension;
+
+        return $new;
     }
 
     public function getExcerptDimension(): ExcerptDimensionInterface

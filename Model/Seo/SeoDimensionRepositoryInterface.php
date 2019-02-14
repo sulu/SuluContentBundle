@@ -17,6 +17,11 @@ use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierInter
 
 interface SeoDimensionRepositoryInterface
 {
+    public function createClone(
+        SeoDimensionInterface $seoDimension,
+        string $newResourceId
+    ): SeoDimensionInterface;
+
     public function createDimension(
         string $resourceKey,
         string $resourceId,

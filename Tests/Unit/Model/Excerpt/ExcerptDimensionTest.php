@@ -14,6 +14,8 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Model\Excerpt;
 
 use PHPUnit\Framework\TestCase;
+use Prophecy\Argument;
+use Sulu\Bundle\CategoryBundle\Entity\Category;
 use Sulu\Bundle\CategoryBundle\Entity\CategoryInterface;
 use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierInterface;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptDimension;
@@ -26,6 +28,56 @@ use Sulu\Bundle\TagBundle\Tag\TagInterface;
 class ExcerptDimensionTest extends TestCase
 {
     const RESOURCE_KEY = 'test_resource_excerpts';
+
+    public function testCreateClone(): void
+    {
+        $category1 = $this->prophesize(Category::class);
+        $category1->getId()->willReturn(1);
+
+        $category2 = $this->prophesize(Category::class);
+        $category2->getId()->willReturn(2);
+
+        $tag1 = $this->prophesize(TagInterface::class);
+
+        $media1 = $this->prophesize(MediaInterface::class);
+
+        $tagReference1 = $this->prophesize(TagReferenceInterface::class);
+
+        $iconReference1 = $this->prophesize(IconReferenceInterface::class);
+
+        $imageReference1 = $this->prophesize(ImageReferenceInterface::class);
+
+        $dimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
+        $excerptDimension = new ExcerptDimension(
+            $dimensionIdentifier->reveal(),
+            self::RESOURCE_KEY,
+            'resource-1',
+            [$category1->reveal(), $category2->reveal()],
+            [$tagReference1->reveal()],
+            [$iconReference1->reveal()],
+            [$imageReference1->reveal()]
+        );
+
+        $newTagReference1 = $this->prophesize(TagReferenceInterface::class);
+        $newTagReference1->getTag()->willReturn($tag1->reveal());
+        $tagReference1->createClone(Argument::type(ExcerptDimension::class))->willReturn($newTagReference1->reveal());
+
+        $newIconReference1 = $this->prophesize(IconReferenceInterface::class);
+        $newIconReference1->getMedia()->willReturn($media1->reveal());
+        $iconReference1->createClone(Argument::type(ExcerptDimension::class))->willReturn($newIconReference1->reveal());
+
+        $newImageReference1 = $this->prophesize(ImageReferenceInterface::class);
+        $newImageReference1->getMedia()->willReturn($media1->reveal());
+        $imageReference1->createClone(Argument::type(ExcerptDimension::class))->willReturn($newImageReference1->reveal());
+
+        $newExcerptDimension = $excerptDimension->createClone('new-resource-1');
+
+        $this->assertSame('new-resource-1', $newExcerptDimension->getResourceId());
+        $this->assertCount(2, $newExcerptDimension->getCategories());
+        $this->assertCount(1, $newExcerptDimension->getTags());
+        $this->assertCount(1, $newExcerptDimension->getIcons());
+        $this->assertCount(1, $newExcerptDimension->getImages());
+    }
 
     public function testGetDimension(): void
     {
@@ -334,11 +386,11 @@ class ExcerptDimensionTest extends TestCase
         $excerptDimension = new ExcerptDimension(
             $dimensionIdentifier->reveal(),
             self::RESOURCE_KEY,
-            'resource-1',
-            'title-1',
-            'more-1',
-            'discription-1'
+            'resource-1'
         );
+        $excerptDimension->setTitle('title-1');
+        $excerptDimension->setMore('more-1');
+        $excerptDimension->setDescription('discription-1');
 
         $category1 = $this->prophesize(CategoryInterface::class);
         $category1->getId()->shouldBeCalled()->willReturn(1);
@@ -362,11 +414,12 @@ class ExcerptDimensionTest extends TestCase
         $otherExcerptDimension = new ExcerptDimension(
             $otherDimensionIdentifier->reveal(),
             'other-resource-key',
-            'other-resource-id',
-            'other-title',
-            'other-more',
-            'other-description'
+            'other-resource-id'
         );
+        $otherExcerptDimension->setTitle('other-title');
+        $otherExcerptDimension->setMore('other-more');
+        $otherExcerptDimension->setDescription('other-description');
+
         $otherExcerptDimension->addCategory($category1->reveal());
         $otherExcerptDimension->addTag($tagReference1->reveal());
         $otherExcerptDimension->addIcon($iconReference1->reveal());

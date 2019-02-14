@@ -34,7 +34,7 @@ trait PayloadTrait
 
     public function keyExists(string $key): bool
     {
-        return array_key_exists($key, $this->payload);
+        return \array_key_exists($key, $this->payload);
     }
 
     public function getValue(string $key)

@@ -27,6 +27,17 @@ class SeoDimensionRepository extends ServiceEntityRepository implements SeoDimen
         parent::__construct($registry, SeoDimension::class);
     }
 
+    public function createClone(
+        SeoDimensionInterface $seoDimension,
+        string $newResourceId
+    ): SeoDimensionInterface {
+        $newSeoDimension = $seoDimension->createClone($newResourceId);
+
+        $this->getEntityManager()->persist($newSeoDimension);
+
+        return $newSeoDimension;
+    }
+
     public function createDimension(
         string $resourceKey,
         string $resourceId,

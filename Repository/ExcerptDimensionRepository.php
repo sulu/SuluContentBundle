@@ -27,6 +27,17 @@ class ExcerptDimensionRepository extends ServiceEntityRepository implements Exce
         parent::__construct($registry, ExcerptDimension::class);
     }
 
+    public function createClone(
+        ExcerptDimensionInterface $excerptDimension,
+        string $newResourceId
+    ): ExcerptDimensionInterface {
+        $newExcerptDimension = $excerptDimension->createClone($newResourceId);
+
+        $this->getEntityManager()->persist($newExcerptDimension);
+
+        return $newExcerptDimension;
+    }
+
     public function createDimension(
         string $resourceKey,
         string $resourceId,
@@ -77,8 +88,17 @@ class ExcerptDimensionRepository extends ServiceEntityRepository implements Exce
         return $this->findBy(['resourceKey' => $resourceKey, 'resourceId' => $resourceId]);
     }
 
-    public function findByDimensionIdentifiers(string $resourceKey, string $resourceId, array $dimensionIdentifiers): array
-    {
-        return $this->findBy(['resourceKey' => $resourceKey, 'resourceId' => $resourceId, 'dimensionIdentifier' => $dimensionIdentifiers]);
+    public function findByDimensionIdentifiers(
+        string $resourceKey,
+        string $resourceId,
+        array $dimensionIdentifiers
+    ): array {
+        return $this->findBy(
+            [
+                'resourceKey' => $resourceKey,
+                'resourceId' => $resourceId,
+                'dimensionIdentifier' => $dimensionIdentifiers,
+            ]
+        );
     }
 }

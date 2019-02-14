@@ -17,6 +17,8 @@ use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierInter
 
 interface ContentDimensionInterface
 {
+    public function createClone(string $resourceId): self;
+
     public function getDimensionIdentifier(): DimensionIdentifierInterface;
 
     public function getResourceKey(): string;

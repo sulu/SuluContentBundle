@@ -18,6 +18,8 @@ use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierInter
 
 interface ExcerptDimensionInterface
 {
+    public function createClone(string $newId): self;
+
     public function getDimensionIdentifier(): DimensionIdentifierInterface;
 
     public function getResourceKey(): string;

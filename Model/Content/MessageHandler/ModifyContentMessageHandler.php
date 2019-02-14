@@ -99,7 +99,7 @@ class ModifyContentMessageHandler
                 $name = (string) $name;
             }
 
-            if (array_key_exists($name, $data)) {
+            if (\array_key_exists($name, $data)) {
                 $value = $data[$name];
             }
 

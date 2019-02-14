@@ -17,6 +17,11 @@ use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierInter
 
 interface ContentDimensionRepositoryInterface
 {
+    public function createClone(
+        ContentDimensionInterface $contentDimesion,
+        string $newResourceId
+    ): ContentDimensionInterface;
+
     public function createDimension(
         string $resourceKey,
         string $resourceId,
@@ -47,5 +52,9 @@ interface ContentDimensionRepositoryInterface
      *
      * @return ContentDimensionInterface[]
      */
-    public function findByDimensionIdentifiers(string $resourceKey, string $resourceId, array $dimensionIdentifiers): array;
+    public function findByDimensionIdentifiers(
+        string $resourceKey,
+        string $resourceId,
+        array $dimensionIdentifiers
+    ): array;
 }

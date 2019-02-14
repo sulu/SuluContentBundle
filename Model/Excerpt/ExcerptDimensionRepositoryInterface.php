@@ -17,6 +17,11 @@ use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierInter
 
 interface ExcerptDimensionRepositoryInterface
 {
+    public function createClone(
+        ExcerptDimensionInterface $excerptDimension,
+        string $newResourceId
+    ): ExcerptDimensionInterface;
+
     public function createDimension(
         string $resourceKey,
         string $resourceId,
@@ -47,5 +52,9 @@ interface ExcerptDimensionRepositoryInterface
      *
      * @return ExcerptDimensionInterface[]
      */
-    public function findByDimensionIdentifiers(string $resourceKey, string $resourceId, array $dimensionIdentifiers): array;
+    public function findByDimensionIdentifiers(
+        string $resourceKey,
+        string $resourceId,
+        array $dimensionIdentifiers
+    ): array;
 }

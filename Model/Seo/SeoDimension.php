@@ -18,7 +18,7 @@ use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierInter
 class SeoDimension implements SeoDimensionInterface
 {
     /**
-     * @var int
+     * @var int|null
      */
     private $no;
 
@@ -94,6 +94,19 @@ class SeoDimension implements SeoDimensionInterface
         $this->noIndex = $noIndex;
         $this->noFollow = $noFollow;
         $this->hideInSitemap = $hideInSitemap;
+    }
+
+    public function __clone()
+    {
+        $this->no = null;
+    }
+
+    public function createClone(string $resourceId): SeoDimensionInterface
+    {
+        $new = clone $this;
+        $new->resourceId = $resourceId;
+
+        return $new;
     }
 
     public function getDimensionIdentifier(): DimensionIdentifierInterface

@@ -21,6 +21,16 @@ class SeoDimensionTest extends TestCase
 {
     const RESOURCE_KEY = 'test_resource_seos';
 
+    public function testCreateClone(): void
+    {
+        $dimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
+        $seoDimension = new SeoDimension($dimensionIdentifier->reveal(), self::RESOURCE_KEY, 'resource-1');
+
+        $newSeoDimension = $seoDimension->createClone('new-resource-1');
+
+        $this->assertSame('new-resource-1', $newSeoDimension->getResourceId());
+    }
+
     public function testGetDimension(): void
     {
         $dimensionIdentifier = $this->prophesize(DimensionIdentifierInterface::class);
