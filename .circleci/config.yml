@@ -3,42 +3,88 @@
 # Check https://circleci.com/docs/2.0/language-php/ for more details
 #
 version: 2
+
+.environment_variables: &environment_variables
+    METHOD_COVERAGE_THRESHOLD: 95
+    APP_ENV: test
+    DATABASE_URL: mysql://root:root@127.0.0.1:3306/su_content_test
+    DATABASE_CHARSET: utf8mb4
+    DATABASE_COLLATE: utf8mb4_unicode_ci
+
+
+workflows:
+    version: 2
+    default:
+        jobs:
+            - composer
+            - lint:
+                requires:
+                    - composer
+            - test-unit:
+                requires:
+                    - composer
+            - test-functional:
+                requires:
+                    - composer
+
 jobs:
-    build:
+    composer:
         docker:
-        - image: circleci/php:7.1-node-browsers
-        - image: circleci/mysql:5.7
-
-        environment:
-            APP_ENV: test
-            DATABASE_URL: mysql://root:@127.0.0.1:3306/su_content_test
-            DATABASE_CHARSET: utf8mb4
-            DATABASE_COLLATE: utf8mb4_unicode_ci
-        working_directory: ~/repo
-
+            - image: composer:latest
         steps:
-        - checkout
-
-        - run: echo -e "memory_limit=2G" | sudo tee /usr/local/etc/php/php.ini > /dev/null
-
-        - run:
-              name: Install OS dependencies (mysql, gd)
-              command: |
-                  sudo apt-get install -y libpng-dev
-                  sudo -E docker-php-ext-install pdo_mysql gd
-              parallel: true
-
-        - restore_cache:
-              keys:
-              - v1-dependencies-{{ checksum "composer.json" }}
-              - v1-dependencies-
-
-        - run: composer install -n --prefer-dist
-
-        - save_cache:
-              paths:
-              - ~/.composer
-              key: v1-dependencies-{{ checksum "composer.json" }}
-
-        - run: composer bootstrap-test-environment
-        - run: composer test
+            - checkout
+            - run: composer config -g cache-dir "$(pwd)/.composer-cache"
+            - restore_cache:
+                keys:
+                    - v3-composer-cache-{{ checksum "composer.json" }}
+                    - v3-composer-cache-
+            - run: composer install -n --prefer-dist --ignore-platform-reqs --no-scripts
+            - run: curl --show-error --silent https://getcomposer.org/installer | php
+            - save_cache:
+                paths:
+                    - composer-cache
+                key: v3-composer-cache-{{ checksum "composer.json" }}
+            - persist_to_workspace:
+                  root: .
+                  paths:
+                      - vendor
+                      - composer.phar
+                      - composer.lock
+    lint:
+        docker:
+            - image: sulu/php:7.2-cli
+            - image: mysql:5.7
+              environment:
+                  MYSQL_ROOT_PASSWORD: root
+        environment: *environment_variables
+        steps:
+            - checkout
+            - attach_workspace:
+                  at: .
+            - run: php composer.phar bootstrap-test-environment
+            - run: php Tests/Application/bin/console doctrine:database:create --if-not-exists -e prod
+            - run: php composer.phar lint
+    test-unit:
+        docker:
+            - image: sulu/php:7.2-cli
+        environment: *environment_variables
+        steps:
+            - checkout
+            - attach_workspace:
+                at: .
+            - run: docker-php-ext-enable xdebug
+            - run: php composer.phar test -- Tests/Unit --coverage-php var/coverage.php --coverage-html coverage-report --log-junit var/junit.xml
+            - run: php Tests/coverage-checker.php "line" "Model" "$METHOD_COVERAGE_THRESHOLD"
+    test-functional:
+        docker:
+            - image: sulu/php:7.2-cli
+            - image: mysql:5.7
+              environment:
+                  MYSQL_ROOT_PASSWORD: root
+        environment: *environment_variables
+        steps:
+            - checkout
+            - attach_workspace:
+                  at: .
+            - run: php composer.phar bootstrap-test-environment
+            - run: php composer.phar test -- Tests/Functional --log-junit var/junit.xml
