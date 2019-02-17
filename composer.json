@@ -56,14 +56,16 @@
             "@php Tests/Application/bin/console doctrine:schema:update --force -e test"
         ],
         "test": [
-            "@phpunit",
+            "@phpunit"
+        ],
+        "lint": [
             "@phpstan",
             "@php-cs"
         ],
-        "phpunit": "vendor/bin/phpunit",
-        "phpstan": "vendor/bin/phpstan analyze -c ./phpstan.neon . -l max",
-        "php-cs": "vendor/bin/php-cs-fixer fix --verbose --diff --dry-run",
-        "php-cs-fix": "vendor/bin/php-cs-fixer fix"
+        "phpunit": "@php vendor/bin/phpunit",
+        "phpstan": "@php vendor/bin/phpstan analyze -c ./phpstan.neon . -l max",
+        "php-cs": "@php vendor/bin/php-cs-fixer fix --verbose --diff --dry-run",
+        "php-cs-fix": "@php vendor/bin/php-cs-fixer fix"
     },
     "extra": {
         "branch-alias": {
