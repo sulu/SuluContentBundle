@@ -5,7 +5,7 @@
 version: 2
 
 .environment_variables: &environment_variables
-    METHOD_COVERAGE_THRESHOLD: 95
+    METHOD_COVERAGE_THRESHOLD: 50
     APP_ENV: test
     DATABASE_URL: mysql://root:root@127.0.0.1:3306/su_content_test
     DATABASE_CHARSET: utf8mb4
@@ -33,17 +33,16 @@ jobs:
             - image: composer:latest
         steps:
             - checkout
-            - run: composer config -g cache-dir "$(pwd)/.composer-cache"
             - restore_cache:
                 keys:
-                    - v3-composer-cache-{{ checksum "composer.json" }}
-                    - v3-composer-cache-
+                    - v4-composer-cache-{{ checksum "composer.json" }}
+                    - v4-composer-cache-
             - run: composer install -n --prefer-dist --ignore-platform-reqs --no-scripts
             - run: curl --show-error --silent https://getcomposer.org/installer | php
             - save_cache:
                 paths:
-                    - composer-cache
-                key: v3-composer-cache-{{ checksum "composer.json" }}
+                    - ~/.composer/cache
+                key: v4-composer-cache-{{ checksum "composer.json" }}
             - persist_to_workspace:
                   root: .
                   paths:
@@ -58,6 +57,7 @@ jobs:
                   MYSQL_ROOT_PASSWORD: root
         environment: *environment_variables
         steps:
+            - run: echo "waiting for mysql container startup" && sleep 5
             - checkout
             - attach_workspace:
                   at: .
@@ -74,6 +74,10 @@ jobs:
                 at: .
             - run: docker-php-ext-enable xdebug
             - run: php composer.phar test -- Tests/Unit --coverage-php var/coverage.php --coverage-html coverage-report --log-junit var/junit.xml
+            - store_artifacts:
+                path: coverage-report
+            - store_test_results:
+                path: var
             - run: php Tests/coverage-checker.php "line" "Model" "$METHOD_COVERAGE_THRESHOLD"
     test-functional:
         docker:
@@ -83,8 +87,11 @@ jobs:
                   MYSQL_ROOT_PASSWORD: root
         environment: *environment_variables
         steps:
+            - run: echo "waiting for mysql container startup" && sleep 5
             - checkout
             - attach_workspace:
                   at: .
             - run: php composer.phar bootstrap-test-environment
             - run: php composer.phar test -- Tests/Functional --log-junit var/junit.xml
+            - store_test_results:
+                  path: var

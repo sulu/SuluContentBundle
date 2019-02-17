@@ -13,6 +13,7 @@ parameters:
     excludes_analyse:
         - %currentWorkingDirectory%/DependencyInjection/Configuration.php
         - %currentWorkingDirectory%/vendor/*
+        - %currentWorkingDirectory%/Tests/coverage-checker.php
         - %currentWorkingDirectory%/Tests/Application/var/*
     symfony:
         container_xml_path: %rootDir%/../../../Tests/Application/var/cache/admin/test/adminAdminTestDebugProjectContainer.xml
