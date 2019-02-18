@@ -113,7 +113,7 @@ function printCodeCoverageReport(Directory $pathReport): void
         sprintf('%d/%d', $pathReport->getNumTestedClasses(), $pathReport->getNumClasses()),
     ]);
 
-    $io->title('Code coverage report for path "' . $pathReport->getPath() . '"');
+    $io->title('Code coverage report for directory "' . $pathReport->getPath() . '"');
     $table->render();
     $io->newLine(2);
 }
@@ -122,7 +122,7 @@ function getReportForPath(Directory $rootReport, string $path): ?Directory
 {
     /** @var Directory $report */
     foreach ($rootReport as $report) {
-        if (0 !== preg_match('/' . $path . '/', $report->getPath())) {
+        if (false !== mb_stripos($report->getPath(), $path)) {
             return $report;
         }
     }

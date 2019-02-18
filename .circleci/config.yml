@@ -5,12 +5,11 @@
 version: 2
 
 .environment_variables: &environment_variables
-    METHOD_COVERAGE_THRESHOLD: 90
+    METHOD_COVERAGE_THRESHOLD: 95
     APP_ENV: test
     DATABASE_URL: mysql://root:root@127.0.0.1:3306/su_content_test
     DATABASE_CHARSET: utf8mb4
     DATABASE_COLLATE: utf8mb4_unicode_ci
-
 
 workflows:
     version: 2
@@ -39,6 +38,7 @@ jobs:
                     - v4-composer-cache-
             - run: composer install -n --prefer-dist --ignore-platform-reqs --no-scripts
             - run: curl --show-error --silent https://getcomposer.org/installer | php
+            - run: ls ~/.composer/cache
             - save_cache:
                 paths:
                     - ~/.composer/cache
@@ -52,11 +52,12 @@ jobs:
     lint:
         docker:
             - image: sulu/php:7.2-cli
-            - image: circleci/mysql:5.7
+            - image: mysql:5.7
               environment:
                   MYSQL_ROOT_PASSWORD: root
         environment: *environment_variables
         steps:
+            - run: echo "waiting for mysql container startup" && sleep 5
             - checkout
             - attach_workspace:
                   at: .
@@ -81,11 +82,12 @@ jobs:
     test-functional:
         docker:
             - image: sulu/php:7.2-cli
-            - image: circleci/mysql:5.7
+            - image: mysql:5.7
               environment:
                   MYSQL_ROOT_PASSWORD: root
         environment: *environment_variables
         steps:
+            - run: echo "waiting for mysql container startup" && sleep 5
             - checkout
             - attach_workspace:
                   at: .
