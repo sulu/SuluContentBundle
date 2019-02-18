@@ -37,7 +37,7 @@ class DimensionIdentifierRepository extends ServiceEntityRepository implements D
     public function create(array $attributes = []): DimensionIdentifierInterface
     {
         $key = md5(serialize($attributes));
-        if (array_key_exists($key, $this->cachedEntities)) {
+        if (\array_key_exists($key, $this->cachedEntities)) {
             return $this->cachedEntities[$key];
         }
 

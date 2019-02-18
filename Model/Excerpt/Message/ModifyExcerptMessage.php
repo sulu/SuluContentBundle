@@ -96,14 +96,14 @@ class ModifyExcerptMessage
     {
         $iconMediaData = $this->getNullableArrayValue('icons') ?? [];
 
-        return array_key_exists('ids', $iconMediaData) ? $iconMediaData['ids'] : [];
+        return \array_key_exists('ids', $iconMediaData) ? $iconMediaData['ids'] : [];
     }
 
     public function getImageMediaIds(): array
     {
         $imageMediaData = $this->getNullableArrayValue('images') ?? [];
 
-        return array_key_exists('ids', $imageMediaData) ? $imageMediaData['ids'] : [];
+        return \array_key_exists('ids', $imageMediaData) ? $imageMediaData['ids'] : [];
     }
 
     public function getExcerpt(): ExcerptViewInterface
