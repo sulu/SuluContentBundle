@@ -17,14 +17,14 @@ workflows:
         jobs:
             - composer
             - lint:
-                requires:
-                    - composer
+                  requires:
+                      - composer
             - test-unit:
-                requires:
-                    - composer
+                  requires:
+                      - composer
             - test-functional:
-                requires:
-                    - composer
+                  requires:
+                      - composer
 
 jobs:
     composer:
@@ -34,16 +34,15 @@ jobs:
             - checkout
             - run: composer config -g cache-dir "$(pwd)/.composer-cache"
             - restore_cache:
-                keys:
-                    - v6-composer-cache-{{ checksum "composer.json" }}
-                    - v6-composer-cache-
-            - run: ls .composer-cache
+                  keys:
+                      - v6-composer-cache-{{ checksum "composer.json" }}
+                      - v6-composer-cache-
             - run: composer install -n --prefer-dist --ignore-platform-reqs --no-scripts
             - run: curl --show-error --silent https://getcomposer.org/installer | php
             - save_cache:
-                paths:
-                    - .composer-cache
-                key: v6-composer-cache-{{ checksum "composer.json" }}
+                  paths:
+                      - .composer-cache
+                  key: v6-composer-cache-{{ checksum "composer.json" }}
             - persist_to_workspace:
                   root: .
                   paths:
@@ -72,13 +71,13 @@ jobs:
         steps:
             - checkout
             - attach_workspace:
-                at: .
+                  at: .
             - run: docker-php-ext-enable xdebug
-            - run: php composer.phar test -- Tests/Unit --coverage-php var/coverage.php --coverage-html coverage-report --log-junit var/junit.xml
+            - run: php composer.phar test -- Tests/Unit --coverage-php var/coverage.php --coverage-html coverage-report --log-junit var/unit/junit.xml
             - store_artifacts:
-                path: coverage-report
+                  path: coverage-report
             - store_test_results:
-                path: var
+                  path: var
             - run: php Tests/coverage-checker.php "line" "project/Model" "$METHOD_COVERAGE_THRESHOLD"
     test-functional:
         docker:
@@ -93,6 +92,6 @@ jobs:
             - attach_workspace:
                   at: .
             - run: php composer.phar bootstrap-test-environment
-            - run: php composer.phar test -- Tests/Functional --log-junit var/junit.xml
+            - run: php composer.phar test -- Tests/Functional --log-junit var/functional/junit.xml
             - store_test_results:
                   path: var
