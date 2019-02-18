@@ -37,11 +37,11 @@ function assertCodeCoverage(CodeCoverage $coverage, string $path, string $metric
     $pathReport = getReportForPath($rootReport, $path);
 
     if (!$pathReport) {
-        $io->error('Coverage report for path "' . $path . '"" not found.');
+        $io->error('Coverage report for path "' . $path . '" not found.');
         exit(1);
     }
 
-    printCodeCoverageReport($path, $pathReport);
+    printCodeCoverageReport($pathReport);
 
     if ('line' === $metric) {
         $reportedCoverage = $pathReport->getLineExecutedPercent();
@@ -75,7 +75,7 @@ function assertCodeCoverage(CodeCoverage $coverage, string $path, string $metric
     exit(0);
 }
 
-function printCodeCoverageReport(string $path, Directory $pathReport): void
+function printCodeCoverageReport(Directory $pathReport): void
 {
     global $io;
 
@@ -104,7 +104,7 @@ function printCodeCoverageReport(string $path, Directory $pathReport): void
         sprintf('%d/%d', $pathReport->getNumTestedClasses(), $pathReport->getNumClasses()),
     ]);
 
-    $io->title('Code coverage report for path "' . $path . '"');
+    $io->title('Code coverage report for path "' . $pathReport->getPath() . '"');
     $table->render();
     $io->newLine(2);
 }
@@ -113,8 +113,7 @@ function getReportForPath(Directory $rootReport, string $path): ?Directory
 {
     /** @var Directory $report */
     foreach ($rootReport as $report) {
-        $reportPath = $report->getPath();
-        if (false !== mb_stripos($reportPath, $path)) {
+        if (0 !== preg_match('/' . $path . '/', $report->getPath())) {
             return $report;
         }
     }
