@@ -32,17 +32,18 @@ jobs:
             - image: composer:latest
         steps:
             - checkout
+            - run: composer config -g cache-dir "$(pwd)/.composer-cache"
             - restore_cache:
                 keys:
-                    - v4-composer-cache-{{ checksum "composer.json" }}
-                    - v4-composer-cache-
+                    - v6-composer-cache-{{ checksum "composer.json" }}
+                    - v6-composer-cache-
+            - run: ls .composer-cache
             - run: composer install -n --prefer-dist --ignore-platform-reqs --no-scripts
             - run: curl --show-error --silent https://getcomposer.org/installer | php
-            - run: ls ~/.composer/cache
             - save_cache:
                 paths:
-                    - ~/.composer/cache
-                key: v4-composer-cache-{{ checksum "composer.json" }}
+                    - .composer-cache
+                key: v6-composer-cache-{{ checksum "composer.json" }}
             - persist_to_workspace:
                   root: .
                   paths:
