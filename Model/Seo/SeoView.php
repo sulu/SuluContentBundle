@@ -31,22 +31,22 @@ class SeoView implements SeoViewInterface
     private $locale;
 
     /**
-     * @var ?string
+     * @var string|null
      */
     private $title;
 
     /**
-     * @var ?string
+     * @var string|null
      */
     private $description;
 
     /**
-     * @var ?string
+     * @var string|null
      */
     private $keywords;
 
     /**
-     * @var ?string
+     * @var string|null
      */
     private $canonicalUrl;
 

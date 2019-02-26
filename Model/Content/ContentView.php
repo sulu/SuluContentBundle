@@ -36,7 +36,7 @@ class ContentView implements ContentViewInterface
     private $type;
 
     /**
-     * @var array|null
+     * @var array
      */
     private $data;
 
@@ -74,13 +74,13 @@ class ContentView implements ContentViewInterface
         return $this->type;
     }
 
-    public function getData(): ?array
+    public function getData(): array
     {
         return $this->data;
     }
 
     public function withResource(string $resourceKey, string $resourceId, string $locale): ContentViewInterface
     {
-        return new static($resourceKey, $resourceId, $locale, $this->type, $this->data);
+        return new static($resourceKey, $resourceId, $locale, $this->type, $this->data ?? []);
     }
 }
