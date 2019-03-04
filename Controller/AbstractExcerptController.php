@@ -48,39 +48,39 @@ abstract class AbstractExcerptController implements ClassResourceInterface
         $this->setViewHandler($viewHandler);
     }
 
-    public function getAction(Request $request, string $resourceId): Response
+    public function getAction(Request $request, string $id): Response
     {
         try {
-            $message = new FindExcerptQuery($this->getExcerptResourceKey(), $resourceId, $request->query->get('locale'));
+            $message = new FindExcerptQuery($this->getExcerptResourceKey(), $id, $request->query->get('locale'));
             $this->messageBus->dispatch($message);
             $excerpt = $message->getExcerpt();
         } catch (ExcerptNotFoundException $exception) {
             // need to return an empty excerpt-view object because the sulu frontend does not expect any errors here
             // TODO: review this code when subresource handling is implemented in the sulu frontend
-            $excerpt = new ExcerptView($this->getExcerptResourceKey(), $resourceId, $request->query->get('locale'));
+            $excerpt = new ExcerptView($this->getExcerptResourceKey(), $id, $request->query->get('locale'));
         }
 
         return $this->handleView($this->view($excerpt)->setContext($this->createSerializationContext()));
     }
 
-    public function putAction(Request $request, string $resourceId): Response
+    public function putAction(Request $request, string $id): Response
     {
         $locale = $request->query->get('locale');
-        $message = new ModifyExcerptMessage($this->getExcerptResourceKey(), $resourceId, $locale, $request->request->all());
+        $message = new ModifyExcerptMessage($this->getExcerptResourceKey(), $id, $locale, $request->request->all());
         $this->messageBus->dispatch($message);
         $excerpt = $message->getExcerpt();
 
         $action = $request->query->get('action');
         if ($action) {
-            $this->handleAction($resourceId, $locale, $action);
+            $this->handleAction($id, $locale, $action);
         }
 
         return $this->handleView($this->view($excerpt)->setContext($this->createSerializationContext()));
     }
 
-    public function deleteAction(Request $request, string $resourceId): Response
+    public function deleteAction(Request $request, string $id): Response
     {
-        $this->handleDelete($resourceId, $request->query->get('locale'));
+        $this->handleDelete($id, $request->query->get('locale'));
 
         return $this->handleView($this->view());
     }

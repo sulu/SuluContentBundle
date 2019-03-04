@@ -121,6 +121,10 @@ trait PayloadTrait
             return null;
         }
 
+        if (\is_int($value)) {
+            $value = (float) $value;
+        }
+
         Assert::float($value);
 
         return $value;

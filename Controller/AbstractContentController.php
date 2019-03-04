@@ -54,10 +54,10 @@ abstract class AbstractContentController implements ClassResourceInterface
         $this->setViewHandler($viewHandler);
     }
 
-    public function getAction(Request $request, string $resourceId): Response
+    public function getAction(Request $request, string $id): Response
     {
         try {
-            $message = new FindContentQuery($this->getContentResourceKey(), $resourceId, $request->query->get('locale'));
+            $message = new FindContentQuery($this->getContentResourceKey(), $id, $request->query->get('locale'));
             $this->messageBus->dispatch($message);
             $content = $message->getContent();
         } catch (ContentNotFoundException $exception) {
@@ -65,7 +65,7 @@ abstract class AbstractContentController implements ClassResourceInterface
             // TODO: review this code when subresource handling is implemented in the sulu frontend
             $content = new ContentView(
                 $this->getContentResourceKey(),
-                $resourceId,
+                $id,
                 $request->query->get('locale'),
                 $this->defaultType
             );
@@ -74,7 +74,7 @@ abstract class AbstractContentController implements ClassResourceInterface
         return $this->handleView($this->view($content));
     }
 
-    public function putAction(Request $request, string $resourceId): Response
+    public function putAction(Request $request, string $id): Response
     {
         $data = $request->request->all();
         unset($data['template']);
@@ -84,21 +84,21 @@ abstract class AbstractContentController implements ClassResourceInterface
         ];
 
         $locale = $request->query->get('locale');
-        $message = new ModifyContentMessage($this->getContentResourceKey(), $resourceId, $locale, $payload);
+        $message = new ModifyContentMessage($this->getContentResourceKey(), $id, $locale, $payload);
         $this->messageBus->dispatch($message);
         $content = $message->getContent();
 
         $action = $request->query->get('action');
         if ($action) {
-            $this->handleAction($resourceId, $locale, $action);
+            $this->handleAction($id, $locale, $action);
         }
 
         return $this->handleView($this->view($content));
     }
 
-    public function deleteAction(Request $request, string $resourceId): Response
+    public function deleteAction(Request $request, string $id): Response
     {
-        $this->handleDelete($resourceId, $request->query->get('locale'));
+        $this->handleDelete($id, $request->query->get('locale'));
 
         return $this->handleView($this->view());
     }
