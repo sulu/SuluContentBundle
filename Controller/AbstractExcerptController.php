@@ -23,7 +23,6 @@ use Sulu\Bundle\ContentBundle\Model\Excerpt\Message\ModifyExcerptMessage;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\Query\FindExcerptQuery;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 abstract class AbstractExcerptController implements ClassResourceInterface
@@ -47,11 +46,6 @@ abstract class AbstractExcerptController implements ClassResourceInterface
         $this->messageBus = $messageBus;
 
         $this->setViewHandler($viewHandler);
-    }
-
-    public function cgetAction(): Response
-    {
-        throw new NotFoundHttpException();
     }
 
     public function getAction(Request $request, string $resourceId): Response
