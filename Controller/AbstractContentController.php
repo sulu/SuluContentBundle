@@ -22,7 +22,6 @@ use Sulu\Bundle\ContentBundle\Model\Content\Message\ModifyContentMessage;
 use Sulu\Bundle\ContentBundle\Model\Content\Query\FindContentQuery;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 abstract class AbstractContentController implements ClassResourceInterface
@@ -53,11 +52,6 @@ abstract class AbstractContentController implements ClassResourceInterface
         $this->defaultType = $defaultType;
 
         $this->setViewHandler($viewHandler);
-    }
-
-    public function cgetAction(): Response
-    {
-        throw new NotFoundHttpException();
     }
 
     public function getAction(Request $request, string $resourceId): Response
