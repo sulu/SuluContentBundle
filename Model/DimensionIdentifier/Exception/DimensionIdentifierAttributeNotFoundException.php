@@ -14,13 +14,18 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\Exception;
 
 use Sulu\Bundle\ContentBundle\Common\Model\ModelNotFoundException;
-use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierAttribute;
+use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierAttributeInterface;
 use Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierInterface;
 
 class DimensionIdentifierAttributeNotFoundException extends ModelNotFoundException
 {
-    public function __construct(DimensionIdentifierInterface $dimension, string $key, $code = 0, \Throwable $previous = null)
+    public static function createForDimensionAndKey(DimensionIdentifierInterface $dimension, string $key): self
     {
-        parent::__construct(DimensionIdentifierAttribute::class, sprintf('%s#%s', $dimension->getId(), $key), $code, $previous);
+        return new self(['dimension' => $dimension->getId(), 'key' => $key]);
+    }
+
+    public function __construct(array $criteria, $code = 0, \Throwable $previous = null)
+    {
+        parent::__construct(DimensionIdentifierAttributeInterface::class, $criteria, $code, $previous);
     }
 }

@@ -65,7 +65,7 @@ class PublishContentMessageHandler
 
         $contentView = $this->contentViewFactory->create($publishedContentDimensions, $message->getLocale());
         if (!$contentView) {
-            throw new ContentNotFoundException($resourceKey, $resourceId);
+            throw new ContentNotFoundException(['resourceKey' => $resourceKey, 'resourceId' => $resourceId]);
         }
 
         $message->setContent($contentView);
@@ -85,7 +85,7 @@ class PublishContentMessageHandler
                 return null;
             }
 
-            throw new ContentNotFoundException($resourceKey, $resourceId);
+            throw new ContentNotFoundException(['resourceKey' => $resourceKey, 'resourceId' => $resourceId]);
         }
 
         $type = $draftContent->getType();

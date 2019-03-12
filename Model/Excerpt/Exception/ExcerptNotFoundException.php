@@ -18,8 +18,8 @@ use Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptDimension;
 
 class ExcerptNotFoundException extends ModelNotFoundException
 {
-    public function __construct(string $resourceKey, string $resourceId, $code = 0, \Throwable $previous = null)
+    public function __construct(array $criteria, $code = 0, \Throwable $previous = null)
     {
-        parent::__construct(ExcerptDimension::class, sprintf('%s#%s', $resourceKey, $resourceId), $code, $previous);
+        parent::__construct(ExcerptDimension::class, $criteria, $code, $previous);
     }
 }

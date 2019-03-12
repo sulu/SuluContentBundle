@@ -72,7 +72,7 @@ class ModifyContentMessageHandler
 
         $contentView = $this->contentViewFactory->create([$localizedDraftContent, $draftContent], $message->getLocale());
         if (!$contentView) {
-            throw new ContentNotFoundException($message->getResourceKey(), $message->getResourceId());
+            throw new ContentNotFoundException(['resourceKey' => $message->getResourceKey(), 'resourceId' => $message->getResourceId()]);
         }
 
         $message->setContent($contentView);

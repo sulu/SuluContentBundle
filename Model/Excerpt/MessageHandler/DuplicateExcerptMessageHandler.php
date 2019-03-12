@@ -56,7 +56,7 @@ class DuplicateExcerptMessageHandler
             $dimensionIdentifiers
         );
         if (!$excerptDimensions) {
-            throw new ExcerptNotFoundException($message->getResourceKey(), $message->getResourceId());
+            throw new ExcerptNotFoundException(['resourceKey' => $message->getResourceKey(), 'resourceId' => $message->getResourceId()]);
         }
 
         foreach ($excerptDimensions as $excerptDimension) {

@@ -59,7 +59,7 @@ class FindSeoQueryHandler
         );
 
         if (!$seoView) {
-            throw new SeoNotFoundException($query->getResourceKey(), $query->getResourceId());
+            throw new SeoNotFoundException(['resourceKey' => $query->getResourceKey(), 'resourceId' => $query->getResourceId()]);
         }
 
         $query->setSeo($seoView);

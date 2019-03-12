@@ -64,7 +64,7 @@ class FindContentQueryHandler
         );
 
         if (!$contentView) {
-            throw new ContentNotFoundException($query->getResourceKey(), $query->getResourceId());
+            throw new ContentNotFoundException(['resourceKey' => $query->getResourceKey(), 'resourceId' => $query->getResourceId()]);
         }
 
         $query->setContent($contentView);
