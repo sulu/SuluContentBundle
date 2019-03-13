@@ -18,8 +18,8 @@ use Sulu\Bundle\ContentBundle\Model\Seo\SeoDimension;
 
 class SeoNotFoundException extends ModelNotFoundException
 {
-    public function __construct(string $resourceKey, string $resourceId, $code = 0, \Throwable $previous = null)
+    public function __construct(array $criteria, $code = 0, \Throwable $previous = null)
     {
-        parent::__construct(SeoDimension::class, sprintf('%s#%s', $resourceKey, $resourceId), $code, $previous);
+        parent::__construct(SeoDimension::class, $criteria, $code, $previous);
     }
 }

@@ -64,7 +64,7 @@ class PublishSeoMessageHandler
 
         $seoView = $this->seoViewFactory->create($publishedSeoDimensions, $message->getLocale());
         if (!$seoView) {
-            throw new SeoNotFoundException($resourceKey, $resourceId);
+            throw new SeoNotFoundException(['resourceKey' => $resourceKey, 'resourceId' => $resourceId]);
         }
 
         $message->setSeo($seoView);
@@ -84,7 +84,7 @@ class PublishSeoMessageHandler
                 return null;
             }
 
-            throw new SeoNotFoundException($resourceKey, $resourceId);
+            throw new SeoNotFoundException(['resourceKey' => $resourceKey, 'resourceId' => $resourceId]);
         }
 
         $liveDimensionIdentifier = $this->getDimensionIdentifier(DimensionIdentifierInterface::ATTRIBUTE_VALUE_LIVE, $locale);

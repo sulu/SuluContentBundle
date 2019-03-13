@@ -21,18 +21,27 @@ abstract class ModelNotFoundException extends \Exception
     private $model;
 
     /**
-     * @var string
+     * @var array
      */
-    private $identifier;
+    private $criteria;
 
-    public function __construct(string $model, string $identifier, $code = 0, \Throwable $previous = null)
+    public function __construct(string $model, array $criteria, $code = 0, \Throwable $previous = null)
     {
-        $message = sprintf('Model "%s" with identifier "%s" not found', $model, $identifier);
+        $criteriaMessages = [];
+        foreach ($criteria as $key => $value) {
+            $criteriaMessages[] = sprintf('with %s "%s"', $key, $value);
+        }
+
+        $message = sprintf(
+            'Model "%s" with %s not found',
+            $model,
+            implode(' and ', $criteriaMessages)
+        );
 
         parent::__construct($message, $code, $previous);
 
         $this->model = $model;
-        $this->identifier = $identifier;
+        $this->criteria = $criteria;
     }
 
     public function getModel(): string
@@ -40,8 +49,8 @@ abstract class ModelNotFoundException extends \Exception
         return $this->model;
     }
 
-    public function getIdentifier(): string
+    public function getCriteria(): array
     {
-        return $this->identifier;
+        return $this->criteria;
     }
 }

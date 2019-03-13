@@ -76,7 +76,7 @@ class DimensionIdentifier implements DimensionIdentifierInterface
             }
         }
 
-        throw new DimensionIdentifierAttributeNotFoundException($this, $key);
+        throw DimensionIdentifierAttributeNotFoundException::createForDimensionAndKey($this, $key);
     }
 
     public function hasAttribute(string $key): bool

@@ -111,7 +111,7 @@ class ModifyExcerptMessageHandler
 
         $excerptView = $this->excerptViewFactory->create([$localizedDraftExcerpt], $message->getLocale());
         if (!$excerptView) {
-            throw new ExcerptNotFoundException($message->getResourceKey(), $message->getResourceId());
+            throw new ExcerptNotFoundException(['resourceKey' => $message->getResourceKey(), 'resourceId' => $message->getResourceId()]);
         }
 
         $message->setExcerpt($excerptView);

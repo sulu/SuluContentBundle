@@ -59,7 +59,7 @@ class FindExcerptQueryHandler
         );
 
         if (!$excerptView) {
-            throw new ExcerptNotFoundException($query->getResourceKey(), $query->getResourceId());
+            throw new ExcerptNotFoundException(['resourceKey' => $query->getResourceKey(), 'resourceId' => $query->getResourceId()]);
         }
 
         $query->setExcerpt($excerptView);

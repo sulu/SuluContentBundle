@@ -88,7 +88,7 @@ class PublishExcerptMessageHandler
 
         $excerptView = $this->excerptViewFactory->create($publishedExcerptDimensions, $message->getLocale());
         if (!$excerptView) {
-            throw new ExcerptNotFoundException($resourceKey, $resourceId);
+            throw new ExcerptNotFoundException(['resourceKey' => $resourceKey, 'resourceId' => $resourceId]);
         }
 
         $message->setExcerpt($excerptView);
@@ -108,7 +108,7 @@ class PublishExcerptMessageHandler
                 return null;
             }
 
-            throw new ExcerptNotFoundException($resourceKey, $resourceId);
+            throw new ExcerptNotFoundException(['resourceKey' => $resourceKey, 'resourceId' => $resourceId]);
         }
 
         $liveDimensionIdentifier = $this->getDimensionIdentifier(DimensionIdentifierInterface::ATTRIBUTE_VALUE_LIVE, $locale);

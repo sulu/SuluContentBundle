@@ -59,7 +59,7 @@ class ModifySeoMessageHandler
 
         $seoView = $this->seoViewFactory->create([$localizedDraftSeo], $message->getLocale());
         if (!$seoView) {
-            throw new SeoNotFoundException($message->getResourceKey(), $message->getResourceId());
+            throw new SeoNotFoundException(['resourceKey' => $message->getResourceKey(), 'resourceId' => $message->getResourceId()]);
         }
 
         $message->setSeo($seoView);
