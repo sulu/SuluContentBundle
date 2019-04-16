@@ -145,40 +145,73 @@ class PublishExcerptMessageHandler
 
     private function copyTags(ExcerptDimensionInterface $draftExcerpt, ExcerptDimensionInterface $liveExcerpt): void
     {
-        foreach ($liveExcerpt->getTags() as $oldLiveTag) {
-            $liveExcerpt->removeTag($oldLiveTag);
-            $this->tagReferenceRepository->remove($oldLiveTag);
+        $processedTagNames = [];
+        foreach ($draftExcerpt->getTags() as $draftTagReference) {
+            $liveTagReference = $liveExcerpt->getTag($draftTagReference->getTag()->getName());
+            if (!$liveTagReference) {
+                $liveTagReference = $this->tagReferenceRepository->create(
+                    $liveExcerpt, $draftTagReference->getTag(), $draftTagReference->getOrder()
+                );
+                $liveExcerpt->addTag($liveTagReference);
+            }
+
+            $liveTagReference->setOrder($draftTagReference->getOrder());
+            $processedTagNames[] = $liveTagReference->getTag()->getName();
         }
 
-        foreach ($draftExcerpt->getTags() as $draftTag) {
-            $newLiveTag = $this->tagReferenceRepository->create($liveExcerpt, $draftTag->getTag(), $draftTag->getOrder());
-            $liveExcerpt->addTag($newLiveTag);
+        foreach ($liveExcerpt->getTags() as $liveTagReference) {
+            if (!\in_array($liveTagReference->getTag()->getName(), $processedTagNames, true)) {
+                $liveExcerpt->removeTag($liveTagReference);
+                $this->tagReferenceRepository->remove($liveTagReference);
+            }
         }
     }
 
     private function copyIcons(ExcerptDimensionInterface $draftExcerpt, ExcerptDimensionInterface $liveExcerpt): void
     {
-        foreach ($liveExcerpt->getIcons() as $oldLiveIcon) {
-            $liveExcerpt->removeIcon($oldLiveIcon);
-            $this->iconReferenceRepository->remove($oldLiveIcon);
+        $processedMediaIds = [];
+        foreach ($draftExcerpt->getIcons() as $draftIconReference) {
+            $liveIconReference = $liveExcerpt->getIcon($draftIconReference->getMedia()->getId());
+            if (!$liveIconReference) {
+                $liveIconReference = $this->iconReferenceRepository->create(
+                    $liveExcerpt, $draftIconReference->getMedia(), $draftIconReference->getOrder()
+                );
+                $liveExcerpt->addIcon($liveIconReference);
+            }
+
+            $liveIconReference->setOrder($draftIconReference->getOrder());
+            $processedMediaIds[] = $liveIconReference->getMedia()->getId();
         }
 
-        foreach ($draftExcerpt->getIcons() as $draftIcon) {
-            $newLiveIcon = $this->iconReferenceRepository->create($liveExcerpt, $draftIcon->getMedia(), $draftIcon->getOrder());
-            $liveExcerpt->addIcon($newLiveIcon);
+        foreach ($liveExcerpt->getIcons() as $liveIconReference) {
+            if (!\in_array($liveIconReference->getMedia()->getId(), $processedMediaIds, true)) {
+                $liveExcerpt->removeIcon($liveIconReference);
+                $this->iconReferenceRepository->remove($liveIconReference);
+            }
         }
     }
 
     private function copyImages(ExcerptDimensionInterface $draftExcerpt, ExcerptDimensionInterface $liveExcerpt): void
     {
-        foreach ($liveExcerpt->getImages() as $oldLiveImage) {
-            $liveExcerpt->removeImage($oldLiveImage);
-            $this->imageReferenceRepository->remove($oldLiveImage);
+        $processedMediaIds = [];
+        foreach ($draftExcerpt->getImages() as $draftImageReference) {
+            $liveImageReference = $liveExcerpt->getImage($draftImageReference->getMedia()->getId());
+            if (!$liveImageReference) {
+                $liveImageReference = $this->imageReferenceRepository->create(
+                    $liveExcerpt, $draftImageReference->getMedia(), $draftImageReference->getOrder()
+                );
+                $liveExcerpt->addImage($liveImageReference);
+            }
+
+            $liveImageReference->setOrder($draftImageReference->getOrder());
+            $processedMediaIds[] = $liveImageReference->getMedia()->getId();
         }
 
-        foreach ($draftExcerpt->getImages() as $draftImage) {
-            $newLiveImage = $this->imageReferenceRepository->create($liveExcerpt, $draftImage->getMedia(), $draftImage->getOrder());
-            $liveExcerpt->addImage($newLiveImage);
+        foreach ($liveExcerpt->getImages() as $liveImageReference) {
+            if (!\in_array($liveImageReference->getMedia()->getId(), $processedMediaIds, true)) {
+                $liveExcerpt->removeImage($liveImageReference);
+                $this->imageReferenceRepository->remove($liveImageReference);
+            }
         }
     }
 }

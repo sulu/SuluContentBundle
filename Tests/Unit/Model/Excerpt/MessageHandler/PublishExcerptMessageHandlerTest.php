@@ -103,55 +103,117 @@ class PublishExcerptMessageHandlerTest extends TestCase
         $localizedLiveExcerpt->addCategory($draftCategory2->reveal())->shouldBeCalled()->willReturn($localizedLiveExcerpt->reveal());
 
         // tag handling
-        $draftTag = $this->prophesize(TagInterface::class);
-        $draftTagReference = $this->prophesize(TagReferenceInterface::class);
-        $draftTagReference->getTag()->shouldBeCalled()->willReturn($draftTag->reveal());
-        $draftTagReference->getOrder()->shouldBeCalled()->willReturn(4);
-        $liveTagReference = $this->prophesize(TagReferenceInterface::class);
+        $tag1 = $this->prophesize(TagInterface::class);
+        $tag1->getName()->shouldBeCalled()->willReturn('tag-1');
+        $tag2 = $this->prophesize(TagInterface::class);
+        $tag2->getName()->shouldBeCalled()->willReturn('tag-2');
+        $tag3 = $this->prophesize(TagInterface::class);
+        $tag3->getName()->shouldBeCalled()->willReturn('tag-3');
 
-        $localizedLiveExcerpt->getTags()->shouldBeCalled()->willReturn([$liveTagReference->reveal()]);
-        $localizedLiveExcerpt->removeTag($liveTagReference->reveal())->shouldBeCalled()->willReturn($localizedLiveExcerpt->reveal());
-        $tagReferenceRepository->remove($liveTagReference->reveal())->shouldBeCalled();
+        $draftTag2Reference = $this->prophesize(TagReferenceInterface::class);
+        $draftTag2Reference->getTag()->shouldBeCalled()->willReturn($tag2->reveal());
+        $draftTag2Reference->getOrder()->shouldBeCalled()->willReturn(1);
+        $draftTag3Reference = $this->prophesize(TagReferenceInterface::class);
+        $draftTag3Reference->getTag()->shouldBeCalled()->willReturn($tag3->reveal());
+        $draftTag3Reference->getOrder()->shouldBeCalled()->willReturn(2);
 
-        $localizedDraftExcerpt->getTags()->shouldBeCalled()->willReturn([$draftTagReference->reveal()]);
-        $newLiveTagReference = $this->prophesize(TagReferenceInterface::class);
-        $tagReferenceRepository->create($localizedLiveExcerpt->reveal(), $draftTag->reveal(), 4)
-            ->shouldBeCalled()->willReturn($newLiveTagReference->reveal());
-        $localizedLiveExcerpt->addTag($newLiveTagReference->reveal())->shouldBeCalled()->willReturn($localizedLiveExcerpt->reveal());
+        $liveTag1Reference = $this->prophesize(TagReferenceInterface::class);
+        $liveTag1Reference->getTag()->shouldBeCalled()->willReturn($tag1->reveal());
+        $liveTag2Reference = $this->prophesize(TagReferenceInterface::class);
+        $liveTag2Reference->getTag()->shouldBeCalled()->willReturn($tag2->reveal());
+        $createdTag3Reference = $this->prophesize(TagReferenceInterface::class);
+        $createdTag3Reference->getTag()->shouldBeCalled()->willReturn($tag3->reveal());
+
+        $localizedDraftExcerpt->getTags()->shouldBeCalled()->willReturn(
+            [$draftTag2Reference->reveal(), $draftTag3Reference->reveal()]
+        );
+
+        $localizedLiveExcerpt->getTag('tag-2')->shouldBeCalled()->willReturn($liveTag2Reference->reveal());
+        $liveTag2Reference->setOrder(1)->shouldBeCalled();
+
+        $localizedLiveExcerpt->getTag('tag-3')->shouldBeCalled()->willReturn(null);
+        $tagReferenceRepository->create($localizedLiveExcerpt->reveal(), $tag3->reveal(), 2)->shouldBeCalled()->willReturn($createdTag3Reference->reveal());
+        $localizedLiveExcerpt->addTag($createdTag3Reference->reveal())->shouldBeCalled();
+        $createdTag3Reference->setOrder(2)->shouldBeCalled();
+
+        $localizedLiveExcerpt->getTags()->shouldBeCalled()->willReturn(
+            [$liveTag1Reference->reveal(), $liveTag2Reference->reveal(), $createdTag3Reference->reveal()]
+        );
+        $localizedLiveExcerpt->removeTag($liveTag1Reference->reveal())->shouldBeCalled();
+        $tagReferenceRepository->remove($liveTag1Reference->reveal())->shouldBeCalled();
 
         // icon handling
-        $draftIconMedia = $this->prophesize(MediaInterface::class);
-        $draftIconReference = $this->prophesize(IconReferenceInterface::class);
-        $draftIconReference->getMedia()->shouldBeCalled()->willReturn($draftIconMedia->reveal());
-        $draftIconReference->getOrder()->shouldBeCalled()->willReturn(4);
-        $liveIconReference = $this->prophesize(IconReferenceInterface::class);
+        $media1 = $this->prophesize(MediaInterface::class);
+        $media1->getId()->shouldBeCalled()->willReturn(1);
+        $media2 = $this->prophesize(MediaInterface::class);
+        $media2->getId()->shouldBeCalled()->willReturn(2);
+        $media3 = $this->prophesize(MediaInterface::class);
+        $media3->getId()->shouldBeCalled()->willReturn(3);
 
-        $localizedLiveExcerpt->getIcons()->shouldBeCalled()->willReturn([$liveIconReference->reveal()]);
-        $localizedLiveExcerpt->removeIcon($liveIconReference->reveal())->shouldBeCalled()->willReturn($localizedLiveExcerpt->reveal());
-        $iconReferenceRepository->remove($liveIconReference->reveal())->shouldBeCalled();
+        $draftIcon2Reference = $this->prophesize(IconReferenceInterface::class);
+        $draftIcon2Reference->getMedia()->shouldBeCalled()->willReturn($media2->reveal());
+        $draftIcon2Reference->getOrder()->shouldBeCalled()->willReturn(1);
+        $draftIcon3Reference = $this->prophesize(IconReferenceInterface::class);
+        $draftIcon3Reference->getMedia()->shouldBeCalled()->willReturn($media3->reveal());
+        $draftIcon3Reference->getOrder()->shouldBeCalled()->willReturn(2);
 
-        $localizedDraftExcerpt->getIcons()->shouldBeCalled()->willReturn([$draftIconReference->reveal()]);
-        $newLiveIconReference = $this->prophesize(IconReferenceInterface::class);
-        $iconReferenceRepository->create($localizedLiveExcerpt->reveal(), $draftIconMedia->reveal(), 4)
-            ->shouldBeCalled()->willReturn($newLiveIconReference->reveal());
-        $localizedLiveExcerpt->addIcon($newLiveIconReference->reveal())->shouldBeCalled()->willReturn($localizedLiveExcerpt->reveal());
+        $liveIcon1Reference = $this->prophesize(IconReferenceInterface::class);
+        $liveIcon1Reference->getMedia()->shouldBeCalled()->willReturn($media1->reveal());
+        $liveIcon2Reference = $this->prophesize(IconReferenceInterface::class);
+        $liveIcon2Reference->getMedia()->shouldBeCalled()->willReturn($media2->reveal());
+        $createdIcon3Reference = $this->prophesize(IconReferenceInterface::class);
+        $createdIcon3Reference->getMedia()->shouldBeCalled()->willReturn($media3->reveal());
+
+        $localizedDraftExcerpt->getIcons()->shouldBeCalled()->willReturn(
+            [$draftIcon2Reference->reveal(), $draftIcon3Reference->reveal()]
+        );
+
+        $localizedLiveExcerpt->getIcon(2)->shouldBeCalled()->willReturn($liveIcon2Reference);
+        $liveIcon2Reference->setOrder(1)->shouldBeCalled();
+
+        $localizedLiveExcerpt->getIcon(3)->shouldBeCalled()->willReturn(null);
+        $iconReferenceRepository->create($localizedLiveExcerpt->reveal(), $media3->reveal(), 2)->shouldBeCalled()->willReturn($createdIcon3Reference->reveal());
+        $localizedLiveExcerpt->addIcon($createdIcon3Reference->reveal())->shouldBeCalled();
+        $createdIcon3Reference->setOrder(2)->shouldBeCalled();
+
+        $localizedLiveExcerpt->getIcons()->shouldBeCalled()->willReturn(
+            [$liveIcon1Reference->reveal(), $liveIcon2Reference->reveal(), $createdIcon3Reference->reveal()]
+        );
+        $localizedLiveExcerpt->removeIcon($liveIcon1Reference->reveal())->shouldBeCalled();
+        $iconReferenceRepository->remove($liveIcon1Reference->reveal())->shouldBeCalled();
 
         // image handling
-        $draftImageMedia = $this->prophesize(MediaInterface::class);
-        $draftImageReference = $this->prophesize(ImageReferenceInterface::class);
-        $draftImageReference->getMedia()->shouldBeCalled()->willReturn($draftImageMedia->reveal());
-        $draftImageReference->getOrder()->shouldBeCalled()->willReturn(4);
-        $liveImageReference = $this->prophesize(ImageReferenceInterface::class);
+        $draftImage2Reference = $this->prophesize(ImageReferenceInterface::class);
+        $draftImage2Reference->getMedia()->shouldBeCalled()->willReturn($media2->reveal());
+        $draftImage2Reference->getOrder()->shouldBeCalled()->willReturn(1);
+        $draftImage3Reference = $this->prophesize(ImageReferenceInterface::class);
+        $draftImage3Reference->getMedia()->shouldBeCalled()->willReturn($media3->reveal());
+        $draftImage3Reference->getOrder()->shouldBeCalled()->willReturn(2);
 
-        $localizedLiveExcerpt->getImages()->shouldBeCalled()->willReturn([$liveImageReference->reveal()]);
-        $localizedLiveExcerpt->removeImage($liveImageReference->reveal())->shouldBeCalled()->willReturn($localizedLiveExcerpt->reveal());
-        $imageReferenceRepository->remove($liveImageReference->reveal())->shouldBeCalled();
+        $liveImage1Reference = $this->prophesize(ImageReferenceInterface::class);
+        $liveImage1Reference->getMedia()->shouldBeCalled()->willReturn($media1->reveal());
+        $liveImage2Reference = $this->prophesize(ImageReferenceInterface::class);
+        $liveImage2Reference->getMedia()->shouldBeCalled()->willReturn($media2->reveal());
+        $createdImage3Reference = $this->prophesize(ImageReferenceInterface::class);
+        $createdImage3Reference->getMedia()->shouldBeCalled()->willReturn($media3->reveal());
 
-        $localizedDraftExcerpt->getImages()->shouldBeCalled()->willReturn([$draftImageReference->reveal()]);
-        $newLiveImageReference = $this->prophesize(ImageReferenceInterface::class);
-        $imageReferenceRepository->create($localizedLiveExcerpt->reveal(), $draftImageMedia->reveal(), 4)
-            ->shouldBeCalled()->willReturn($newLiveImageReference->reveal());
-        $localizedLiveExcerpt->addImage($newLiveImageReference->reveal())->shouldBeCalled()->willReturn($localizedLiveExcerpt->reveal());
+        $localizedDraftExcerpt->getImages()->shouldBeCalled()->willReturn(
+            [$draftImage2Reference->reveal(), $draftImage3Reference->reveal()]
+        );
+
+        $localizedLiveExcerpt->getImage(2)->shouldBeCalled()->willReturn($liveImage2Reference);
+        $liveImage2Reference->setOrder(1)->shouldBeCalled();
+
+        $localizedLiveExcerpt->getImage(3)->shouldBeCalled()->willReturn(null);
+        $imageReferenceRepository->create($localizedLiveExcerpt->reveal(), $media3->reveal(), 2)->shouldBeCalled()->willReturn($createdImage3Reference->reveal());
+        $localizedLiveExcerpt->addImage($createdImage3Reference->reveal())->shouldBeCalled();
+        $createdImage3Reference->setOrder(2)->shouldBeCalled();
+
+        $localizedLiveExcerpt->getImages()->shouldBeCalled()->willReturn(
+            [$liveImage1Reference->reveal(), $liveImage2Reference->reveal(), $createdImage3Reference->reveal()]
+        );
+        $localizedLiveExcerpt->removeImage($liveImage1Reference->reveal())->shouldBeCalled();
+        $imageReferenceRepository->remove($liveImage1Reference->reveal())->shouldBeCalled();
 
         $excerptView = $this->prophesize(ExcerptViewInterface::class);
         $excerptViewFactory->create([$localizedLiveExcerpt->reveal()], 'en')
