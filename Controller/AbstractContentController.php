@@ -46,7 +46,7 @@ abstract class AbstractContentController implements ClassResourceInterface
     public function __construct(
         MessageBusInterface $messageBus,
         ViewHandlerInterface $viewHandler,
-        string $defaultType = 'default'
+        string $defaultType
     ) {
         $this->messageBus = $messageBus;
         $this->defaultType = $defaultType;
