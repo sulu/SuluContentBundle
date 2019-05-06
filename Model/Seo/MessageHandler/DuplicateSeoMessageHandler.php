@@ -56,6 +56,10 @@ class DuplicateSeoMessageHandler
             $dimensionIdentifiers
         );
         if (!$seoDimensions) {
+            if (!$message->isMandatory()) {
+                return;
+            }
+
             throw new SeoNotFoundException(['resourceKey' => $message->getResourceKey(), 'resourceId' => $message->getResourceId()]);
         }
 

@@ -56,6 +56,10 @@ class DuplicateContentMessageHandler
             $dimensionIdentifiers
         );
         if (!$contentDimensions) {
+            if (!$message->isMandatory()) {
+                return;
+            }
+
             throw new ContentNotFoundException(['resourceKey' => $message->getResourceKey(), 'resourceId' => $message->getResourceId()]);
         }
 

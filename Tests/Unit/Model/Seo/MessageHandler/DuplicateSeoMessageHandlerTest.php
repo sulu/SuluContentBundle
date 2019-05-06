@@ -85,6 +85,42 @@ class DuplicateSeoMessageHandlerTest extends TestCase
         $message = $this->prophesize(DuplicateSeoMessage::class);
         $message->getResourceId()->shouldBeCalled()->willReturn('resource-1');
         $message->getResourceKey()->shouldBeCalled()->willReturn(self::RESOURCE_KEY);
+        $message->isMandatory()->shouldBeCalled()->willReturn(true);
+
+        $draftDimensionIdentifierEN = $this->prophesize(DimensionIdentifierInterface::class);
+        $draftDimensionIdentifierDE = $this->prophesize(DimensionIdentifierInterface::class);
+
+        $dimensionIdentifierRepository->findByPartialAttributes(
+            [
+                DimensionIdentifierInterface::ATTRIBUTE_KEY_STAGE => DimensionIdentifierInterface::ATTRIBUTE_VALUE_DRAFT,
+            ]
+        )->shouldBeCalled()->willReturn(
+            [$draftDimensionIdentifierEN->reveal(), $draftDimensionIdentifierDE->reveal()]
+        );
+
+        $seoDimensionRepository->findByDimensionIdentifiers(
+            self::RESOURCE_KEY,
+            'resource-1',
+            [$draftDimensionIdentifierEN->reveal(), $draftDimensionIdentifierDE->reveal()]
+        )->shouldBeCalled()->willReturn([]);
+
+        $handler->__invoke($message->reveal());
+    }
+
+    public function testInvokeSeoNotFoundNotMandatory(): void
+    {
+        $seoDimensionRepository = $this->prophesize(SeoDimensionRepositoryInterface::class);
+        $dimensionIdentifierRepository = $this->prophesize(DimensionIdentifierRepositoryInterface::class);
+
+        $handler = new DuplicateSeoMessageHandler(
+            $seoDimensionRepository->reveal(),
+            $dimensionIdentifierRepository->reveal()
+        );
+
+        $message = $this->prophesize(DuplicateSeoMessage::class);
+        $message->getResourceId()->shouldBeCalled()->willReturn('resource-1');
+        $message->getResourceKey()->shouldBeCalled()->willReturn(self::RESOURCE_KEY);
+        $message->isMandatory()->shouldBeCalled()->willReturn(false);
 
         $draftDimensionIdentifierEN = $this->prophesize(DimensionIdentifierInterface::class);
         $draftDimensionIdentifierDE = $this->prophesize(DimensionIdentifierInterface::class);
