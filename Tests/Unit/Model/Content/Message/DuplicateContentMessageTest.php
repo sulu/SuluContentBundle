@@ -40,4 +40,18 @@ class DuplicateContentMessageTest extends TestCase
 
         $this->assertSame('new-resource-1', $message->getNewResourceId());
     }
+
+    public function testIsMandatory(): void
+    {
+        $message = new DuplicateContentMessage(self::RESOURCE_KEY, 'resource-1', 'new-resource-1', false);
+
+        $this->assertFalse($message->isMandatory());
+    }
+
+    public function testIsMandatoryDefault(): void
+    {
+        $message = new DuplicateContentMessage(self::RESOURCE_KEY, 'resource-1', 'new-resource-1');
+
+        $this->assertTrue($message->isMandatory());
+    }
 }

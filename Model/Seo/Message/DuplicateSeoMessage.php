@@ -30,11 +30,17 @@ class DuplicateSeoMessage
      */
     private $newResourceId;
 
-    public function __construct(string $resourceKey, string $resourceId, string $newResourceId)
+    /**
+     * @var bool
+     */
+    private $mandatory;
+
+    public function __construct(string $resourceKey, string $resourceId, string $newResourceId, bool $mandatory = true)
     {
         $this->resourceKey = $resourceKey;
         $this->resourceId = $resourceId;
         $this->newResourceId = $newResourceId;
+        $this->mandatory = $mandatory;
     }
 
     public function getResourceKey(): string
@@ -50,5 +56,10 @@ class DuplicateSeoMessage
     public function getNewResourceId(): string
     {
         return $this->newResourceId;
+    }
+
+    public function isMandatory(): bool
+    {
+        return $this->mandatory;
     }
 }
