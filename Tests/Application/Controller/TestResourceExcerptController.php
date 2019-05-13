@@ -36,14 +36,14 @@ class TestResourceExcerptController extends AbstractExcerptController
         $this->handlePublishCallback->invoke($resourceId, $locale);
     }
 
-    protected function getExcerptResourceKey(): string
-    {
-        return 'test_resource_excerpts';
-    }
-
     protected function handleDelete(string $resourceId, string $locale): void
     {
         $this->handleDeleteCallback->invoke($resourceId, $locale);
+    }
+
+    protected function getExcerptResourceKey(): string
+    {
+        return 'test_resource_excerpts';
     }
 
     public function setHandlePublishCallback(TestControllerCallbackInterface $handlePublishCallback): void

@@ -67,6 +67,13 @@
             <tag name="messenger.message_handler"/>
         </service>
 
+        <service id="Sulu\Bundle\ContentBundle\Model\Excerpt\MessageHandler\UnpublishExcerptMessageHandler">
+            <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptDimensionRepositoryInterface"/>
+            <argument type="service" id="Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierRepositoryInterface"/>
+
+            <tag name="messenger.message_handler"/>
+        </service>
+
         <service id="Sulu\Bundle\ContentBundle\Model\Excerpt\MessageHandler\DuplicateExcerptMessageHandler">
             <argument type="service" id="Sulu\Bundle\ContentBundle\Model\Excerpt\ExcerptDimensionRepositoryInterface"/>
             <argument type="service" id="Sulu\Bundle\ContentBundle\Model\DimensionIdentifier\DimensionIdentifierRepositoryInterface"/>
