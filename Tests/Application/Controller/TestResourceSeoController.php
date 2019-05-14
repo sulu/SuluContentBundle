@@ -36,14 +36,14 @@ class TestResourceSeoController extends AbstractSeoController
         $this->handlePublishCallback->invoke($resourceId, $locale);
     }
 
-    protected function getSeoResourceKey(): string
-    {
-        return 'test_resource_seos';
-    }
-
     protected function handleDelete(string $resourceId, string $locale): void
     {
         $this->handleDeleteCallback->invoke($resourceId, $locale);
+    }
+
+    protected function getSeoResourceKey(): string
+    {
+        return 'test_resource_seos';
     }
 
     public function setHandlePublishCallback(TestControllerCallbackInterface $handlePublishCallback): void

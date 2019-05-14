@@ -36,14 +36,14 @@ class TestResourceContentController extends AbstractContentController
         $this->handlePublishCallback->invoke($resourceId, $locale);
     }
 
-    protected function getContentResourceKey(): string
-    {
-        return 'test_resource_contents';
-    }
-
     protected function handleDelete(string $resourceId, string $locale): void
     {
         $this->handleDeleteCallback->invoke($resourceId, $locale);
+    }
+
+    protected function getContentResourceKey(): string
+    {
+        return 'test_resource_contents';
     }
 
     public function setHandlePublishCallback(TestControllerCallbackInterface $handlePublishCallback): void
