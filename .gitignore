@@ -1,20 +1,25 @@
 # composer
-vendor
-composer.lock
+/composer.phar
+/composer.lock
+/auth.json
+/vendor
 
 # phpunit
-phpunit.xml
+/phpunit.xml
+.phpunit.result.cache
 
 # php-cs
 .php_cs.cache
 
+# System files
+.DS_Store
+
 # tests
 Tests/Application/var
-Tests/Application/.env.test.local
-
-# npm
-Resources/js/package-lock.json
-Resources/js/node_modules
+Tests/Application/.env.local
+Tests/reports/
 
 # IDEs
-/.idea
+.idea/*
+*.iml
+*~

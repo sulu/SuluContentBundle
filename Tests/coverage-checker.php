@@ -15,30 +15,49 @@ use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Node\Directory;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Helper\TableStyle;
-use Symfony\Component\Console\Input\StringInput;
+use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../vendor/bin/.phpunit/phpunit-8/vendor/autoload.php';
 
 // construct symfony io object to format output
-$io = new SymfonyStyle(new StringInput(''), new ConsoleOutput());
 
-// parse input arguments
-[,$metric, $path, $threshold] = $argv;
-$threshold = min(100, max(0, (int) $threshold));
+$inputDefinition = new InputDefinition();
+$inputDefinition->addArgument(new InputArgument('metric', InputArgument::REQUIRED));
+$inputDefinition->addArgument(new InputArgument('threshold', InputArgument::REQUIRED));
+$inputDefinition->addArgument(new InputArgument('paths', InputArgument::REQUIRED | InputArgument::IS_ARRAY));
+
+// Trim any options passed to the command
+$argvArguments = explode(' ', explode(' --', implode(' ', $argv))[0]);
+
+$input = new ArgvInput($argvArguments, $inputDefinition);
+
+$io = new SymfonyStyle($input, new ConsoleOutput());
+
+$metric = $input->getArgument('metric');
+$threshold = min(100, max(0, (float) $input->getArgument('threshold')));
 
 // load code coverage report
-$coverageReportPath = __DIR__ . '/../var/coverage.php';
+$coverageReportPath = __DIR__ . '/reports/coverage.php';
 if (!is_readable($coverageReportPath)) {
     $io->error('Coverage report file "' . $coverageReportPath . '" is not readable or does not exist.');
     exit(1);
 }
 $coverage = require $coverageReportPath;
 
-assertCodeCoverage($coverage, $path, $metric, $threshold);
+$exit = 0;
 
-function assertCodeCoverage(CodeCoverage $coverage, string $path, string $metric, int $threshold)
+foreach ($input->getArgument('paths') as $path) {
+    $exit += assertCodeCoverage($coverage, $path, $metric, $threshold);
+}
+
+exit($exit);
+
+function assertCodeCoverage(CodeCoverage $coverage, string $path, string $metric, float $threshold)
 {
     global $io;
 
@@ -47,7 +66,8 @@ function assertCodeCoverage(CodeCoverage $coverage, string $path, string $metric
 
     if (!$pathReport) {
         $io->error('Coverage report for path "' . $path . '" not found.');
-        exit(1);
+
+        return 1;
     }
 
     printCodeCoverageReport($pathReport);
@@ -60,8 +80,11 @@ function assertCodeCoverage(CodeCoverage $coverage, string $path, string $metric
         $reportedCoverage = $pathReport->getTestedClassesPercent();
     } else {
         $io->error('Coverage metric "' . $metric . '"" is not supported yet.');
-        exit(1);
+
+        return 1;
     }
+
+    $reportedCoverage = (float) $reportedCoverage;
 
     if ($reportedCoverage < $threshold) {
         $io->error(sprintf(
@@ -71,7 +94,7 @@ function assertCodeCoverage(CodeCoverage $coverage, string $path, string $metric
             $threshold
         ));
 
-        exit(1);
+        return 1;
     }
 
     $io->success(sprintf(
@@ -81,7 +104,7 @@ function assertCodeCoverage(CodeCoverage $coverage, string $path, string $metric
         $threshold
     ));
 
-    exit(0);
+    return 0;
 }
 
 function printCodeCoverageReport(Directory $pathReport): void
@@ -122,7 +145,7 @@ function getReportForPath(Directory $rootReport, string $path): ?Directory
 {
     /** @var Directory $report */
     foreach ($rootReport as $report) {
-        if (false !== mb_stripos($report->getPath(), $path)) {
+        if (0 === mb_strpos($report->getPath(), dirname(__DIR__) . DIRECTORY_SEPARATOR . $path)) {
             return $report;
         }
     }

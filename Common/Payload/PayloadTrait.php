@@ -22,11 +22,17 @@ trait PayloadTrait
      */
     protected $payload;
 
-    public function __construct(array $payload = [])
+    /**
+     * @param mixed[] $payload
+     */
+    public function initializePayloadTrait(array $payload = []): void
     {
         $this->payload = $payload;
     }
 
+    /**
+     * @return mixed[]
+     */
     public function getPayload(): array
     {
         return $this->payload;
@@ -34,7 +40,7 @@ trait PayloadTrait
 
     public function keyExists(string $key): bool
     {
-        return \array_key_exists($key, $this->payload);
+        return array_key_exists($key, $this->payload);
     }
 
     public function getValue(string $key)
@@ -151,6 +157,9 @@ trait PayloadTrait
         return $value;
     }
 
+    /**
+     * @return mixed[]
+     */
     public function getArrayValue(string $key): array
     {
         $value = $this->getValue($key);

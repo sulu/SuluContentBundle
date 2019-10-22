@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- https://phpunit.de/manual/current/en/appendixes.configuration.html -->
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/6.1/phpunit.xsd"
-         colors="true"
-         bootstrap="Tests/bootstrap.php"
->
+<phpunit colors="true" bootstrap="Tests/test-bootstrap.php">
     <testsuites>
-        <testsuite name="SuluContentBundle Test Suite">
-            <directory>Tests/</directory>
+        <testsuite name="Sulu Content Bundle">
+            <directory>./Tests</directory>
         </testsuite>
     </testsuites>
 
     <filter>
-        <whitelist>
-            <directory>./</directory>
+        <whitelist addUncoveredFilesFromWhitelist="true">
+            <directory>.</directory>
             <exclude>
-                <directory>vendor</directory>
+                <directory>Resources/</directory>
+                <directory>Tests/</directory>
+                <directory>vendor/</directory>
             </exclude>
         </whitelist>
     </filter>
 
     <php>
+        <server name="SYMFONY_PHPUNIT_VERSION" value="8"/>
         <env name="KERNEL_CLASS" value="Sulu\Bundle\ContentBundle\Tests\Application\Kernel"/>
+        <env name="APP_ENV" value="test" force="true"/>
+        <env name="SYMFONY_DEPRECATIONS_HELPER" value="weak"/>
     </php>
 </phpunit>

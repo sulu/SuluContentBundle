@@ -5,7 +5,6 @@
 version: 2
 
 .environment_variables: &environment_variables
-    METHOD_COVERAGE_THRESHOLD: 95
     APP_ENV: test
     DATABASE_URL: mysql://root:root@127.0.0.1:3306/su_content_test
     DATABASE_CHARSET: utf8mb4
@@ -61,8 +60,9 @@ jobs:
             - checkout
             - attach_workspace:
                   at: .
+            - run: php composer.phar info
+            - run: ls vendor/symfony/framework-bundle/
             - run: php composer.phar bootstrap-test-environment
-            - run: php Tests/Application/bin/console doctrine:database:create --if-not-exists -e prod
             - run: php composer.phar lint
     test-unit:
         docker:
@@ -73,12 +73,12 @@ jobs:
             - attach_workspace:
                   at: .
             - run: docker-php-ext-enable xdebug
-            - run: php composer.phar test -- Tests/Unit --coverage-php var/coverage.php --coverage-html coverage-report --log-junit var/unit/junit.xml
+            - run: php composer.phar test-unit
             - store_artifacts:
-                  path: coverage-report
+                  path: Tests/reports/html
             - store_test_results:
-                  path: var
-            - run: php Tests/coverage-checker.php "line" "project/Model" "$METHOD_COVERAGE_THRESHOLD"
+                  path: Tests/reports
+            - run: php composer.phar test-unit-coverage
     test-functional:
         docker:
             - image: sulu/php:7.2-cli
@@ -92,6 +92,6 @@ jobs:
             - attach_workspace:
                   at: .
             - run: php composer.phar bootstrap-test-environment
-            - run: php composer.phar test -- Tests/Functional --log-junit var/functional/junit.xml
+            - run: php composer.phar test-functional
             - store_test_results:
-                  path: var
+                  path: Tests/reports

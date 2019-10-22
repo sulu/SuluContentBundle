@@ -1,19 +1,26 @@
 includes:
     - vendor/jangregor/phpstan-prophecy/src/extension.neon
-    - vendor/phpstan/phpstan-doctrine/extension.neon
     - vendor/phpstan/phpstan-symfony/extension.neon
+    - vendor/phpstan/phpstan-doctrine/extension.neon
     - vendor/phpstan/phpstan-phpunit/extension.neon
     - vendor/phpstan/phpstan-phpunit/rules.neon
     - vendor/phpstan/phpstan-webmozart-assert/extension.neon
+    - vendor/thecodingmachine/phpstan-strict-rules/phpstan-strict-rules.neon
 
 parameters:
-    level: 7
     paths:
         - .
+    level: max
     excludes_analyse:
         - %currentWorkingDirectory%/DependencyInjection/Configuration.php
         - %currentWorkingDirectory%/vendor/*
+        - %currentWorkingDirectory%/Tests/Application/var*
         - %currentWorkingDirectory%/Tests/coverage-checker.php
-        - %currentWorkingDirectory%/Tests/Application/var/*
     symfony:
-        container_xml_path: %rootDir%/../../../Tests/Application/var/cache/admin/test/adminAdminTestDebugProjectContainer.xml
+        container_xml_path: %currentWorkingDirectory%/Tests/Application/var/cache/admin/test/adminAdminTestDebugProjectContainer.xml
+        console_application_loader: Tests/phpstan/console-application.php
+    doctrine:
+        objectManagerLoader: Tests/phpstan/object-manager.php
+    autoload_files:
+        - vendor/bin/.phpunit/phpunit-8/vendor/autoload.php
+        - vendor/autoload.php
