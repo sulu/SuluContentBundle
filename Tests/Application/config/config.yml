@@ -1,3 +1,6 @@
+swiftmailer:
+    disable_delivery:  true
+
 doctrine:
     orm:
         mappings:
@@ -8,39 +11,12 @@ doctrine:
                 alias: GedmoTree
                 is_bundle: false
 
-services:
-    sulu_content.controller.test_resource_contents:
-        class: Sulu\Bundle\ContentBundle\Tests\Application\Controller\TestResourceContentController
-        public: true
-        autowire: true
-        bind:
-            $defaultType: default
-    sulu_content.controller.test_resource_seos:
-        class: Sulu\Bundle\ContentBundle\Tests\Application\Controller\TestResourceSeoController
-        public: true
-        autowire: true
-    sulu_content.controller.test_resource_excerpts:
-        class: Sulu\Bundle\ContentBundle\Tests\Application\Controller\TestResourceExcerptController
-        public: true
-        autowire: true
-    messenger.middleware.doctrine_transaction:
-        class: Symfony\Bridge\Doctrine\Messenger\DoctrineTransactionMiddleware
-        abstract: true
-        arguments: ['@doctrine']
-
-sulu_core:
-    content:
-        structure:
-            type_map:
-                test_resource_contents: 'Sulu\Component\Content\Compat\Structure\StructureBridge'
-            paths:
-                test_resource_contents:
-                    path: '%kernel.project_dir%/config/templates/test_resources'
-                    type: 'test_resource_contents'
-
-framework:
-    messenger:
-        buses:
-            command_bus:
-                middleware:
-                    - doctrine_transaction
+#sulu_core:
+#    content:
+#        structure:
+#            type_map:
+#                test_resource_contents: 'Sulu\Component\Content\Compat\Structure\StructureBridge'
+#            paths:
+#                test_resource_contents:
+#                    path: '%kernel.project_dir%/config/templates/test_resources'
+#                    type: 'test_resource_contents'
