@@ -11,27 +11,40 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-// if you don't want to setup permissions the proper way, just uncomment the following PHP line
-// read http://symfony.com/doc/current/book/installation.html#configuration-and-setup for more information
-//umask(0000);
-
-set_time_limit(0);
-
-require_once __DIR__ . '/../config/bootstrap.php';
-
 use Sulu\Bundle\ContentBundle\Tests\Application\Kernel;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Debug\Debug;
 
-$input = new ArgvInput();
-$env = $input->getParameterOption(['--env', '-e'], getenv('SYMFONY_ENV') ?: 'dev');
-$debug = '0' !== getenv('SYMFONY_DEBUG') && !$input->hasParameterOption(['--no-debug', '']) && 'prod' !== $env;
-
-if ($debug) {
-    Debug::enable();
+if (false === in_array(\PHP_SAPI, ['cli', 'phpdbg', 'embed'], true)) {
+    echo 'Warning: The console should be invoked via the CLI version of PHP, not the ' . \PHP_SAPI . ' SAPI' . \PHP_EOL;
 }
 
-$kernel = new Kernel($env, $debug, $suluContext ?? Kernel::CONTEXT_ADMIN);
+require __DIR__ . '/../../../vendor/autoload.php';
+
+if (!class_exists(Application::class)) {
+    throw new RuntimeException('You need to add "symfony/framework-bundle" as a Composer dependency.');
+}
+
+$input = new ArgvInput();
+if (null !== $env = $input->getParameterOption(['--env', '-e'], null, true)) {
+    putenv('APP_ENV=' . $_SERVER['APP_ENV'] = $_ENV['APP_ENV'] = $env);
+}
+
+if ($input->hasParameterOption('--no-debug', true)) {
+    putenv('APP_DEBUG=' . $_SERVER['APP_DEBUG'] = $_ENV['APP_DEBUG'] = '0');
+}
+
+require dirname(__DIR__) . '/config/bootstrap.php';
+
+if ($_SERVER['APP_DEBUG']) {
+    umask(0000);
+
+    if (class_exists(Debug::class)) {
+        Debug::enable();
+    }
+}
+
+$kernel = new Kernel($_SERVER['APP_ENV'], (bool) $_SERVER['APP_DEBUG'], $suluContext ?? Kernel::CONTEXT_ADMIN);
 $application = new Application($kernel);
 $application->run($input);

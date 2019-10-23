@@ -14,8 +14,13 @@
 # System files
 .DS_Store
 
+# Node
+node_modules/
+package-lock.json
+
 # tests
 Tests/Application/var
+Tests/Application/public/build
 Tests/Application/.env.local
 Tests/reports/
 

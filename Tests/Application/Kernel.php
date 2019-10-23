@@ -13,7 +13,11 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Tests\Application;
 
+use Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle;
+use FOS\JsRoutingBundle\FOSJsRoutingBundle;
+use Massive\Bundle\BuildBundle\MassiveBuildBundle;
 use Sulu\Bundle\ContentBundle\SuluContentBundle;
+use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\ExampleTestBundle;
 use Sulu\Bundle\TestBundle\Kernel\SuluTestKernel;
 use Symfony\Component\Config\Loader\LoaderInterface;
 
@@ -22,7 +26,11 @@ class Kernel extends SuluTestKernel
     public function registerBundles()
     {
         $bundles = parent::registerBundles();
+        $bundles[] = new DoctrineFixturesBundle();
+        $bundles[] = new MassiveBuildBundle();
         $bundles[] = new SuluContentBundle();
+        $bundles[] = new ExampleTestBundle();
+        $bundles[] = new FOSJsRoutingBundle();
 
         return $bundles;
     }

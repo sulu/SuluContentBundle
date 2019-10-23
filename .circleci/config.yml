@@ -34,14 +34,14 @@ jobs:
             - run: composer config -g cache-dir "$(pwd)/.composer-cache"
             - restore_cache:
                   keys:
-                      - v6-composer-cache-{{ checksum "composer.json" }}
-                      - v6-composer-cache-
+                      - v7-composer-cache-{{ checksum "composer.json" }}
+                      - v7-composer-cache-
             - run: composer install -n --prefer-dist --ignore-platform-reqs --no-scripts
             - run: curl --show-error --silent https://getcomposer.org/installer | php
             - save_cache:
                   paths:
                       - .composer-cache
-                  key: v6-composer-cache-{{ checksum "composer.json" }}
+                  key: v7-composer-cache-{{ checksum "composer.json" }}
             - persist_to_workspace:
                   root: .
                   paths:
