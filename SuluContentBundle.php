@@ -13,8 +13,22 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle;
 
+use Sulu\Bundle\ContentBundle\Dimension\Domain\Model\DimensionInterface;
+use Sulu\Bundle\PersistenceBundle\PersistenceBundleTrait;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class SuluContentBundle extends Bundle
 {
+    use PersistenceBundleTrait;
+
+    public function build(ContainerBuilder $container)
+    {
+        $this->buildPersistence(
+            [
+                DimensionInterface::class => 'sulu.model.dimension.class',
+            ],
+            $container
+        );
+    }
 }

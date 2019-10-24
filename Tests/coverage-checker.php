@@ -143,9 +143,11 @@ function printCodeCoverageReport(Directory $pathReport): void
 
 function getReportForPath(Directory $rootReport, string $path): ?Directory
 {
+    $currentPath = dirname(__DIR__) . DIRECTORY_SEPARATOR . $path;
+
     /** @var Directory $report */
     foreach ($rootReport as $report) {
-        if (0 === mb_strpos($report->getPath(), dirname(__DIR__) . DIRECTORY_SEPARATOR . $path)) {
+        if (0 === mb_strpos($report->getPath(), $currentPath)) {
             return $report;
         }
     }
