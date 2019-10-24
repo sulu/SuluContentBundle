@@ -37,9 +37,11 @@ class Dimension implements DimensionInterface
      */
     private $published = false;
 
-    public function __construct(?string $id = null)
+    public function __construct(?string $id = null, ?string $locale = null, bool $published = false)
     {
         $this->id = $id ?? Uuid::uuid4()->toString();
+        $this->locale = $locale;
+        $this->published = $published;
     }
 
     public function getId(): string
@@ -52,22 +54,8 @@ class Dimension implements DimensionInterface
         return $this->locale;
     }
 
-    public function setLocale(?string $locale): DimensionInterface
-    {
-        $this->locale = $locale;
-
-        return $this;
-    }
-
     public function getPublished(): bool
     {
         return $this->published;
-    }
-
-    public function setPublished(bool $published): DimensionInterface
-    {
-        $this->published = $published;
-
-        return $this;
     }
 }

@@ -39,12 +39,12 @@ class DimensionRepository implements DimensionRepositoryInterface
         $this->entityManager = $em;
     }
 
-    public function create(?string $id = null): DimensionInterface
+    public function create(?string $id = null, ?string $locale = null, bool $published = false): DimensionInterface
     {
         $class = $this->entityRepository->getClassName();
 
         /** @var DimensionInterface $dimension */
-        $dimension = new $class($id);
+        $dimension = new $class($id, $locale, $published);
 
         return $dimension;
     }

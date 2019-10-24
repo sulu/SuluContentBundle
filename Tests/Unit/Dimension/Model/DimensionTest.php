@@ -15,37 +15,48 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\Dimension\Model;
 
 use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\ContentBundle\Dimension\Domain\Model\Dimension;
+use Sulu\Bundle\ContentBundle\Dimension\Domain\Model\DimensionInterface;
 
 class DimensionTest extends TestCase
 {
-    /**
-     * @var Dimension
-     */
-    private $dimension;
-
-    public function setUp(): void
+    protected function createDimension(string $id = null, string $locale = null, bool $published = false): DimensionInterface
     {
-        $this->dimension = new Dimension();
+        return new Dimension($id, $locale, $published);
     }
 
     public function testGetId(): void
     {
-        $this->assertNotNull($this->dimension->getId());
+        $dimension = $this->createDimension();
+        $this->assertNotNull($dimension->getId());
     }
 
-    public function testGetSetLocale(): void
+    public function testGetIdSet(): void
     {
-        $this->assertNull($this->dimension->getLocale());
-        $this->assertSame($this->dimension, $this->dimension->setLocale('de'));
-        $this->assertSame('de', $this->dimension->getLocale());
+        $dimension = $this->createDimension('123');
+        $this->assertSame('123', $dimension->getId());
     }
 
-    public function testGetSetPublished(): void
+    public function testGetLocale(): void
     {
-        $this->assertFalse($this->dimension->getPublished());
-        $this->assertSame($this->dimension, $this->dimension->setPublished(true));
-        $this->assertTrue($this->dimension->getPublished());
-        $this->assertSame($this->dimension, $this->dimension->setPublished(false));
-        $this->assertFalse($this->dimension->getPublished());
+        $dimension = $this->createDimension();
+        $this->assertNull($dimension->getLocale());
+    }
+
+    public function testGetLocaleSet(): void
+    {
+        $dimension = $this->createDimension(null, 'de');
+        $this->assertSame('de', $dimension->getLocale());
+    }
+
+    public function testGetPublished(): void
+    {
+        $dimension = $this->createDimension();
+        $this->assertFalse($dimension->getPublished());
+    }
+
+    public function testGetPublishedSet(): void
+    {
+        $dimension = $this->createDimension(null, null, true);
+        $this->assertTrue($dimension->getPublished());
     }
 }

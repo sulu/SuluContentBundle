@@ -19,9 +19,5 @@ interface DimensionInterface
 
     public function getLocale(): ?string;
 
-    public function setLocale(?string $locale): self;
-
     public function getPublished(): bool;
-
-    public function setPublished(bool $published): self;
 }

@@ -17,7 +17,7 @@ use Sulu\Bundle\ContentBundle\Dimension\Domain\Model\DimensionInterface;
 
 interface DimensionRepositoryInterface
 {
-    public function create(string $id): DimensionInterface;
+    public function create(?string $id = null, ?string $locale = null, bool $published = false): DimensionInterface;
 
     public function add(DimensionInterface $directory): void;
 
