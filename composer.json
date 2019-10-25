@@ -15,7 +15,7 @@
         "doctrine/doctrine-bundle": "^1.10",
         "friendsofsymfony/rest-bundle": "^2.5",
         "ramsey/uuid": "^3.8",
-        "sulu/sulu": "^2.0",
+        "sulu/sulu": "^2.0.1",
         "symfony/config": "^4.3",
         "symfony/dependency-injection": "^4.3",
         "symfony/http-foundation": "^4.3",
@@ -69,7 +69,7 @@
             "@phpunit"
         ],
         "test-unit": "@phpunit Tests/Unit --coverage-php Tests/reports/coverage.php --coverage-html Tests/reports/html --log-junit Tests/reports/unit/junit.xml",
-        "test-unit-coverage": "@php Tests/coverage-checker.php \"line\" \"96.00\" \"Model\"",
+        "test-unit-coverage": "@php Tests/coverage-checker.php \"line\" \"96.00\" \"Dimension/Domain\"",
         "test-functional": "@phpunit Tests/Functional --log-junit Tests/reports/functional/junit.xml",
         "lint-composer": "@composer validate --strict",
         "lint-yaml": "Tests/Application/bin/adminconsole lint:yaml Resources/config",

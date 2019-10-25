@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <mapped-superclass name="Sulu\Bundle\ContentBundle\Dimension\Domain\Model\Dimension"
+            repository-class="Sulu\Bundle\ContentBundle\Dimension\Infrastructure\Doctrine\DimensionRepository"
+            table="cn_dimensions">
+        <indexes>
+            <index columns="locale"/>
+            <index columns="workflowStage"/>
+        </indexes>
+
+        <id name="no" type="integer">
+            <generator strategy="AUTO"/>
+        </id>
+
+        <field name="id" type="guid" nullable="false" unique="true"/>
+        <field name="locale" type="string" column="locale" length="5" nullable="true"/>
+        <field name="workflowStage" type="string" column="workflowStage" length="16"/>
+    </mapped-superclass>
+</doctrine-mapping>
