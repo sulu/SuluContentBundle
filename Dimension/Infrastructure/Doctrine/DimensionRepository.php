@@ -24,6 +24,11 @@ use Sulu\Bundle\ContentBundle\Dimension\Domain\Repository\DimensionRepositoryInt
 class DimensionRepository implements DimensionRepositoryInterface
 {
     /**
+     * @var string
+     */
+    private $className;
+
+    /**
      * @var ObjectRepository
      */
     protected $entityRepository;
@@ -37,14 +42,16 @@ class DimensionRepository implements DimensionRepositoryInterface
     {
         $this->entityRepository = new EntityRepository($em, $class);
         $this->entityManager = $em;
+        $this->className = $this->entityRepository->getClassName();
     }
 
-    public function create(?string $id = null, ?string $locale = null, bool $published = false): DimensionInterface
-    {
-        $class = $this->entityRepository->getClassName();
-
+    public function create(
+        ?string $id = null,
+        ?string $locale = null,
+        string $workflowStage = DimensionInterface::WORKFLOW_STAGE_DRAFT
+    ): DimensionInterface {
         /** @var DimensionInterface $dimension */
-        $dimension = new $class($id, $locale, $published);
+        $dimension = new $this->className($id, $locale, $workflowStage);
 
         return $dimension;
     }

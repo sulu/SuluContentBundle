@@ -33,15 +33,18 @@ class Dimension implements DimensionInterface
     private $locale;
 
     /**
-     * @var bool
+     * @var string
      */
-    private $published = false;
+    private $workflowStage = DimensionInterface::WORKFLOW_STAGE_DRAFT;
 
-    public function __construct(?string $id = null, ?string $locale = null, bool $published = false)
-    {
+    public function __construct(
+        ?string $id = null,
+        ?string $locale = null,
+        string $workflowStage = DimensionInterface::WORKFLOW_STAGE_DRAFT
+    ) {
         $this->id = $id ?? Uuid::uuid4()->toString();
         $this->locale = $locale;
-        $this->published = $published;
+        $this->workflowStage = $workflowStage;
     }
 
     public function getId(): string
@@ -54,8 +57,8 @@ class Dimension implements DimensionInterface
         return $this->locale;
     }
 
-    public function getPublished(): bool
+    public function getWorkflowStage(): string
     {
-        return $this->published;
+        return $this->workflowStage;
     }
 }

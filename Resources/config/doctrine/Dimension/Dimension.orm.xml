@@ -7,7 +7,7 @@
             table="cn_dimensions">
         <indexes>
             <index columns="locale"/>
-            <index columns="published"/>
+            <index columns="workflowStage"/>
         </indexes>
 
         <id name="no" type="integer">
@@ -16,6 +16,6 @@
 
         <field name="id" type="guid" nullable="false" unique="true"/>
         <field name="locale" type="string" column="locale" length="5" nullable="true"/>
-        <field name="published" type="boolean" column="published"/>
+        <field name="workflowStage" type="string" column="workflowStage" length="16"/>
     </mapped-superclass>
 </doctrine-mapping>

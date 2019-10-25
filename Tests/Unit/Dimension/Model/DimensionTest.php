@@ -19,44 +19,53 @@ use Sulu\Bundle\ContentBundle\Dimension\Domain\Model\DimensionInterface;
 
 class DimensionTest extends TestCase
 {
-    protected function createDimension(string $id = null, string $locale = null, bool $published = false): DimensionInterface
-    {
-        return new Dimension($id, $locale, $published);
+    protected function createDimension(
+        string $id = null,
+        string $locale = null,
+        string $workflowStage = DimensionInterface::WORKFLOW_STAGE_DRAFT
+    ): DimensionInterface {
+        return new Dimension($id, $locale, $workflowStage);
     }
 
-    public function testGetId(): void
+    public function testGetIdSetNothing(): void
     {
         $dimension = $this->createDimension();
         $this->assertNotNull($dimension->getId());
     }
 
-    public function testGetIdSet(): void
+    public function testGetIdSet123(): void
     {
         $dimension = $this->createDimension('123');
         $this->assertSame('123', $dimension->getId());
     }
 
-    public function testGetLocale(): void
+    public function testGetLocaleSetNothing(): void
     {
         $dimension = $this->createDimension();
         $this->assertNull($dimension->getLocale());
     }
 
-    public function testGetLocaleSet(): void
+    public function testGetLocaleSetDe(): void
     {
         $dimension = $this->createDimension(null, 'de');
         $this->assertSame('de', $dimension->getLocale());
     }
 
-    public function testGetPublished(): void
+    public function testGetPublishedSetNothing(): void
     {
         $dimension = $this->createDimension();
-        $this->assertFalse($dimension->getPublished());
+        $this->assertSame('draft', $dimension->getWorkflowStage());
     }
 
-    public function testGetPublishedSet(): void
+    public function testGetPublishedSetLive(): void
     {
-        $dimension = $this->createDimension(null, null, true);
-        $this->assertTrue($dimension->getPublished());
+        $dimension = $this->createDimension(null, null, 'live');
+        $this->assertSame('live', $dimension->getWorkflowStage());
+    }
+
+    public function testGetPublishedSetDraft(): void
+    {
+        $dimension = $this->createDimension(null, null, 'draft');
+        $this->assertSame('draft', $dimension->getWorkflowStage());
     }
 }

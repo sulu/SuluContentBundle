@@ -1,5 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of Sulu.
+ *
+ * (c) Sulu GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace Sulu\Bundle\ContentBundle\Tests\Functional\Dimension\Domain\Repository;
 
 use Sulu\Bundle\ContentBundle\Dimension\Domain\Model\DimensionInterface;
@@ -38,7 +49,7 @@ abstract class DimensionRepositoryTestCase extends BaseTestCase
         $this->assertSame(self::TEST_ID, $dimension->getId());
     }
 
-    public function testAddAndRemove(): void
+    public function testAddAndRemoveWithSave(): void
     {
         static::purgeData();
 
@@ -57,6 +68,25 @@ abstract class DimensionRepositoryTestCase extends BaseTestCase
         $this->assertNull($dimension);
     }
 
+    public function testAddAndRemoveWithoutSave(): void
+    {
+        $this->markTestSkipped('Currently not implemented to findOneBy without saving.');
+
+        static::purgeData();
+
+        $dimension = $this->dimensionRepository->create(self::TEST_ID);
+        $this->dimensionRepository->add($dimension);
+
+        $dimension = $this->dimensionRepository->findOneBy(['id' => self::TEST_ID]);
+        $this->assertNotNull($dimension);
+        $this->assertSame(self::TEST_ID, $dimension->getId());
+
+        $this->dimensionRepository->remove($dimension);
+
+        $dimension = $this->dimensionRepository->findOneBy(['id' => self::TEST_ID]);
+        $this->assertNull($dimension);
+    }
+
     public function testFindOneByNotExist(): void
     {
         $dimension = $this->dimensionRepository->findOneBy(['id' => 'none-exist-id']);
@@ -70,33 +100,52 @@ abstract class DimensionRepositoryTestCase extends BaseTestCase
         $dimension1 = $this->dimensionRepository->create(self::TEST_ID, 'de');
         $this->dimensionRepository->add($dimension1);
 
-        $dimension2 = $this->dimensionRepository->create(null, 'de', true);
+        $dimension2 = $this->dimensionRepository->create(null, 'de', 'live');
         $this->dimensionRepository->add($dimension2);
 
-        $dimension3 = $this->dimensionRepository->create(null, 'en', false);
+        $dimension3 = $this->dimensionRepository->create(null, 'en', 'draft');
         $this->dimensionRepository->add($dimension3);
 
         static::saveData();
 
-        $dimension = $this->dimensionRepository->findOneBy(['locale' => 'de', 'published' => false]);
+        $dimension = $this->dimensionRepository->findOneBy(['locale' => 'de', 'workflowStage' => 'draft']);
         $this->assertNotNull($dimension);
         $this->assertSame(self::TEST_ID, $dimension->getId());
     }
 
-    public function testFindBy(): void
+    public function testFindByWithSave(): void
     {
         static::purgeData();
 
-        $dimension1 = $this->dimensionRepository->create(self::TEST_ID, 'de', false);
+        $dimension1 = $this->dimensionRepository->create(self::TEST_ID, 'de', 'draft');
         $this->dimensionRepository->add($dimension1);
 
-        $dimension2 = $this->dimensionRepository->create(null, 'de', true);
+        $dimension2 = $this->dimensionRepository->create(null, 'de', 'live');
         $this->dimensionRepository->add($dimension2);
 
-        $dimension3 = $this->dimensionRepository->create(null, 'en', false);
+        $dimension3 = $this->dimensionRepository->create(null, 'en', 'draft');
         $this->dimensionRepository->add($dimension3);
 
         static::saveData();
+
+        $dimensions = $this->dimensionRepository->findBy(['locale' => 'de']);
+        $this->assertCount(2, $dimensions);
+    }
+
+    public function testFindByWithoutSave(): void
+    {
+        $this->markTestSkipped('Currently not implemented to findBy without saving.');
+
+        static::purgeData();
+
+        $dimension1 = $this->dimensionRepository->create(self::TEST_ID, 'de', 'draft');
+        $this->dimensionRepository->add($dimension1);
+
+        $dimension2 = $this->dimensionRepository->create(null, 'de', 'live');
+        $this->dimensionRepository->add($dimension2);
+
+        $dimension3 = $this->dimensionRepository->create(null, 'en', 'draft');
+        $this->dimensionRepository->add($dimension3);
 
         $dimensions = $this->dimensionRepository->findBy(['locale' => 'de']);
         $this->assertCount(2, $dimensions);
