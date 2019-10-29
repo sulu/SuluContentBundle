@@ -11,7 +11,7 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Tests\Unit\Dimension\Model;
+namespace Sulu\Bundle\ContentBundle\Tests\Unit\Dimension\Domain\Model;
 
 use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\ContentBundle\Dimension\Domain\Model\Dimension;

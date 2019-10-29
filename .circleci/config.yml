@@ -18,10 +18,7 @@ workflows:
             - lint:
                   requires:
                       - composer
-            - test-unit:
-                  requires:
-                      - composer
-            - test-functional:
+            - test:
                   requires:
                       - composer
 
@@ -64,22 +61,7 @@ jobs:
             - run: ls vendor/symfony/framework-bundle/
             - run: php composer.phar bootstrap-test-environment
             - run: php composer.phar lint
-    test-unit:
-        docker:
-            - image: sulu/php:7.2-cli
-        environment: *environment_variables
-        steps:
-            - checkout
-            - attach_workspace:
-                  at: .
-            - run: docker-php-ext-enable xdebug
-            - run: php composer.phar test-unit
-            - store_artifacts:
-                  path: Tests/reports/html
-            - store_test_results:
-                  path: Tests/reports
-            - run: php composer.phar test-unit-coverage
-    test-functional:
+    test:
         docker:
             - image: sulu/php:7.2-cli
             - image: mysql:5.7
@@ -91,7 +73,17 @@ jobs:
             - checkout
             - attach_workspace:
                   at: .
+            - run:
+                  name: Enable PCOV, disable Xdebug
+                  command: |
+                      pecl install pcov
+                      docker-php-ext-enable pcov
+                      rm /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini || true
+            - run: php -m
             - run: php composer.phar bootstrap-test-environment
-            - run: php composer.phar test-functional
+            - run: php composer.phar test-coverage
+            - store_artifacts:
+                  path: Tests/reports/html
             - store_test_results:
                   path: Tests/reports
+            - run: php composer.phar test-coverage-checker

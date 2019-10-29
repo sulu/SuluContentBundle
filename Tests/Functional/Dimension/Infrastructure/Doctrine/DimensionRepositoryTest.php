@@ -14,10 +14,14 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Functional\Dimension\Infrastructure\Doctrine;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Sulu\Bundle\ContentBundle\Tests\Functional\Dimension\Domain\Repository\DimensionRepositoryTestCase;
+use Sulu\Bundle\ContentBundle\Dimension\Domain\Repository\DimensionRepositoryInterface;
+use Sulu\Bundle\ContentBundle\TestCases\Dimension\DimensionRepositoryTestCaseTrait;
+use Sulu\Bundle\ContentBundle\Tests\Functional\BaseTestCase;
 
-class DimensionRepositoryTest extends DimensionRepositoryTestCase
+class DimensionRepositoryTest extends BaseTestCase
 {
+    use DimensionRepositoryTestCaseTrait;
+
     /**
      * @var EntityManagerInterface
      */
@@ -27,7 +31,6 @@ class DimensionRepositoryTest extends DimensionRepositoryTestCase
     {
         self::bootKernel();
         self::$entityManager = self::$container->get('doctrine.orm.entity_manager');
-        $this->dimensionRepository = self::$container->get('sulu.repository.dimension');
     }
 
     protected static function purgeData(): void
@@ -38,5 +41,10 @@ class DimensionRepositoryTest extends DimensionRepositoryTestCase
     protected static function saveData(): void
     {
         self::$entityManager->flush();
+    }
+
+    protected function getDimensionRepository(): DimensionRepositoryInterface
+    {
+        return self::$container->get('sulu.repository.dimension');
     }
 }
