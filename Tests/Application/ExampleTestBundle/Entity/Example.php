@@ -13,7 +13,9 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity;
 
-class Example
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\AbstractContent;
+
+class Example extends AbstractContent
 {
     /**
      * @var int

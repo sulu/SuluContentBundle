@@ -10,7 +10,9 @@
         <whitelist addUncoveredFilesFromWhitelist="true">
             <directory>.</directory>
             <exclude>
+                <directory>Common/</directory><!-- TODO Tests -->
                 <directory>Resources/</directory>
+                <directory>TestCases/</directory>
                 <directory>Tests/</directory>
                 <directory>vendor/</directory>
             </exclude>
@@ -22,5 +24,6 @@
         <env name="KERNEL_CLASS" value="Sulu\Bundle\ContentBundle\Tests\Application\Kernel"/>
         <env name="APP_ENV" value="test" force="true"/>
         <env name="SYMFONY_DEPRECATIONS_HELPER" value="weak"/>
+        <server name="SYMFONY_PHPUNIT_REMOVE" value="symfony/yaml"/>
     </php>
 </phpunit>

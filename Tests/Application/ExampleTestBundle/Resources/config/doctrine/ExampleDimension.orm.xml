@@ -2,13 +2,15 @@
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                   xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
-    <entity name="Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example" table="test_examples">
+    <entity name="Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleDimension" table="test_example_dimensions">
         <id name="id" type="integer" column="id">
             <generator strategy="AUTO"/>
         </id>
 
-        <field name="name" type="string" column="name" length="64"/>
-
-        <one-to-many field="dimensions" target-entity="Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleDimension" mapped-by="example" />
+        <many-to-one field="example" target-entity="Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example" inversed-by="dimensions">
+            <join-columns>
+                <join-column name="exampleId" referenced-column-name="id" on-delete="CASCADE" nullable="false"/>
+            </join-columns>
+        </many-to-one>
     </entity>
 </doctrine-mapping>

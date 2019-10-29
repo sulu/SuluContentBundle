@@ -29,7 +29,7 @@ require __DIR__ . '/../vendor/bin/.phpunit/phpunit-8/vendor/autoload.php';
 $inputDefinition = new InputDefinition();
 $inputDefinition->addArgument(new InputArgument('metric', InputArgument::REQUIRED));
 $inputDefinition->addArgument(new InputArgument('threshold', InputArgument::REQUIRED));
-$inputDefinition->addArgument(new InputArgument('paths', InputArgument::REQUIRED | InputArgument::IS_ARRAY));
+$inputDefinition->addArgument(new InputArgument('paths', InputArgument::IS_ARRAY));
 
 // Trim any options passed to the command
 $argvArguments = explode(' ', explode(' --', implode(' ', $argv))[0]);
@@ -47,11 +47,25 @@ if (!is_readable($coverageReportPath)) {
     $io->error('Coverage report file "' . $coverageReportPath . '" is not readable or does not exist.');
     exit(1);
 }
+
+/** @var CodeCoverage $coverage */
 $coverage = require $coverageReportPath;
 
 $exit = 0;
 
-foreach ($input->getArgument('paths') as $path) {
+$paths = $input->getArgument('paths');
+
+// Check all root paths if no paths are given
+if (empty($paths)) {
+    /** @var Directory $report */
+    foreach ($coverage->getReport() as $report) {
+        if (is_dir($report->getPath()) && dirname($report->getPath()) === dirname(__DIR__)) {
+            $paths[] = basename($report->getPath());
+        }
+    }
+}
+
+foreach ($paths as $path) {
     $exit += assertCodeCoverage($coverage, $path, $metric, $threshold);
 }
 
