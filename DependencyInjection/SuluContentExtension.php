@@ -45,6 +45,19 @@ class SuluContentExtension extends Extension implements PrependExtensionInterfac
                 ]
             );
         }
+
+        if ($container->hasExtension('sulu_admin')) {
+            $container->prependExtensionConfig(
+                'sulu_admin',
+                [
+                    'forms' => [
+                        'directories' => [
+                            __DIR__ . '/../Resources/config/forms',
+                        ],
+                    ],
+                ]
+            );
+        }
     }
 
     public function load(array $configs, ContainerBuilder $container)

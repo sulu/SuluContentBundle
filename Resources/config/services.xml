@@ -7,5 +7,11 @@
             <!-- Priority 100 as the MetadataLoader need to be before the ResolveTargetEntityListener of Doctrine -->
             <tag name="doctrine.event_subscriber" priority="100"/>
         </service>
+
+        <service id="sulu_content.content_view_builder" class="Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Admin\ContentViewBuilder">
+            <argument type="service" id="sulu_admin.view_builder_factory"/>
+        </service>
+
+        <service id="Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Admin\ContentViewBuilderInterface" alias="sulu_content.content_view_builder"/>
     </services>
 </container>

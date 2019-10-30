@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Dimension\Infrastructure\Doctrine;
 
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -47,11 +48,10 @@ class DimensionRepository implements DimensionRepositoryInterface
 
     public function create(
         ?string $id = null,
-        ?string $locale = null,
-        string $workflowStage = DimensionInterface::WORKFLOW_STAGE_DRAFT
+        array $attributes = []
     ): DimensionInterface {
         /** @var DimensionInterface $dimension */
-        $dimension = new $this->className($id, $locale, $workflowStage);
+        $dimension = new $this->className($id, $attributes);
 
         return $dimension;
     }
@@ -65,6 +65,25 @@ class DimensionRepository implements DimensionRepositoryInterface
     {
         $this->entityManager->persist($dimension);
     }
+
+    public function findIdsByAttributes(array $attributes): array
+    {
+        $queryBuilder = $this->entityRepository->createQueryBuilder('dimension')
+            ->select('dimension.id');
+
+        $attributes = $this->getAttributes($attributes);
+        $queryBuilder->addCriteria($this->getAttributesCriteria($attributes));
+
+        // Less specific should be returned first to merge correctly
+        foreach ($this->getAttributes($attributes) as $key => $value) {
+            $queryBuilder->addOrderBy('dimension.' . $key);
+        }
+
+        return array_map(function(array $item) {
+            return $item['id'];
+        }, $queryBuilder->getQuery()->getScalarResult());
+    }
+
 
     public function findOneBy(array $criteria): ?DimensionInterface
     {
@@ -80,5 +99,44 @@ class DimensionRepository implements DimensionRepositoryInterface
         $directories = $this->entityRepository->findBy($criteria);
 
         return $directories;
+    }
+
+    private function getAttributesCriteria(array $attributes): Criteria
+    {
+        $criteria = Criteria::create();
+
+        foreach ($attributes as $key => $value) {
+            $fieldName = 'dimension.' . $key;
+            $expr = $criteria->expr()->isNull($fieldName);
+
+            if ($value !== null) {
+                $eqExpr = $criteria->expr()->eq($fieldName, $value);
+                $expr = $criteria->expr()->orX($expr, $eqExpr);
+            }
+
+            $criteria->andWhere($expr);
+        }
+
+        return $criteria;
+    }
+
+    /**
+     * @param mixed[] $attributes
+     *
+     * @return mixed[]
+     */
+    private function getAttributes(array $attributes): array
+    {
+        $defaultValues = $this->className::getDefaultValues();
+
+        $attributes = array_merge(
+            $defaultValues,
+            $attributes
+        );
+
+        unset($attributes['id']);
+        unset($attributes['no']);
+
+        return $attributes;
     }
 }

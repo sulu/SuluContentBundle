@@ -23,4 +23,6 @@ interface DimensionInterface
     public function getLocale(): ?string;
 
     public function getWorkflowStage(): string;
+
+    public static function getDefaultValues();
 }

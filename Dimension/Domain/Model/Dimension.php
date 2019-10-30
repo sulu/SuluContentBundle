@@ -35,16 +35,17 @@ class Dimension implements DimensionInterface
     /**
      * @var string
      */
-    private $workflowStage = DimensionInterface::WORKFLOW_STAGE_DRAFT;
+    private $workflowStage;
 
     public function __construct(
         ?string $id = null,
-        ?string $locale = null,
-        string $workflowStage = DimensionInterface::WORKFLOW_STAGE_DRAFT
+        array $attributes = []
     ) {
         $this->id = $id ?? Uuid::uuid4()->toString();
-        $this->locale = $locale;
-        $this->workflowStage = $workflowStage;
+
+        $attributes = array_merge(static::getDefaultValues(), $attributes);
+        $this->locale = $attributes['locale'];
+        $this->workflowStage = $attributes['workflowStage'];
     }
 
     public function getId(): string
@@ -60,5 +61,13 @@ class Dimension implements DimensionInterface
     public function getWorkflowStage(): string
     {
         return $this->workflowStage;
+    }
+
+    public static function getDefaultValues()
+    {
+        return [
+            'locale' => null,
+            'workflowStage' => DimensionInterface::WORKFLOW_STAGE_DRAFT,
+        ];
     }
 }

@@ -7,6 +7,8 @@
             <generator strategy="AUTO"/>
         </id>
 
+        <field name="title" type="string" column="name" length="64"/>
+
         <many-to-one field="example" target-entity="Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example" inversed-by="dimensions">
             <join-columns>
                 <join-column name="exampleId" referenced-column-name="id" on-delete="CASCADE" nullable="false"/>

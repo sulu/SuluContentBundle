@@ -17,28 +17,15 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\AbstractContent;
 
 class Example extends AbstractContent
 {
+    const RESOURCE_KEY = 'examples';
+
     /**
      * @var int
      */
     public $id;
 
-    /**
-     * @var string
-     */
-    public $name;
-
     public function getId(): int
     {
         return $this->id;
-    }
-
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    public function setName(string $name): self
-    {
-        $this->name = $name;
     }
 }

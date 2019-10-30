@@ -25,10 +25,49 @@ class ExampleDimension extends AbstractContentDimension implements ExcerptInterf
 {
     use ExcerptTrait;
     use SeoTrait;
-    use TemplateTrait;
+    use TemplateTrait {
+        getTemplateData as parentGetTemplateData;
+        setTemplateData as parentSetTemplateData;
+    }
 
     /**
      * @var Example
      */
     protected $example;
+
+    /**
+     * @var string
+     */
+    protected $title;
+
+    public function __construct(Example $example, string $dimensionId)
+    {
+        $this->example = $example;
+        $this->dimensionId = $dimensionId;
+    }
+
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
+
+    public function setTitle(string $title): void
+    {
+        $this->title = $title;
+    }
+
+    public function getTemplateData(): array
+    {
+        $data = $this->parentGetTemplateData();
+        $data['title'] = $this->getTitle();
+
+        return $data;
+    }
+
+    public function setTemplateData(array $templateData): void
+    {
+        $this->setTitle($templateData['title']);
+        unset($templateData['title']);
+        $this->parentSetTemplateData($templateData);
+    }
 }

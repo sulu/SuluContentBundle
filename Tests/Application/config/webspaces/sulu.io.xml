@@ -12,13 +12,14 @@
 
     <localizations>
         <localization language="de" default="true"/>
+        <localization language="en"/>
     </localizations>
 
     <theme>default</theme>
 
     <default-templates>
         <default-template type="homepage">default</default-template>
-        <default-template type="page">default</default-template>
+        <default-template type="page">default-2</default-template>
     </default-templates>
 
     <navigation>

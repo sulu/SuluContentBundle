@@ -3,15 +3,15 @@
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://schemas.sulu.io/template/template http://schemas.sulu.io/template/template-1.0.xsd">
 
-    <key>default</key>
+    <key>example-2</key>
 
     <view>@ExampleTestBundle/examples/example</view>
     <controller>Sulu\Bundle\WebsiteBundle\Controller\DefaultController::indexAction</controller>
     <cacheLifetime>604800</cacheLifetime>
 
     <meta>
-        <title lang="en">Example</title>
-        <title lang="de">Example</title>
+        <title lang="en">Example 2</title>
+        <title lang="de">Example 2</title>
     </meta>
 
     <properties>
@@ -37,10 +37,10 @@
             <tag name="sulu.rlp"/>
         </property>
 
-        <property name="article" type="text_editor">
+        <property name="images" type="media_selection">
             <meta>
-                <title lang="en">Article</title>
-                <title lang="de">Artikel</title>
+                <title lang="en">Images</title>
+                <title lang="de">Bilder</title>
             </meta>
         </property>
     </properties>

@@ -19,13 +19,19 @@ interface DimensionRepositoryInterface
 {
     public function create(
         ?string $id = null,
-        ?string $locale = null,
-        string $workflowStage = DimensionInterface::WORKFLOW_STAGE_DRAFT
+        array $attributes = []
     ): DimensionInterface;
 
     public function add(DimensionInterface $directory): void;
 
     public function remove(DimensionInterface $directory): void;
+
+    /**
+     * @param mixed[] $attributes
+     *
+     * @return string[]
+     */
+    public function findIdsByAttributes(array $attributes): array;
 
     /**
      * @param mixed[] $criteria
