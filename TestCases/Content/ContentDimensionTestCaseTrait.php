@@ -14,9 +14,6 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\TestCases\Content;
 
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 
 /**
  * Trait to test your implementation of the ContentDimensionInterface.
@@ -39,30 +36,16 @@ trait ContentDimensionTestCaseTrait
         $this->assertSame('123-456', $model->getDimensionId());
     }
 
-    public function testGetData(): void
+    public function testDimensionToArray(): void
     {
         $model = $this->getContentDimensionInstance();
-
-        $this->assertSame([], array_keys($this->getData($model)));
+        $this->assertSame([], $this->dimensionToArray($model));
     }
 
-    public function testGetDataFull(): void
+    public function testDimensionToArrayFull(): void
     {
-        /** @var SeoInterface|ExcerptInterface|TemplateInterface|ContentDimensionInterface $model */
         $model = $this->getFullContentDimensionInstance();
-
-        $this->assertInstanceOf(ContentDimensionInterface::class, $model);
-        $this->assertInstanceOf(SeoInterface::class, $model);
-        $this->assertInstanceOf(ExcerptInterface::class, $model);
-        $this->assertInstanceOf(TemplateInterface::class, $model);
-
-        $model->setTemplate('template');
-
-        $this->assertSame([
-            'seo',
-            'excerpt',
-            'template',
-        ], array_keys($this->getData($model)));
+        $this->assertSame([], $this->dimensionToArray($model));
     }
 
     /**
@@ -70,8 +53,8 @@ trait ContentDimensionTestCaseTrait
      *
      * @return mixed[]
      */
-    protected function getData(ContentDimensionInterface $model): array
+    protected function dimensionToArray(ContentDimensionInterface $model): array
     {
-        return $model->getData();
+        return $model->dimensionToArray();
     }
 }

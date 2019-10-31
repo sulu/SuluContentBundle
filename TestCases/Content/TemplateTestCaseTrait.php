@@ -25,8 +25,8 @@ trait TemplateTestCaseTrait
     public function testGetSetTemplate(): void
     {
         $model = $this->getTemplateInstance();
-        $model->setTemplate('template');
-        $this->assertSame('template', $model->getTemplate());
+        $model->setTemplateKey('template');
+        $this->assertSame('template', $model->getTemplateKey());
     }
 
     public function testGetSetTemplateData(): void
@@ -41,12 +41,12 @@ trait TemplateTestCaseTrait
     {
         $model = $this->getTemplateInstance();
 
-        $model->setTemplate('template');
+        $model->setTemplateKey('template');
         $model->setTemplateData(['data' => 'My Data']);
 
         $this->assertSame([
-            'template' => 'template',
-            'data' => [
+            'templateKey' => 'template',
+            'templateData' => [
                 'data' => 'My Data',
             ],
         ], $this->templateToArray($model));

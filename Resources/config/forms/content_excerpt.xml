@@ -36,13 +36,13 @@
             </meta>
         </property>
 
-        <property name="excerptIcon" type="media_selection">
+        <property name="excerptIcon" type="single_media_selection">
             <meta>
                 <title>sulu_page.icons</title>
             </meta>
         </property>
 
-        <property name="excerptImages" type="media_selection">
+        <property name="excerptImage" type="single_media_selection">
             <meta>
                 <title>sulu_page.images</title>
             </meta>

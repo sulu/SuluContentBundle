@@ -16,7 +16,7 @@ namespace Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Controll
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\ViewHandlerInterface;
-use Sulu\Bundle\ContentBundle\Dimension\Domain\Model\DimensionInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentDimensionMergerInterface;
 use Sulu\Bundle\ContentBundle\Dimension\Domain\Repository\DimensionRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
 use Sulu\Component\Rest\AbstractRestController;
@@ -53,6 +53,11 @@ class ExampleController extends AbstractRestController implements ClassResourceI
     private $dimensionRepository;
 
     /**
+     * @var ContentDimensionMergerInterface
+     */
+    private $contentDimensionMerger;
+
+    /**
      * @var EntityManagerInterface
      */
     private $entityManager;
@@ -64,12 +69,14 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         DoctrineListBuilderFactoryInterface $listBuilderFactory,
         RestHelperInterface $restHelper,
         DimensionRepositoryInterface $dimensionRepository,
+        ContentDimensionMergerInterface $contentDimensionMerger,
         EntityManagerInterface $entityManager
     ) {
         $this->fieldDescriptorFactory = $fieldDescriptorFactory;
         $this->listBuilderFactory = $listBuilderFactory;
         $this->restHelper = $restHelper;
         $this->dimensionRepository = $dimensionRepository;
+        $this->contentDimensionMerger = $contentDimensionMerger;
         $this->entityManager = $entityManager;
 
         parent::__construct($viewHandler, $tokenStorage);
@@ -95,47 +102,52 @@ class ExampleController extends AbstractRestController implements ClassResourceI
 
     public function getAction(Request $request, int $id): Response
     {
+        /** @var Example|null $example */
         $example = $this->entityManager->getRepository(Example::class)->findOneBy(['id' => $id]);
 
         if (!$example) {
             throw new NotFoundHttpException();
         }
 
-        $dimensionAttributes = $this->getDimensionAttributes($request);
-        $dimensionIds = $this->dimensionRepository->findIdsByAttributes($dimensionAttributes);
-
-        return $this->handleView($this->view($example));
+        return $this->handleView($this->view($this->createViewData($example, $this->getAttributes($request))));
     }
 
     public function postAction(Request $request): Response
     {
         $example = new Example();
-
         $data = $this->getData($request);
 
+        // TODO set example data
+
         $this->entityManager->persist($example);
+
+        // TODO set dimension data
+
         $this->entityManager->flush();
 
-        return $this->handleView($this->view($example, 201));
+        return $this->handleView($this->view($this->createViewData($example, $this->getAttributes($request)), 201));
     }
 
     public function putAction(Request $request, int $id): Response
     {
+        /** @var Example|null $example */
         $example = $this->entityManager->getRepository(Example::class)->findOneBy(['id' => $id]);
 
         if (!$example) {
             throw new NotFoundHttpException();
         }
 
-        $data = $this->getData($request);
+        // TODO set example data
+        // TODO set dimension data
 
         $this->entityManager->flush();
 
-        return $this->handleView($this->view($example));
+        return $this->handleView($this->view($this->createViewData($example, $this->getAttributes($request))));
     }
 
     public function deleteAction(int $id): Response
     {
+        /** @var Example $example */
         $example = $this->entityManager->getReference(Example::class, $id);
         $this->entityManager->remove($example);
         $this->entityManager->flush();
@@ -143,21 +155,49 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         return new Response('', 204);
     }
 
+    /**
+     * @param array<string, mixed> $attributes
+     *
+     * @return array<string, mixed>
+     */
+    protected function createViewData(Example $example, array $attributes): array
+    {
+        $dimensionIds = $this->dimensionRepository->findIdsByAttributes($attributes);
+
+        $dimensions = [];
+        // TODO here we should call the repository and load only the dimension we need
+        foreach ($example->getDimensions() as $dimension) {
+            $dimensionId = $dimension->getDimensionId();
+            if (\in_array($dimensionId, $dimensionIds, true)) {
+                $dimensions[array_search($dimensionId, $dimensionIds, true)] = $dimension;
+            }
+        }
+
+        $data = $this->contentDimensionMerger->merge($dimensions);
+
+        // FIXME some hack implementation it should be possible to set this templateKey and form path
+        $data['id'] = $example->getId();
+        $data = array_merge($data, $data['template']['templateData']);
+        $data['template'] = $data['template']['templateKey'];
+
+        return $data;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    protected function getAttributes(Request $request): array
+    {
+        return $request->query->all();
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
     protected function getData(Request $request): array
     {
         $data = $request->request->all();
 
         return $data;
-    }
-
-    protected function getDimensionAttributes(Request $request): array
-    {
-        return [
-            'workflowStage' => $request->query->get(
-                'workflowStage',
-                DimensionInterface::WORKFLOW_STAGE_DRAFT
-            ),
-            'locale' => $request->query->get('locale'),
-        ];
     }
 }

@@ -138,28 +138,6 @@ class ExampleAdmin extends Admin
                  static::EDIT_TABS_VIEW,
                 static::ADD_TABS_VIEW
             );
-
-            // TODO replace with content bundle implementation
-            /*
-            $viewCollection->add(
-                $this->viewBuilderFactory->createFormViewBuilder('sulu_tag.add_form.details', '/details')
-                    ->setResourceKey($resourceKey)
-                    ->setFormKey('tag_details')
-                    ->setTabTitle('sulu_admin.details')
-                    ->setEditView(static::EDIT_TABS_VIEW)
-                    ->addToolbarActions($formToolbarActions)
-                    ->setParent(static::ADD_TABS_VIEW)
-            );
-
-            $viewCollection->add(
-                $this->viewBuilderFactory->createFormViewBuilder('sulu_tag.edit_form.details', '/details')
-                    ->setResourceKey(Example::RESOURCE_KEY)
-                    ->setFormKey('tag_details')
-                    ->setTabTitle('sulu_admin.details')
-                    ->addToolbarActions($formToolbarActions)
-                    ->setParent(static::EDIT_TABS_VIEW)
-            );
-            */
         }
     }
 

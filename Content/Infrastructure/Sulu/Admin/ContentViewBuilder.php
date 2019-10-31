@@ -37,7 +37,7 @@ class ContentViewBuilder implements ContentViewBuilderInterface
         string $editParentView,
         ?string $addParentView = null
     ): void {
-        // TODO check which interfaces the resource dimension implements and only add this templates
+        // TODO check which interfaces the resource dimension implements and only add this tabs
 
         // Add views
         if (null !== $addParentView) {

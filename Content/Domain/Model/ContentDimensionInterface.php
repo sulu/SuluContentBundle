@@ -22,5 +22,5 @@ interface ContentDimensionInterface
     /**
      * @return mixed[]
      */
-    public function getData(): array;
+    public function dimensionToArray(): array;
 }

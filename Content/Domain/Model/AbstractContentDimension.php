@@ -35,22 +35,8 @@ abstract class AbstractContentDimension implements ContentDimensionInterface
         return $this->dimensionId;
     }
 
-    public function getData(): array
+    public function dimensionToArray(): array
     {
-        $data = [];
-
-        if ($this instanceof SeoInterface) {
-            $data['seo'] = $this->seoToArray();
-        }
-
-        if ($this instanceof ExcerptInterface) {
-            $data['excerpt'] = $this->excerptToArray();
-        }
-
-        if ($this instanceof TemplateInterface) {
-            $data['template'] = $this->templateToArray();
-        }
-
-        return $data;
+        return [];
     }
 }

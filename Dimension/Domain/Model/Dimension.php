@@ -37,6 +37,9 @@ class Dimension implements DimensionInterface
      */
     private $workflowStage;
 
+    /**
+     * @param array<string, mixed> $attributes
+     */
     public function __construct(
         ?string $id = null,
         array $attributes = []
@@ -63,7 +66,7 @@ class Dimension implements DimensionInterface
         return $this->workflowStage;
     }
 
-    public static function getDefaultValues()
+    public static function getDefaultValues(): array
     {
         return [
             'locale' => null,

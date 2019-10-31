@@ -17,6 +17,9 @@ use Sulu\Bundle\ContentBundle\Dimension\Domain\Model\DimensionInterface;
 
 interface DimensionRepositoryInterface
 {
+    /**
+     * @param array<string, mixed> $attributes
+     */
     public function create(
         ?string $id = null,
         array $attributes = []
@@ -27,7 +30,7 @@ interface DimensionRepositoryInterface
     public function remove(DimensionInterface $directory): void;
 
     /**
-     * @param mixed[] $attributes
+     * @param array<string, mixed> $attributes
      *
      * @return string[]
      */

@@ -13,5 +13,28 @@
         </service>
 
         <service id="Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Admin\ContentViewBuilderInterface" alias="sulu_content.content_view_builder"/>
+
+        <!-- Merger -->
+        <service id="sulu_content.merger.dimension" class="Sulu\Bundle\ContentBundle\Content\Application\Merger\DimensionMerger">
+            <tag name="sulu_content.merger" />
+        </service>
+
+        <service id="sulu_content.merger.excerpt" class="Sulu\Bundle\ContentBundle\Content\Application\Merger\ExcerptMerger">
+            <tag name="sulu_content.merger" />
+        </service>
+
+        <service id="sulu_content.merger.seo" class="Sulu\Bundle\ContentBundle\Content\Application\Merger\SeoMerger">
+            <tag name="sulu_content.merger" />
+        </service>
+
+        <service id="sulu_content.merger.template" class="Sulu\Bundle\ContentBundle\Content\Application\Merger\TemplateMerger">
+            <tag name="sulu_content.merger" />
+        </service>
+
+        <service id="sulu_content.content_dimension_merger" class="Sulu\Bundle\ContentBundle\Content\Application\ContentDimensionMerger">
+            <argument type="tagged" tag="sulu_content.merger"/>
+        </service>
+
+        <service id="Sulu\Bundle\ContentBundle\Content\Application\ContentDimensionMergerInterface" class="sulu_content.content_dimension_merger"/>
     </services>
 </container>
