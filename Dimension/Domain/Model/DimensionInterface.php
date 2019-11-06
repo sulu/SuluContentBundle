@@ -23,4 +23,9 @@ interface DimensionInterface
     public function getLocale(): ?string;
 
     public function getWorkflowStage(): string;
+
+    /**
+     * @return array<string, mixed>
+     */
+    public static function getDefaultValues(): array;
 }

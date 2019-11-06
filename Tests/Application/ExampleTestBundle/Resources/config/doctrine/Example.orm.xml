@@ -7,8 +7,6 @@
             <generator strategy="AUTO"/>
         </id>
 
-        <field name="name" type="string" column="name" length="64"/>
-
         <one-to-many field="dimensions" target-entity="Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleDimension" mapped-by="example" />
     </entity>
 </doctrine-mapping>

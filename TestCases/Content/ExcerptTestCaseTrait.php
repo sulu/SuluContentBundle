@@ -72,9 +72,9 @@ trait ExcerptTestCaseTrait
         $tag2 = $this->createTag(2);
 
         $model = $this->getExcerptInstance();
-        $this->assertEmpty($model->getExcerptTagIds());
+        $this->assertEmpty($model->getExcerptTags());
         $model->setExcerptTags([$tag1, $tag2]);
-        $this->assertSame([1, 2], $model->getExcerptTagIds());
+        $this->assertSame([1, 2], $model->getExcerptTags());
     }
 
     public function testGetSetExcerptCategories(): void
@@ -83,33 +83,9 @@ trait ExcerptTestCaseTrait
         $category2 = $this->createCategory(2);
 
         $model = $this->getExcerptInstance();
-        $this->assertEmpty($model->getExcerptCategoryIds());
+        $this->assertEmpty($model->getExcerptCategories());
         $model->setExcerptCategories([$category1, $category2]);
-        $this->assertSame([1, 2], $model->getExcerptCategoryIds());
-    }
-
-    public function testExcerptToArray(): void
-    {
-        $model = $this->getExcerptInstance();
-        $this->assertSame([
-            'title' => null,
-            'description' => null,
-            'more' => null,
-            'image' => null,
-            'icon' => null,
-            'categories' => [],
-            'tags' => [],
-        ], $this->excerptToArray($model));
-    }
-
-    /**
-     * Overwrite this function to unset custom data.
-     *
-     * @return mixed[]
-     */
-    protected function excerptToArray(ExcerptInterface $model): array
-    {
-        return $model->excerptToArray();
+        $this->assertSame([1, 2], $model->getExcerptCategories());
     }
 
     private function createTag(int $id): TagInterface

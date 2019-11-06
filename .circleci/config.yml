@@ -10,6 +10,13 @@ version: 2
     DATABASE_CHARSET: utf8mb4
     DATABASE_COLLATE: utf8mb4_unicode_ci
 
+.enable_pcov: &enable_pcov
+    name: Enable PCOV, disable Xdebug
+    command: |
+        pecl install pcov
+        docker-php-ext-enable pcov
+        rm /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini || true
+
 workflows:
     version: 2
     default:
@@ -21,6 +28,10 @@ workflows:
             - test:
                   requires:
                       - composer
+            - test-coverage:
+                  requires:
+                      - composer
+                      - test
 
 jobs:
     composer:
@@ -31,14 +42,15 @@ jobs:
             - run: composer config -g cache-dir "$(pwd)/.composer-cache"
             - restore_cache:
                   keys:
-                      - v7-composer-cache-{{ checksum "composer.json" }}
-                      - v7-composer-cache-
+                      - v8-composer-cache-{{ checksum "composer.json" }}
+                      - v8-composer-cache-
             - run: composer install -n --prefer-dist --ignore-platform-reqs --no-scripts
+            - run: composer phpunit -- install
             - run: curl --show-error --silent https://getcomposer.org/installer | php
             - save_cache:
                   paths:
                       - .composer-cache
-                  key: v7-composer-cache-{{ checksum "composer.json" }}
+                  key: v8-composer-cache-{{ checksum "composer.json" }}
             - persist_to_workspace:
                   root: .
                   paths:
@@ -73,12 +85,7 @@ jobs:
             - checkout
             - attach_workspace:
                   at: .
-            - run:
-                  name: Enable PCOV, disable Xdebug
-                  command: |
-                      pecl install pcov
-                      docker-php-ext-enable pcov
-                      rm /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini || true
+            - run: *enable_pcov
             - run: php -m
             - run: php composer.phar bootstrap-test-environment
             - run: php composer.phar test-coverage
@@ -86,4 +93,18 @@ jobs:
                   path: Tests/reports/html
             - store_test_results:
                   path: Tests/reports
+            - persist_to_workspace:
+                  root: .
+                  paths:
+                      - Tests/reports
+
+    test-coverage:
+        docker:
+            - image: sulu/php:7.2-cli
+        environment: *environment_variables
+        steps:
+            - checkout
+            - attach_workspace:
+                  at: .
+            - run: *enable_pcov
             - run: php composer.phar test-coverage-checker

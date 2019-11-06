@@ -1,1 +1,13 @@
-Example
+{% block content %}
+    <h1>
+        {{ content.title }}
+    </h1>
+
+    <div>
+        {{ content.url }}
+    </div>
+
+    <div>
+        {{ content.article|raw }}
+    </div>
+{% endblock %}

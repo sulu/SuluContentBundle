@@ -15,6 +15,7 @@ namespace Sulu\Bundle\ContentBundle\TestCases\Content;
 
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
 
 /**
  * Trait to test your implementation of the ContentInterface.
@@ -24,6 +25,8 @@ trait ContentTestCaseTrait
     abstract protected function getInstance(): ContentInterface;
 
     abstract protected function getInstanceDimension(int $id): ContentDimensionInterface;
+
+    abstract protected function getInstanceView(int $id): ContentViewInterface;
 
     public function testGetAddRemoveDimension(): void
     {

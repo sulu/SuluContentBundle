@@ -18,7 +18,10 @@ use Sulu\Bundle\ContentBundle\Dimension\Domain\Repository\DimensionRepositoryInt
 
 trait DimensionRepositoryTestCaseTrait
 {
-    protected static $TEST_ID = '1234568-1234-1234-1234-123456789012';
+    protected static $TEST_ID = '1234568-1234-1234-1234-123456789011';
+    protected static $TEST_ID2 = '1234568-1234-1234-1234-123456789012';
+    protected static $TEST_ID3 = '1234568-1234-1234-1234-123456789013';
+    protected static $TEST_ID4 = '1234568-1234-1234-1234-123456789014';
 
     abstract protected static function purgeData(): void;
 
@@ -52,30 +55,14 @@ trait DimensionRepositoryTestCaseTrait
         $this->assertSame(static::$TEST_ID, $dimension->getId());
     }
 
-    public function testAddAndRemoveWithSave(): void
+    /**
+     * @dataProvider saveSkipDataProvider
+     */
+    public function testAddAndRemoveWithSave(bool $skipSave): void
     {
-        static::purgeData();
-
-        $dimensionRepository = $this->getDimensionRepository();
-
-        $dimension = $dimensionRepository->create(static::$TEST_ID);
-        $dimensionRepository->add($dimension);
-        static::saveData();
-
-        $dimension = $dimensionRepository->findOneBy(['id' => static::$TEST_ID]);
-        $this->assertNotNull($dimension);
-        $this->assertSame(static::$TEST_ID, $dimension->getId());
-
-        $dimensionRepository->remove($dimension);
-        static::saveData();
-
-        $dimension = $dimensionRepository->findOneBy(['id' => static::$TEST_ID]);
-        $this->assertNull($dimension);
-    }
-
-    public function testAddAndRemoveWithoutSave(): void
-    {
-        $this->markTestSkipped('Currently not implemented to findOneBy without saving.');
+        if ($skipSave) {
+            $this->markTestSkipped('Currently not implemented to findOneBy without saving.');
+        }
 
         static::purgeData();
 
@@ -83,12 +70,18 @@ trait DimensionRepositoryTestCaseTrait
 
         $dimension = $dimensionRepository->create(static::$TEST_ID);
         $dimensionRepository->add($dimension);
+        if (!$skipSave) {
+            static::saveData();
+        }
 
         $dimension = $dimensionRepository->findOneBy(['id' => static::$TEST_ID]);
         $this->assertNotNull($dimension);
         $this->assertSame(static::$TEST_ID, $dimension->getId());
 
         $dimensionRepository->remove($dimension);
+        if (!$skipSave) {
+            static::saveData();
+        }
 
         $dimension = $dimensionRepository->findOneBy(['id' => static::$TEST_ID]);
         $this->assertNull($dimension);
@@ -102,67 +95,216 @@ trait DimensionRepositoryTestCaseTrait
         $this->assertNull($dimension);
     }
 
-    public function testFindOneBy(): void
+    /**
+     * @dataProvider saveSkipDataProvider
+     */
+    public function testFindOneByWithSave(bool $skipSave): void
     {
+        if ($skipSave) {
+            $this->markTestSkipped('Currently not implemented to findOneBy without saving.');
+        }
+
         static::purgeData();
 
         $dimensionRepository = $this->getDimensionRepository();
 
-        $dimension1 = $dimensionRepository->create(static::$TEST_ID, 'de');
+        $dimension1 = $dimensionRepository->create(static::$TEST_ID, ['locale' => 'de']);
         $dimensionRepository->add($dimension1);
 
-        $dimension2 = $dimensionRepository->create(null, 'de', 'live');
+        $dimension2 = $dimensionRepository->create(static::$TEST_ID2, ['locale' => 'de', 'workflowStage' => 'live']);
         $dimensionRepository->add($dimension2);
 
-        $dimension3 = $dimensionRepository->create(null, 'en', 'draft');
+        $dimension3 = $dimensionRepository->create(static::$TEST_ID3, ['locale' => 'en', 'workflowStage' => 'draft']);
         $dimensionRepository->add($dimension3);
 
-        static::saveData();
+        if (!$skipSave) {
+            static::saveData();
+        }
 
         $dimension = $dimensionRepository->findOneBy(['locale' => 'de', 'workflowStage' => 'draft']);
         $this->assertNotNull($dimension);
         $this->assertSame(static::$TEST_ID, $dimension->getId());
     }
 
-    public function testFindByWithSave(): void
+    /**
+     * @dataProvider saveSkipDataProvider
+     */
+    public function testFindByWithSave(bool $skipSave): void
     {
+        if ($skipSave) {
+            $this->markTestSkipped('Currently not implemented to findBy without saving.');
+        }
+
         static::purgeData();
 
         $dimensionRepository = $this->getDimensionRepository();
 
-        $dimension1 = $dimensionRepository->create(static::$TEST_ID, 'de', 'draft');
+        $dimension1 = $dimensionRepository->create(static::$TEST_ID, ['locale' => 'de']);
         $dimensionRepository->add($dimension1);
 
-        $dimension2 = $dimensionRepository->create(null, 'de', 'live');
+        $dimension2 = $dimensionRepository->create(static::$TEST_ID2, ['locale' => 'de', 'workflowStage' => 'live']);
         $dimensionRepository->add($dimension2);
 
-        $dimension3 = $dimensionRepository->create(null, 'en', 'draft');
+        $dimension3 = $dimensionRepository->create(static::$TEST_ID3, ['locale' => 'en', 'workflowStage' => 'draft']);
         $dimensionRepository->add($dimension3);
 
-        static::saveData();
+        if (!$skipSave) {
+            static::saveData();
+        }
 
         $dimensions = $dimensionRepository->findBy(['locale' => 'de']);
         $this->assertCount(2, $dimensions);
     }
 
-    public function testFindByWithoutSave(): void
+    /**
+     * @dataProvider saveSkipDataProvider
+     */
+    public function testFindIdsAttributesWithLocaleAndWorkflowStage(bool $skipSave): void
     {
-        $this->markTestSkipped('Currently not implemented to findBy without saving.');
+        if ($skipSave) {
+            $this->markTestSkipped('Currently not implemented to findIdsByAttributes without saving.');
+        }
 
         static::purgeData();
 
         $dimensionRepository = $this->getDimensionRepository();
 
-        $dimension1 = $dimensionRepository->create(static::$TEST_ID, 'de', 'draft');
+        $dimension1 = $dimensionRepository->create(static::$TEST_ID, ['locale' => 'en']);
         $dimensionRepository->add($dimension1);
 
-        $dimension2 = $dimensionRepository->create(null, 'de', 'live');
+        $dimension2 = $dimensionRepository->create(static::$TEST_ID2, ['locale' => 'en-gb']);
         $dimensionRepository->add($dimension2);
 
-        $dimension3 = $dimensionRepository->create(null, 'en', 'draft');
+        $dimension3 = $dimensionRepository->create(static::$TEST_ID3, ['locale' => 'de', 'workflowStage' => 'live']);
         $dimensionRepository->add($dimension3);
 
-        $dimensions = $dimensionRepository->findBy(['locale' => 'de']);
-        $this->assertCount(2, $dimensions);
+        $dimension4 = $dimensionRepository->create(static::$TEST_ID4);
+        $dimensionRepository->add($dimension4);
+
+        if (!$skipSave) {
+            static::saveData();
+        }
+
+        $dimensionIds = $dimensionRepository->findIdsByAttributes([
+            'locale' => 'en',
+            'workflowStage' => DimensionInterface::WORKFLOW_STAGE_DRAFT,
+        ]);
+
+        $this->assertCount(2, $dimensionIds);
+        $this->assertSame([static::$TEST_ID4, static::$TEST_ID], $dimensionIds);
+    }
+
+    /**
+     * @dataProvider saveSkipDataProvider
+     */
+    public function testFindIdsAttributesWithWorkflowStageOnly(bool $skipSave): void
+    {
+        if ($skipSave) {
+            $this->markTestSkipped('Currently not implemented to findIdsByAttributes without saving.');
+        }
+
+        static::purgeData();
+
+        $dimensionRepository = $this->getDimensionRepository();
+
+        $dimension1 = $dimensionRepository->create(static::$TEST_ID, ['locale' => 'en']);
+        $dimensionRepository->add($dimension1);
+
+        $dimension2 = $dimensionRepository->create(static::$TEST_ID2, ['locale' => 'en-gb']);
+        $dimensionRepository->add($dimension2);
+
+        $dimension3 = $dimensionRepository->create(static::$TEST_ID3, ['locale' => 'de', 'workflowStage' => 'live']);
+        $dimensionRepository->add($dimension3);
+
+        $dimension4 = $dimensionRepository->create(static::$TEST_ID4);
+        $dimensionRepository->add($dimension4);
+
+        if (!$skipSave) {
+            static::saveData();
+        }
+
+        $dimensionIds = $dimensionRepository->findIdsByAttributes([
+            'workflowStage' => DimensionInterface::WORKFLOW_STAGE_DRAFT,
+        ]);
+
+        $this->assertCount(1, $dimensionIds);
+        $this->assertSame([static::$TEST_ID4], $dimensionIds);
+    }
+
+    /**
+     * @dataProvider saveSkipDataProvider
+     */
+    public function testFindIdsAttributesWithLocaleOnly(bool $skipSave): void
+    {
+        if ($skipSave) {
+            $this->markTestSkipped('Currently not implemented to findIdsByAttributes without saving.');
+        }
+
+        static::purgeData();
+
+        $dimensionRepository = $this->getDimensionRepository();
+
+        $dimension1 = $dimensionRepository->create(static::$TEST_ID, ['locale' => 'en']);
+        $dimensionRepository->add($dimension1);
+
+        $dimension2 = $dimensionRepository->create(static::$TEST_ID2, ['locale' => 'en-gb']);
+        $dimensionRepository->add($dimension2);
+
+        $dimension3 = $dimensionRepository->create(static::$TEST_ID3, ['locale' => 'en', 'workflowStage' => 'live']);
+        $dimensionRepository->add($dimension3);
+
+        $dimension4 = $dimensionRepository->create(static::$TEST_ID4);
+        $dimensionRepository->add($dimension4);
+
+        if (!$skipSave) {
+            static::saveData();
+        }
+
+        $dimensionIds = $dimensionRepository->findIdsByAttributes([
+            'locale' => 'en',
+        ]);
+
+        $this->assertCount(2, $dimensionIds);
+        $this->assertSame([static::$TEST_ID4, static::$TEST_ID], $dimensionIds);
+    }
+
+    /**
+     * @dataProvider saveSkipDataProvider
+     */
+    public function testFindIdsAttributesIgnoreAdditionalAttributes(bool $skipSave): void
+    {
+        if ($skipSave) {
+            $this->markTestSkipped('Currently not implemented to findIdsByAttributes without saving.');
+        }
+
+        static::purgeData();
+
+        $dimensionRepository = $this->getDimensionRepository();
+
+        $dimension1 = $dimensionRepository->create(static::$TEST_ID, ['locale' => 'en']);
+        $dimensionRepository->add($dimension1);
+
+        if (!$skipSave) {
+            static::saveData();
+        }
+
+        $dimensionIds = $dimensionRepository->findIdsByAttributes([
+            'locale' => 'en',
+            'any-parameter' => 'test',
+        ]);
+
+        $this->assertCount(1, $dimensionIds);
+        $this->assertSame([static::$TEST_ID], $dimensionIds);
+    }
+
+    public function saveSkipDataProvider(): \Generator
+    {
+        yield [
+            false,
+        ];
+
+        yield [
+            true,
+        ];
     }
 }

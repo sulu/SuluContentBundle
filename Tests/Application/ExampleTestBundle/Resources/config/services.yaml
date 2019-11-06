@@ -1,0 +1,27 @@
+services:
+    example_test.example_admin:
+        class: Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Admin\ExampleAdmin
+        arguments:
+            - '@sulu_admin.view_builder_factory'
+            - '@sulu_content.content_view_builder'
+            - '@sulu_security.security_checker'
+            - '@sulu.core.localization_manager'
+        tags:
+            - { name: sulu.context, context: admin }
+            - { name: sulu.admin }
+
+    example_test.example_controller:
+        class: Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Controller\ExampleController
+        public: true
+        arguments:
+            - '@fos_rest.view_handler'
+            - '@security.token_storage'
+            - '@sulu_core.list_builder.field_descriptor_factory'
+            - '@sulu_core.doctrine_list_builder_factory'
+            - '@sulu_core.doctrine_rest_helper'
+            - '@sulu.repository.dimension'
+            - '@sulu_content.view_factory'
+            - '@sulu_content.api_view_resolver'
+            - '@doctrine.orm.entity_manager'
+        tags:
+            - { name: sulu.context, context: admin }

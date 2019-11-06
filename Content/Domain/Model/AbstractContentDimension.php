@@ -15,42 +15,5 @@ namespace Sulu\Bundle\ContentBundle\Content\Domain\Model;
 
 abstract class AbstractContentDimension implements ContentDimensionInterface
 {
-    /**
-     * @var int
-     */
-    protected $id;
-
-    /**
-     * @var string
-     */
-    protected $dimensionId;
-
-    public function getId(): int
-    {
-        return $this->id;
-    }
-
-    public function getDimensionId(): string
-    {
-        return $this->dimensionId;
-    }
-
-    public function getData(): array
-    {
-        $data = [];
-
-        if ($this instanceof SeoInterface) {
-            $data['seo'] = $this->seoToArray();
-        }
-
-        if ($this instanceof ExcerptInterface) {
-            $data['excerpt'] = $this->excerptToArray();
-        }
-
-        if ($this instanceof TemplateInterface) {
-            $data['template'] = $this->templateToArray();
-        }
-
-        return $data;
-    }
+    use ContentDimensionTrait;
 }

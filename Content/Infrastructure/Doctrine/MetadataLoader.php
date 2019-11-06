@@ -19,9 +19,12 @@ use Doctrine\ORM\Event\LoadClassMetadataEventArgs;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Sulu\Bundle\CategoryBundle\Entity\CategoryInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
+use Sulu\Bundle\ContentBundle\Dimension\Domain\Model\DimensionInterface;
 use Sulu\Bundle\MediaBundle\Entity\MediaInterface;
 use Sulu\Bundle\TagBundle\Tag\TagInterface;
 
@@ -42,6 +45,23 @@ class MetadataLoader implements EventSubscriber
         $metadata = $event->getClassMetadata();
         $reflection = $metadata->getReflectionClass();
 
+        if (
+            $reflection->implementsInterface(ContentDimensionInterface::class)
+            || $reflection->implementsInterface(ContentViewInterface::class)
+        ) {
+            $this->addField($metadata, 'dimensionId', 'string', [
+                'columnName' => 'dimensionId',
+                '_custom' => [
+                    'references' => [
+                        'entity' => DimensionInterface::class,
+                        'field' => 'id',
+                        'onDelete' => 'CASCADE',
+                        'onUpdate' => 'CASCADE',
+                    ],
+                ],
+            ]);
+        }
+
         if ($reflection->implementsInterface(SeoInterface::class)) {
             $this->addField($metadata, 'seoTitle');
             $this->addField($metadata, 'seoDescription', 'text');
@@ -53,7 +73,7 @@ class MetadataLoader implements EventSubscriber
         }
 
         if ($reflection->implementsInterface(TemplateInterface::class)) {
-            $this->addField($metadata, 'template', 'string', ['nullable' => false, 'length' => 32]);
+            $this->addField($metadata, 'templateKey', 'string', ['nullable' => false, 'length' => 32]);
             $this->addField($metadata, 'templateData', 'json', ['nullable' => false]);
         }
 

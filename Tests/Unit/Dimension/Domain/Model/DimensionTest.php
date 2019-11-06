@@ -19,12 +19,14 @@ use Sulu\Bundle\ContentBundle\Dimension\Domain\Model\DimensionInterface;
 
 class DimensionTest extends TestCase
 {
+    /**
+     * @param array<string, mixed> $attributes
+     */
     protected function createDimension(
         string $id = null,
-        string $locale = null,
-        string $workflowStage = DimensionInterface::WORKFLOW_STAGE_DRAFT
+        array $attributes = []
     ): DimensionInterface {
-        return new Dimension($id, $locale, $workflowStage);
+        return new Dimension($id, $attributes);
     }
 
     public function testGetIdSetNothing(): void
@@ -47,7 +49,7 @@ class DimensionTest extends TestCase
 
     public function testGetLocaleSetDe(): void
     {
-        $dimension = $this->createDimension(null, 'de');
+        $dimension = $this->createDimension(null, ['locale' => 'de']);
         $this->assertSame('de', $dimension->getLocale());
     }
 
@@ -59,13 +61,13 @@ class DimensionTest extends TestCase
 
     public function testGetPublishedSetLive(): void
     {
-        $dimension = $this->createDimension(null, null, 'live');
+        $dimension = $this->createDimension(null, ['workflowStage' => 'live']);
         $this->assertSame('live', $dimension->getWorkflowStage());
     }
 
     public function testGetPublishedSetDraft(): void
     {
-        $dimension = $this->createDimension(null, null, 'draft');
+        $dimension = $this->createDimension(null, ['workflowStage' => 'draft']);
         $this->assertSame('draft', $dimension->getWorkflowStage());
     }
 }

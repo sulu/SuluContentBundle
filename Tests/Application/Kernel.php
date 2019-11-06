@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Tests\Application;
 
+use Sulu\Bundle\AudienceTargetingBundle\SuluAudienceTargetingBundle;
 use Sulu\Bundle\ContentBundle\SuluContentBundle;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\ExampleTestBundle;
 use Sulu\Bundle\TestBundle\Kernel\SuluTestKernel;
@@ -25,6 +26,15 @@ class Kernel extends SuluTestKernel
         $bundles = parent::registerBundles();
         $bundles[] = new SuluContentBundle();
         $bundles[] = new ExampleTestBundle();
+
+        foreach ($bundles as $key => $bundle) {
+            // Audience Targeting is not configured and so should not be here
+            if ($bundle instanceof SuluAudienceTargetingBundle) {
+                unset($bundles[$key]);
+
+                break;
+            }
+        }
 
         return $bundles;
     }

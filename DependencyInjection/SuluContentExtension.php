@@ -35,11 +35,24 @@ class SuluContentExtension extends Extension implements PrependExtensionInterfac
                             'SuluContentBundleDimension' => [
                                 'type' => 'xml',
                                 'prefix' => 'Sulu\Bundle\ContentBundle\Dimension\Domain\Model',
-                                'dir' => \dirname(__DIR__) . \DIRECTORY_SEPARATOR . 'Resources/config/doctrine/Dimension',
+                                'dir' => \dirname(__DIR__) . '/Resources/config/doctrine/Dimension',
                                 'alias' => 'SuluDirectoryBundle',
                                 'is_bundle' => false,
                                 'mapping' => true,
                             ],
+                        ],
+                    ],
+                ]
+            );
+        }
+
+        if ($container->hasExtension('sulu_admin')) {
+            $container->prependExtensionConfig(
+                'sulu_admin',
+                [
+                    'forms' => [
+                        'directories' => [
+                            \dirname(__DIR__) . '/Resources/config/forms',
                         ],
                     ],
                 ]

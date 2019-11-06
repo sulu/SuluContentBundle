@@ -21,21 +21,21 @@ trait TemplateTrait
     /**
      * @var string
      */
-    private $template;
+    private $templateKey;
 
     /**
      * @var array
      */
     private $templateData = [];
 
-    public function getTemplate(): string
+    public function getTemplateKey(): string
     {
-        return $this->template;
+        return $this->templateKey;
     }
 
-    public function setTemplate(string $template): void
+    public function setTemplateKey(string $templateKey): void
     {
-        $this->template = $template;
+        $this->templateKey = $templateKey;
     }
 
     public function getTemplateData(): array
@@ -46,16 +46,5 @@ trait TemplateTrait
     public function setTemplateData(array $templateData): void
     {
         $this->templateData = $templateData;
-    }
-
-    /**
-     * @return mixed[]
-     */
-    public function templateToArray(): array
-    {
-        return [
-            'template' => $this->getTemplate(),
-            'data' => $this->getTemplateData(),
-        ];
     }
 }

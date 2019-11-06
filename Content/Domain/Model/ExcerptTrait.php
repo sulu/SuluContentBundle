@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Domain\Model;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Sulu\Bundle\CategoryBundle\Entity\CategoryInterface;
 use Sulu\Bundle\TagBundle\Tag\TagInterface;
 
@@ -26,22 +27,22 @@ trait ExcerptTrait
     /**
      * @var string|null
      */
-    private $excerptMore;
+    private $excerptDescription;
 
     /**
      * @var string|null
      */
-    private $excerptDescription;
+    private $excerptMore;
 
     /**
-     * @var CategoryInterface[]
+     * @var ArrayCollection<CategoryInterface>
      */
-    private $excerptCategories = [];
+    private $excerptCategories;
 
     /**
-     * @var TagInterface[]
+     * @var ArrayCollection<TagInterface>
      */
-    private $excerptTags = [];
+    private $excerptTags;
 
     /**
      * @var int|null
@@ -63,16 +64,6 @@ trait ExcerptTrait
         $this->excerptTitle = $excerptTitle;
     }
 
-    public function getExcerptMore(): ?string
-    {
-        return $this->excerptMore;
-    }
-
-    public function setExcerptMore(?string $excerptMore): void
-    {
-        $this->excerptMore = $excerptMore;
-    }
-
     public function getExcerptDescription(): ?string
     {
         return $this->excerptDescription;
@@ -83,13 +74,23 @@ trait ExcerptTrait
         $this->excerptDescription = $excerptDescription;
     }
 
+    public function getExcerptMore(): ?string
+    {
+        return $this->excerptMore;
+    }
+
+    public function setExcerptMore(?string $excerptMore): void
+    {
+        $this->excerptMore = $excerptMore;
+    }
+
     /**
      * @return int[]
      */
-    public function getExcerptCategoryIds(): array
+    public function getExcerptCategories(): array
     {
+        $this->initializeCategories();
         $categoryIds = [];
-
         foreach ($this->excerptCategories as $excerptCategory) {
             $categoryIds[] = $excerptCategory->getId();
         }
@@ -102,16 +103,21 @@ trait ExcerptTrait
      */
     public function setExcerptCategories(array $excerptCategories): void
     {
-        $this->excerptCategories = $excerptCategories;
+        $this->initializeCategories();
+        $this->excerptCategories->clear();
+
+        foreach ($excerptCategories as $excerptCategory) {
+            $this->excerptCategories->add($excerptCategory);
+        }
     }
 
     /**
      * @return int[]
      */
-    public function getExcerptTagIds(): array
+    public function getExcerptTags(): array
     {
+        $this->initializeTags();
         $tagIds = [];
-
         foreach ($this->excerptTags as $excerptTag) {
             $tagIds[] = $excerptTag->getId();
         }
@@ -124,7 +130,12 @@ trait ExcerptTrait
      */
     public function setExcerptTags(array $excerptTags): void
     {
-        $this->excerptTags = $excerptTags;
+        $this->initializeTags();
+        $this->excerptTags->clear();
+
+        foreach ($excerptTags as $excerptTag) {
+            $this->excerptTags->add($excerptTag);
+        }
     }
 
     public function getExcerptImage(): ?int
@@ -147,19 +158,17 @@ trait ExcerptTrait
         $this->excerptIcon = $excerptIcon;
     }
 
-    /**
-     * @return mixed[]
-     */
-    public function excerptToArray(): array
+    private function initializeTags(): void
     {
-        return [
-            'title' => $this->getExcerptTitle(),
-            'description' => $this->getExcerptDescription(),
-            'more' => $this->getExcerptMore(),
-            'image' => $this->getExcerptImage(),
-            'icon' => $this->getExcerptIcon(),
-            'categories' => $this->getExcerptCategoryIds(),
-            'tags' => $this->getExcerptTagIds(),
-        ];
+        if (null === $this->excerptTags) {
+            $this->excerptTags = new ArrayCollection();
+        }
+    }
+
+    private function initializeCategories(): void
+    {
+        if (null === $this->excerptCategories) {
+            $this->excerptCategories = new ArrayCollection();
+        }
     }
 }

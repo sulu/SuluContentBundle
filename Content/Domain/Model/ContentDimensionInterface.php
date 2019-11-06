@@ -19,8 +19,5 @@ interface ContentDimensionInterface
 
     public function getDimensionId(): string;
 
-    /**
-     * @return mixed[]
-     */
-    public function getData(): array;
+    public function createViewInstance(): ContentViewInterface;
 }
