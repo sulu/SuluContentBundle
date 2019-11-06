@@ -16,7 +16,8 @@ namespace Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Controll
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\ViewHandlerInterface;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentDimensionMergerInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\ApiViewResolverInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ViewFactoryInterface;
 use Sulu\Bundle\ContentBundle\Dimension\Domain\Repository\DimensionRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
 use Sulu\Component\Rest\AbstractRestController;
@@ -53,9 +54,14 @@ class ExampleController extends AbstractRestController implements ClassResourceI
     private $dimensionRepository;
 
     /**
-     * @var ContentDimensionMergerInterface
+     * @var ViewFactoryInterface
      */
-    private $contentDimensionMerger;
+    private $viewFactory;
+
+    /**
+     * @var ApiViewResolverInterface
+     */
+    private $viewResolver;
 
     /**
      * @var EntityManagerInterface
@@ -69,14 +75,16 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         DoctrineListBuilderFactoryInterface $listBuilderFactory,
         RestHelperInterface $restHelper,
         DimensionRepositoryInterface $dimensionRepository,
-        ContentDimensionMergerInterface $contentDimensionMerger,
+        ViewFactoryInterface $viewFactory,
+        ApiViewResolverInterface $viewSerializer,
         EntityManagerInterface $entityManager
     ) {
         $this->fieldDescriptorFactory = $fieldDescriptorFactory;
         $this->listBuilderFactory = $listBuilderFactory;
         $this->restHelper = $restHelper;
         $this->dimensionRepository = $dimensionRepository;
-        $this->contentDimensionMerger = $contentDimensionMerger;
+        $this->viewFactory = $viewFactory;
+        $this->viewResolver = $viewSerializer;
         $this->entityManager = $entityManager;
 
         parent::__construct($viewHandler, $tokenStorage);
@@ -158,7 +166,7 @@ class ExampleController extends AbstractRestController implements ClassResourceI
     /**
      * @param array<string, mixed> $attributes
      *
-     * @return array<string, mixed>
+     * @return mixed[]
      */
     protected function createViewData(Example $example, array $attributes): array
     {
@@ -173,14 +181,10 @@ class ExampleController extends AbstractRestController implements ClassResourceI
             }
         }
 
-        $data = $this->contentDimensionMerger->merge($dimensions);
+        $contentView = $this->viewFactory->create($dimensions);
+        $viewData = $this->viewResolver->resolve($contentView);
 
-        // FIXME some hack implementation it should be possible to set this templateKey and form path
-        $data['id'] = $example->getId();
-        $data = array_merge($data, $data['template']['templateData']);
-        $data['template'] = $data['template']['templateKey'];
-
-        return $data;
+        return $viewData;
     }
 
     /**

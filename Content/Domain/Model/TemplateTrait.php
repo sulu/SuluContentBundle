@@ -47,15 +47,4 @@ trait TemplateTrait
     {
         $this->templateData = $templateData;
     }
-
-    /**
-     * @return mixed[]
-     */
-    public function templateToArray(): array
-    {
-        return [
-            'templateKey' => $this->getTemplateKey(),
-            'templateData' => $this->getTemplateData(),
-        ];
-    }
 }

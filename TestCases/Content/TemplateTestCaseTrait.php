@@ -22,7 +22,7 @@ trait TemplateTestCaseTrait
 {
     abstract protected function getTemplateInstance(): TemplateInterface;
 
-    public function testGetSetTemplate(): void
+    public function testGetSetTemplateKey(): void
     {
         $model = $this->getTemplateInstance();
         $model->setTemplateKey('template');
@@ -35,30 +35,5 @@ trait TemplateTestCaseTrait
         $this->assertSame([], $model->getTemplateData());
         $model->setTemplateData(['data' => 'My Data']);
         $this->assertSame(['data' => 'My Data'], $model->getTemplateData());
-    }
-
-    public function testTemplateToArray(): void
-    {
-        $model = $this->getTemplateInstance();
-
-        $model->setTemplateKey('template');
-        $model->setTemplateData(['data' => 'My Data']);
-
-        $this->assertSame([
-            'templateKey' => 'template',
-            'templateData' => [
-                'data' => 'My Data',
-            ],
-        ], $this->templateToArray($model));
-    }
-
-    /**
-     * Overwrite this function to unset custom data.
-     *
-     * @return mixed[]
-     */
-    protected function templateToArray(TemplateInterface $model): array
-    {
-        return $model->templateToArray();
     }
 }

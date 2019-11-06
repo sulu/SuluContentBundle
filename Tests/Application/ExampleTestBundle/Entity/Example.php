@@ -18,6 +18,7 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\AbstractContent;
 class Example extends AbstractContent
 {
     const RESOURCE_KEY = 'examples';
+    const TYPE_KEY = 'example';
 
     /**
      * @var int

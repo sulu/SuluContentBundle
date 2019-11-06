@@ -28,9 +28,4 @@ interface TemplateInterface
      * @param mixed[] $templateData
      */
     public function setTemplateData(array $templateData): void;
-
-    /**
-     * @return mixed[]
-     */
-    public function templateToArray(): array;
 }

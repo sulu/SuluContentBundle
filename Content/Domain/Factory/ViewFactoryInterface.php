@@ -11,16 +11,15 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Content\Application\Merger;
+namespace Sulu\Bundle\ContentBundle\Content\Domain\Factory;
 
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
 
-interface MergerInterface
+interface ViewFactoryInterface
 {
     /**
-     * @param mixed[] $data
-     *
-     * @return mixed[]
+     * @param ContentDimensionInterface[] $contentDimensions
      */
-    public function merge(ContentDimensionInterface $object, array $data): array;
+    public function create(array $contentDimensions): ContentViewInterface;
 }

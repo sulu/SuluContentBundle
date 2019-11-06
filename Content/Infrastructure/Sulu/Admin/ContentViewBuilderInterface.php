@@ -20,6 +20,7 @@ interface ContentViewBuilderInterface
     public function build(
         ViewCollection $viewCollection,
         string $resourceKey,
+        string $typeKey,
         string $editParentView,
         string $addParentView = null
     ): void;

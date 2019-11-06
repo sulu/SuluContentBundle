@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Admin;
 
-use Doctrine\Common\Inflector\Inflector;
 use Sulu\Bundle\AdminBundle\Admin\View\FormViewBuilderInterface;
 use Sulu\Bundle\AdminBundle\Admin\View\ToolbarAction;
 use Sulu\Bundle\AdminBundle\Admin\View\ViewBuilderFactoryInterface;
@@ -34,6 +33,7 @@ class ContentViewBuilder implements ContentViewBuilderInterface
     public function build(
         ViewCollection $viewCollection,
         string $resourceKey,
+        string $typeKey,
         string $editParentView,
         ?string $addParentView = null
     ): void {
@@ -42,24 +42,22 @@ class ContentViewBuilder implements ContentViewBuilderInterface
         // Add views
         if (null !== $addParentView) {
             $viewCollection->add(
-                $this->buildTemplate($resourceKey, $addParentView)
+                $this->buildTemplate($typeKey, $resourceKey, $addParentView)
                     ->setEditView($editParentView)
             );
         }
 
         // Edit views
-        $viewCollection->add($this->buildTemplate($resourceKey, $editParentView));
+        $viewCollection->add($this->buildTemplate($typeKey, $resourceKey, $editParentView));
         $viewCollection->add($this->buildSeo($resourceKey, $editParentView));
         $viewCollection->add($this->buildExcerpt($resourceKey, $editParentView));
     }
 
     protected function buildTemplate(
+        string $typeKey,
         string $resourceKey,
         string $parentView
     ): FormViewBuilderInterface {
-        $inflector = new Inflector();
-        $typeKey = $inflector->singularize($resourceKey);
-
         $formToolbarActionsWithType = [
             new ToolbarAction('sulu_admin.save_with_publishing'),
             new ToolbarAction('sulu_admin.type'),

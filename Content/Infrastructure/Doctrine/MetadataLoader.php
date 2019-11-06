@@ -20,6 +20,7 @@ use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Sulu\Bundle\CategoryBundle\Entity\CategoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
@@ -44,7 +45,10 @@ class MetadataLoader implements EventSubscriber
         $metadata = $event->getClassMetadata();
         $reflection = $metadata->getReflectionClass();
 
-        if ($reflection->implementsInterface(ContentDimensionInterface::class)) {
+        if (
+            $reflection->implementsInterface(ContentDimensionInterface::class)
+            || $reflection->implementsInterface(ContentViewInterface::class)
+        ) {
             $this->addField($metadata, 'dimensionId', 'string', [
                 'columnName' => 'dimensionId',
                 '_custom' => [

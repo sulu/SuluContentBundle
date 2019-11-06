@@ -23,7 +23,7 @@ use Sulu\Bundle\ContentBundle\Dimension\Domain\Repository\DimensionRepositoryInt
 class DimensionRepository implements DimensionRepositoryInterface
 {
     /**
-     * @var string<DimensionInterface>
+     * @var string
      */
     private $className;
 
@@ -106,7 +106,7 @@ class DimensionRepository implements DimensionRepositoryInterface
         $criteria = Criteria::create();
 
         foreach ($attributes as $key => $value) {
-            $fieldName = $dimensionAlias .'.' . $key;
+            $fieldName = $dimensionAlias . '.' . $key;
             $expr = $criteria->expr()->isNull($fieldName);
 
             if (null !== $value) {
@@ -127,7 +127,7 @@ class DimensionRepository implements DimensionRepositoryInterface
      */
     private function getAttributes(array $attributes): array
     {
-        $defaultValues = call_user_func([$this->className, 'getDefaultAttributes']);
+        $defaultValues = $this->className::getDefaultValues();
 
         // Ignore any key which is given
         $attributes = array_intersect_key($attributes, $defaultValues);

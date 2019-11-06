@@ -3,7 +3,7 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
-        <service id="sulu_content.doctrine_metadata_loader" class="Sulu\Bundle\ContentBundle\Content\Infrastructure\Doctrine\MetadataLoader">
+        <service id="sulu_content.metadata_loader" class="Sulu\Bundle\ContentBundle\Content\Infrastructure\Doctrine\MetadataLoader">
             <!-- Priority 100 as the MetadataLoader need to be before the ResolveTargetEntityListener of Doctrine -->
             <tag name="doctrine.event_subscriber" priority="100"/>
         </service>
@@ -14,27 +14,30 @@
 
         <service id="Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Admin\ContentViewBuilderInterface" alias="sulu_content.content_view_builder"/>
 
-        <!-- Merger -->
-        <service id="sulu_content.merger.dimension" class="Sulu\Bundle\ContentBundle\Content\Application\Merger\DimensionMerger">
-            <tag name="sulu_content.merger" />
+        <!-- ViewFactory -->
+        <service id="sulu_content.excerpt_view_factory_merger" class="Sulu\Bundle\ContentBundle\Content\Application\ViewFactory\Merger\ExcerptMerger">
+            <argument type="service" id="doctrine.orm.entity_manager"/>
+
+            <tag name="sulu_content.view_factory_merger" />
         </service>
 
-        <service id="sulu_content.merger.excerpt" class="Sulu\Bundle\ContentBundle\Content\Application\Merger\ExcerptMerger">
-            <tag name="sulu_content.merger" />
+        <service id="sulu_content.seo_view_factory_merger" class="Sulu\Bundle\ContentBundle\Content\Application\ViewFactory\Merger\SeoMerger">
+            <tag name="sulu_content.view_factory_merger" />
         </service>
 
-        <service id="sulu_content.merger.seo" class="Sulu\Bundle\ContentBundle\Content\Application\Merger\SeoMerger">
-            <tag name="sulu_content.merger" />
+        <service id="sulu_content.template_view_factory_merger" class="Sulu\Bundle\ContentBundle\Content\Application\ViewFactory\Merger\TemplateMerger">
+            <tag name="sulu_content.view_factory_merger" />
         </service>
 
-        <service id="sulu_content.merger.template" class="Sulu\Bundle\ContentBundle\Content\Application\Merger\TemplateMerger">
-            <tag name="sulu_content.merger" />
+        <service id="sulu_content.view_factory" class="Sulu\Bundle\ContentBundle\Content\Application\ViewFactory\ViewFactory">
+            <argument type="tagged" tag="sulu_content.view_factory_merger"/>
         </service>
 
-        <service id="sulu_content.content_dimension_merger" class="Sulu\Bundle\ContentBundle\Content\Application\ContentDimensionMerger">
-            <argument type="tagged" tag="sulu_content.merger"/>
-        </service>
+        <service id="Sulu\Bundle\ContentBundle\Content\Domain\Factory\ViewFactoryInterface" class="sulu_content.view_factory"/>
 
-        <service id="Sulu\Bundle\ContentBundle\Content\Application\ContentDimensionMergerInterface" class="sulu_content.content_dimension_merger"/>
+        <!-- ViewResolver -->
+        <service id="sulu_content.api_view_resolver" class="Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\ApiViewResolver"/>
+
+        <service id="Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\ApiViewResolverInterface" class="sulu_content.api_view_resolver"/>
     </services>
 </container>

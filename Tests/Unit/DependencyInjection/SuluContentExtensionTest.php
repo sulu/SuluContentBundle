@@ -15,6 +15,7 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\DependencyInjection;
 
 use Doctrine\Bundle\DoctrineBundle\DependencyInjection\DoctrineExtension;
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
+use Sulu\Bundle\AdminBundle\DependencyInjection\SuluAdminExtension;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Doctrine\MetadataLoader;
 use Sulu\Bundle\ContentBundle\DependencyInjection\SuluContentExtension;
 use Sulu\Bundle\ContentBundle\Dimension\Domain\Model\Dimension;
@@ -38,7 +39,7 @@ class SuluContentExtensionTest extends AbstractExtensionTestCase
     public function testLoad(): void
     {
         $this->load();
-        $this->assertContainerBuilderHasService('sulu_content.doctrine_metadata_loader', MetadataLoader::class);
+        $this->assertContainerBuilderHasService('sulu_content.metadata_loader', MetadataLoader::class);
         $this->assertContainerBuilderHasService('sulu.repository.dimension', DimensionRepository::class);
         $this->assertContainerBuilderHasParameter('sulu.model.dimension.class', Dimension::class);
     }
@@ -66,6 +67,9 @@ class SuluContentExtensionTest extends AbstractExtensionTestCase
 
         $doctrineExtension = new DoctrineExtension();
         $containerBuilder->registerExtension($doctrineExtension);
+
+        $doctrineExtension = new SuluAdminExtension();
+        $containerBuilder->registerExtension($doctrineExtension);
         $extension->prepend($containerBuilder);
 
         $this->assertSame([
@@ -84,5 +88,15 @@ class SuluContentExtensionTest extends AbstractExtensionTestCase
                 ],
             ],
         ], $containerBuilder->getExtensionConfig('doctrine'));
+
+        $this->assertSame([
+            [
+                'forms' => [
+                    'directories' => [
+                        \dirname(\dirname(\dirname(__DIR__))) . '/Resources/config/forms',
+                    ],
+                ],
+            ],
+        ], $containerBuilder->getExtensionConfig('sulu_admin'));
     }
 }

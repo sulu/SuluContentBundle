@@ -20,7 +20,8 @@ services:
             - '@sulu_core.doctrine_list_builder_factory'
             - '@sulu_core.doctrine_rest_helper'
             - '@sulu.repository.dimension'
-            - '@sulu_content.content_dimension_merger'
+            - '@sulu_content.view_factory'
+            - '@sulu_content.api_view_resolver'
             - '@doctrine.orm.entity_manager'
         tags:
             - { name: sulu.context, context: admin }

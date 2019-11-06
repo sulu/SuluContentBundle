@@ -77,28 +77,4 @@ trait SeoTestCaseTrait
         $model->setSeoHideInSitemap(true);
         $this->assertTrue($model->getSeoHideInSitemap());
     }
-
-    public function testSeoToArray(): void
-    {
-        $model = $this->getSeoInstance();
-        $this->assertSame([
-            'title' => null,
-            'description' => null,
-            'keywords' => null,
-            'canonicalUrl' => null,
-            'noFollow' => false,
-            'noIndex' => false,
-            'hideInSitemap' => false,
-        ], $this->seoToArray($model));
-    }
-
-    /**
-     * Overwrite this function to unset custom data.
-     *
-     * @return mixed[]
-     */
-    protected function seoToArray(SeoInterface $model): array
-    {
-        return $model->seoToArray();
-    }
 }

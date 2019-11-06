@@ -119,20 +119,4 @@ trait SeoTrait
     {
         $this->seoHideInSitemap = $seoHideInSitemap;
     }
-
-    /**
-     * @return mixed[]
-     */
-    public function seoToArray(): array
-    {
-        return [
-            'title' => $this->getSeoTitle(),
-            'description' => $this->getSeoDescription(),
-            'keywords' => $this->getSeoKeywords(),
-            'canonicalUrl' => $this->getSeoCanonicalUrl(),
-            'noFollow' => $this->getSeoNoFollow(),
-            'noIndex' => $this->getSeoNoIndex(),
-            'hideInSitemap' => $this->getSeoHideInSitemap(),
-        ];
-    }
 }
