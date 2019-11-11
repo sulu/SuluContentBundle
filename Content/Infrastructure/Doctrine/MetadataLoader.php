@@ -123,6 +123,9 @@ class MetadataLoader implements EventSubscriber
 
         $namingStrategy = $event->getEntityManager()->getConfiguration()->getNamingStrategy();
 
+        $referencedColumnName = $metadata->getIdentifierColumnNames()[0];
+        $inversedReferencedColumnName = $event->getEntityManager()->getClassMetadata($class)->getIdentifierColumnNames()[0];
+
         $metadata->mapManyToMany([
             'fieldName' => $name,
             'targetEntity' => $class,
@@ -131,7 +134,7 @@ class MetadataLoader implements EventSubscriber
                 'joinColumns' => [
                     [
                         'name' => $namingStrategy->joinKeyColumnName($metadata->getName()),
-                        'referencedColumnName' => 'id',
+                        'referencedColumnName' => $referencedColumnName,
                         'onDelete' => 'CASCADE',
                         'onUpdate' => 'CASCADE',
                     ],
@@ -139,7 +142,7 @@ class MetadataLoader implements EventSubscriber
                 'inverseJoinColumns' => [
                     [
                         'name' => $inverseColumnName,
-                        'referencedColumnName' => 'id',
+                        'referencedColumnName' => $inversedReferencedColumnName,
                         'onDelete' => 'CASCADE',
                         'onUpdate' => 'CASCADE',
                     ],

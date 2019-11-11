@@ -20,6 +20,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\UnderscoreNamingStrategy;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Sulu\Bundle\CategoryBundle\Entity\CategoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
@@ -27,6 +28,7 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Doctrine\MetadataLoader;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleDimension;
+use Sulu\Bundle\TagBundle\Tag\TagInterface;
 
 class MetadataLoaderTest extends TestCase
 {
@@ -60,6 +62,7 @@ class MetadataLoaderTest extends TestCase
         $classMetadata = $this->prophesize(ClassMetadata::class);
         $classMetadata->getReflectionClass()->willReturn($reflectionClass->reveal());
         $classMetadata->getTableName()->willReturn('test_example');
+        $classMetadata->getIdentifierColumnNames()->willReturn(['id']);
         $classMetadata->getName()->willReturn(ExampleDimension::class);
 
         foreach ($fields as $field => $exist) {
@@ -80,6 +83,18 @@ class MetadataLoaderTest extends TestCase
         $configuration->getNamingStrategy()->willReturn(new UnderscoreNamingStrategy());
         $entityManager = $this->prophesize(EntityManager::class);
         $entityManager->getConfiguration()->willReturn($configuration->reveal());
+
+        if (array_key_exists('excerptTags', $associations) && !$associations['excerptTags']) {
+            $tagClassMetadata = $this->prophesize(ClassMetadata::class);
+            $tagClassMetadata->getIdentifierColumnNames()->willReturn(['id'])->shouldBeCalled();
+            $entityManager->getClassMetadata(TagInterface::class)->willReturn($tagClassMetadata->reveal());
+        }
+
+        if (array_key_exists('excerptCategories', $associations) && !$associations['excerptCategories']) {
+            $categoryClassMetadata = $this->prophesize(ClassMetadata::class);
+            $categoryClassMetadata->getIdentifierColumnNames()->willReturn(['id'])->shouldBeCalled();
+            $entityManager->getClassMetadata(CategoryInterface::class)->willReturn($categoryClassMetadata->reveal());
+        }
 
         $metadataLoader->loadClassMetadata(
             new LoadClassMetadataEventArgs($classMetadata->reveal(), $entityManager->reveal())
