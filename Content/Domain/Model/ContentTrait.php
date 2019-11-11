@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Content\Domain\Model;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 trait ContentTrait
 {
@@ -23,13 +24,13 @@ trait ContentTrait
     protected $dimensions;
 
     /**
-     * @return ContentDimensionInterface[]
+     * @return Collection<ContentDimensionInterface>
      */
-    public function getDimensions(): iterable
+    public function getDimensions(): Collection
     {
         $this->initializeDimensions();
 
-        return $this->dimensions->toArray();
+        return $this->dimensions;
     }
 
     public function addDimension(ContentDimensionInterface $contentDimension): void

@@ -13,13 +13,10 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Domain\Factory;
 
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionCollectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
 
 interface ViewFactoryInterface
 {
-    /**
-     * @param ContentDimensionInterface[] $contentDimensions
-     */
-    public function create(array $contentDimensions): ContentViewInterface;
+    public function create(ContentDimensionCollectionInterface $contentDimensionCollection): ContentViewInterface;
 }

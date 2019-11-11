@@ -26,6 +26,11 @@ class TemplateTraitTest extends TestCase
     {
         return new class() implements TemplateInterface {
             use TemplateTrait;
+
+            public static function getTemplateType(): string
+            {
+                return 'example';
+            }
         };
     }
 }

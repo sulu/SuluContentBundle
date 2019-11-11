@@ -70,4 +70,40 @@ class DimensionTest extends TestCase
         $dimension = $this->createDimension(null, ['workflowStage' => 'draft']);
         $this->assertSame('draft', $dimension->getWorkflowStage());
     }
+
+    public function testGetAttributesDefaults(): void
+    {
+        $dimension = $this->createDimension();
+        $this->assertSame([
+            'locale' => null,
+            'workflowStage' => 'draft',
+        ], $dimension->getAttributes());
+    }
+
+    public function testGetAttributesWithLocale(): void
+    {
+        $dimension = $this->createDimension(null, ['locale' => 'de']);
+        $this->assertSame([
+            'locale' => 'de',
+            'workflowStage' => 'draft',
+        ], $dimension->getAttributes());
+    }
+
+    public function testGetAttributesWithWorkflowStage(): void
+    {
+        $dimension = $this->createDimension(null, ['workflowStage' => 'live']);
+        $this->assertSame([
+            'locale' => null,
+            'workflowStage' => 'live',
+        ], $dimension->getAttributes());
+    }
+
+    public function testGetAttributesWithWorkflowStageAndLocale(): void
+    {
+        $dimension = $this->createDimension(null, ['locale' => 'de', 'workflowStage' => 'live']);
+        $this->assertSame([
+            'locale' => 'de',
+            'workflowStage' => 'live',
+        ], $dimension->getAttributes());
+    }
 }

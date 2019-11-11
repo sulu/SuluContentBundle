@@ -19,9 +19,7 @@ services:
             - '@sulu_core.list_builder.field_descriptor_factory'
             - '@sulu_core.doctrine_list_builder_factory'
             - '@sulu_core.doctrine_rest_helper'
-            - '@sulu.repository.dimension'
-            - '@sulu_content.view_factory'
-            - '@sulu_content.api_view_resolver'
+            - '@sulu_content.message_bus'
             - '@doctrine.orm.entity_manager'
         tags:
             - { name: sulu.context, context: admin }

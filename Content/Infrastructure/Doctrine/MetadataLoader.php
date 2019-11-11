@@ -73,7 +73,7 @@ class MetadataLoader implements EventSubscriber
         }
 
         if ($reflection->implementsInterface(TemplateInterface::class)) {
-            $this->addField($metadata, 'templateKey', 'string', ['nullable' => false, 'length' => 32]);
+            $this->addField($metadata, 'templateKey', 'string', ['length' => 32]);
             $this->addField($metadata, 'templateData', 'json', ['nullable' => false]);
         }
 
@@ -81,7 +81,7 @@ class MetadataLoader implements EventSubscriber
             $this->addField($metadata, 'excerptTitle');
             $this->addField($metadata, 'excerptMore', 'string', ['length' => 64]);
             $this->addField($metadata, 'excerptDescription', 'text');
-            $this->addField($metadata, 'excerptImage', 'integer', [
+            $this->addField($metadata, 'excerptImageId', 'integer', [
                 'columnName' => 'excerptImageId',
                 '_custom' => [
                     'references' => [
@@ -93,7 +93,7 @@ class MetadataLoader implements EventSubscriber
                 ],
             ]);
 
-            $this->addField($metadata, 'excerptIcon', 'integer', [
+            $this->addField($metadata, 'excerptIconId', 'integer', [
                 'columnName' => 'excerptIconId',
                 '_custom' => [
                     'references' => [

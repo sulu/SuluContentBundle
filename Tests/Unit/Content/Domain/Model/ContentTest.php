@@ -34,6 +34,15 @@ class ContentTest extends TestCase
     protected function getInstance(): AbstractContent
     {
         return new class() extends AbstractContent {
+            public static function getResourceKey(): string
+            {
+                return 'example';
+            }
+
+            public function createDimension(string $dimensionId): ContentDimensionInterface
+            {
+                throw new \RuntimeException();
+            }
         };
     }
 
@@ -58,6 +67,11 @@ class ContentTest extends TestCase
                     }
                 };
             }
+
+            public static function getTemplateType(): string
+            {
+                return 'example';
+            }
         };
 
         $modelDimension->setId($id);
@@ -80,6 +94,11 @@ class ContentTest extends TestCase
             public function getContentId()
             {
                 return 5;
+            }
+
+            public static function getTemplateType(): string
+            {
+                return 'example';
             }
         };
 

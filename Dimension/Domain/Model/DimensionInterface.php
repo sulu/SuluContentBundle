@@ -25,6 +25,11 @@ interface DimensionInterface
     public function getWorkflowStage(): string;
 
     /**
+     * @return array<string, string|int|float|bool|null>
+     */
+    public function getAttributes(): array;
+
+    /**
      * @return array<string, mixed>
      */
     public static function getDefaultValues(): array;

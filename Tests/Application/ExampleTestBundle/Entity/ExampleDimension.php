@@ -24,6 +24,8 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateTrait;
 
 class ExampleDimension extends AbstractContentDimension implements ExcerptInterface, SeoInterface, TemplateInterface
 {
+    const TYPE_KEY = 'example';
+
     use ExcerptTrait;
     use SeoTrait;
     use TemplateTrait {
@@ -37,7 +39,7 @@ class ExampleDimension extends AbstractContentDimension implements ExcerptInterf
     protected $example;
 
     /**
-     * @var string
+     * @var string|null
      */
     protected $title;
 
@@ -52,12 +54,12 @@ class ExampleDimension extends AbstractContentDimension implements ExcerptInterf
         return $this->example;
     }
 
-    public function getTitle(): string
+    public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    public function setTitle(string $title): void
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
@@ -83,5 +85,10 @@ class ExampleDimension extends AbstractContentDimension implements ExcerptInterf
         $contentView->setTitle($this->getTitle());
 
         return $contentView;
+    }
+
+    public static function getTemplateType(): string
+    {
+        return self::TYPE_KEY;
     }
 }

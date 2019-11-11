@@ -61,12 +61,19 @@ trait ApiViewResolverTestCaseTrait
             {
                 return 5;
             }
+
+            public static function getTemplateType(): string
+            {
+                return 'example';
+            }
         };
 
         $tag1 = $this->prophesize(TagInterface::class);
         $tag1->getId()->willReturn(1);
+        $tag1->getName()->willReturn('Tag 1');
         $tag2 = $this->prophesize(TagInterface::class);
         $tag2->getId()->willReturn(2);
+        $tag2->getName()->willReturn('Tag 2');
 
         $category1 = $this->prophesize(CategoryInterface::class);
         $category1->getId()->willReturn(3);
@@ -84,8 +91,8 @@ trait ApiViewResolverTestCaseTrait
         $contentView->setExcerptTitle('Excerpt Title');
         $contentView->setExcerptDescription('Excerpt Description');
         $contentView->setExcerptMore('Excerpt More');
-        $contentView->setExcerptImage(8);
-        $contentView->setExcerptIcon(9);
+        $contentView->setExcerptImage(['id' => 8]);
+        $contentView->setExcerptIcon(['id' => 9]);
         $contentView->setExcerptTags([$tag1->reveal(), $tag2->reveal()]);
         $contentView->setExcerptCategories([$category1->reveal(), $category2->reveal()]);
 
@@ -93,29 +100,30 @@ trait ApiViewResolverTestCaseTrait
         $contentView->setTemplateData(['someTemplate' => 'data']);
 
         $apiViewResolver = $this->createApiViewResolverInstance();
+
         $this->assertSame([
             'dimensionId' => '123-456',
-            'excerptTitle' => 'Excerpt Title',
-            'excerptDescription' => 'Excerpt Description',
-            'excerptMore' => 'Excerpt More',
             'excerptCategories' => [
                 3,
                 4,
             ],
+            'excerptDescription' => 'Excerpt Description',
+            'excerptIcon' => ['id' => 9],
+            'excerptImage' => ['id' => 8],
+            'excerptMore' => 'Excerpt More',
             'excerptTags' => [
-                1,
-                2,
+                'Tag 1',
+                'Tag 2',
             ],
-            'excerptImage' => 8,
-            'excerptIcon' => 9,
-            'seoTitle' => 'Seo Title',
-            'seoDescription' => 'Seo Description',
-            'seoKeywords' => 'Seo Keyword 1, Seo Keyword 2',
-            'seoCanonicalUrl' => 'https://caninical.localhost/',
-            'seoNoIndex' => true,
-            'seoNoFollow' => true,
-            'seoHideInSitemap' => true,
+            'excerptTitle' => 'Excerpt Title',
             'id' => 5,
+            'seoCanonicalUrl' => 'https://caninical.localhost/',
+            'seoDescription' => 'Seo Description',
+            'seoHideInSitemap' => true,
+            'seoKeywords' => 'Seo Keyword 1, Seo Keyword 2',
+            'seoNoFollow' => true,
+            'seoNoIndex' => true,
+            'seoTitle' => 'Seo Title',
             'someTemplate' => 'data',
             'template' => 'template-key',
         ], $apiViewResolver->resolve($contentView));

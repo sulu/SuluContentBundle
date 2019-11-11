@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <!-- Resolver -->
+        <service id="sulu_content.excerpt_resolver" class="Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\Resolver\ExcerptResolver">
+            <tag name="sulu_content.api_resolver"/>
+        </service>
+
+        <service id="sulu_content.seo_resolver" class="Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\Resolver\TemplateResolver">
+            <tag name="sulu_content.api_resolver"/>
+        </service>
+    </services>
+</container>

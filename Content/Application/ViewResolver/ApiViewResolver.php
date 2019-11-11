@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Application\ViewResolver;
 
+use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\Resolver\ResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\Serializer;
@@ -22,36 +22,51 @@ use Symfony\Component\Serializer\Serializer;
 class ApiViewResolver implements ViewResolverInterface, ApiViewResolverInterface
 {
     /**
+     * @var iterable<ResolverInterface>
+     */
+    private $resolvers;
+
+    /**
      * @var NormalizerInterface
      */
     private $serializer;
 
-    public function __construct(?NormalizerInterface $serializer = null)
-    {
-        if (null === $serializer) {
-            $serializer = $this->createSerializer();
-        }
-
-        $this->serializer = $serializer;
+    /**
+     * @param iterable<ResolverInterface> $resolvers
+     */
+    public function __construct(
+        iterable $resolvers,
+        ?NormalizerInterface $serializer = null
+    ) {
+        $this->resolvers = $resolvers;
+        $this->serializer = $serializer ?: $this->createSerializer();
     }
 
     public function resolve(ContentViewInterface $contentView): array
     {
+        $ignoreAttributes = ['id'];
+
+        foreach ($this->resolvers as $resolver) {
+            $ignoreAttributes = array_merge(
+                $ignoreAttributes,
+                $resolver->getIgnoreAttributes($contentView)
+            );
+        }
+
         /** @var mixed[] $viewData */
-        $viewData = $this->serializer->normalize($contentView, null, ['ignored_attributes' => ['id']]);
+        $viewData = $this->serializer->normalize($contentView, null, [
+            'ignored_attributes' => $ignoreAttributes,
+        ]);
 
         // The view should not be represented by its own id but the id of the content entity
         $viewData['id'] = $viewData['contentId'];
         unset($viewData['contentId']);
 
-        // normalize data for the sulu frontend
-        if ($contentView instanceof TemplateInterface) {
-            $viewData = array_merge($viewData, $viewData['templateData']);
-            unset($viewData['templateData']);
-
-            $viewData['template'] = $viewData['templateKey'];
-            unset($viewData['templateKey']);
+        foreach ($this->resolvers as $resolver) {
+            $viewData = $resolver->resolve($contentView, $viewData);
         }
+
+        ksort($viewData);
 
         return $viewData;
     }

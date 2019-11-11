@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ViewFactory\Merger;
 
-use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Sulu\Bundle\CategoryBundle\Entity\CategoryInterface;
@@ -28,24 +27,7 @@ class ExcerptMergerTest extends TestCase
 {
     protected function getExcerptMergerInstance(): MergerInterface
     {
-        $entityManager = $this->prophesize(EntityManagerInterface::class);
-
-        $tag1 = $this->prophesize(TagInterface::class);
-        $tag1->getId()->willReturn(1);
-        $tag2 = $this->prophesize(TagInterface::class);
-        $tag2->getId()->willReturn(2);
-
-        $category1 = $this->prophesize(CategoryInterface::class);
-        $category1->getId()->willReturn(3);
-        $category2 = $this->prophesize(CategoryInterface::class);
-        $category2->getId()->willReturn(4);
-
-        $entityManager->getPartialReference(TagInterface::class, 1)->willReturn($tag1->reveal());
-        $entityManager->getPartialReference(TagInterface::class, 2)->willReturn($tag2->reveal());
-        $entityManager->getPartialReference(CategoryInterface::class, 3)->willReturn($category1->reveal());
-        $entityManager->getPartialReference(CategoryInterface::class, 4)->willReturn($category2->reveal());
-
-        return new ExcerptMerger($entityManager->reveal());
+        return new ExcerptMerger();
     }
 
     public function testMergeDimensionNotImplementExcerptInterface(): void
@@ -78,15 +60,25 @@ class ExcerptMergerTest extends TestCase
     {
         $merger = $this->getExcerptMergerInstance();
 
+        $tag1 = $this->prophesize(TagInterface::class);
+        $tag1->getId()->willReturn(1);
+        $tag2 = $this->prophesize(TagInterface::class);
+        $tag2->getId()->willReturn(2);
+
+        $category1 = $this->prophesize(CategoryInterface::class);
+        $category1->getId()->willReturn(3);
+        $category2 = $this->prophesize(CategoryInterface::class);
+        $category2->getId()->willReturn(4);
+
         $contentDimension = $this->prophesize(ContentDimensionInterface::class);
         $contentDimension->willImplement(ExcerptInterface::class);
         $contentDimension->getExcerptTitle()->willReturn('Excerpt Title')->shouldBeCalled();
         $contentDimension->getExcerptDescription()->willReturn('Excerpt Description')->shouldBeCalled();
         $contentDimension->getExcerptMore()->willReturn('Excerpt More')->shouldBeCalled();
-        $contentDimension->getExcerptTags()->willReturn([1, 2])->shouldBeCalled();
-        $contentDimension->getExcerptCategories()->willReturn([3, 4])->shouldBeCalled();
-        $contentDimension->getExcerptImage()->willReturn(8)->shouldBeCalled();
-        $contentDimension->getExcerptIcon()->willReturn(9)->shouldBeCalled();
+        $contentDimension->getExcerptTags()->willReturn([$tag1->reveal(), $tag2->reveal()])->shouldBeCalled();
+        $contentDimension->getExcerptCategories()->willReturn([$category1->reveal(), $category2->reveal()])->shouldBeCalled();
+        $contentDimension->getExcerptImage()->willReturn(['id' => 8])->shouldBeCalled();
+        $contentDimension->getExcerptIcon()->willReturn(['id' => 9])->shouldBeCalled();
 
         $contentView = $this->prophesize(ContentViewInterface::class);
         $contentView->willImplement(ExcerptInterface::class);
@@ -103,8 +95,8 @@ class ExcerptMergerTest extends TestCase
                 return $category->getId();
             }, $categories) === [3, 4];
         }))->shouldBeCalled();
-        $contentView->setExcerptImage(8)->shouldBeCalled();
-        $contentView->setExcerptIcon(9)->shouldBeCalled();
+        $contentView->setExcerptImage(['id' => 8])->shouldBeCalled();
+        $contentView->setExcerptIcon(['id' => 9])->shouldBeCalled();
 
         $merger->merge($contentView->reveal(), $contentDimension->reveal());
     }

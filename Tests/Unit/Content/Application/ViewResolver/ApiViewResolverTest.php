@@ -16,6 +16,8 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ViewResolver;
 use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\ApiViewResolver;
 use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\ApiViewResolverInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\Resolver\ExcerptResolver;
+use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\Resolver\TemplateResolver;
 use Sulu\Bundle\ContentBundle\TestCases\Content\ApiViewResolverTestCaseTrait;
 
 class ApiViewResolverTest extends TestCase
@@ -24,6 +26,9 @@ class ApiViewResolverTest extends TestCase
 
     protected function createApiViewResolverInstance(): ApiViewResolverInterface
     {
-        return new ApiViewResolver();
+        return new ApiViewResolver([
+            new ExcerptResolver(),
+            new TemplateResolver(),
+        ]);
     }
 }

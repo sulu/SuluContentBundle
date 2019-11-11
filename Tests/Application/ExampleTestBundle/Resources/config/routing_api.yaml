@@ -1,4 +1,4 @@
-sulu_contact.contacts:
+example_test.examples:
     type: rest
     name_prefix: example_test.
     resource: example_test.example_controller

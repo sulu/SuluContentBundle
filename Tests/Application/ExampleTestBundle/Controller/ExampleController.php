@@ -16,9 +16,9 @@ namespace Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Controll
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\ViewHandlerInterface;
-use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\ApiViewResolverInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ViewFactoryInterface;
-use Sulu\Bundle\ContentBundle\Dimension\Domain\Repository\DimensionRepositoryInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\Message\CreateContentMessage;
+use Sulu\Bundle\ContentBundle\Content\Application\Message\LoadContentMessage;
+use Sulu\Bundle\ContentBundle\Content\Application\Message\ModifyContentMessage;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
 use Sulu\Component\Rest\AbstractRestController;
 use Sulu\Component\Rest\ListBuilder\Doctrine\DoctrineListBuilderFactoryInterface;
@@ -29,10 +29,14 @@ use Sulu\Component\Rest\RestHelperInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Messenger\HandleTrait;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class ExampleController extends AbstractRestController implements ClassResourceInterface
 {
+    use HandleTrait;
+
     /**
      * @var FieldDescriptorFactoryInterface
      */
@@ -49,21 +53,6 @@ class ExampleController extends AbstractRestController implements ClassResourceI
     private $restHelper;
 
     /**
-     * @var DimensionRepositoryInterface
-     */
-    private $dimensionRepository;
-
-    /**
-     * @var ViewFactoryInterface
-     */
-    private $viewFactory;
-
-    /**
-     * @var ApiViewResolverInterface
-     */
-    private $viewResolver;
-
-    /**
      * @var EntityManagerInterface
      */
     private $entityManager;
@@ -74,17 +63,13 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         FieldDescriptorFactoryInterface $fieldDescriptorFactory,
         DoctrineListBuilderFactoryInterface $listBuilderFactory,
         RestHelperInterface $restHelper,
-        DimensionRepositoryInterface $dimensionRepository,
-        ViewFactoryInterface $viewFactory,
-        ApiViewResolverInterface $viewSerializer,
+        MessageBusInterface $suluContentMessageBus,
         EntityManagerInterface $entityManager
     ) {
         $this->fieldDescriptorFactory = $fieldDescriptorFactory;
         $this->listBuilderFactory = $listBuilderFactory;
         $this->restHelper = $restHelper;
-        $this->dimensionRepository = $dimensionRepository;
-        $this->viewFactory = $viewFactory;
-        $this->viewResolver = $viewSerializer;
+        $this->messageBus = $suluContentMessageBus;
         $this->entityManager = $entityManager;
 
         parent::__construct($viewHandler, $tokenStorage);
@@ -117,23 +102,26 @@ class ExampleController extends AbstractRestController implements ClassResourceI
             throw new NotFoundHttpException();
         }
 
-        return $this->handleView($this->view($this->createViewData($example, $this->getAttributes($request))));
+        $dimensionAttributes = $this->getAttributes($request);
+        $contentView = $this->handle(new LoadContentMessage($example, $dimensionAttributes));
+
+        return $this->handleView($this->view($contentView));
     }
 
     public function postAction(Request $request): Response
     {
         $example = new Example();
-        $data = $this->getData($request);
 
-        // TODO set example data
+        $data = $this->getData($request);
+        $dimensionAttributes = $this->getAttributes($request);
+
+        $contentView = $this->handle(new CreateContentMessage($example, $data, $dimensionAttributes));
 
         $this->entityManager->persist($example);
-
-        // TODO set dimension data
-
         $this->entityManager->flush();
+        $contentView['id'] = $example->getId(); // TODO autoincrement id need to be set manually
 
-        return $this->handleView($this->view($this->createViewData($example, $this->getAttributes($request)), 201));
+        return $this->handleView($this->view($contentView, 201));
     }
 
     public function putAction(Request $request, int $id): Response
@@ -145,12 +133,14 @@ class ExampleController extends AbstractRestController implements ClassResourceI
             throw new NotFoundHttpException();
         }
 
-        // TODO set example data
-        // TODO set dimension data
+        $data = $this->getData($request);
+        $dimensionAttributes = $this->getAttributes($request);
+
+        $contentView = $this->handle(new ModifyContentMessage($example, $data, $dimensionAttributes));
 
         $this->entityManager->flush();
 
-        return $this->handleView($this->view($this->createViewData($example, $this->getAttributes($request))));
+        return $this->handleView($this->view($contentView));
     }
 
     public function deleteAction(int $id): Response
@@ -161,30 +151,6 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         $this->entityManager->flush();
 
         return new Response('', 204);
-    }
-
-    /**
-     * @param array<string, mixed> $attributes
-     *
-     * @return mixed[]
-     */
-    protected function createViewData(Example $example, array $attributes): array
-    {
-        $dimensionIds = $this->dimensionRepository->findIdsByAttributes($attributes);
-
-        $dimensions = [];
-        // TODO here we should call the repository and load only the dimension we need
-        foreach ($example->getDimensions() as $dimension) {
-            $dimensionId = $dimension->getDimensionId();
-            if (\in_array($dimensionId, $dimensionIds, true)) {
-                $dimensions[array_search($dimensionId, $dimensionIds, true)] = $dimension;
-            }
-        }
-
-        $contentView = $this->viewFactory->create($dimensions);
-        $viewData = $this->viewResolver->resolve($contentView);
-
-        return $viewData;
     }
 
     /**

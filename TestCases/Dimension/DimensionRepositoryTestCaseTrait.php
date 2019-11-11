@@ -159,7 +159,7 @@ trait DimensionRepositoryTestCaseTrait
     /**
      * @dataProvider saveSkipDataProvider
      */
-    public function testFindIdsAttributesWithLocaleAndWorkflowStage(bool $skipSave): void
+    public function testFindAttributesWithLocaleAndWorkflowStage(bool $skipSave): void
     {
         if ($skipSave) {
             $this->markTestSkipped('Currently not implemented to findIdsByAttributes without saving.');
@@ -185,22 +185,24 @@ trait DimensionRepositoryTestCaseTrait
             static::saveData();
         }
 
-        $dimensionIds = $dimensionRepository->findIdsByAttributes([
+        $dimensions = iterator_to_array($dimensionRepository->findByAttributes([
             'locale' => 'en',
             'workflowStage' => DimensionInterface::WORKFLOW_STAGE_DRAFT,
-        ]);
+        ]));
 
-        $this->assertCount(2, $dimensionIds);
-        $this->assertSame([static::$TEST_ID4, static::$TEST_ID], $dimensionIds);
+        $this->assertCount(2, $dimensions);
+        $this->assertSame([static::$TEST_ID4, static::$TEST_ID], array_map(function (DimensionInterface $dimension) {
+            return $dimension->getId();
+        }, $dimensions));
     }
 
     /**
      * @dataProvider saveSkipDataProvider
      */
-    public function testFindIdsAttributesWithWorkflowStageOnly(bool $skipSave): void
+    public function testFindByAttributesWithWorkflowStageOnly(bool $skipSave): void
     {
         if ($skipSave) {
-            $this->markTestSkipped('Currently not implemented to findIdsByAttributes without saving.');
+            $this->markTestSkipped('Currently not implemented to findByAttributes without saving.');
         }
 
         static::purgeData();
@@ -223,21 +225,23 @@ trait DimensionRepositoryTestCaseTrait
             static::saveData();
         }
 
-        $dimensionIds = $dimensionRepository->findIdsByAttributes([
+        $dimensions = iterator_to_array($dimensionRepository->findByAttributes([
             'workflowStage' => DimensionInterface::WORKFLOW_STAGE_DRAFT,
-        ]);
+        ]));
 
-        $this->assertCount(1, $dimensionIds);
-        $this->assertSame([static::$TEST_ID4], $dimensionIds);
+        $this->assertCount(1, $dimensions);
+        $this->assertSame([static::$TEST_ID4], array_map(function (DimensionInterface $dimension) {
+            return $dimension->getId();
+        }, $dimensions));
     }
 
     /**
      * @dataProvider saveSkipDataProvider
      */
-    public function testFindIdsAttributesWithLocaleOnly(bool $skipSave): void
+    public function testFindByAttributesWithLocaleOnly(bool $skipSave): void
     {
         if ($skipSave) {
-            $this->markTestSkipped('Currently not implemented to findIdsByAttributes without saving.');
+            $this->markTestSkipped('Currently not implemented to findByAttributes without saving.');
         }
 
         static::purgeData();
@@ -260,21 +264,23 @@ trait DimensionRepositoryTestCaseTrait
             static::saveData();
         }
 
-        $dimensionIds = $dimensionRepository->findIdsByAttributes([
+        $dimensions = iterator_to_array($dimensionRepository->findByAttributes([
             'locale' => 'en',
-        ]);
+        ]));
 
-        $this->assertCount(2, $dimensionIds);
-        $this->assertSame([static::$TEST_ID4, static::$TEST_ID], $dimensionIds);
+        $this->assertCount(2, $dimensions);
+        $this->assertSame([static::$TEST_ID4, static::$TEST_ID], array_map(function (DimensionInterface $dimension) {
+            return $dimension->getId();
+        }, $dimensions));
     }
 
     /**
      * @dataProvider saveSkipDataProvider
      */
-    public function testFindIdsAttributesIgnoreAdditionalAttributes(bool $skipSave): void
+    public function testFindByAttributesIgnoreAdditionalAttributes(bool $skipSave): void
     {
         if ($skipSave) {
-            $this->markTestSkipped('Currently not implemented to findIdsByAttributes without saving.');
+            $this->markTestSkipped('Currently not implemented to findByAttributes without saving.');
         }
 
         static::purgeData();
@@ -288,13 +294,15 @@ trait DimensionRepositoryTestCaseTrait
             static::saveData();
         }
 
-        $dimensionIds = $dimensionRepository->findIdsByAttributes([
+        $dimensions = iterator_to_array($dimensionRepository->findByAttributes([
             'locale' => 'en',
             'any-parameter' => 'test',
-        ]);
+        ]));
 
-        $this->assertCount(1, $dimensionIds);
-        $this->assertSame([static::$TEST_ID], $dimensionIds);
+        $this->assertCount(1, $dimensions);
+        $this->assertSame([static::$TEST_ID], array_map(function (DimensionInterface $dimension) {
+            return $dimension->getId();
+        }, $dimensions));
     }
 
     public function saveSkipDataProvider(): \Generator

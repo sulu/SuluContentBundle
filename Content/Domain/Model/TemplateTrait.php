@@ -19,7 +19,7 @@ namespace Sulu\Bundle\ContentBundle\Content\Domain\Model;
 trait TemplateTrait
 {
     /**
-     * @var string
+     * @var string|null
      */
     private $templateKey;
 
@@ -28,12 +28,12 @@ trait TemplateTrait
      */
     private $templateData = [];
 
-    public function getTemplateKey(): string
+    public function getTemplateKey(): ?string
     {
         return $this->templateKey;
     }
 
-    public function setTemplateKey(string $templateKey): void
+    public function setTemplateKey(?string $templateKey): void
     {
         $this->templateKey = $templateKey;
     }
