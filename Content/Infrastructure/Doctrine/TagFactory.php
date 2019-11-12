@@ -49,11 +49,13 @@ class TagFactory implements TagFactoryInterface
         /** @var iterable<TagInterface> $tags */
         $tags = $queryBuilder->getQuery()->getResult();
 
+        // sort tags by the given names order
         $excerptTags = [];
         foreach ($tags as $tag) {
             $excerptTags[array_search($tag->getName(), $tagNames, true)] = $tag;
         }
 
+        // create tags which not exist yet
         foreach ($tagNames as $key => $tagName) {
             if (isset($excerptTags[$key])) {
                 continue;

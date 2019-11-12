@@ -32,7 +32,7 @@ class TemplateResolver implements ResolverInterface
         return $viewData;
     }
 
-    public function getIgnoreAttributes(object $contentView): array
+    public function getIgnoredAttributes(object $contentView): array
     {
         return [
             'templateType',

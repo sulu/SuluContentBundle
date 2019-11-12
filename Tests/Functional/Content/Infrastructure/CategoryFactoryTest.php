@@ -35,7 +35,7 @@ class CategoryFactoryTest extends BaseTestCase
      */
     public function testCreate($categoryIds): void
     {
-        $tagFactory = $this->createCategoryFactory();
+        $categoryFactory = $this->createCategoryFactory();
 
         $this->assertSame(
             $categoryIds,
@@ -43,7 +43,7 @@ class CategoryFactoryTest extends BaseTestCase
                 function (CategoryInterface $category) {
                     return $category->getId();
                 },
-                $tagFactory->create($categoryIds)
+                $categoryFactory->create($categoryIds)
             )
         );
     }

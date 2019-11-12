@@ -59,7 +59,7 @@ class DimensionCollectionFactory implements DimensionCollectionFactoryInterface
             $dimensions[] = $unlocalizedDimension;
         }
 
-        if (!$localizedDimension && $localizedAttributes = $dimensionCollection->getLocalizedAttributes()) {
+        if (!$localizedDimension && $localizedAttributes) {
             $localizedDimension = $this->dimensionRepository->create(null, $localizedAttributes);
             $this->dimensionRepository->add($localizedDimension);
             $dimensions[] = $localizedDimension;

@@ -43,7 +43,7 @@ class TemplateMapper implements MapperInterface
 
         $template = $data['template'];
 
-        list($unLocalizedData, $localizedData) = $this->getTemplateData(
+        list($unlocalizedData, $localizedData) = $this->getTemplateData(
             $data,
             $contentDimension->getTemplateType(),
             $template
@@ -66,7 +66,7 @@ class TemplateMapper implements MapperInterface
 
         $contentDimension->setTemplateData(array_merge(
             $contentDimension->getTemplateData(),
-            $unLocalizedData
+            $unlocalizedData
         ));
     }
 
@@ -87,7 +87,7 @@ class TemplateMapper implements MapperInterface
             ));
         }
 
-        $unLocalizedData = [];
+        $unlocalizedData = [];
         $localizedData = [];
 
         foreach ($metadata->getProperties() as $property) {
@@ -108,9 +108,9 @@ class TemplateMapper implements MapperInterface
                 continue;
             }
 
-            $unLocalizedData[$name] = $value;
+            $unlocalizedData[$name] = $value;
         }
 
-        return [$unLocalizedData, $localizedData];
+        return [$unlocalizedData, $localizedData];
     }
 }

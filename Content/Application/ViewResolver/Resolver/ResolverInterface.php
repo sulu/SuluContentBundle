@@ -25,5 +25,5 @@ interface ResolverInterface
     /**
      * @return string[]
      */
-    public function getIgnoreAttributes(object $contentView): array;
+    public function getIgnoredAttributes(object $contentView): array;
 }

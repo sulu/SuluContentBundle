@@ -49,7 +49,7 @@ class ApiViewResolver implements ViewResolverInterface, ApiViewResolverInterface
         foreach ($this->resolvers as $resolver) {
             $ignoreAttributes = array_merge(
                 $ignoreAttributes,
-                $resolver->getIgnoreAttributes($contentView)
+                $resolver->getIgnoredAttributes($contentView)
             );
         }
 
