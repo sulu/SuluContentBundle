@@ -11,7 +11,7 @@ version: 2.1
     DATABASE_COLLATE: utf8mb4_unicode_ci
 
 commands:
-    enable_pcov:
+    enable_php_pcov:
         steps:
             - run:
                   name: Enable PCOV, disable Xdebug
@@ -40,6 +40,9 @@ workflows:
             - test-coverage:
                   requires:
                       - composer
+                      - test
+            - coverage-all-upload:
+                  requires:
                       - test
 
 jobs:
@@ -94,7 +97,7 @@ jobs:
             - checkout
             - attach_workspace:
                   at: .
-            - enable_pcov
+            - enable_php_pcov
             - disable_php_memory_limit
             - run: php -m
             - run: php composer.phar bootstrap-test-environment
@@ -116,8 +119,20 @@ jobs:
             - checkout
             - attach_workspace:
                   at: .
+            - enable_php_pcov
             - disable_php_memory_limit
-            - run: php composer.phar test-coverage-checker --
-            - run: wget https://github.com/php-coveralls/php-coveralls/releases/download/v2.1.0/php-coveralls.phar
+            - run: php composer.phar test-coverage-checker
+
+    coverage-all-upload:
+        docker:
+            - image: sulu/php:7.2-cli
+        environment: *environment_variables
+        steps:
+            - checkout
+            - attach_workspace:
+                  at: .
+            - disable_php_memory_limit
+            - run: curl -L https://github.com/php-coveralls/php-coveralls/releases/download/v2.1.0/php-coveralls.phar --output php-coveralls.phar
             - run: chmod +x php-coveralls.phar
+            - run: apt-get update && apt-get install git -y
             - run: php php-coveralls.phar --coverage_clover Tests/reports/clover.xml --json_path Tests/reports/coveralls.json
