@@ -65,7 +65,9 @@ class ContentDimensionCollectionFactory implements ContentDimensionCollectionFac
         }
 
         if (!$unlocalizedDimension) {
-            throw new \RuntimeException();
+            throw new \RuntimeException(
+                'The "$dimensionCollection" should contain atleast a unlocalizedDimension.'
+            );
         }
 
         $unlocalizedContentDimension = $this->getOrCreateContentDimension(

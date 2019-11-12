@@ -63,7 +63,7 @@ class ExampleView extends AbstractContentView implements SeoInterface, ExcerptIn
         $this->title = $title;
     }
 
-    public static function getTemplateType(): string
+    public function getTemplateType(): string
     {
         return ExampleDimension::TYPE_KEY;
     }

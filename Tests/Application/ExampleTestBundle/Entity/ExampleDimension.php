@@ -87,7 +87,7 @@ class ExampleDimension extends AbstractContentDimension implements ExcerptInterf
         return $contentView;
     }
 
-    public static function getTemplateType(): string
+    public function getTemplateType(): string
     {
         return self::TYPE_KEY;
     }

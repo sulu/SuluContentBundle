@@ -62,7 +62,7 @@ trait ApiViewResolverTestCaseTrait
                 return 5;
             }
 
-            public static function getTemplateType(): string
+            public function getTemplateType(): string
             {
                 return 'example';
             }

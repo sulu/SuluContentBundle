@@ -45,7 +45,7 @@ class TemplateMapper implements MapperInterface
 
         list($unLocalizedData, $localizedData) = $this->getTemplateData(
             $data,
-            $contentDimension::getTemplateType(),
+            $contentDimension->getTemplateType(),
             $template
         );
 

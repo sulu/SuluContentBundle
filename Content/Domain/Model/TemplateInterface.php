@@ -29,5 +29,5 @@ interface TemplateInterface
      */
     public function setTemplateData(array $templateData): void;
 
-    public static function getTemplateType(): string;
+    public function getTemplateType(): string;
 }

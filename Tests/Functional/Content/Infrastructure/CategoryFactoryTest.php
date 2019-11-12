@@ -13,14 +13,12 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Tests\Content\Infrastructure\Doctrine;
 
+use Sulu\Bundle\CategoryBundle\Entity\CategoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\CategoryFactoryInterface;
-use Sulu\Bundle\ContentBundle\TestCases\Content\CategoryFactoryTestCaseTrait;
 use Sulu\Bundle\ContentBundle\Tests\Functional\BaseTestCase;
 
 class CategoryFactoryTest extends BaseTestCase
 {
-    use CategoryFactoryTestCaseTrait;
-
     public function setUp(): void
     {
         self::bootKernel();
@@ -30,5 +28,39 @@ class CategoryFactoryTest extends BaseTestCase
     public function createCategoryFactory(): CategoryFactoryInterface
     {
         return self::$container->get('sulu_content.category_factory');
+    }
+
+    /**
+     * @dataProvider dataProvider
+     */
+    public function testCreate($categoryIds): void
+    {
+        $tagFactory = $this->createCategoryFactory();
+
+        $this->assertSame(
+            $categoryIds,
+            array_map(
+                function (CategoryInterface $category) {
+                    return $category->getId();
+                },
+                $tagFactory->create($categoryIds)
+            )
+        );
+    }
+
+    public function dataProvider()
+    {
+        yield [
+            [
+                // No categories
+            ],
+        ];
+
+        yield [
+            [
+                1,
+                2,
+            ],
+        ];
     }
 }

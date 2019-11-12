@@ -14,14 +14,12 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Content\Infrastructure\Doctrine;
 
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\TagFactoryInterface;
-use Sulu\Bundle\ContentBundle\TestCases\Content\TagFactoryTestCaseTrait;
 use Sulu\Bundle\ContentBundle\Tests\Functional\BaseTestCase;
+use Sulu\Bundle\TagBundle\Tag\TagInterface;
 use Sulu\Bundle\TagBundle\Tag\TagRepositoryInterface;
 
 class TagFactoryTest extends BaseTestCase
 {
-    use TagFactoryTestCaseTrait;
-
     public function setUp(): void
     {
         self::bootKernel();
@@ -45,5 +43,66 @@ class TagFactoryTest extends BaseTestCase
         }
 
         return self::$container->get('sulu_content.tag_factory');
+    }
+
+    /**
+     * @dataProvider dataProvider
+     */
+    public function testCreate($tagNames, $existTags): void
+    {
+        $tagFactory = $this->createTagFactory($existTags);
+
+        $this->assertSame(
+            $tagNames,
+            array_map(
+                function (TagInterface $tag) {
+                    return $tag->getName();
+                },
+                $tagFactory->create($tagNames)
+            )
+        );
+    }
+
+    public function dataProvider()
+    {
+        yield [
+            [
+                // No tags
+            ],
+            [
+                // No exist tags
+            ],
+        ];
+
+        yield [
+            [
+                'Tag 1',
+                'Tag 2',
+            ],
+            [
+                // No exist tags
+            ],
+        ];
+
+        yield [
+            [
+                'Exist Tag 1',
+                'Tag 2',
+            ],
+            [
+                'Exist Tag 1',
+            ],
+        ];
+
+        yield [
+            [
+                'Exist Tag 1',
+                'Exist Tag 2',
+            ],
+            [
+                'Exist Tag 1',
+                'Exist Tag 2',
+            ],
+        ];
     }
 }

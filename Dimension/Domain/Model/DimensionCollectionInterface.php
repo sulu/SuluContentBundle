@@ -38,7 +38,7 @@ interface DimensionCollectionInterface extends \Traversable, \Countable
     public function getUnlocalizedDimension(): ?DimensionInterface;
 
     /**
-     * @return int[]
+     * @return string[]
      */
     public function getDimensionIds(): array;
 }

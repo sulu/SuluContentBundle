@@ -68,7 +68,7 @@ class ContentTest extends TestCase
                 };
             }
 
-            public static function getTemplateType(): string
+            public function getTemplateType(): string
             {
                 return 'example';
             }
@@ -96,7 +96,7 @@ class ContentTest extends TestCase
                 return 5;
             }
 
-            public static function getTemplateType(): string
+            public function getTemplateType(): string
             {
                 return 'example';
             }

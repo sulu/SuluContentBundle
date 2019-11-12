@@ -13,8 +13,6 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\Resolver;
 
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
-
 interface ResolverInterface
 {
     /**

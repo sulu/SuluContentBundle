@@ -34,6 +34,8 @@ class TemplateResolver implements ResolverInterface
 
     public function getIgnoreAttributes(object $contentView): array
     {
-        return [];
+        return [
+            'templateType',
+        ];
     }
 }
