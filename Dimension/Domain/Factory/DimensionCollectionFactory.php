@@ -32,7 +32,7 @@ class DimensionCollectionFactory implements DimensionCollectionFactoryInterface
     }
 
     /**
-     * @param array<string, string|int|float|bool|null> $dimensionAttributes
+     * @param mixed[] $dimensionAttributes
      */
     public function create(array $dimensionAttributes): DimensionCollectionInterface
     {

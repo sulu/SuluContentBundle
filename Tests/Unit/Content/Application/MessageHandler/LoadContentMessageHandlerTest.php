@@ -11,9 +11,8 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ViewFactory;
+namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\MessageHandler;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\ContentBundle\Content\Application\Message\LoadContentMessage;
 use Sulu\Bundle\ContentBundle\Content\Application\MessageHandler\LoadContentMessageHandler;
@@ -47,14 +46,7 @@ class LoadContentMessageHandlerTest extends TestCase
      */
     protected function createContentInstance(array $dimensions): ContentInterface
     {
-        return new class($dimensions) extends AbstractContent {
-            protected $dimensions;
-
-            public function __construct($dimensions)
-            {
-                $this->dimensions = new ArrayCollection($dimensions);
-            }
-
+        $content = new class() extends AbstractContent {
             public static function getResourceKey(): string
             {
                 return 'example';
@@ -62,9 +54,15 @@ class LoadContentMessageHandlerTest extends TestCase
 
             public function createDimension(string $dimensionId): ContentDimensionInterface
             {
-                return new \RuntimeException('Should not be called in a unit test.');
+                throw new \RuntimeException('Should not be called in a unit test.');
             }
         };
+
+        foreach ($dimensions as $dimension) {
+            $content->addDimension($dimension);
+        }
+
+        return $content;
     }
 
     public function testInvoke(): void

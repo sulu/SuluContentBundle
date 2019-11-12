@@ -11,7 +11,7 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentDimensionCollection\Mapper;
+namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentDimensionFactory\Mapper;
 
 use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentDimensionFactory\Mapper\ExcerptMapper;
@@ -26,7 +26,7 @@ class ExcerptMapperTest extends TestCase
     protected function createExcerptMapperInstance(
         TagFactoryInterface $tagFactory,
         CategoryFactoryInterface $categoryFactory
-    ) {
+    ): ExcerptMapper {
         return new ExcerptMapper($tagFactory, $categoryFactory);
     }
 
@@ -49,9 +49,8 @@ class ExcerptMapperTest extends TestCase
         $categoryFactory = $this->prophesize(CategoryFactoryInterface::class);
 
         $excerptMapper = $this->createExcerptMapperInstance($tagFactory->reveal(), $categoryFactory->reveal());
-        $this->assertNull(
-            $excerptMapper->map($data, $contentDimension->reveal(), $localizedContentDimension->reveal())
-        );
+        $excerptMapper->map($data, $contentDimension->reveal(), $localizedContentDimension->reveal());
+        $this->assertTrue(true); // Avoid risky test as this is an early return test
     }
 
     public function testMapLocalizedNoExcerpt(): void
@@ -78,9 +77,7 @@ class ExcerptMapperTest extends TestCase
 
         $excerptMapper = $this->createExcerptMapperInstance($tagFactory->reveal(), $categoryFactory->reveal());
 
-        $this->assertNull(
-            $excerptMapper->map($data, $contentDimension->reveal(), $localizedContentDimension->reveal())
-        );
+        $excerptMapper->map($data, $contentDimension->reveal(), $localizedContentDimension->reveal());
     }
 
     public function testMapUnlocalizedExcerpt(): void

@@ -22,7 +22,7 @@ use Sulu\Bundle\ContentBundle\Dimension\Domain\Model\DimensionInterface;
 class DimensionCollectionTest extends TestCase
 {
     /**
-     * @param array<string, string|int|float|bool,null> $attributes
+     * @param mixed[] $attributes
      * @param DimensionInterface[] $dimensions
      */
     protected function createDimensionCollection(
@@ -32,6 +32,9 @@ class DimensionCollectionTest extends TestCase
         return new DimensionCollection($attributes, $dimensions);
     }
 
+    /**
+     * @param mixed[] $attributes
+     */
     protected function createDimension(?string $id, array $attributes = []): DimensionInterface
     {
         return new Dimension($id, $attributes);

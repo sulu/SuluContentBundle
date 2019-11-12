@@ -26,7 +26,7 @@ use Sulu\Bundle\ContentBundle\Dimension\Domain\Repository\DimensionRepositoryInt
 class DimensionRepository implements DimensionRepositoryInterface
 {
     /**
-     * @var class-string<DimensionInterface>
+     * @var string
      */
     private $className;
 
@@ -98,9 +98,9 @@ class DimensionRepository implements DimensionRepositoryInterface
     /**
      * Less specific should be returned first to merge correctly.
      *
-     * @param array<string, string|int|float|bool|null> $attributes
+     * @param mixed[] $attributes
      */
-    private function addSortBy(QueryBuilder $queryBuilder, $attributes): void
+    private function addSortBy(QueryBuilder $queryBuilder, array $attributes): void
     {
         foreach ($attributes as $key => $value) {
             $queryBuilder->addOrderBy('dimension.' . $key);
@@ -108,7 +108,7 @@ class DimensionRepository implements DimensionRepositoryInterface
     }
 
     /**
-     * @param array<string, string|int|float|bool|null> $attributes
+     * @param mixed[] $attributes
      */
     private function getAttributesCriteria(string $dimensionAlias, array $attributes): Criteria
     {
@@ -130,9 +130,9 @@ class DimensionRepository implements DimensionRepositoryInterface
     }
 
     /**
-     * @param array<string, string|int|float|bool|null> $attributes
+     * @param mixed[] $attributes
      *
-     * @return array<string, string|int|float|bool|null>
+     * @return mixed[]
      */
     private function getNormalizedAttributes(array $attributes): array
     {

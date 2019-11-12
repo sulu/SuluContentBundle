@@ -11,7 +11,7 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentDimensionCollection\Mapper;
+namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentDimensionFactory\Mapper;
 
 use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentDimensionFactory\Mapper\SeoMapper;
@@ -20,7 +20,7 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
 
 class SeoMapperTest extends TestCase
 {
-    protected function createSeoMapperInstance()
+    protected function createSeoMapperInstance(): SeoMapper
     {
         return new SeoMapper();
     }
@@ -41,9 +41,8 @@ class SeoMapperTest extends TestCase
         $localizedContentDimension = $this->prophesize(ContentDimensionInterface::class);
 
         $seoMapper = $this->createSeoMapperInstance();
-        $this->assertNull(
-            $seoMapper->map($data, $contentDimension->reveal(), $localizedContentDimension->reveal())
-        );
+        $seoMapper->map($data, $contentDimension->reveal(), $localizedContentDimension->reveal());
+        $this->assertTrue(true); // Avoid risky test as this is an early return test
     }
 
     public function testMapLocalizedNoSeo(): void
@@ -67,9 +66,7 @@ class SeoMapperTest extends TestCase
 
         $seoMapper = $this->createSeoMapperInstance();
 
-        $this->assertNull(
-            $seoMapper->map($data, $contentDimension->reveal(), $localizedContentDimension->reveal())
-        );
+        $seoMapper->map($data, $contentDimension->reveal(), $localizedContentDimension->reveal());
     }
 
     public function testMapUnlocalizedSeo(): void

@@ -28,13 +28,13 @@ class CreateContentMessage
     private $data;
 
     /**
-     * @var array<string, string|int|float|bool|null>
+     * @var mixed[]
      */
     private $dimensionAttributes;
 
     /**
      * @param mixed[] $data
-     * @param array<string, string|int|float|bool|null> $dimensionAttributes
+     * @param mixed[] $dimensionAttributes
      */
     public function __construct(ContentInterface $content, array $data, array $dimensionAttributes)
     {
@@ -57,7 +57,7 @@ class CreateContentMessage
     }
 
     /**
-     * @return array<string, string|int|float|bool|null>
+     * @return mixed[]
      */
     public function getDimensionAttributes(): array
     {

@@ -19,17 +19,17 @@ use Doctrine\Common\Collections\Criteria;
 class DimensionCollection implements \IteratorAggregate, DimensionCollectionInterface
 {
     /**
-     * @var array<string, string|int|float|bool,null>
+     * @var mixed[]
      */
     private $attributes;
 
     /**
-     * @var array<string, string|int|float|bool,null>|null
+     * @var mixed[]|null
      */
     private $localizedAttributes;
 
     /**
-     * @var array<string, string|int|float|bool,null>
+     * @var mixed[]
      */
     private $unlocalizedAttributes;
 
@@ -49,7 +49,7 @@ class DimensionCollection implements \IteratorAggregate, DimensionCollectionInte
     private $unlocalizedDimension;
 
     /**
-     * @param array<string, string|int|float|bool,null> $attributes
+     * @param mixed[] $attributes
      * @param DimensionInterface[] $dimensions
      */
     public function __construct(array $attributes, array $dimensions)
@@ -67,7 +67,7 @@ class DimensionCollection implements \IteratorAggregate, DimensionCollectionInte
 
         $criteria = Criteria::create();
         foreach ($this->unlocalizedAttributes as $key => $value) {
-            $criteria->andWhere($criteria->expr()->eq($key, $value));
+            $criteria->andWhere($criteria->expr()->eq((string) $key, $value));
         }
 
         $this->unlocalizedDimension = $this->dimensions->matching($criteria)->first() ?: null;
@@ -75,14 +75,14 @@ class DimensionCollection implements \IteratorAggregate, DimensionCollectionInte
         if ($this->localizedAttributes) {
             $criteria = Criteria::create();
             foreach ($this->localizedAttributes as $key => $value) {
-                $criteria->andWhere($criteria->expr()->eq($key, $value));
+                $criteria->andWhere($criteria->expr()->eq((string) $key, $value));
             }
             $this->localizedDimension = $this->dimensions->matching($criteria)->first() ?: null;
         }
     }
 
     /**
-     * @return array<string, string|int|float|bool,null>
+     * @return mixed[]
      */
     public function getAttributes(): array
     {
@@ -90,7 +90,7 @@ class DimensionCollection implements \IteratorAggregate, DimensionCollectionInte
     }
 
     /**
-     * @return array<string, string|int|float|bool,null>
+     * @return mixed[]
      */
     public function getUnlocalizedAttributes(): array
     {
@@ -98,7 +98,7 @@ class DimensionCollection implements \IteratorAggregate, DimensionCollectionInte
     }
 
     /**
-     * @return array<string, string|int|float|bool,null>
+     * @return mixed[]
      */
     public function getLocalizedAttributes(): ?array
     {

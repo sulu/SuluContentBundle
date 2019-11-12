@@ -11,7 +11,7 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Tests\Content\Infrastructure\Doctrine;
+namespace Sulu\Bundle\ContentBundle\Tests\Functional\Content\Infrastructure\Doctrine;
 
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\TagFactoryInterface;
 use Sulu\Bundle\ContentBundle\Tests\Functional\BaseTestCase;
@@ -26,6 +26,9 @@ class TagFactoryTest extends BaseTestCase
         self::purgeDatabase();
     }
 
+    /**
+     * @param string[] $existTagNames
+     */
     protected function createTagFactory(array $existTagNames = []): TagFactoryInterface
     {
         /** @var TagRepositoryInterface $tagRepository */
@@ -47,8 +50,11 @@ class TagFactoryTest extends BaseTestCase
 
     /**
      * @dataProvider dataProvider
+     *
+     * @param string[] $tagNames
+     * @param string[] $existTags
      */
-    public function testCreate($tagNames, $existTags): void
+    public function testCreate(array $tagNames, array $existTags): void
     {
         $tagFactory = $this->createTagFactory($existTags);
 
@@ -63,7 +69,7 @@ class TagFactoryTest extends BaseTestCase
         );
     }
 
-    public function dataProvider()
+    public function dataProvider(): \Generator
     {
         yield [
             [

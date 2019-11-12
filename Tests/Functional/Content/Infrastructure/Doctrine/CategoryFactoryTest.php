@@ -11,7 +11,7 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Tests\Content\Infrastructure\Doctrine;
+namespace Sulu\Bundle\ContentBundle\Tests\Functional\Content\Infrastructure\Doctrine;
 
 use Sulu\Bundle\CategoryBundle\Entity\CategoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\CategoryFactoryInterface;
@@ -32,8 +32,10 @@ class CategoryFactoryTest extends BaseTestCase
 
     /**
      * @dataProvider dataProvider
+     *
+     * @param int[] $categoryIds
      */
-    public function testCreate($categoryIds): void
+    public function testCreate(array $categoryIds): void
     {
         $categoryFactory = $this->createCategoryFactory();
 
@@ -48,7 +50,7 @@ class CategoryFactoryTest extends BaseTestCase
         );
     }
 
-    public function dataProvider()
+    public function dataProvider(): \Generator
     {
         yield [
             [

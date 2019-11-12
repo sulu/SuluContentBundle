@@ -11,7 +11,7 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentDimensionCollection;
+namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentDimensionFactory;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\TestCase;
@@ -24,12 +24,12 @@ use Sulu\Bundle\ContentBundle\Dimension\Domain\Model\DimensionCollection;
 
 class ContentDimensionCollectionFactoryTest extends TestCase
 {
-    protected function createContentDimensionCollectionFactoryInstance(iterable $mappers)
+    protected function createContentDimensionCollectionFactoryInstance(iterable $mappers): ContentDimensionCollectionFactory
     {
         return new ContentDimensionCollectionFactory($mappers);
     }
 
-    public function testCreateWithoutMapperExistContentDimension()
+    public function testCreateWithoutMapperExistContentDimension(): void
     {
         $contentDimension1 = $this->prophesize(ContentDimensionInterface::class);
         $contentDimension1->getDimensionId()->willReturn('123-456');
@@ -68,7 +68,7 @@ class ContentDimensionCollectionFactoryTest extends TestCase
         ], iterator_to_array($contentDimensionCollection));
     }
 
-    public function testCreateWithoutUnlocalizedContentDimension()
+    public function testCreateWithoutUnlocalizedContentDimension(): void
     {
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('The "$dimensionCollection" should contain atleast a unlocalizedDimension.');
@@ -104,7 +104,7 @@ class ContentDimensionCollectionFactoryTest extends TestCase
         );
     }
 
-    public function testCreateWithoutMapperNotExistContentDimension()
+    public function testCreateWithoutMapperNotExistContentDimension(): void
     {
         $contentDimension1 = $this->prophesize(ContentDimensionInterface::class);
         $contentDimension1->getDimensionId()->willReturn('123-456');
@@ -145,7 +145,7 @@ class ContentDimensionCollectionFactoryTest extends TestCase
         ], iterator_to_array($contentDimensionCollection));
     }
 
-    public function testCreateWithMappers()
+    public function testCreateWithMappers(): void
     {
         $contentDimension1 = $this->prophesize(ContentDimensionInterface::class);
         $contentDimension1->getDimensionId()->willReturn('123-456');

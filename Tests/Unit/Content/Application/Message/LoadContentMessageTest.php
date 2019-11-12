@@ -22,7 +22,7 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentInterface;
 class LoadContentMessageTest extends TestCase
 {
     /**
-     * @param array<string, string|int|float|bool|null> $dimensionAttributes
+     * @param mixed[] $dimensionAttributes
      */
     protected function createLoadContentMessageInstance(
         ContentInterface $content,

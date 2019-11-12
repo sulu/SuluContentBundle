@@ -19,17 +19,17 @@ namespace Sulu\Bundle\ContentBundle\Dimension\Domain\Model;
 interface DimensionCollectionInterface extends \Traversable, \Countable
 {
     /**
-     * @return array<string, string|int|float|bool,null>|null
+     * @return mixed[]|null
      */
     public function getLocalizedAttributes(): ?array;
 
     /**
-     * @return array<string, string|int|float|bool,null>
+     * @return mixed[]
      */
     public function getUnlocalizedAttributes(): array;
 
     /**
-     * @return array<string, string|int|float|bool,null>
+     * @return mixed[]
      */
     public function getAttributes(): array;
 

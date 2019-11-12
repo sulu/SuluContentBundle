@@ -11,7 +11,7 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ViewFactory;
+namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\MessageHandler;
 
 use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\ContentBundle\Content\Application\Message\CreateContentMessage;
@@ -54,7 +54,7 @@ class CreateContentMessageHandlerTest extends TestCase
 
             public function createDimension(string $dimensionId): ContentDimensionInterface
             {
-                return new \RuntimeException('Should not be called in a unit test.');
+                throw new \RuntimeException('Should not be called in a unit test.');
             }
         };
     }

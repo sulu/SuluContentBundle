@@ -23,7 +23,7 @@ class ModifyContentMessageTest extends TestCase
 {
     /**
      * @param mixed[] $data
-     * @param array<string, string|int|float|bool|null> $dimensionAttributes
+     * @param mixed[] $dimensionAttributes
      */
     protected function createModifyContentMessageInstance(
         ContentInterface $content,

@@ -61,22 +61,22 @@ interface ExcerptInterface
     public function setExcerptTags(array $excerptTags): void;
 
     /**
-     * @return array<string, int|string|null>|null
+     * @return mixed[]|null
      */
     public function getExcerptImage(): ?array;
 
     /**
-     * @param array<string, int|string|null>|null $excerptImage
+     * @param mixed[]|null $excerptImage
      */
     public function setExcerptImage(?array $excerptImage): void;
 
     /**
-     * @return array<string, int|string|null>|null
+     * @return mixed[]|null
      */
     public function getExcerptIcon(): ?array;
 
     /**
-     * @param array<string, int|string|null>|null $excerptIcon
+     * @param mixed[]|null $excerptIcon
      */
     public function setExcerptIcon(?array $excerptIcon): void;
 }

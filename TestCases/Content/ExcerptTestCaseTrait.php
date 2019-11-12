@@ -55,6 +55,7 @@ trait ExcerptTestCaseTrait
         $model = $this->getExcerptInstance();
         $this->assertNull($model->getExcerptImage());
         $model->setExcerptImage(['id' => 1]);
+        $this->assertNotNull($model->getExcerptImage());
         $this->assertSame(['id' => 1], $model->getExcerptImage());
     }
 
@@ -63,6 +64,7 @@ trait ExcerptTestCaseTrait
         $model = $this->getExcerptInstance();
         $this->assertNull($model->getExcerptIcon());
         $model->setExcerptIcon(['id' => 2]);
+        $this->assertNotNull($model->getExcerptIcon());
         $this->assertSame(['id' => 2], $model->getExcerptIcon());
     }
 

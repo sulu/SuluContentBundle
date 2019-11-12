@@ -11,7 +11,7 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentDimensionCollection\Mapper;
+namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentDimensionFactory\Mapper;
 
 use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentDimensionFactory\Mapper\TemplateMapper;
@@ -23,8 +23,9 @@ use Sulu\Component\Content\Metadata\StructureMetadata;
 
 class TemplateMapperTest extends TestCase
 {
-    protected function createTemplateMapperInstance(StructureMetadataFactoryInterface $structureMetadataFactory)
-    {
+    protected function createTemplateMapperInstance(
+        StructureMetadataFactoryInterface $structureMetadataFactory
+    ): TemplateMapper {
         return new TemplateMapper($structureMetadataFactory);
     }
 
@@ -41,10 +42,9 @@ class TemplateMapperTest extends TestCase
         $contentDimension = $this->prophesize(ContentDimensionInterface::class);
         $localizedContentDimension = $this->prophesize(ContentDimensionInterface::class);
 
-        $seoMapper = $this->createTemplateMapperInstance($structureMetadataFactory->reveal());
-        $this->assertNull(
-            $seoMapper->map($data, $contentDimension->reveal(), $localizedContentDimension->reveal())
-        );
+        $templateMapper = $this->createTemplateMapperInstance($structureMetadataFactory->reveal());
+        $templateMapper->map($data, $contentDimension->reveal(), $localizedContentDimension->reveal());
+        $this->assertTrue(true); // Avoid risky test as this is an early return test
     }
 
     public function testMapLocalizedNoTemplateKey(): void
@@ -60,11 +60,9 @@ class TemplateMapperTest extends TestCase
 
         $localizedContentDimension = $this->prophesize(ContentDimensionInterface::class);
 
-        $seoMapper = $this->createTemplateMapperInstance($structureMetadataFactory->reveal());
+        $templateMapper = $this->createTemplateMapperInstance($structureMetadataFactory->reveal());
 
-        $this->assertNull(
-            $seoMapper->map($data, $contentDimension->reveal(), $localizedContentDimension->reveal())
-        );
+        $templateMapper->map($data, $contentDimension->reveal(), $localizedContentDimension->reveal());
     }
 
     public function testMapLocalizedNoTemplateInstance(): void
@@ -95,11 +93,9 @@ class TemplateMapperTest extends TestCase
         $contentDimension->willImplement(TemplateInterface::class);
         $contentDimension->getTemplateType()->willReturn('example')->shouldBeCalled();
 
-        $seoMapper = $this->createTemplateMapperInstance($structureMetadataFactory->reveal());
+        $templateMapper = $this->createTemplateMapperInstance($structureMetadataFactory->reveal());
 
-        $this->assertNull(
-            $seoMapper->map($data, $contentDimension->reveal(), $localizedContentDimension->reveal())
-        );
+        $templateMapper->map($data, $contentDimension->reveal(), $localizedContentDimension->reveal());
     }
 
     public function testMapLocalizedNoStructureFound(): void
@@ -123,11 +119,9 @@ class TemplateMapperTest extends TestCase
 
         $localizedContentDimension = $this->prophesize(ContentDimensionInterface::class);
 
-        $seoMapper = $this->createTemplateMapperInstance($structureMetadataFactory->reveal());
+        $templateMapper = $this->createTemplateMapperInstance($structureMetadataFactory->reveal());
 
-        $this->assertNull(
-            $seoMapper->map($data, $contentDimension->reveal(), $localizedContentDimension->reveal())
-        );
+        $templateMapper->map($data, $contentDimension->reveal(), $localizedContentDimension->reveal());
     }
 
     public function testMapUnlocalizedTemplate(): void
@@ -159,9 +153,9 @@ class TemplateMapperTest extends TestCase
             'template-key'
         )->willReturn($structureMetadata->reveal())->shouldBeCalled();
 
-        $seoMapper = $this->createTemplateMapperInstance($structureMetadataFactory->reveal());
+        $templateMapper = $this->createTemplateMapperInstance($structureMetadataFactory->reveal());
 
-        $seoMapper->map($data, $contentDimension->reveal());
+        $templateMapper->map($data, $contentDimension->reveal());
     }
 
     public function testMapLocalizedTemplate(): void
@@ -202,9 +196,9 @@ class TemplateMapperTest extends TestCase
             'template-key'
         )->willReturn($structureMetadata->reveal())->shouldBeCalled();
 
-        $seoMapper = $this->createTemplateMapperInstance($structureMetadataFactory->reveal());
+        $templateMapper = $this->createTemplateMapperInstance($structureMetadataFactory->reveal());
 
-        $seoMapper->map($data, $contentDimension->reveal(), $localizedContentDimension->reveal());
+        $templateMapper->map($data, $contentDimension->reveal(), $localizedContentDimension->reveal());
     }
 
     public function testMapFloatValueTemplate(): void
@@ -245,8 +239,8 @@ class TemplateMapperTest extends TestCase
             'template-key'
         )->willReturn($structureMetadata->reveal())->shouldBeCalled();
 
-        $seoMapper = $this->createTemplateMapperInstance($structureMetadataFactory->reveal());
+        $templateMapper = $this->createTemplateMapperInstance($structureMetadataFactory->reveal());
 
-        $seoMapper->map($data, $contentDimension->reveal(), $localizedContentDimension->reveal());
+        $templateMapper->map($data, $contentDimension->reveal(), $localizedContentDimension->reveal());
     }
 }
