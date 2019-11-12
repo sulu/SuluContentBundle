@@ -60,7 +60,10 @@ class TemplateMapper implements MapperInterface
 
             $localizedContentDimension->setTemplateKey($template);
             $localizedContentDimension->setTemplateData($localizedData);
-        } else {
+        }
+
+        if (!$localizedContentDimension) {
+            // Only set templateKey to unlocalizedDimension when no localizedDimension exist
             $contentDimension->setTemplateKey($template);
         }
 
