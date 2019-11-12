@@ -13,13 +13,13 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Application\MessageHandler;
 
-use Sulu\Bundle\ContentBundle\Content\Application\Message\ModifyContentMessage;
+use Sulu\Bundle\ContentBundle\Content\Application\Message\SaveContentMessage;
 use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\ApiViewResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ContentDimensionCollectionFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ViewFactoryInterface;
 use Sulu\Bundle\ContentBundle\Dimension\Domain\Factory\DimensionCollectionFactoryInterface;
 
-class ModifyContentMessageHandler
+class SaveContentMessageHandler
 {
     /**
      * @var DimensionCollectionFactoryInterface
@@ -53,10 +53,12 @@ class ModifyContentMessageHandler
         $this->viewResolver = $viewResolver;
     }
 
-    public function __invoke(ModifyContentMessage $message): array
+    public function __invoke(SaveContentMessage $message): array
     {
         $dimensionCollection = $this->dimensionCollectionFactory->create($message->getDimensionAttributes());
-        $contentDimensionCollection = $this->contentDimensionCollectionFactory->create($message->getContent(), $dimensionCollection, $message->getData());
+        $contentDimensionCollection = $this->contentDimensionCollectionFactory->create(
+            $message->getContent(), $dimensionCollection, $message->getData()
+        );
         $contentView = $this->viewFactory->create($contentDimensionCollection);
 
         return $this->viewResolver->resolve($contentView);

@@ -64,6 +64,7 @@ class TemplateMapper implements MapperInterface
             $contentDimension->setTemplateKey($template);
         }
 
+        // Unlocalized dimensions can contain data of different templates so we need to merge them together
         $contentDimension->setTemplateData(array_merge(
             $contentDimension->getTemplateData(),
             $unlocalizedData

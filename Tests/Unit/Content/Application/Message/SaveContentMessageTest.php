@@ -14,23 +14,23 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\Message;
 
 use PHPUnit\Framework\TestCase;
-use Sulu\Bundle\ContentBundle\Content\Application\Message\ModifyContentMessage;
+use Sulu\Bundle\ContentBundle\Content\Application\Message\SaveContentMessage;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\AbstractContent;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentInterface;
 
-class ModifyContentMessageTest extends TestCase
+class SaveContentMessageTest extends TestCase
 {
     /**
      * @param mixed[] $data
      * @param mixed[] $dimensionAttributes
      */
-    protected function createModifyContentMessageInstance(
+    protected function createSaveContentMessageInstance(
         ContentInterface $content,
         array $data,
         array $dimensionAttributes
-    ): ModifyContentMessage {
-        return new ModifyContentMessage($content, $data, $dimensionAttributes);
+    ): SaveContentMessage {
+        return new SaveContentMessage($content, $data, $dimensionAttributes);
     }
 
     protected function createContentInstance(): ContentInterface
@@ -51,7 +51,7 @@ class ModifyContentMessageTest extends TestCase
     public function testGetContent(): void
     {
         $content = $this->createContentInstance();
-        $createContentMessage = $this->createModifyContentMessageInstance($content, [], []);
+        $createContentMessage = $this->createSaveContentMessageInstance($content, [], []);
 
         $this->assertSame($content, $createContentMessage->getContent());
     }
@@ -59,7 +59,7 @@ class ModifyContentMessageTest extends TestCase
     public function testGetData(): void
     {
         $content = $this->createContentInstance();
-        $createContentMessage = $this->createModifyContentMessageInstance($content, [
+        $createContentMessage = $this->createSaveContentMessageInstance($content, [
             'data' => 'value',
         ], []);
 
@@ -71,7 +71,7 @@ class ModifyContentMessageTest extends TestCase
     public function testGetDimensionAttributes(): void
     {
         $content = $this->createContentInstance();
-        $createContentMessage = $this->createModifyContentMessageInstance($content, [], [
+        $createContentMessage = $this->createSaveContentMessageInstance($content, [], [
             'locale' => 'de',
         ]);
 

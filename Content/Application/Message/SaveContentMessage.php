@@ -15,7 +15,7 @@ namespace Sulu\Bundle\ContentBundle\Content\Application\Message;
 
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentInterface;
 
-class ModifyContentMessage
+class SaveContentMessage
 {
     /**
      * @var ContentInterface

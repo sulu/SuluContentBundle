@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\MessageHandler;
 
 use PHPUnit\Framework\TestCase;
-use Sulu\Bundle\ContentBundle\Content\Application\Message\CreateContentMessage;
-use Sulu\Bundle\ContentBundle\Content\Application\MessageHandler\CreateContentMessageHandler;
+use Sulu\Bundle\ContentBundle\Content\Application\Message\SaveContentMessage;
+use Sulu\Bundle\ContentBundle\Content\Application\MessageHandler\SaveContentMessageHandler;
 use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\ApiViewResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ContentDimensionCollectionFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ViewFactoryInterface;
@@ -28,15 +28,15 @@ use Sulu\Bundle\ContentBundle\Dimension\Domain\Factory\DimensionCollectionFactor
 use Sulu\Bundle\ContentBundle\Dimension\Domain\Model\Dimension;
 use Sulu\Bundle\ContentBundle\Dimension\Domain\Model\DimensionCollection;
 
-class CreateContentMessageHandlerTest extends TestCase
+class SaveContentMessageHandlerTest extends TestCase
 {
-    protected function createCreateContentMessageHandlerInstance(
+    protected function createSaveContentMessageHandlerInstance(
         DimensionCollectionFactoryInterface $dimensionCollectionFactory,
         ContentDimensionCollectionFactoryInterface $contentDimensionCollectionFactory,
         ViewFactoryInterface $viewFactory,
         ApiViewResolverInterface $viewResolver
-    ): CreateContentMessageHandler {
-        return new CreateContentMessageHandler(
+    ): SaveContentMessageHandler {
+        return new SaveContentMessageHandler(
             $dimensionCollectionFactory,
             $contentDimensionCollectionFactory,
             $viewFactory,
@@ -69,7 +69,7 @@ class CreateContentMessageHandlerTest extends TestCase
             'data' => 'value',
         ];
 
-        $message = new CreateContentMessage($content, $data, $attributes);
+        $message = new SaveContentMessage($content, $data, $attributes);
 
         $dimension1 = new Dimension('123-456', ['locale' => 'de']);
         $dimension2 = new Dimension('456-789', ['locale' => null]);
@@ -97,7 +97,7 @@ class CreateContentMessageHandlerTest extends TestCase
         $viewResolver = $this->prophesize(ApiViewResolverInterface::class);
         $viewResolver->resolve($contentView->reveal())->willReturn(['resolved' => 'data'])->shouldBeCalled();
 
-        $createContentMessageHandler = $this->createCreateContentMessageHandlerInstance(
+        $createContentMessageHandler = $this->createSaveContentMessageHandlerInstance(
             $dimensionCollectionFactory->reveal(),
             $contentDimensionCollectionFactory->reveal(),
             $viewFactory->reveal(),

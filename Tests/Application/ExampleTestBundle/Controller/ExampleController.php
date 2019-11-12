@@ -16,9 +16,8 @@ namespace Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Controll
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\ViewHandlerInterface;
-use Sulu\Bundle\ContentBundle\Content\Application\Message\CreateContentMessage;
 use Sulu\Bundle\ContentBundle\Content\Application\Message\LoadContentMessage;
-use Sulu\Bundle\ContentBundle\Content\Application\Message\ModifyContentMessage;
+use Sulu\Bundle\ContentBundle\Content\Application\Message\SaveContentMessage;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
 use Sulu\Component\Rest\AbstractRestController;
 use Sulu\Component\Rest\ListBuilder\Doctrine\DoctrineListBuilderFactoryInterface;
@@ -115,7 +114,7 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         $data = $this->getData($request);
         $dimensionAttributes = $this->getAttributes($request);
 
-        $contentView = $this->handle(new CreateContentMessage($example, $data, $dimensionAttributes));
+        $contentView = $this->handle(new SaveContentMessage($example, $data, $dimensionAttributes));
 
         $this->entityManager->persist($example);
         $this->entityManager->flush();
@@ -136,7 +135,7 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         $data = $this->getData($request);
         $dimensionAttributes = $this->getAttributes($request);
 
-        $contentView = $this->handle(new ModifyContentMessage($example, $data, $dimensionAttributes));
+        $contentView = $this->handle(new SaveContentMessage($example, $data, $dimensionAttributes));
 
         $this->entityManager->flush();
 
