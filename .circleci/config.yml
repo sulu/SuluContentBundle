@@ -107,4 +107,7 @@ jobs:
             - attach_workspace:
                   at: .
             - run: *enable_pcov
-            - run: php composer.phar test-coverage-checker
+            - run: php composer.phar test-coverage-checker -- --coverage-clover Tests/reports/clover.xml
+            - run: wget https://github.com/php-coveralls/php-coveralls/releases/download/v2.1.0/php-coveralls.phar
+            - run: chmod +x php-coveralls.phar
+            - run: php php-coveralls.phar --coverage_clover Tests/reports/clover.xml --json_path Tests/reports/coveralls.json
