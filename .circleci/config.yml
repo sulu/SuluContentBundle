@@ -98,7 +98,7 @@ jobs:
             - disable_php_memory_limit
             - run: php -m
             - run: php composer.phar bootstrap-test-environment
-            - run: php composer.phar test-coverage --coverage-clover Tests/reports/clover.xml
+            - run: php composer.phar test-coverage -- --coverage-clover Tests/reports/clover.xml
             - store_artifacts:
                   path: Tests/reports/html
             - store_test_results:
