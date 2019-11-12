@@ -1,8 +1,8 @@
-# PHP CircleCI 2.0 configuration file
+# PHP CircleCI 2.1 configuration file
 #
 # Check https://circleci.com/docs/2.0/language-php/ for more details
 #
-version: 2
+version: 2.1
 
 .environment_variables: &environment_variables
     APP_ENV: test
@@ -10,12 +10,21 @@ version: 2
     DATABASE_CHARSET: utf8mb4
     DATABASE_COLLATE: utf8mb4_unicode_ci
 
-.enable_pcov: &enable_pcov
-    name: Enable PCOV, disable Xdebug
-    command: |
-        pecl install pcov
-        docker-php-ext-enable pcov
-        rm /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini || true
+commands:
+    enable_pcov:
+        steps:
+            - run:
+                  name: Enable PCOV, disable Xdebug
+                  command: |
+                      pecl install pcov
+                      docker-php-ext-enable pcov
+                      rm /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini || true
+
+    disable_php_memory_limit:
+        steps:
+            - run:
+                  name: Disable PHP memory limit
+                  command: echo -e 'memory_limit=-1' > /usr/local/etc/php/conf.d/memory_limit.ini
 
 workflows:
     version: 2
@@ -85,10 +94,11 @@ jobs:
             - checkout
             - attach_workspace:
                   at: .
-            - run: *enable_pcov
+            - enable_pcov
+            - disable_php_memory_limit
             - run: php -m
             - run: php composer.phar bootstrap-test-environment
-            - run: php composer.phar test-coverage
+            - run: php composer.phar test-coverage --coverage-clover Tests/reports/clover.xml
             - store_artifacts:
                   path: Tests/reports/html
             - store_test_results:
@@ -106,8 +116,8 @@ jobs:
             - checkout
             - attach_workspace:
                   at: .
-            - run: *enable_pcov
-            - run: php composer.phar test-coverage-checker -- --coverage-clover Tests/reports/clover.xml
+            - disable_php_memory_limit
+            - run: php composer.phar test-coverage-checker --
             - run: wget https://github.com/php-coveralls/php-coveralls/releases/download/v2.1.0/php-coveralls.phar
             - run: chmod +x php-coveralls.phar
             - run: php php-coveralls.phar --coverage_clover Tests/reports/clover.xml --json_path Tests/reports/coveralls.json
