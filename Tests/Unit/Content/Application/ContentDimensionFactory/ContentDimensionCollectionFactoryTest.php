@@ -19,8 +19,8 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentDimensionFactory\Conten
 use Sulu\Bundle\ContentBundle\Content\Application\ContentDimensionFactory\Mapper\MapperInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentInterface;
-use Sulu\Bundle\ContentBundle\Dimension\Domain\Model\Dimension;
-use Sulu\Bundle\ContentBundle\Dimension\Domain\Model\DimensionCollection;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollection;
 
 class ContentDimensionCollectionFactoryTest extends TestCase
 {

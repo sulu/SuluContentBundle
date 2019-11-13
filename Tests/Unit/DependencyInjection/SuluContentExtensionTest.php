@@ -16,10 +16,10 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\DependencyInjection;
 use Doctrine\Bundle\DoctrineBundle\DependencyInjection\DoctrineExtension;
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
 use Sulu\Bundle\AdminBundle\DependencyInjection\SuluAdminExtension;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
+use Sulu\Bundle\ContentBundle\Content\Infrastructure\Doctrine\DimensionRepository;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Doctrine\MetadataLoader;
 use Sulu\Bundle\ContentBundle\DependencyInjection\SuluContentExtension;
-use Sulu\Bundle\ContentBundle\Dimension\Domain\Model\Dimension;
-use Sulu\Bundle\ContentBundle\Dimension\Infrastructure\Doctrine\DimensionRepository;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class SuluContentExtensionTest extends AbstractExtensionTestCase
@@ -78,7 +78,7 @@ class SuluContentExtensionTest extends AbstractExtensionTestCase
                     'mappings' => [
                         'SuluContentBundleDimension' => [
                             'type' => 'xml',
-                            'prefix' => 'Sulu\Bundle\ContentBundle\Dimension\Domain\Model',
+                            'prefix' => 'Sulu\Bundle\ContentBundle\Content\Domain\Model',
                             'dir' => \dirname(\dirname(\dirname(__DIR__))) . '/Resources/config/doctrine/Dimension',
                             'alias' => 'SuluDirectoryBundle',
                             'is_bundle' => false,

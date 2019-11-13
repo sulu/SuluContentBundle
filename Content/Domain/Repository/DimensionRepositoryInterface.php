@@ -11,10 +11,10 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Dimension\Domain\Repository;
+namespace Sulu\Bundle\ContentBundle\Content\Domain\Repository;
 
-use Sulu\Bundle\ContentBundle\Dimension\Domain\Model\DimensionCollectionInterface;
-use Sulu\Bundle\ContentBundle\Dimension\Domain\Model\DimensionInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollectionInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 
 interface DimensionRepositoryInterface
 {

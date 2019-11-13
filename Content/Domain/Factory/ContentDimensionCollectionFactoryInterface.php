@@ -15,7 +15,7 @@ namespace Sulu\Bundle\ContentBundle\Content\Domain\Factory;
 
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionCollectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentInterface;
-use Sulu\Bundle\ContentBundle\Dimension\Domain\Model\DimensionCollectionInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollectionInterface;
 
 interface ContentDimensionCollectionFactoryInterface
 {

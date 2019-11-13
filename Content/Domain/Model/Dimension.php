@@ -11,7 +11,7 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Dimension\Domain\Model;
+namespace Sulu\Bundle\ContentBundle\Content\Domain\Model;
 
 use Ramsey\Uuid\Uuid;
 

@@ -11,9 +11,9 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Dimension\Domain\Factory;
+namespace Sulu\Bundle\ContentBundle\Content\Domain\Factory;
 
-use Sulu\Bundle\ContentBundle\Dimension\Domain\Model\DimensionCollectionInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollectionInterface;
 
 interface DimensionCollectionFactoryInterface
 {
