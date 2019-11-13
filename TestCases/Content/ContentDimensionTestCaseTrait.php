@@ -28,9 +28,9 @@ trait ContentDimensionTestCaseTrait
         $this->assertSame(1, $model->getId());
     }
 
-    public function testGetDimensionId(): void
+    public function testGetDimension(): void
     {
         $model = $this->getContentDimensionInstance();
-        $this->assertSame('123-456', $model->getDimensionId());
+        $this->assertSame('123-456', $model->getDimension()->getId());
     }
 }

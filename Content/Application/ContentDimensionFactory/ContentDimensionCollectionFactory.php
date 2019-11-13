@@ -13,18 +13,25 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentDimensionFactory;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\Common\Collections\Criteria;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentDimensionFactory\Mapper\MapperInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentDimensionLoader\ContentDimensionLoaderInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ContentDimensionCollectionFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionCollection;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionCollectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollectionInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 
 class ContentDimensionCollectionFactory implements ContentDimensionCollectionFactoryInterface
 {
+    /**
+     * @var ContentDimensionLoaderInterface
+     */
+    private $contentDimensionLoader;
+
     /**
      * @var iterable<MapperInterface>
      */
@@ -33,8 +40,9 @@ class ContentDimensionCollectionFactory implements ContentDimensionCollectionFac
     /**
      * @param iterable<MapperInterface> $mappers
      */
-    public function __construct(iterable $mappers)
+    public function __construct(ContentDimensionLoaderInterface $contentDimensionLoader, iterable $mappers)
     {
+        $this->contentDimensionLoader = $contentDimensionLoader;
         $this->mappers = $mappers;
     }
 
@@ -43,26 +51,12 @@ class ContentDimensionCollectionFactory implements ContentDimensionCollectionFac
         DimensionCollectionInterface $dimensionCollection,
         array $data
     ): ContentDimensionCollectionInterface {
-        $dimensionIds = $dimensionCollection->getDimensionIds();
+        $contentDimensionCollection = $this->contentDimensionLoader->load($content, $dimensionCollection);
+
         $localizedDimension = $dimensionCollection->getLocalizedDimension();
         $unlocalizedDimension = $dimensionCollection->getUnlocalizedDimension();
 
-        /** @var Collection $contentDimensions */
-        $contentDimensions = $content->getDimensions();
-
-        $criteria = Criteria::create();
-        $criteria->andWhere($criteria->expr()->in('dimensionId', $dimensionIds));
-
-        $contentDimensions = $contentDimensions->matching($criteria);
-
-        $localizedContentDimension = null;
-        if ($localizedDimension) {
-            $localizedContentDimension = $this->getOrCreateContentDimension(
-                $content,
-                $contentDimensions,
-                $localizedDimension->getId()
-            );
-        }
+        $contentDimensions = new ArrayCollection(iterator_to_array($contentDimensionCollection));
 
         if (!$unlocalizedDimension) {
             throw new \RuntimeException(
@@ -73,15 +67,24 @@ class ContentDimensionCollectionFactory implements ContentDimensionCollectionFac
         $unlocalizedContentDimension = $this->getOrCreateContentDimension(
             $content,
             $contentDimensions,
-            $unlocalizedDimension->getId()
+            $unlocalizedDimension
         );
 
-        $orderedContentDimensions = [];
+        $localizedContentDimension = null;
+        if ($localizedDimension) {
+            $localizedContentDimension = $this->getOrCreateContentDimension(
+                $content,
+                $contentDimensions,
+                $localizedDimension
+            );
+        }
 
-        foreach ($dimensionIds as $key => $dimensionId) {
-            $criteria = Criteria::create();
-            $criteria->andWhere($criteria->expr()->eq('dimensionId', $dimensionId));
-            $contentDimension = $contentDimensions->matching($criteria)->first();
+        // Sort correctly ContentDimensions by given dimensionIds to merge them later correctly
+        $orderedContentDimensions = [];
+        foreach ($dimensionCollection as $key => $dimension) {
+            $contentDimension = $contentDimensions->filter(function (ContentDimensionInterface $contentDimension) use ($dimension) {
+                return $contentDimension->getDimension()->getId() === $dimension->getId();
+            })->first();
 
             if ($contentDimension) {
                 $orderedContentDimensions[$key] = $contentDimension;
@@ -98,14 +101,14 @@ class ContentDimensionCollectionFactory implements ContentDimensionCollectionFac
     private function getOrCreateContentDimension(
         ContentInterface $content,
         Collection $contentDimensions,
-        string $dimensionId
+        DimensionInterface $dimension
     ): ContentDimensionInterface {
-        $criteria = Criteria::create();
-        $criteria->andWhere($criteria->expr()->eq('dimensionId', $dimensionId));
-        $contentDimension = $contentDimensions->matching($criteria)->first();
+        $contentDimension = $contentDimensions->filter(function (ContentDimensionInterface $contentDimension) use ($dimension) {
+            return $contentDimension->getDimension()->getId() === $dimension->getId();
+        })->first();
 
         if (!$contentDimension) {
-            $contentDimension = $content->createDimension($dimensionId);
+            $contentDimension = $content->createDimension($dimension);
             $content->addDimension($contentDimension);
             $contentDimensions->add($contentDimension);
         }

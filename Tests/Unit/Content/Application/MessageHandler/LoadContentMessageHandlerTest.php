@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\MessageHandler;
 
 use PHPUnit\Framework\TestCase;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentDimensionLoader\ContentDimensionLoaderInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\Message\LoadContentMessage;
 use Sulu\Bundle\ContentBundle\Content\Application\MessageHandler\LoadContentMessageHandler;
 use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\ApiViewResolverInterface;
@@ -25,63 +26,59 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollection;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionRepositoryInterface;
 
 class LoadContentMessageHandlerTest extends TestCase
 {
     protected function createLoadContentMessageHandlerInstance(
         DimensionRepositoryInterface $dimensionRepository,
+        ContentDimensionLoaderInterface $contentDimensionLoader,
         ViewFactoryInterface $viewFactory,
         ApiViewResolverInterface $viewResolver
     ): LoadContentMessageHandler {
         return new LoadContentMessageHandler(
             $dimensionRepository,
+            $contentDimensionLoader,
             $viewFactory,
             $viewResolver
         );
     }
 
-    /**
-     * @param ContentDimensionInterface[] $dimensions
-     */
-    protected function createContentInstance(array $dimensions): ContentInterface
+    protected function createContentInstance(): ContentInterface
     {
-        $content = new class() extends AbstractContent {
+        return new class() extends AbstractContent {
             public static function getResourceKey(): string
             {
                 return 'example';
             }
 
-            public function createDimension(string $dimensionId): ContentDimensionInterface
+            public function createDimension(DimensionInterface $dimension): ContentDimensionInterface
             {
                 throw new \RuntimeException('Should not be called in a unit test.');
             }
         };
-
-        foreach ($dimensions as $dimension) {
-            $content->addDimension($dimension);
-        }
-
-        return $content;
     }
 
     public function testInvoke(): void
     {
-        $contentDimension1 = $this->prophesize(ContentDimensionInterface::class);
-        $contentDimension1->getDimensionId()->willReturn('123-456');
-        $contentDimension2 = $this->prophesize(ContentDimensionInterface::class);
-        $contentDimension2->getDimensionId()->willReturn('456-789');
+        $dimension1 = $this->prophesize(DimensionInterface::class);
+        $dimension1->getId()->willReturn('123-456');
+        $dimension2 = $this->prophesize(DimensionInterface::class);
+        $dimension2->getId()->willReturn('456-789');
 
-        $content = $this->createContentInstance([
-            $contentDimension2->reveal(),
-            $contentDimension1->reveal(),
-        ]);
+        $contentDimension1 = $this->prophesize(ContentDimensionInterface::class);
+        $contentDimension1->getDimension()->willReturn($dimension1->reveal());
+        $contentDimension2 = $this->prophesize(ContentDimensionInterface::class);
+        $contentDimension2->getDimension()->willReturn($dimension2->reveal());
+
+        $content = $this->prophesize(ContentInterface::class);
 
         $attributes = [
             'locale' => 'de',
         ];
 
-        $message = new LoadContentMessage($content, $attributes);
+        $message = new LoadContentMessage($content->reveal(), $attributes);
 
         $dimension1 = new Dimension('123-456', ['locale' => null]);
         $dimension2 = new Dimension('456-789', ['locale' => 'de']);
@@ -95,6 +92,8 @@ class LoadContentMessageHandlerTest extends TestCase
             $contentDimension2->reveal(),
         ]);
 
+        $contentDimensionLoader = $this->prophesize(ContentDimensionLoaderInterface::class);
+        $contentDimensionLoader->load($content->reveal(), $dimensionCollection)->willReturn($contentDimensionCollection);
         $contentView = $this->prophesize(ContentViewInterface::class);
         $viewFactory = $this->prophesize(ViewFactoryInterface::class);
         $viewFactory->create($contentDimensionCollection)->willReturn($contentView->reveal())->shouldBeCalled();
@@ -104,6 +103,7 @@ class LoadContentMessageHandlerTest extends TestCase
 
         $createContentMessageHandler = $this->createLoadContentMessageHandlerInstance(
             $dimensionRepository->reveal(),
+            $contentDimensionLoader->reveal(),
             $viewFactory->reveal(),
             $viewResolver->reveal()
         );

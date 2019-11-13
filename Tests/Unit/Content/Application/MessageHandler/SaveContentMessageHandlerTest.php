@@ -27,6 +27,7 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollection;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 
 class SaveContentMessageHandlerTest extends TestCase
 {
@@ -52,7 +53,7 @@ class SaveContentMessageHandlerTest extends TestCase
                 return 'example';
             }
 
-            public function createDimension(string $dimensionId): ContentDimensionInterface
+            public function createDimension(DimensionInterface $dimension): ContentDimensionInterface
             {
                 throw new \RuntimeException('Should not be called in a unit test.');
             }

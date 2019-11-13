@@ -45,10 +45,7 @@ class MetadataLoader implements EventSubscriber
         $metadata = $event->getClassMetadata();
         $reflection = $metadata->getReflectionClass();
 
-        if (
-            $reflection->implementsInterface(ContentDimensionInterface::class)
-            || $reflection->implementsInterface(ContentViewInterface::class)
-        ) {
+        if ($reflection->implementsInterface(ContentViewInterface::class)) {
             $this->addField($metadata, 'dimensionId', 'string', [
                 'columnName' => 'dimensionId',
                 '_custom' => [
@@ -60,6 +57,15 @@ class MetadataLoader implements EventSubscriber
                     ],
                 ],
             ]);
+        }
+
+        if ($reflection->implementsInterface(ContentDimensionInterface::class)) {
+            $this->addManyToOne(
+                $event,
+                $metadata,
+                'dimension',
+                DimensionInterface::class
+            );
         }
 
         if ($reflection->implementsInterface(SeoInterface::class)) {
@@ -108,6 +114,33 @@ class MetadataLoader implements EventSubscriber
             $this->addManyToMany($event, $metadata, 'excerptTags', TagInterface::class, 'tag_id');
             $this->addManyToMany($event, $metadata, 'excerptCategories', CategoryInterface::class, 'category_id');
         }
+    }
+
+    private function addManyToOne(
+        LoadClassMetadataEventArgs $event,
+        ClassMetadataInfo $metadata,
+        string $name,
+        string $class
+    ): void {
+        if ($metadata->hasAssociation($name)) {
+            return;
+        }
+
+        $namingStrategy = $event->getEntityManager()->getConfiguration()->getNamingStrategy();
+        $referencedColumnName = $event->getEntityManager()->getClassMetadata($class)->getIdentifierColumnNames()[0];
+
+        $metadata->mapManyToOne([
+            'fieldName' => $name,
+            'targetEntity' => $class,
+            'joinColumns' => [
+                [
+                    'name' => $namingStrategy->joinKeyColumnName($name),
+                    'referencedColumnName' => $referencedColumnName,
+                    'onDelete' => 'CASCADE',
+                    'onUpdate' => 'CASCADE',
+                ],
+            ],
+        ]);
     }
 
     private function addManyToMany(

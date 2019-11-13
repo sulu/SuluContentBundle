@@ -65,7 +65,6 @@ class DimensionRepository implements DimensionRepositoryInterface
     public function add(DimensionInterface $dimension): void
     {
         $this->entityManager->persist($dimension);
-        $this->entityManager->flush($dimension); // TODO REMOVE this when moving Dimension to Content
     }
 
     public function findByAttributes(array $attributes): DimensionCollectionInterface
