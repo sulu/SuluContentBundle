@@ -47,12 +47,12 @@ trait ExcerptTrait
     /**
      * @var int|null
      */
-    private $excerptImage;
+    private $excerptImageId;
 
     /**
      * @var int|null
      */
-    private $excerptIcon;
+    private $excerptIconId;
 
     public function getExcerptTitle(): ?string
     {
@@ -87,7 +87,7 @@ trait ExcerptTrait
     /**
      * @return int[]
      */
-    public function getExcerptCategories(): array
+    public function getExcerptCategoryIds(): array
     {
         $this->initializeCategories();
         $categoryIds = [];
@@ -96,6 +96,16 @@ trait ExcerptTrait
         }
 
         return $categoryIds;
+    }
+
+    /**
+     * @return CategoryInterface[]
+     */
+    public function getExcerptCategories(): array
+    {
+        $this->initializeCategories();
+
+        return $this->excerptCategories->toArray();
     }
 
     /**
@@ -112,17 +122,27 @@ trait ExcerptTrait
     }
 
     /**
-     * @return int[]
+     * @return TagInterface[]
      */
     public function getExcerptTags(): array
     {
         $this->initializeTags();
-        $tagIds = [];
+
+        return $this->excerptTags->toArray();
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getExcerptTagNames(): array
+    {
+        $this->initializeTags();
+        $tagNames = [];
         foreach ($this->excerptTags as $excerptTag) {
-            $tagIds[] = $excerptTag->getId();
+            $tagNames[] = $excerptTag->getName();
         }
 
-        return $tagIds;
+        return $tagNames;
     }
 
     /**
@@ -138,24 +158,48 @@ trait ExcerptTrait
         }
     }
 
-    public function getExcerptImage(): ?int
+    /**
+     * @return mixed[]|null
+     */
+    public function getExcerptImage(): ?array
     {
-        return $this->excerptImage;
+        if (!$this->excerptImageId) {
+            return null;
+        }
+
+        return [
+            'id' => $this->excerptImageId,
+        ];
     }
 
-    public function setExcerptImage(?int $excerptImageId): void
+    /**
+     * @param mixed[]|null $excerptImage
+     */
+    public function setExcerptImage(?array $excerptImage): void
     {
-        $this->excerptImage = $excerptImageId;
+        $this->excerptImageId = $excerptImage['id'] ?? null;
     }
 
-    public function getExcerptIcon(): ?int
+    /**
+     * @return mixed[]|null
+     */
+    public function getExcerptIcon(): ?array
     {
-        return $this->excerptIcon;
+        if (!$this->excerptIconId) {
+            return null;
+        }
+
+        return [
+            'id' => $this->excerptIconId,
+        ];
     }
 
-    public function setExcerptIcon(?int $excerptIcon): void
+    /**
+     * @param mixed[]|null $excerptIcon
+     */
+    public function setExcerptIcon(?array $excerptIcon): void
     {
-        $this->excerptIcon = $excerptIcon;
+        $this->excerptIconId = $excerptIcon['id'] ?? null;
     }
 
     private function initializeTags(): void

@@ -43,12 +43,12 @@ trait ContentTestCaseTrait
         $this->assertSame([
             $modelDimension1,
             $modelDimension2,
-        ], $model->getDimensions());
+        ], iterator_to_array($model->getDimensions()));
 
         $model->removeDimension($modelDimension2);
 
         $this->assertSame([
             $modelDimension1,
-        ], $model->getDimensions());
+        ], iterator_to_array($model->getDimensions()));
     }
 }

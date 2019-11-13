@@ -33,7 +33,7 @@ class ExampleView extends AbstractContentView implements SeoInterface, ExcerptIn
     protected $example;
 
     /**
-     * @var string
+     * @var string|null
      */
     protected $title;
 
@@ -48,18 +48,23 @@ class ExampleView extends AbstractContentView implements SeoInterface, ExcerptIn
         $this->dimensionId = $dimensionId;
     }
 
-    public function getContentId(): int
+    public function getContentId()
     {
         return $this->example->getId();
     }
 
-    public function getTitle(): string
+    public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    public function setTitle(string $title): void
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
+    }
+
+    public function getTemplateType(): string
+    {
+        return Example::TYPE_KEY;
     }
 }

@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <!-- Merger -->
+        <service id="sulu_content.excerpt_view_factory_merger" class="Sulu\Bundle\ContentBundle\Content\Application\ViewFactory\Merger\ExcerptMerger">
+            <tag name="sulu_content.view_factory_merger" />
+        </service>
+
+        <service id="sulu_content.seo_view_factory_merger" class="Sulu\Bundle\ContentBundle\Content\Application\ViewFactory\Merger\SeoMerger">
+            <tag name="sulu_content.view_factory_merger" />
+        </service>
+
+        <service id="sulu_content.template_view_factory_merger" class="Sulu\Bundle\ContentBundle\Content\Application\ViewFactory\Merger\TemplateMerger">
+            <tag name="sulu_content.view_factory_merger" />
+        </service>
+    </services>
+</container>

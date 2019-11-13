@@ -15,6 +15,7 @@ namespace Sulu\Bundle\ContentBundle\TestCases\Content;
 
 use Sulu\Bundle\ContentBundle\Content\Application\ViewFactory\Merger\MergerInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ViewFactoryInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionCollection;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
 
@@ -30,7 +31,7 @@ trait ViewFactoryTestCaseTrait
         $this->expectException(\RuntimeException::class);
 
         $viewFactory = $this->getViewFactoryInstance();
-        $viewFactory->create([]);
+        $viewFactory->create(new ContentDimensionCollection([]));
     }
 
     public function testCreate(): void
@@ -44,11 +45,11 @@ trait ViewFactoryTestCaseTrait
         $contentViewDimension3->createViewInstance()->willReturn($contentView->reveal())->shouldBeCalled();
 
         $viewFactory = $this->getViewFactoryInstance();
-        $viewFactory->create([
+        $viewFactory->create(new ContentDimensionCollection([
             $contentViewDimension1->reveal(),
             $contentViewDimension2->reveal(),
             $contentViewDimension3->reveal(),
-        ]);
+        ]));
     }
 
     public function testCreateMergers(): void
@@ -82,10 +83,10 @@ trait ViewFactoryTestCaseTrait
             $merger3->reveal(),
         ]);
 
-        $viewFactory->create([
+        $viewFactory->create(new ContentDimensionCollection([
             $contentViewDimension1->reveal(),
             $contentViewDimension2->reveal(),
             $contentViewDimension3->reveal(),
-        ]);
+        ]));
     }
 }

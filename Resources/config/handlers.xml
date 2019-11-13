@@ -1,0 +1,24 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <defaults>
+            <tag name="messenger.message_handler" bus="sulu_content.message_bus"/>
+        </defaults>
+
+        <!-- Handlers -->
+        <service id="sulu_content.save_content_dimension_handler" class="Sulu\Bundle\ContentBundle\Content\Application\MessageHandler\SaveContentMessageHandler">
+            <argument type="service" id="sulu_content.dimension_collection_factory"/>
+            <argument type="service" id="sulu_content.content_dimension_factory"/>
+            <argument type="service" id="sulu_content.view_factory"/>
+            <argument type="service" id="sulu_content.api_view_resolver"/>
+        </service>
+
+        <service id="sulu_content.load_content_dimension_handler" class="Sulu\Bundle\ContentBundle\Content\Application\MessageHandler\LoadContentMessageHandler">
+            <argument type="service" id="sulu.repository.dimension"/>
+            <argument type="service" id="sulu_content.view_factory"/>
+            <argument type="service" id="sulu_content.api_view_resolver"/>
+        </service>
+    </services>
+</container>

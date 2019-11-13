@@ -37,7 +37,7 @@ class ExampleDimension extends AbstractContentDimension implements ExcerptInterf
     protected $example;
 
     /**
-     * @var string
+     * @var string|null
      */
     protected $title;
 
@@ -52,12 +52,12 @@ class ExampleDimension extends AbstractContentDimension implements ExcerptInterf
         return $this->example;
     }
 
-    public function getTitle(): string
+    public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    public function setTitle(string $title): void
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
@@ -83,5 +83,10 @@ class ExampleDimension extends AbstractContentDimension implements ExcerptInterf
         $contentView->setTitle($this->getTitle());
 
         return $contentView;
+    }
+
+    public function getTemplateType(): string
+    {
+        return Example::TYPE_KEY;
     }
 }

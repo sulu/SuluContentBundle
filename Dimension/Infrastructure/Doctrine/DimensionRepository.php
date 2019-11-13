@@ -17,6 +17,9 @@ use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\QueryBuilder;
+use Sulu\Bundle\ContentBundle\Dimension\Domain\Model\DimensionCollection;
+use Sulu\Bundle\ContentBundle\Dimension\Domain\Model\DimensionCollectionInterface;
 use Sulu\Bundle\ContentBundle\Dimension\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Dimension\Domain\Repository\DimensionRepositoryInterface;
 
@@ -64,22 +67,16 @@ class DimensionRepository implements DimensionRepositoryInterface
         $this->entityManager->persist($dimension);
     }
 
-    public function findIdsByAttributes(array $attributes): array
+    public function findByAttributes(array $attributes): DimensionCollectionInterface
     {
-        $queryBuilder = $this->entityRepository->createQueryBuilder('dimension')
-            ->select('dimension.id');
+        $attributes = $this->getNormalizedAttributes($attributes);
 
-        $attributes = $this->getAttributes($attributes);
+        $queryBuilder = $this->entityRepository->createQueryBuilder('dimension');
         $queryBuilder->addCriteria($this->getAttributesCriteria('dimension', $attributes));
 
-        // Less specific should be returned first to merge correctly
-        foreach ($attributes as $key => $value) {
-            $queryBuilder->addOrderBy('dimension.' . $key);
-        }
+        $this->addSortBy($queryBuilder, $attributes);
 
-        return array_map(function (array $item) {
-            return $item['id'];
-        }, $queryBuilder->getQuery()->getScalarResult());
+        return new DimensionCollection($attributes, $queryBuilder->getQuery()->getResult());
     }
 
     public function findOneBy(array $criteria): ?DimensionInterface
@@ -99,7 +96,19 @@ class DimensionRepository implements DimensionRepositoryInterface
     }
 
     /**
-     * @param array<string, mixed> $attributes
+     * Less specific should be returned first to merge correctly.
+     *
+     * @param mixed[] $attributes
+     */
+    private function addSortBy(QueryBuilder $queryBuilder, array $attributes): void
+    {
+        foreach ($attributes as $key => $value) {
+            $queryBuilder->addOrderBy('dimension.' . $key);
+        }
+    }
+
+    /**
+     * @param mixed[] $attributes
      */
     private function getAttributesCriteria(string $dimensionAlias, array $attributes): Criteria
     {
@@ -125,7 +134,7 @@ class DimensionRepository implements DimensionRepositoryInterface
      *
      * @return mixed[]
      */
-    private function getAttributes(array $attributes): array
+    private function getNormalizedAttributes(array $attributes): array
     {
         $defaultValues = $this->className::getDefaultValues();
 

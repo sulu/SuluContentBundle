@@ -133,8 +133,8 @@ class MetadataLoaderTest extends TestCase
                 'excerptTitle' => false,
                 'excerptDescription' => false,
                 'excerptMore' => false,
-                'excerptImage' => false,
-                'excerptIcon' => false,
+                'excerptImageId' => false,
+                'excerptIconId' => false,
             ],
             [
                 'excerptTags' => false,
@@ -177,8 +177,8 @@ class MetadataLoaderTest extends TestCase
                 'excerptTitle' => true,
                 'excerptDescription' => false,
                 'excerptMore' => false,
-                'excerptImage' => false,
-                'excerptIcon' => false,
+                'excerptImageId' => false,
+                'excerptIconId' => false,
             ],
             [
                 'excerptTags' => true,

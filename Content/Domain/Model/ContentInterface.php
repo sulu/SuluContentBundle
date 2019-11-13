@@ -13,12 +13,18 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Domain\Model;
 
+use Doctrine\Common\Collections\Collection;
+
 interface ContentInterface
 {
+    public static function getResourceKey(): string;
+
     /**
-     * @return ContentDimensionInterface[]
+     * @return Collection<ContentDimensionInterface>
      */
-    public function getDimensions(): iterable;
+    public function getDimensions(): Collection;
+
+    public function createDimension(string $dimensionId): ContentDimensionInterface;
 
     public function addDimension(ContentDimensionInterface $contentDimension): void;
 

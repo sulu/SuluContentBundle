@@ -55,7 +55,7 @@ class ExampleTestExtension extends Extension implements PrependExtensionInterfac
                         ],
                     ],
                     'resources' => [
-                        'examples' => [
+                        Example::RESOURCE_KEY => [
                             'routes' => [
                                 'list' => 'example_test.get_examples',
                                 'detail' => 'example_test.get_example',

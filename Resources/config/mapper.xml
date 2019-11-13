@@ -1,0 +1,24 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <!-- Mapper -->
+        <service id="sulu_content.template_mapper" class="Sulu\Bundle\ContentBundle\Content\Application\ContentDimensionFactory\Mapper\TemplateMapper">
+            <argument type="service" id="sulu_page.structure.factory"/>
+
+            <tag name="sulu_content.content_dimension_mapper"/>
+        </service>
+
+        <service id="sulu_content.seo_mapper" class="Sulu\Bundle\ContentBundle\Content\Application\ContentDimensionFactory\Mapper\SeoMapper">
+            <tag name="sulu_content.content_dimension_mapper"/>
+        </service>
+
+        <service id="sulu_content.excerpt_mapper" class="Sulu\Bundle\ContentBundle\Content\Application\ContentDimensionFactory\Mapper\ExcerptMapper">
+            <argument type="service" id="sulu_content.tag_factory"/>
+            <argument type="service" id="sulu_content.category_factory"/>
+
+            <tag name="sulu_content.content_dimension_mapper"/>
+        </service>
+    </services>
+</container>

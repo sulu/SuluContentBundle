@@ -8,6 +8,9 @@
 /phpunit.xml
 .phpunit.result.cache
 
+# coverall
+/php-coveralls.phar
+
 # php-cs
 .php_cs.cache
 

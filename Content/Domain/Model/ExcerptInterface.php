@@ -31,9 +31,14 @@ interface ExcerptInterface
     public function setExcerptDescription(?string $excerptTitle): void;
 
     /**
-     * @return int[]
+     * @return CategoryInterface[]
      */
     public function getExcerptCategories(): array;
+
+    /**
+     * @return int[]
+     */
+    public function getExcerptCategoryIds(): array;
 
     /**
      * @param CategoryInterface[] $excerptCategories
@@ -41,20 +46,37 @@ interface ExcerptInterface
     public function setExcerptCategories(array $excerptCategories): void;
 
     /**
-     * @return int[]
+     * @return TagInterface[]
      */
     public function getExcerptTags(): array;
+
+    /**
+     * @return string[]
+     */
+    public function getExcerptTagNames(): array;
 
     /**
      * @param TagInterface[] $excerptTags
      */
     public function setExcerptTags(array $excerptTags): void;
 
-    public function getExcerptImage(): ?int;
+    /**
+     * @return mixed[]|null
+     */
+    public function getExcerptImage(): ?array;
 
-    public function setExcerptImage(?int $excerptImage): void;
+    /**
+     * @param mixed[]|null $excerptImage
+     */
+    public function setExcerptImage(?array $excerptImage): void;
 
-    public function getExcerptIcon(): ?int;
+    /**
+     * @return mixed[]|null
+     */
+    public function getExcerptIcon(): ?array;
 
-    public function setExcerptIcon(?int $excerptIcon): void;
+    /**
+     * @param mixed[]|null $excerptIcon
+     */
+    public function setExcerptIcon(?array $excerptIcon): void;
 }

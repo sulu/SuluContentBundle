@@ -54,16 +54,18 @@ trait ExcerptTestCaseTrait
     {
         $model = $this->getExcerptInstance();
         $this->assertNull($model->getExcerptImage());
-        $model->setExcerptImage(1);
-        $this->assertSame(1, $model->getExcerptImage());
+        $model->setExcerptImage(['id' => 1]);
+        $this->assertNotNull($model->getExcerptImage());
+        $this->assertSame(['id' => 1], $model->getExcerptImage());
     }
 
     public function testGetSetExcerptIconId(): void
     {
         $model = $this->getExcerptInstance();
         $this->assertNull($model->getExcerptIcon());
-        $model->setExcerptIcon(2);
-        $this->assertSame(2, $model->getExcerptIcon());
+        $model->setExcerptIcon(['id' => 2]);
+        $this->assertNotNull($model->getExcerptIcon());
+        $this->assertSame(['id' => 2], $model->getExcerptIcon());
     }
 
     public function testGetSetExcerptTags(): void
@@ -74,7 +76,9 @@ trait ExcerptTestCaseTrait
         $model = $this->getExcerptInstance();
         $this->assertEmpty($model->getExcerptTags());
         $model->setExcerptTags([$tag1, $tag2]);
-        $this->assertSame([1, 2], $model->getExcerptTags());
+        $this->assertSame([1, 2], array_map(function (TagInterface $tag) {
+            return $tag->getId();
+        }, $model->getExcerptTags()));
     }
 
     public function testGetSetExcerptCategories(): void
@@ -85,7 +89,9 @@ trait ExcerptTestCaseTrait
         $model = $this->getExcerptInstance();
         $this->assertEmpty($model->getExcerptCategories());
         $model->setExcerptCategories([$category1, $category2]);
-        $this->assertSame([1, 2], $model->getExcerptCategories());
+        $this->assertSame([1, 2], array_map(function (CategoryInterface $category) {
+            return $category->getId();
+        }, $model->getExcerptCategories()));
     }
 
     private function createTag(int $id): TagInterface

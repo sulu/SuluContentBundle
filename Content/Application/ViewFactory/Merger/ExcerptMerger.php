@@ -13,26 +13,11 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Application\ViewFactory\Merger;
 
-use Doctrine\ORM\EntityManagerInterface;
-use Sulu\Bundle\CategoryBundle\Entity\CategoryInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
-use Sulu\Bundle\TagBundle\Tag\TagInterface;
 
 class ExcerptMerger implements MergerInterface
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
-
-    public function __construct(EntityManagerInterface $entityManager)
-    {
-        $this->entityManager = $entityManager;
-    }
-
-    public function merge(ContentViewInterface $contentView, ContentDimensionInterface $contentDimension): void
+    public function merge(object $contentView, object $contentDimension): void
     {
         if (!$contentView instanceof ExcerptInterface) {
             return;
@@ -62,27 +47,16 @@ class ExcerptMerger implements MergerInterface
             $contentView->setExcerptImage($excerptImage);
         }
 
-        if ($excerptTagIds = $contentDimension->getExcerptTags()) {
-            $excerptTags = [];
-            foreach ($excerptTagIds as $excerptTagId) {
-                $tag = $this->entityManager->getPartialReference(TagInterface::class, $excerptTagId);
-                if (null !== $tag) {
-                    $excerptTags[] = $tag;
-                }
+        if ($excerptTags = $contentDimension->getExcerptTags()) {
+            if (!empty($excerptTags)) {
+                $contentView->setExcerptTags($excerptTags);
             }
-
-            $contentView->setExcerptTags($excerptTags);
         }
 
-        if ($excerptCategoryIds = $contentDimension->getExcerptCategories()) {
-            $excerptCategories = [];
-            foreach ($excerptCategoryIds as $excerptCategoryId) {
-                $category = $this->entityManager->getPartialReference(CategoryInterface::class, $excerptCategoryId);
-                if (null !== $category) {
-                    $excerptCategories[] = $category;
-                }
+        if ($excerptCategories = $contentDimension->getExcerptCategories()) {
+            if (!empty($excerptCategories)) {
+                $contentView->setExcerptCategories($excerptCategories);
             }
-            $contentView->setExcerptCategories($excerptCategories);
         }
     }
 }

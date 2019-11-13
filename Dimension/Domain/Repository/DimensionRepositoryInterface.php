@@ -13,12 +13,13 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Dimension\Domain\Repository;
 
+use Sulu\Bundle\ContentBundle\Dimension\Domain\Model\DimensionCollectionInterface;
 use Sulu\Bundle\ContentBundle\Dimension\Domain\Model\DimensionInterface;
 
 interface DimensionRepositoryInterface
 {
     /**
-     * @param array<string, mixed> $attributes
+     * @param mixed[] $attributes
      */
     public function create(
         ?string $id = null,
@@ -30,11 +31,9 @@ interface DimensionRepositoryInterface
     public function remove(DimensionInterface $directory): void;
 
     /**
-     * @param array<string, mixed> $attributes
-     *
-     * @return string[]
+     * @param mixed[] $attributes
      */
-    public function findIdsByAttributes(array $attributes): array;
+    public function findByAttributes(array $attributes): DimensionCollectionInterface;
 
     /**
      * @param mixed[] $criteria

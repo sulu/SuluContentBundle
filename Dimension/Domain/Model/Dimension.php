@@ -44,8 +44,7 @@ class Dimension implements DimensionInterface
         ?string $id = null,
         array $attributes = []
     ) {
-        $this->id = $id ?? Uuid::uuid4()->toString();
-
+        $this->id = $id ?: Uuid::uuid4()->toString();
         $attributes = array_merge(static::getDefaultValues(), $attributes);
         $this->locale = $attributes['locale'];
         $this->workflowStage = $attributes['workflowStage'];
@@ -64,6 +63,14 @@ class Dimension implements DimensionInterface
     public function getWorkflowStage(): string
     {
         return $this->workflowStage;
+    }
+
+    public function getAttributes(): array
+    {
+        return [
+            'locale' => $this->locale,
+            'workflowStage' => $this->workflowStage,
+        ];
     }
 
     public static function getDefaultValues(): array

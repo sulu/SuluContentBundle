@@ -15,7 +15,7 @@ namespace Sulu\Bundle\ContentBundle\Content\Domain\Model;
 
 interface TemplateInterface
 {
-    public function getTemplateKey(): string;
+    public function getTemplateKey(): ?string;
 
     public function setTemplateKey(string $templateKey): void;
 
@@ -28,4 +28,6 @@ interface TemplateInterface
      * @param mixed[] $templateData
      */
     public function setTemplateData(array $templateData): void;
+
+    public function getTemplateType(): string;
 }
