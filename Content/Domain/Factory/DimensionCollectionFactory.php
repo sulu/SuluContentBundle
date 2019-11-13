@@ -11,13 +11,13 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Dimension\Domain\Factory;
+namespace Sulu\Bundle\ContentBundle\Content\Domain\Factory;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Criteria;
-use Sulu\Bundle\ContentBundle\Dimension\Domain\Model\DimensionCollection;
-use Sulu\Bundle\ContentBundle\Dimension\Domain\Model\DimensionCollectionInterface;
-use Sulu\Bundle\ContentBundle\Dimension\Domain\Repository\DimensionRepositoryInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollection;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollectionInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionRepositoryInterface;
 
 class DimensionCollectionFactory implements DimensionCollectionFactoryInterface
 {

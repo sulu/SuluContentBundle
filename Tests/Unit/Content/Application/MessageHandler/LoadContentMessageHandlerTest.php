@@ -23,9 +23,9 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionCollection;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
-use Sulu\Bundle\ContentBundle\Dimension\Domain\Model\Dimension;
-use Sulu\Bundle\ContentBundle\Dimension\Domain\Model\DimensionCollection;
-use Sulu\Bundle\ContentBundle\Dimension\Domain\Repository\DimensionRepositoryInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollection;
+use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionRepositoryInterface;
 
 class LoadContentMessageHandlerTest extends TestCase
 {

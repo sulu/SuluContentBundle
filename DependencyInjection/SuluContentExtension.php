@@ -36,7 +36,7 @@ class SuluContentExtension extends Extension implements PrependExtensionInterfac
                         'mappings' => [
                             'SuluContentBundleDimension' => [
                                 'type' => 'xml',
-                                'prefix' => 'Sulu\Bundle\ContentBundle\Dimension\Domain\Model',
+                                'prefix' => 'Sulu\Bundle\ContentBundle\Content\Domain\Model',
                                 'dir' => \dirname(__DIR__) . '/Resources/config/doctrine/Dimension',
                                 'alias' => 'SuluDirectoryBundle',
                                 'is_bundle' => false,

@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\TestCases\Dimension;
 
-use Sulu\Bundle\ContentBundle\Dimension\Domain\Model\DimensionInterface;
-use Sulu\Bundle\ContentBundle\Dimension\Domain\Repository\DimensionRepositoryInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionRepositoryInterface;
 
 trait DimensionRepositoryTestCaseTrait
 {

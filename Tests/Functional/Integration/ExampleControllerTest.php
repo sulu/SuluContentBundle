@@ -1,5 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of Sulu.
+ *
+ * (c) Sulu GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace Sulu\Bundle\ContentBundle\Tests\Functional\Integration;
 
 use Sulu\Bundle\ContentBundle\Tests\Functional\BaseTestCase;
@@ -55,7 +66,7 @@ class ExampleControllerTest extends BaseTestCase
      */
     public function testGet(int $id): void
     {
-        $this->client->request('GET', '/admin/api/examples/' . $id .'?locale=en');
+        $this->client->request('GET', '/admin/api/examples/' . $id . '?locale=en');
         $response = $this->client->getResponse();
         $this->assertResponseContent('example_get.json', $response, 200);
     }
@@ -66,7 +77,7 @@ class ExampleControllerTest extends BaseTestCase
      */
     public function testPut(int $id): void
     {
-        $this->client->request('PUT', '/admin/api/examples/' . $id .'?locale=en', [
+        $this->client->request('PUT', '/admin/api/examples/' . $id . '?locale=en', [
             'template' => 'default',
             'title' => 'Test Example 2',
             'url' => '/my-example-2',
@@ -110,7 +121,7 @@ class ExampleControllerTest extends BaseTestCase
      */
     public function testDelete(int $id): void
     {
-        $this->client->request('DELETE', '/admin/api/examples/' . $id .'?locale=en');
+        $this->client->request('DELETE', '/admin/api/examples/' . $id . '?locale=en');
         $response = $this->client->getResponse();
         $this->assertHttpStatusCode(204, $response);
     }

@@ -18,7 +18,7 @@ interface ContentViewInterface
     public function getId(): int;
 
     /**
-     * @return string|int
+     * @return mixed
      */
     public function getContentId();
 

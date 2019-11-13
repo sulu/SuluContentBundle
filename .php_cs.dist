@@ -25,7 +25,7 @@ return PhpCsFixer\Config::create()
         'declare_strict_types' => true,
         'mb_str_functions' => true,
         'no_php4_constructor' => true,
-        'no_superfluous_phpdoc_tags' => true,
+        'no_superfluous_phpdoc_tags' => ['allow_mixed' => true],
         'no_unreachable_default_argument_value' => true,
         'no_useless_else' => true,
         'no_useless_return' => true,

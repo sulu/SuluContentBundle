@@ -11,17 +11,17 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Dimension\Infrastructure\Doctrine;
+namespace Sulu\Bundle\ContentBundle\Content\Infrastructure\Doctrine;
 
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\QueryBuilder;
-use Sulu\Bundle\ContentBundle\Dimension\Domain\Model\DimensionCollection;
-use Sulu\Bundle\ContentBundle\Dimension\Domain\Model\DimensionCollectionInterface;
-use Sulu\Bundle\ContentBundle\Dimension\Domain\Model\DimensionInterface;
-use Sulu\Bundle\ContentBundle\Dimension\Domain\Repository\DimensionRepositoryInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollection;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollectionInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionRepositoryInterface;
 
 class DimensionRepository implements DimensionRepositoryInterface
 {

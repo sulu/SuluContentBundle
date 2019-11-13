@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\DependencyInjection;
 
-use Sulu\Bundle\ContentBundle\Dimension\Domain\Model\Dimension;
-use Sulu\Bundle\ContentBundle\Dimension\Infrastructure\Doctrine\DimensionRepository;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
+use Sulu\Bundle\ContentBundle\Content\Infrastructure\Doctrine\DimensionRepository;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 

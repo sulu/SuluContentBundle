@@ -11,10 +11,10 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Tests\Functional\Dimension\Infrastructure\Doctrine;
+namespace Sulu\Bundle\ContentBundle\Tests\Functional\Content\Infrastructure\Doctrine;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Sulu\Bundle\ContentBundle\Dimension\Domain\Repository\DimensionRepositoryInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionRepositoryInterface;
 use Sulu\Bundle\ContentBundle\TestCases\Dimension\DimensionRepositoryTestCaseTrait;
 use Sulu\Bundle\ContentBundle\Tests\Functional\BaseTestCase;
 

@@ -16,8 +16,8 @@ namespace Sulu\Bundle\ContentBundle\Content\Application\MessageHandler;
 use Sulu\Bundle\ContentBundle\Content\Application\Message\SaveContentMessage;
 use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\ApiViewResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ContentDimensionCollectionFactoryInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Factory\DimensionCollectionFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ViewFactoryInterface;
-use Sulu\Bundle\ContentBundle\Dimension\Domain\Factory\DimensionCollectionFactoryInterface;
 
 class SaveContentMessageHandler
 {

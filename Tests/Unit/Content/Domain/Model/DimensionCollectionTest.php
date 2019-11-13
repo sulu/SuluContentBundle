@@ -11,13 +11,13 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Tests\Unit\Dimension\Domain\Model;
+namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Domain\Model;
 
 use PHPUnit\Framework\TestCase;
-use Sulu\Bundle\ContentBundle\Dimension\Domain\Model\Dimension;
-use Sulu\Bundle\ContentBundle\Dimension\Domain\Model\DimensionCollection;
-use Sulu\Bundle\ContentBundle\Dimension\Domain\Model\DimensionCollectionInterface;
-use Sulu\Bundle\ContentBundle\Dimension\Domain\Model\DimensionInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollection;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollectionInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 
 class DimensionCollectionTest extends TestCase
 {
