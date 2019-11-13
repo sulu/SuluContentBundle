@@ -38,7 +38,7 @@ trait TemplateTestCaseTrait
         $this->assertSame(['data' => 'My Data'], $model->getTemplateData());
     }
 
-    public function testGetTypeKey(): void
+    public function testGetTemplateType(): void
     {
         $model = $this->getTemplateInstance();
         $this->assertSame('example', $model->getTemplateType());

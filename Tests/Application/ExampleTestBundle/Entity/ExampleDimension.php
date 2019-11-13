@@ -24,8 +24,6 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateTrait;
 
 class ExampleDimension extends AbstractContentDimension implements ExcerptInterface, SeoInterface, TemplateInterface
 {
-    const TYPE_KEY = 'example';
-
     use ExcerptTrait;
     use SeoTrait;
     use TemplateTrait {
@@ -89,6 +87,6 @@ class ExampleDimension extends AbstractContentDimension implements ExcerptInterf
 
     public function getTemplateType(): string
     {
-        return self::TYPE_KEY;
+        return Example::TYPE_KEY;
     }
 }

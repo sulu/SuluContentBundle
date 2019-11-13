@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\DependencyInjection;
 
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
-use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleDimension;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -32,13 +31,13 @@ class ExampleTestExtension extends Extension implements PrependExtensionInterfac
                     'content' => [
                         'structure' => [
                             'paths' => [
-                                ExampleDimension::TYPE_KEY => [
+                                Example::TYPE_KEY => [
                                     'path' => '%kernel.project_dir%/config/templates/examples',
                                     'type' => 'example',
                                 ],
                             ],
                             'default_type' => [
-                                ExampleDimension::TYPE_KEY => 'default', // TODO should not be hardcoded
+                                Example::TYPE_KEY => 'default', // TODO should not be hardcoded
                             ],
                         ],
                     ],

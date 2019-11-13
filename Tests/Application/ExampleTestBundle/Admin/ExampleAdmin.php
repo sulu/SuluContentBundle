@@ -21,7 +21,6 @@ use Sulu\Bundle\AdminBundle\Admin\View\ViewBuilderFactoryInterface;
 use Sulu\Bundle\AdminBundle\Admin\View\ViewCollection;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Admin\ContentViewBuilderInterface;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
-use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleDimension;
 use Sulu\Component\Localization\Manager\LocalizationManagerInterface;
 use Sulu\Component\Security\Authorization\PermissionTypes;
 use Sulu\Component\Security\Authorization\SecurityCheckerInterface;
@@ -136,7 +135,7 @@ class ExampleAdmin extends Admin
             $this->contentViewBuilder->build(
                  $viewCollection,
                 $resourceKey,
-                ExampleDimension::TYPE_KEY,
+                Example::TYPE_KEY,
                  static::EDIT_TABS_VIEW,
                 static::ADD_TABS_VIEW
             );
