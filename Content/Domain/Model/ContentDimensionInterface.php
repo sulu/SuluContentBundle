@@ -15,7 +15,10 @@ namespace Sulu\Bundle\ContentBundle\Content\Domain\Model;
 
 interface ContentDimensionInterface
 {
-    public function getId(): int;
+    /**
+     * @return mixed
+     */
+    public function getId();
 
     public function getDimensionId(): string;
 

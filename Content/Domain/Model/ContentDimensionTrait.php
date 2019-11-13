@@ -25,7 +25,7 @@ trait ContentDimensionTrait
      */
     protected $dimensionId;
 
-    public function getId(): int
+    public function getId()
     {
         return $this->id;
     }
