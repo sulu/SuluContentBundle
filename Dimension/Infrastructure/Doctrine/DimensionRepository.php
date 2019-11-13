@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Dimension\Infrastructure\Doctrine;
 
 use Doctrine\Common\Collections\Criteria;
-use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\QueryBuilder;
@@ -36,11 +36,11 @@ class DimensionRepository implements DimensionRepositoryInterface
     protected $entityRepository;
 
     /**
-     * @var EntityManagerInterface
+     * @var EntityManager
      */
     protected $entityManager;
 
-    public function __construct(EntityManagerInterface $em, ClassMetadata $class)
+    public function __construct(EntityManager $em, ClassMetadata $class)
     {
         $this->entityRepository = new EntityRepository($em, $class);
         $this->entityManager = $em;
@@ -65,6 +65,7 @@ class DimensionRepository implements DimensionRepositoryInterface
     public function add(DimensionInterface $dimension): void
     {
         $this->entityManager->persist($dimension);
+        $this->entityManager->flush($dimension); // TODO REMOVE this when moving Dimension to Content
     }
 
     public function findByAttributes(array $attributes): DimensionCollectionInterface

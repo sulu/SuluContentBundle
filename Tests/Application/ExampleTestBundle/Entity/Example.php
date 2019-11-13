@@ -22,11 +22,14 @@ class Example extends AbstractContent
     const TYPE_KEY = 'example';
 
     /**
-     * @var int
+     * @var mixed
      */
     public $id;
 
-    public function getId(): int
+    /**
+     * @return mixed
+     */
+    public function getId()
     {
         return $this->id;
     }
