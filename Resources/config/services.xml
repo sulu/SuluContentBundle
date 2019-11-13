@@ -46,9 +46,17 @@
 
         <!-- Content Dimension Factory -->
         <service id="sulu_content.content_dimension_factory" class="Sulu\Bundle\ContentBundle\Content\Application\ContentDimensionFactory\ContentDimensionCollectionFactory">
+            <argument type="service" id="sulu_content.content_dimension_loader"/>
             <argument type="tagged" tag="sulu_content.content_dimension_mapper"/>
         </service>
 
-        <service id="ContentDimensionCollectionFactoryInterface" alias="sulu_content.content_dimension_factory"/>
+        <service id="Sulu\Bundle\ContentBundle\Content\Domain\Factory\ContentDimensionCollectionFactoryInterface" alias="sulu_content.content_dimension_factory"/>
+
+        <!-- Content Dimension Loader -->
+        <service id="sulu_content.content_dimension_loader" class="Sulu\Bundle\ContentBundle\Content\Infrastructure\Doctrine\ContentDimensionLoader">
+            <argument type="service" id="doctrine.orm.entity_manager"/>
+        </service>
+
+        <service id="Sulu\Bundle\ContentBundle\Content\Application\ContentDimensionLoader\ContentDimensionLoaderInterface" alias="sulu_content.content_dimension_loader"/>
     </services>
 </container>

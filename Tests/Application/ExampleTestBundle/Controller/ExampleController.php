@@ -118,6 +118,7 @@ class ExampleController extends AbstractRestController implements ClassResourceI
 
         $this->entityManager->persist($example);
         $this->entityManager->flush();
+
         $contentView['id'] = $example->getId(); // TODO autoincrement id need to be set manually
 
         return $this->handleView($this->view($contentView, 201));

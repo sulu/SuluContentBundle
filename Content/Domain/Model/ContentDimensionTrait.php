@@ -21,17 +21,17 @@ trait ContentDimensionTrait
     protected $id;
 
     /**
-     * @var string
+     * @var DimensionInterface
      */
-    protected $dimensionId;
+    protected $dimension;
 
     public function getId()
     {
         return $this->id;
     }
 
-    public function getDimensionId(): string
+    public function getDimension(): DimensionInterface
     {
-        return $this->dimensionId;
+        return $this->dimension;
     }
 }

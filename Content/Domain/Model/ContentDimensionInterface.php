@@ -20,7 +20,7 @@ interface ContentDimensionInterface
      */
     public function getId();
 
-    public function getDimensionId(): string;
+    public function getDimension(): DimensionInterface;
 
     public function createViewInstance(): ContentViewInterface;
 }

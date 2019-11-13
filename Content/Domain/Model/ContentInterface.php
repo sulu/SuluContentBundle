@@ -24,7 +24,7 @@ interface ContentInterface
      */
     public function getDimensions(): Collection;
 
-    public function createDimension(string $dimensionId): ContentDimensionInterface;
+    public function createDimension(DimensionInterface $dimension): ContentDimensionInterface;
 
     public function addDimension(ContentDimensionInterface $contentDimension): void;
 

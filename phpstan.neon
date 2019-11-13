@@ -24,3 +24,7 @@ parameters:
     autoload_files:
         - vendor/bin/.phpunit/phpunit-8/vendor/autoload.php
         - vendor/autoload.php
+    ignoreErrors:
+        # See https://github.com/phpstan/phpstan/issues/2600
+        - message: '#Parameter \#1 \$x of method Doctrine\\Common\\Collections\\ExpressionBuilder::orX\(\) expects array<int,mixed>|null, Doctrine\\Common\\Collections\\Expr\\Comparison given\.#'
+          path: %currentWorkingDirectory%/Content/Infrastructure/Doctrine/DimensionRepository.php

@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity;
 
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\AbstractContentView;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptTrait;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
@@ -37,15 +38,10 @@ class ExampleView extends AbstractContentView implements SeoInterface, ExcerptIn
      */
     protected $title;
 
-    /**
-     * @var string
-     */
-    protected $dimensionId;
-
-    public function __construct(Example $example, string $dimensionId)
+    public function __construct(Example $example, DimensionInterface $dimension)
     {
         $this->example = $example;
-        $this->dimensionId = $dimensionId;
+        $this->dimensionId = $dimension->getId();
     }
 
     public function getContentId()

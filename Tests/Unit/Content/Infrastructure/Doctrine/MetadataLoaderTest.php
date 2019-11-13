@@ -16,6 +16,7 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Infrastructure\Doctrine;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\LoadClassMetadataEventArgs;
+use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\UnderscoreNamingStrategy;
 use PHPUnit\Framework\TestCase;
@@ -23,6 +24,7 @@ use Prophecy\Argument;
 use Sulu\Bundle\CategoryBundle\Entity\CategoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
@@ -37,14 +39,24 @@ class MetadataLoaderTest extends TestCase
         return new MetadataLoader();
     }
 
+    public function testGetSubscribedEvents(): void
+    {
+        $metadataLoader = $this->getMetadataLoader();
+
+        $this->assertSame([
+            Events::loadClassMetadata,
+        ], $metadataLoader->getSubscribedEvents());
+    }
+
     /**
      * @param string[] $interfaces
      * @param bool[] $fields
-     * @param bool[] $associations
+     * @param bool[] $manyToManyAssociations
+     * @param bool[] $manyToOneAssociations
      *
      * @dataProvider dataProvider
      */
-    public function testInvalidMetadata(array $interfaces, array $fields, array $associations): void
+    public function testInvalidMetadata(array $interfaces, array $fields, array $manyToManyAssociations, array $manyToOneAssociations): void
     {
         $metadataLoader = $this->getMetadataLoader();
         $reflectionClass = $this->prophesize(\ReflectionClass::class);
@@ -72,9 +84,16 @@ class MetadataLoaderTest extends TestCase
             }))->shouldBeCalledTimes($exist ? 0 : 1);
         }
 
-        foreach ($associations as $association => $exist) {
+        foreach ($manyToManyAssociations as $association => $exist) {
             $classMetadata->hasAssociation($association)->willReturn($exist);
             $classMetadata->mapManyToMany(Argument::that(function (array $mapping) use ($association) {
+                return $mapping['fieldName'] === $association;
+            }))->shouldBeCalledTimes($exist ? 0 : 1);
+        }
+
+        foreach ($manyToOneAssociations as $association => $exist) {
+            $classMetadata->hasAssociation($association)->willReturn($exist);
+            $classMetadata->mapManyToOne(Argument::that(function (array $mapping) use ($association) {
                 return $mapping['fieldName'] === $association;
             }))->shouldBeCalledTimes($exist ? 0 : 1);
         }
@@ -84,13 +103,19 @@ class MetadataLoaderTest extends TestCase
         $entityManager = $this->prophesize(EntityManager::class);
         $entityManager->getConfiguration()->willReturn($configuration->reveal());
 
-        if (array_key_exists('excerptTags', $associations) && !$associations['excerptTags']) {
+        if (array_key_exists('dimension', $manyToOneAssociations) && !$manyToOneAssociations['dimension']) {
+            $dimensionClassMetadata = $this->prophesize(ClassMetadata::class);
+            $dimensionClassMetadata->getIdentifierColumnNames()->willReturn(['id'])->shouldBeCalled();
+            $entityManager->getClassMetadata(DimensionInterface::class)->willReturn($dimensionClassMetadata->reveal());
+        }
+
+        if (array_key_exists('excerptTags', $manyToManyAssociations) && !$manyToManyAssociations['excerptTags']) {
             $tagClassMetadata = $this->prophesize(ClassMetadata::class);
             $tagClassMetadata->getIdentifierColumnNames()->willReturn(['id'])->shouldBeCalled();
             $entityManager->getClassMetadata(TagInterface::class)->willReturn($tagClassMetadata->reveal());
         }
 
-        if (array_key_exists('excerptCategories', $associations) && !$associations['excerptCategories']) {
+        if (array_key_exists('excerptCategories', $manyToManyAssociations) && !$manyToManyAssociations['excerptCategories']) {
             $categoryClassMetadata = $this->prophesize(ClassMetadata::class);
             $categoryClassMetadata->getIdentifierColumnNames()->willReturn(['id'])->shouldBeCalled();
             $entityManager->getClassMetadata(CategoryInterface::class)->willReturn($categoryClassMetadata->reveal());
@@ -107,10 +132,21 @@ class MetadataLoaderTest extends TestCase
             [
                 ContentDimensionInterface::class,
             ],
+            [],
+            [],
             [
-                'dimensionId' => false,
+                'dimension' => false,
             ],
+        ];
+
+        yield [
             [
+                ContentDimensionInterface::class,
+            ],
+            [],
+            [],
+            [
+                'dimension' => true,
             ],
         ];
 
@@ -121,8 +157,8 @@ class MetadataLoaderTest extends TestCase
             [
                 'dimensionId' => false,
             ],
-            [
-            ],
+            [],
+            [],
         ];
 
         yield [
@@ -140,6 +176,7 @@ class MetadataLoaderTest extends TestCase
                 'excerptTags' => false,
                 'excerptCategories' => false,
             ],
+            [],
         ];
 
         yield [
@@ -156,6 +193,7 @@ class MetadataLoaderTest extends TestCase
                 'seoHideInSitemap' => false,
             ],
             [],
+            [],
         ];
 
         yield [
@@ -166,6 +204,7 @@ class MetadataLoaderTest extends TestCase
                 'templateKey' => false,
                 'templateData' => false,
             ],
+            [],
             [],
         ];
 
@@ -184,6 +223,7 @@ class MetadataLoaderTest extends TestCase
                 'excerptTags' => true,
                 'excerptCategories' => false,
             ],
+            [],
         ];
     }
 }

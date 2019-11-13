@@ -19,6 +19,7 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\AbstractContentDimension;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\AbstractContentView;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptTrait;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
@@ -39,7 +40,7 @@ class ContentTest extends TestCase
                 return 'example';
             }
 
-            public function createDimension(string $dimensionId): ContentDimensionInterface
+            public function createDimension(DimensionInterface $dimension): ContentDimensionInterface
             {
                 throw new \RuntimeException();
             }

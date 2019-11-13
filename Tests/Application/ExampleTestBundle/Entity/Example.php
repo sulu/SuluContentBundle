@@ -15,6 +15,7 @@ namespace Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity;
 
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\AbstractContent;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 
 class Example extends AbstractContent
 {
@@ -39,8 +40,8 @@ class Example extends AbstractContent
         return self::RESOURCE_KEY;
     }
 
-    public function createDimension(string $dimensionId): ContentDimensionInterface
+    public function createDimension(DimensionInterface $dimension): ContentDimensionInterface
     {
-        return new ExampleDimension($this, $dimensionId);
+        return new ExampleDimension($this, $dimension);
     }
 }

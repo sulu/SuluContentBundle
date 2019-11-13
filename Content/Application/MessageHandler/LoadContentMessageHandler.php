@@ -13,12 +13,10 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Application\MessageHandler;
 
-use Doctrine\Common\Collections\Collection;
-use Doctrine\Common\Collections\Criteria;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentDimensionLoader\ContentDimensionLoaderInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\Message\LoadContentMessage;
 use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\ApiViewResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ViewFactoryInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionCollection;
 use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionRepositoryInterface;
 
 class LoadContentMessageHandler
@@ -27,6 +25,11 @@ class LoadContentMessageHandler
      * @var DimensionRepositoryInterface
      */
     private $dimensionRepository;
+
+    /**
+     * @var ContentDimensionLoaderInterface
+     */
+    private $contentDimensionLoader;
 
     /**
      * @var ViewFactoryInterface
@@ -40,10 +43,12 @@ class LoadContentMessageHandler
 
     public function __construct(
         DimensionRepositoryInterface $dimensionRepository,
+        ContentDimensionLoaderInterface $contentDimensionLoader,
         ViewFactoryInterface $viewFactory,
         ApiViewResolverInterface $viewResolver
     ) {
         $this->dimensionRepository = $dimensionRepository;
+        $this->contentDimensionLoader = $contentDimensionLoader;
         $this->viewFactory = $viewFactory;
         $this->viewResolver = $viewResolver;
     }
@@ -52,32 +57,8 @@ class LoadContentMessageHandler
     {
         $content = $message->getContent();
         $dimensionCollection = $this->dimensionRepository->findByAttributes($message->getDimensionAttributes());
-
-        // TODO this part is very similiar to ContentDimensionCollectionFactory and should be refractored
-        $dimensionIds = $dimensionCollection->getDimensionIds();
-
-        /** @var Collection $contentDimensions */
-        $contentDimensions = $content->getDimensions();
-
-        $criteria = Criteria::create();
-        $criteria->andWhere($criteria->expr()->in('dimensionId', $dimensionIds));
-        $contentDimensions = $contentDimensions->matching($criteria);
-
-        $orderedContentDimensions = [];
-
-        foreach ($dimensionIds as $key => $dimensionId) {
-            $criteria = Criteria::create();
-            $criteria->andWhere($criteria->expr()->eq('dimensionId', $dimensionId));
-            $contentDimension = $contentDimensions->matching($criteria)->first();
-
-            if ($contentDimension) {
-                $orderedContentDimensions[$key] = $contentDimension;
-            }
-        }
-
-        // TODO end of the similiar part to the ContentDimensionCollectionFactory
-
-        $contentView = $this->viewFactory->create(new ContentDimensionCollection($orderedContentDimensions));
+        $contentDimensionCollection = $this->contentDimensionLoader->load($content, $dimensionCollection);
+        $contentView = $this->viewFactory->create($contentDimensionCollection);
 
         return $this->viewResolver->resolve($contentView);
     }

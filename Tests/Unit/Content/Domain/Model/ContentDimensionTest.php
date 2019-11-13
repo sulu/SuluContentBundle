@@ -18,6 +18,8 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\AbstractContentDimension;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\AbstractContentView;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\TestCases\Content\ContentDimensionTestCaseTrait;
 
 class ContentDimensionTest extends TestCase
@@ -26,9 +28,15 @@ class ContentDimensionTest extends TestCase
 
     protected function getContentDimensionInstance(): ContentDimensionInterface
     {
-        return new class() extends AbstractContentDimension {
+        $dimension = new Dimension('123-456');
+
+        return new class($dimension) extends AbstractContentDimension {
             protected $id = 1;
-            protected $dimensionId = '123-456';
+
+            public function __construct(DimensionInterface $dimension)
+            {
+                $this->dimension = $dimension;
+            }
 
             public function createViewInstance(): ContentViewInterface
             {

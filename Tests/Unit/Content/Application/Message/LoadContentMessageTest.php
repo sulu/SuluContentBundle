@@ -18,6 +18,7 @@ use Sulu\Bundle\ContentBundle\Content\Application\Message\LoadContentMessage;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\AbstractContent;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 
 class LoadContentMessageTest extends TestCase
 {
@@ -39,7 +40,7 @@ class LoadContentMessageTest extends TestCase
                 return 'example';
             }
 
-            public function createDimension(string $dimensionId): ContentDimensionInterface
+            public function createDimension(DimensionInterface $dimension): ContentDimensionInterface
             {
                 throw new \RuntimeException('Should not be called');
             }
