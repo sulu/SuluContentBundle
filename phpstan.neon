@@ -12,6 +12,8 @@ parameters:
         - .
     level: max
     excludes_analyse:
+        - %currentWorkingDirectory%/Content/Infrastructure/Sulu/Route/ContentDocument.php
+        - %currentWorkingDirectory%/Content/Infrastructure/Sulu/Route/ContentStructureBridge.php
         - %currentWorkingDirectory%/DependencyInjection/Configuration.php
         - %currentWorkingDirectory%/vendor/*
         - %currentWorkingDirectory%/Tests/Application/var*

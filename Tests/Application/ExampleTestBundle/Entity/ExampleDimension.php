@@ -18,12 +18,13 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptTrait;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\RoutableInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoTrait;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateTrait;
 
-class ExampleDimension extends AbstractContentDimension implements ExcerptInterface, SeoInterface, TemplateInterface
+class ExampleDimension extends AbstractContentDimension implements ExcerptInterface, SeoInterface, TemplateInterface, RoutableInterface
 {
     use ExcerptTrait;
     use SeoTrait;
@@ -89,5 +90,15 @@ class ExampleDimension extends AbstractContentDimension implements ExcerptInterf
     public function getTemplateType(): string
     {
         return Example::TYPE_KEY;
+    }
+
+    public function getContentClass(): string
+    {
+        return Example::class;
+    }
+
+    public function getContentId(): ?int
+    {
+        return $this->example->getId();
     }
 }

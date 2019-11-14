@@ -58,5 +58,16 @@
         </service>
 
         <service id="Sulu\Bundle\ContentBundle\Content\Application\ContentDimensionLoader\ContentDimensionLoaderInterface" alias="sulu_content.content_dimension_loader"/>
+
+        <!-- Route Defaults Provider -->
+        <service id="sulu_content.route_defaults_provider" class="Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Route\ContentRouteDefaultsProvider">
+            <argument type="service" id="doctrine.orm.entity_manager"/>
+            <argument type="service" id="sulu_content.message_bus"/>
+            <argument type="service" id="sulu_page.structure.factory"/>
+            <argument type="service" id="sulu_page.compat.structure.legacy_property_factory"/>
+            <argument type="service" id="sulu_http_cache.cache_lifetime.resolver"/>
+
+            <tag name="sulu_route.defaults_provider"/>
+        </service>
     </services>
 </container>

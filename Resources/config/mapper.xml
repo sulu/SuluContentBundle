@@ -20,5 +20,13 @@
 
             <tag name="sulu_content.content_dimension_mapper"/>
         </service>
+
+        <service id="sulu_content.route_mapper" class="Sulu\Bundle\ContentBundle\Content\Application\ContentDimensionFactory\Mapper\RouteMapper">
+            <argument type="service" id="sulu_page.structure.factory"/>
+            <argument type="service" id="sulu.repository.dimension"/>
+            <argument type="service" id="sulu_route.manager.route_manager"/>
+
+            <tag name="sulu_content.content_dimension_mapper"/>
+        </service>
     </services>
 </container>
