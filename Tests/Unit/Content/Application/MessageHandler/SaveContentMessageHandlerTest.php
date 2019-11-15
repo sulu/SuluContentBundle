@@ -57,6 +57,11 @@ class SaveContentMessageHandlerTest extends TestCase
             {
                 throw new \RuntimeException('Should not be called in a unit test.');
             }
+
+            public function getId()
+            {
+                return null;
+            }
         };
     }
 

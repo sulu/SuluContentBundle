@@ -44,6 +44,11 @@ class LoadContentMessageTest extends TestCase
             {
                 throw new \RuntimeException('Should not be called');
             }
+
+            public function getId()
+            {
+                return null;
+            }
         };
     }
 

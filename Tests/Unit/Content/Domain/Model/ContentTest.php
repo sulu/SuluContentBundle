@@ -44,6 +44,11 @@ class ContentTest extends TestCase
             {
                 throw new \RuntimeException();
             }
+
+            public function getId()
+            {
+                return null;
+            }
         };
     }
 

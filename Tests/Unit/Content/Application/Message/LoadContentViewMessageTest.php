@@ -14,24 +14,22 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\Message;
 
 use PHPUnit\Framework\TestCase;
-use Sulu\Bundle\ContentBundle\Content\Application\Message\SaveContentMessage;
+use Sulu\Bundle\ContentBundle\Content\Application\Message\LoadContentViewMessage;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\AbstractContent;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 
-class SaveContentMessageTest extends TestCase
+class LoadContentViewMessageTest extends TestCase
 {
     /**
-     * @param mixed[] $data
      * @param mixed[] $dimensionAttributes
      */
-    protected function createSaveContentMessageInstance(
+    protected function createLoadContentViewMessageInstance(
         ContentInterface $content,
-        array $data,
         array $dimensionAttributes
-    ): SaveContentMessage {
-        return new SaveContentMessage($content, $data, $dimensionAttributes);
+    ): LoadContentViewMessage {
+        return new LoadContentViewMessage($content, $dimensionAttributes);
     }
 
     protected function createContentInstance(): ContentInterface
@@ -57,27 +55,15 @@ class SaveContentMessageTest extends TestCase
     public function testGetContent(): void
     {
         $content = $this->createContentInstance();
-        $createContentMessage = $this->createSaveContentMessageInstance($content, [], []);
+        $createContentMessage = $this->createLoadContentViewMessageInstance($content, []);
 
         $this->assertSame($content, $createContentMessage->getContent());
-    }
-
-    public function testGetData(): void
-    {
-        $content = $this->createContentInstance();
-        $createContentMessage = $this->createSaveContentMessageInstance($content, [
-            'data' => 'value',
-        ], []);
-
-        $this->assertSame([
-            'data' => 'value',
-        ], $createContentMessage->getData());
     }
 
     public function testGetDimensionAttributes(): void
     {
         $content = $this->createContentInstance();
-        $createContentMessage = $this->createSaveContentMessageInstance($content, [], [
+        $createContentMessage = $this->createLoadContentViewMessageInstance($content, [
             'locale' => 'de',
         ]);
 
