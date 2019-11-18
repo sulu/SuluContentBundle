@@ -15,6 +15,11 @@ namespace Sulu\Bundle\ContentBundle\Tests\Functional\Integration;
 
 use Sulu\Bundle\ContentBundle\Tests\Functional\BaseTestCase;
 
+/**
+ * The integration test should have no impact on the coverage so we set it to coversNothing.
+ *
+ * @coversNothing
+ */
 class ExampleControllerTest extends BaseTestCase
 {
     protected $client;
@@ -109,7 +114,7 @@ class ExampleControllerTest extends BaseTestCase
      */
     public function testGetList(): void
     {
-        $this->client->request('GET', '/admin/api/examples');
+        $this->client->request('GET', '/admin/api/examples?locale=en');
         $response = $this->client->getResponse();
 
         $this->assertResponseContent('example_cget.json', $response, 200);
