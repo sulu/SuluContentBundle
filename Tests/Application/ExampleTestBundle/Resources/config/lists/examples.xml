@@ -2,10 +2,40 @@
 <list xmlns="http://schemas.sulu.io/list-builder/list">
     <key>examples</key>
 
+    <joins name="contentDimension" ref="dimension">
+        <join>
+            <entity-name>contentDimension</entity-name>
+            <field-name>Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example.dimensions</field-name>
+            <method>LEFT</method>
+            <condition>contentDimension.dimension = %sulu.model.dimension.class%.no</condition>
+        </join>
+    </joins>
+
+    <joins name="dimension">
+        <join>
+            <entity-name>%sulu.model.dimension.class%</entity-name>
+            <condition>%sulu.model.dimension.class%.locale = :locale AND %sulu.model.dimension.class%.workflowStage = 'draft'</condition>
+        </join>
+    </joins>
+
     <properties>
         <property name="id" translation="sulu_admin.id">
             <field-name>id</field-name>
             <entity-name>Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example</entity-name>
+        </property>
+
+        <property name="dimensionId" visibility="never">
+            <field-name>id</field-name>
+            <entity-name>%sulu.model.dimension.class%</entity-name>
+
+            <joins ref="dimension"/>
+        </property>
+
+        <property name="title" visibility="yes" translation="sulu_admin.title">
+            <field-name>title</field-name>
+            <entity-name>contentDimension</entity-name>
+
+            <joins ref="contentDimension"/>
         </property>
     </properties>
 </list>

@@ -93,8 +93,7 @@ class MetadataLoader implements EventSubscriber
                     'references' => [
                         'entity' => MediaInterface::class,
                         'field' => 'id',
-                        'onDelete' => 'CASCADE',
-                        'onUpdate' => 'CASCADE',
+                        'onDelete' => 'SET NULL',
                     ],
                 ],
             ]);
@@ -105,8 +104,7 @@ class MetadataLoader implements EventSubscriber
                     'references' => [
                         'entity' => MediaInterface::class,
                         'field' => 'id',
-                        'onDelete' => 'CASCADE',
-                        'onUpdate' => 'CASCADE',
+                        'onDelete' => 'SET NULL',
                     ],
                 ],
             ]);
@@ -136,6 +134,7 @@ class MetadataLoader implements EventSubscriber
                 [
                     'name' => $namingStrategy->joinKeyColumnName($name),
                     'referencedColumnName' => $referencedColumnName,
+                    'nullable' => false,
                     'onDelete' => 'CASCADE',
                     'onUpdate' => 'CASCADE',
                 ],
