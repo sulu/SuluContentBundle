@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentDimensionFactory\Mapper;
 
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\RoutableInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Bundle\RouteBundle\Generator\RouteGeneratorInterface;
 use Sulu\Bundle\RouteBundle\Manager\RouteManagerInterface;
 use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
@@ -53,8 +53,12 @@ class RouteMapper implements MapperInterface
         object $contentDimension,
         ?object $localizedContentDimension = null
     ): void {
-        if (!$localizedContentDimension || !$localizedContentDimension instanceof RoutableInterface || !$localizedContentDimension instanceof ContentDimensionInterface) {
+        if (!$localizedContentDimension || !$localizedContentDimension instanceof RoutableInterface) {
             return;
+        }
+
+        if (!$localizedContentDimension instanceof TemplateInterface) {
+            throw new \RuntimeException('ContentDimension needs to extend the TemplateInterface');
         }
 
         if (!isset($data['template'])) {
@@ -80,13 +84,20 @@ class RouteMapper implements MapperInterface
             return;
         }
 
-        $locale = $localizedContentDimension->getDimension()->getLocale();
+        $locale = $localizedContentDimension->getLocale();
         if (!$locale) {
             return;
         }
 
-        $routePath = $data[$property->getName()] ?? null;
+        /** @var string $name */
+        $name = $property->getName();
+        if (!array_key_exists($name, $data)) {
+            return;
+        }
+
+        $routePath = $data[$name] ?? null;
         if (!$routePath) {
+            // FIXME this should be handled directly in the form - see pages as an example
             $routePath = $this->routeGenerator->generate(
                 $localizedContentDimension,
                 ['route_schema' => '/{object.getTitle()}']
@@ -95,7 +106,7 @@ class RouteMapper implements MapperInterface
             $localizedContentDimension->setTemplateData(
                 array_merge(
                     $localizedContentDimension->getTemplateData(),
-                    [$property->getName() => $routePath]
+                    [$name => $routePath]
                 )
             );
         }

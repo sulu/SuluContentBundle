@@ -19,6 +19,7 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptTrait;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\RoutableInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\RoutableTrait;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoTrait;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
@@ -32,6 +33,7 @@ class ExampleDimension extends AbstractContentDimension implements ExcerptInterf
         getTemplateData as parentGetTemplateData;
         setTemplateData as parentSetTemplateData;
     }
+    use RoutableTrait;
 
     /**
      * @var Example

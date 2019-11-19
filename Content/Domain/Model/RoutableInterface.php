@@ -16,7 +16,7 @@ namespace Sulu\Bundle\ContentBundle\Content\Domain\Model;
 /**
  * Marker interface for autoloading the doctrine metadata for routables.
  */
-interface RoutableInterface extends TemplateInterface
+interface RoutableInterface
 {
     public function getContentClass(): string;
 
@@ -24,4 +24,6 @@ interface RoutableInterface extends TemplateInterface
      * @return mixed
      */
     public function getContentId();
+
+    public function getLocale(): ?string;
 }

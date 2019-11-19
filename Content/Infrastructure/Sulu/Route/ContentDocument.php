@@ -18,9 +18,6 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Component\Content\Document\Behavior\ExtensionBehavior;
 
-/**
- * @codeCoverageIgnore
- */
 class ContentDocument implements ExtensionBehavior
 {
     /**
@@ -37,6 +34,11 @@ class ContentDocument implements ExtensionBehavior
     {
         $this->content = $content;
         $this->locale = $locale;
+    }
+
+    public function getContent(): TemplateInterface
+    {
+        return $this->content;
     }
 
     /**
@@ -76,12 +78,12 @@ class ContentDocument implements ExtensionBehavior
 
     public function setExtensionsData($extensionData): void
     {
-        $this->readOnlyException(__METHOD__);
+        throw $this->createReadOnlyException(__METHOD__);
     }
 
     public function setExtension($name, $data): void
     {
-        $this->readOnlyException(__METHOD__);
+        throw $this->createReadOnlyException(__METHOD__);
     }
 
     public function getLocale(): string
@@ -91,7 +93,7 @@ class ContentDocument implements ExtensionBehavior
 
     public function setLocale($locale): void
     {
-        $this->readOnlyException(__METHOD__);
+        throw $this->createReadOnlyException(__METHOD__);
     }
 
     public function getOriginalLocale(): string
@@ -101,7 +103,7 @@ class ContentDocument implements ExtensionBehavior
 
     public function setOriginalLocale($locale): void
     {
-        $this->readOnlyException(__METHOD__);
+        throw $this->createReadOnlyException(__METHOD__);
     }
 
     public function getStructureType(): ?string
@@ -111,7 +113,7 @@ class ContentDocument implements ExtensionBehavior
 
     public function setStructureType($structureType): void
     {
-        $this->readOnlyException(__METHOD__);
+        throw $this->createReadOnlyException(__METHOD__);
     }
 
     public function getStructure()
@@ -119,9 +121,9 @@ class ContentDocument implements ExtensionBehavior
         return null;
     }
 
-    protected function readOnlyException(string $method): void
+    protected function createReadOnlyException(string $method): \BadMethodCallException
     {
-        throw new \BadMethodCallException(
+        return new \BadMethodCallException(
             sprintf(
                 'Compatibility layer ContentDocument instances are readonly. Tried to call "%s"',
                 $method

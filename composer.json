@@ -15,7 +15,7 @@
         "doctrine/doctrine-bundle": "^1.10",
         "friendsofsymfony/rest-bundle": "^2.5",
         "ramsey/uuid": "^3.8",
-        "sulu/sulu": "dev-release/2.0 as 2.0.2",
+        "sulu/sulu": "^2.0.2",
         "symfony/config": "^4.3",
         "symfony/dependency-injection": "^4.3",
         "symfony/http-foundation": "^4.3",

@@ -26,9 +26,6 @@ use Sulu\Component\Content\Metadata\ItemMetadata;
 use Sulu\Component\Content\Metadata\PropertyMetadata;
 use Sulu\Component\Content\Metadata\StructureMetadata;
 
-/**
- * @codeCoverageIgnore
- */
 class ContentStructureBridge implements StructureInterface
 {
     /**
@@ -87,7 +84,7 @@ class ContentStructureBridge implements StructureInterface
 
     public function setLanguageCode($locale): void
     {
-        $this->locale = $locale;
+        throw $this->createReadOnlyException(__METHOD__);
     }
 
     public function getLanguageCode(): string
@@ -97,7 +94,7 @@ class ContentStructureBridge implements StructureInterface
 
     public function setWebspaceKey($webspace): void
     {
-        $this->readOnlyException(__METHOD__);
+        throw $this->createReadOnlyException(__METHOD__);
     }
 
     public function getWebspaceKey(): ?string
@@ -115,7 +112,7 @@ class ContentStructureBridge implements StructureInterface
 
     public function setUuid($uuid): void
     {
-        $this->readOnlyException(__METHOD__);
+        throw $this->createReadOnlyException(__METHOD__);
     }
 
     public function getView(): ?string
@@ -130,7 +127,7 @@ class ContentStructureBridge implements StructureInterface
 
     public function setCreator($userId): void
     {
-        $this->readOnlyException(__METHOD__);
+        throw $this->createReadOnlyException(__METHOD__);
     }
 
     public function getChanger(): ?int
@@ -140,7 +137,7 @@ class ContentStructureBridge implements StructureInterface
 
     public function setChanger($userId): void
     {
-        $this->readOnlyException(__METHOD__);
+        throw $this->createReadOnlyException(__METHOD__);
     }
 
     public function getCreated(): ?\DateTimeInterface
@@ -150,7 +147,7 @@ class ContentStructureBridge implements StructureInterface
 
     public function setCreated(\DateTime $created)
     {
-        $this->readOnlyException(__METHOD__);
+        throw $this->createReadOnlyException(__METHOD__);
     }
 
     public function getChanged(): ?\DateTimeInterface
@@ -160,7 +157,7 @@ class ContentStructureBridge implements StructureInterface
 
     public function setChanged(\DateTime $changed)
     {
-        $this->readOnlyException(__METHOD__);
+        throw $this->createReadOnlyException(__METHOD__);
     }
 
     public function getKey()
@@ -205,7 +202,7 @@ class ContentStructureBridge implements StructureInterface
 
     public function setHasChildren($hasChildren): void
     {
-        $this->readOnlyException(__METHOD__);
+        throw $this->createReadOnlyException(__METHOD__);
     }
 
     public function getHasChildren(): bool
@@ -215,7 +212,7 @@ class ContentStructureBridge implements StructureInterface
 
     public function setChildren($children): void
     {
-        $this->readOnlyException(__METHOD__);
+        throw $this->createReadOnlyException(__METHOD__);
     }
 
     public function getChildren(): array
@@ -230,7 +227,7 @@ class ContentStructureBridge implements StructureInterface
 
     public function setPublished($published): void
     {
-        $this->readOnlyException(__METHOD__);
+        throw $this->createReadOnlyException(__METHOD__);
     }
 
     public function getPublished(): ?\DateTimeInterface
@@ -250,7 +247,7 @@ class ContentStructureBridge implements StructureInterface
 
     public function setType($type): void
     {
-        $this->readOnlyException(__METHOD__);
+        throw $this->createReadOnlyException(__METHOD__);
     }
 
     public function getType(): ?StructureType
@@ -268,12 +265,12 @@ class ContentStructureBridge implements StructureInterface
 
     public function setPath($path): void
     {
-        $this->readOnlyException(__METHOD__);
+        throw $this->createReadOnlyException(__METHOD__);
     }
 
     public function setHasTranslation($hasTranslation): void
     {
-        $this->readOnlyException(__METHOD__);
+        throw $this->createReadOnlyException(__METHOD__);
     }
 
     public function getHasTranslation(): bool
@@ -341,7 +338,7 @@ class ContentStructureBridge implements StructureInterface
 
     public function copyFrom(StructureInterface $structure): void
     {
-        $this->readOnlyException(__METHOD__);
+        throw $this->createReadOnlyException(__METHOD__);
     }
 
     public function getInternal(): bool
@@ -401,9 +398,9 @@ class ContentStructureBridge implements StructureInterface
         return $this->getProperty($name)->getValue();
     }
 
-    protected function readOnlyException(string $method): void
+    protected function createReadOnlyException(string $method): \BadMethodCallException
     {
-        throw new \BadMethodCallException(
+        return new \BadMethodCallException(
             sprintf(
                 'Compatibility layer StructureBridge instances are readonly. Tried to call "%s"',
                 $method
