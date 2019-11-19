@@ -46,11 +46,7 @@ class ExcerptMapper implements MapperInterface
 
         if ($localizedContentDimension) {
             if (!$localizedContentDimension instanceof ExcerptInterface) {
-                throw new \RuntimeException(sprintf(
-                    'Expected "$localizedContentDimension" from type "%s" but "%s" given.',
-                    ExcerptInterface::class,
-                    \get_class($localizedContentDimension)
-                ));
+                throw new \RuntimeException(sprintf('Expected "$localizedContentDimension" from type "%s" but "%s" given.', ExcerptInterface::class, \get_class($localizedContentDimension)));
             }
 
             $this->setExcerptData($localizedContentDimension, $data);

@@ -91,7 +91,7 @@ class RouteMapper implements MapperInterface
 
         /** @var string $name */
         $name = $property->getName();
-        if (!array_key_exists($name, $data)) {
+        if (!\array_key_exists($name, $data)) {
             return;
         }
 
