@@ -20,6 +20,11 @@ interface ContentInterface
     public static function getResourceKey(): string;
 
     /**
+     * @return mixed
+     */
+    public function getId();
+
+    /**
      * @return Collection<ContentDimensionInterface>
      */
     public function getDimensions(): Collection;

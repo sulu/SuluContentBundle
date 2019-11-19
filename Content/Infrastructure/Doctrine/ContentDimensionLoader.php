@@ -38,17 +38,21 @@ class ContentDimensionLoader implements ContentDimensionLoaderInterface
         DimensionCollectionInterface $collection
     ): ContentDimensionCollectionInterface {
         $classMetadata = $this->entityManager->getClassMetadata(\get_class($content));
-        $contentDimensionClass = $classMetadata->getAssociationMapping('dimensions')['targetEntity'];
+        $associationMapping = $classMetadata->getAssociationMapping('dimensions');
+        $contentDimensionClass = $associationMapping['targetEntity'];
 
         $queryBuilder = $this->entityManager->createQueryBuilder()
             ->from($contentDimensionClass, 'contentDimension')
             ->select('contentDimension')
             ->addSelect('dimension')
-            ->innerJoin('contentDimension.dimension', 'dimension');
+            ->innerJoin('contentDimension.dimension', 'dimension')
+            ->innerJoin('contentDimension.' . $associationMapping['mappedBy'], 'content')
+            ->where('content.id = :id')
+            ->setParameter('id', $content->getId());
 
         $dimensionIds = $collection->getDimensionIds();
 
-        $queryBuilder->where($queryBuilder->expr()->in('dimension.id', $dimensionIds));
+        $queryBuilder->andWhere($queryBuilder->expr()->in('dimension.id', $dimensionIds));
 
         /** @var ContentDimensionInterface[] $contentDimensions */
         $contentDimensions = [];

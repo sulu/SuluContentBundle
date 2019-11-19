@@ -15,9 +15,8 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\MessageHandle
 
 use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentDimensionLoader\ContentDimensionLoaderInterface;
-use Sulu\Bundle\ContentBundle\Content\Application\Message\LoadContentMessage;
-use Sulu\Bundle\ContentBundle\Content\Application\MessageHandler\LoadContentMessageHandler;
-use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\ApiViewResolverInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\Message\LoadContentViewMessage;
+use Sulu\Bundle\ContentBundle\Content\Application\MessageHandler\LoadContentViewMessageHandler;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ViewFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\AbstractContent;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionCollection;
@@ -29,19 +28,17 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollection;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionRepositoryInterface;
 
-class LoadContentMessageHandlerTest extends TestCase
+class LoadContentViewMessageHandlerTest extends TestCase
 {
-    protected function createLoadContentMessageHandlerInstance(
+    protected function createLoadContentViewMessageHandlerInstance(
         DimensionRepositoryInterface $dimensionRepository,
         ContentDimensionLoaderInterface $contentDimensionLoader,
-        ViewFactoryInterface $viewFactory,
-        ApiViewResolverInterface $viewResolver
-    ): LoadContentMessageHandler {
-        return new LoadContentMessageHandler(
+        ViewFactoryInterface $viewFactory
+    ): LoadContentViewMessageHandler {
+        return new LoadContentViewMessageHandler(
             $dimensionRepository,
             $contentDimensionLoader,
-            $viewFactory,
-            $viewResolver
+            $viewFactory
         );
     }
 
@@ -83,7 +80,7 @@ class LoadContentMessageHandlerTest extends TestCase
             'locale' => 'de',
         ];
 
-        $message = new LoadContentMessage($content->reveal(), $attributes);
+        $message = new LoadContentViewMessage($content->reveal(), $attributes);
 
         $dimension1 = new Dimension('123-456', ['locale' => null]);
         $dimension2 = new Dimension('456-789', ['locale' => 'de']);
@@ -103,16 +100,12 @@ class LoadContentMessageHandlerTest extends TestCase
         $viewFactory = $this->prophesize(ViewFactoryInterface::class);
         $viewFactory->create($contentDimensionCollection)->willReturn($contentView->reveal())->shouldBeCalled();
 
-        $viewResolver = $this->prophesize(ApiViewResolverInterface::class);
-        $viewResolver->resolve($contentView->reveal())->willReturn(['resolved' => 'data'])->shouldBeCalled();
-
-        $createContentMessageHandler = $this->createLoadContentMessageHandlerInstance(
+        $createContentMessageHandler = $this->createLoadContentViewMessageHandlerInstance(
             $dimensionRepository->reveal(),
             $contentDimensionLoader->reveal(),
-            $viewFactory->reveal(),
-            $viewResolver->reveal()
+            $viewFactory->reveal()
         );
 
-        $this->assertSame(['resolved' => 'data'], $createContentMessageHandler->__invoke($message));
+        $this->assertSame($contentView->reveal(), $createContentMessageHandler->__invoke($message));
     }
 }
