@@ -51,11 +51,7 @@ class TemplateMapper implements MapperInterface
 
         if ($localizedContentDimension) {
             if (!$localizedContentDimension instanceof TemplateInterface) {
-                throw new \RuntimeException(sprintf(
-                    'Expected "$localizedContentDimension" from type "%s" but "%s" given.',
-                    TemplateInterface::class,
-                    \get_class($localizedContentDimension)
-                ));
+                throw new \RuntimeException(sprintf('Expected "$localizedContentDimension" from type "%s" but "%s" given.', TemplateInterface::class, \get_class($localizedContentDimension)));
             }
 
             $localizedContentDimension->setTemplateKey($template);
@@ -84,11 +80,7 @@ class TemplateMapper implements MapperInterface
         $metadata = $this->factory->getStructureMetadata($type, $template);
 
         if (!$metadata) {
-            throw new \RuntimeException(sprintf(
-                'Could not find structure "%s" of type "%s".',
-                $template,
-                $type
-            ));
+            throw new \RuntimeException(sprintf('Could not find structure "%s" of type "%s".', $template, $type));
         }
 
         $unlocalizedData = [];
@@ -103,7 +95,7 @@ class TemplateMapper implements MapperInterface
                 $name = (string) $name;
             }
 
-            if (array_key_exists($name, $data)) {
+            if (\array_key_exists($name, $data)) {
                 $value = $data[$name];
             }
 

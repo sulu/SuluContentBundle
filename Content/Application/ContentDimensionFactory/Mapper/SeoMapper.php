@@ -28,11 +28,7 @@ class SeoMapper implements MapperInterface
 
         if ($localizedContentDimension) {
             if (!$localizedContentDimension instanceof SeoInterface) {
-                throw new \RuntimeException(sprintf(
-                    'Expected "$localizedContentDimension" from type "%s" but "%s" given.',
-                    SeoInterface::class,
-                    \get_class($localizedContentDimension)
-                ));
+                throw new \RuntimeException(sprintf('Expected "$localizedContentDimension" from type "%s" but "%s" given.', SeoInterface::class, \get_class($localizedContentDimension)));
             }
 
             $this->setSeoData($localizedContentDimension, $data);

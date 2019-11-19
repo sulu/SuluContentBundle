@@ -103,19 +103,19 @@ class MetadataLoaderTest extends TestCase
         $entityManager = $this->prophesize(EntityManager::class);
         $entityManager->getConfiguration()->willReturn($configuration->reveal());
 
-        if (array_key_exists('dimension', $manyToOneAssociations) && !$manyToOneAssociations['dimension']) {
+        if (\array_key_exists('dimension', $manyToOneAssociations) && !$manyToOneAssociations['dimension']) {
             $dimensionClassMetadata = $this->prophesize(ClassMetadata::class);
             $dimensionClassMetadata->getIdentifierColumnNames()->willReturn(['id'])->shouldBeCalled();
             $entityManager->getClassMetadata(DimensionInterface::class)->willReturn($dimensionClassMetadata->reveal());
         }
 
-        if (array_key_exists('excerptTags', $manyToManyAssociations) && !$manyToManyAssociations['excerptTags']) {
+        if (\array_key_exists('excerptTags', $manyToManyAssociations) && !$manyToManyAssociations['excerptTags']) {
             $tagClassMetadata = $this->prophesize(ClassMetadata::class);
             $tagClassMetadata->getIdentifierColumnNames()->willReturn(['id'])->shouldBeCalled();
             $entityManager->getClassMetadata(TagInterface::class)->willReturn($tagClassMetadata->reveal());
         }
 
-        if (array_key_exists('excerptCategories', $manyToManyAssociations) && !$manyToManyAssociations['excerptCategories']) {
+        if (\array_key_exists('excerptCategories', $manyToManyAssociations) && !$manyToManyAssociations['excerptCategories']) {
             $categoryClassMetadata = $this->prophesize(ClassMetadata::class);
             $categoryClassMetadata->getIdentifierColumnNames()->willReturn(['id'])->shouldBeCalled();
             $entityManager->getClassMetadata(CategoryInterface::class)->willReturn($categoryClassMetadata->reveal());
