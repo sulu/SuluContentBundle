@@ -17,7 +17,10 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NoResultException;
 use Sulu\Bundle\ContentBundle\Content\Application\Message\LoadContentViewMessage;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionRepositoryInterface;
 use Sulu\Bundle\RouteBundle\Routing\Defaults\RouteDefaultsProviderInterface;
 use Sulu\Component\Content\Compat\Structure\LegacyPropertyFactory;
 use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
@@ -44,8 +47,12 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
      */
     private $propertyFactory;
 
-    public function __construct(EntityManagerInterface $entityManager, MessageBusInterface $messageBus, StructureMetadataFactoryInterface $structureMetadataFactory, LegacyPropertyFactory $propertyFactory)
-    {
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        MessageBusInterface $messageBus,
+        StructureMetadataFactoryInterface $structureMetadataFactory,
+        LegacyPropertyFactory $propertyFactory
+    ) {
         $this->entityManager = $entityManager;
         $this->messageBus = $messageBus;
         $this->structureMetadataFactory = $structureMetadataFactory;
@@ -84,6 +91,21 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
     {
         $entity = $this->loadEntity($entityClass, $id, $locale);
 
+        if ($entity instanceof ContentViewInterface) {
+            $dimensionId = $entity->getDimensionId();
+
+            /** @var DimensionRepositoryInterface $dimensionRepository */
+            $dimensionRepository = $this->entityManager->getRepository(DimensionInterface::class);
+            $dimension = $dimensionRepository->findOneBy(['id' => $dimensionId]);
+
+            if (!$dimension) {
+                // Return false if dimension does not longer exists
+                return false;
+            }
+
+            return DimensionInterface::STAGE_LIVE === $dimension->getStage();
+        }
+
         return null !== $entity;
     }
 
@@ -92,7 +114,7 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
         return is_a($entityClass, ContentInterface::class, true);
     }
 
-    protected function loadEntity(string $entityClass, string $id, string $locale): ?TemplateInterface
+    private function loadEntity(string $entityClass, string $id, string $locale): ?TemplateInterface
     {
         try {
             /** @var ContentInterface $content */
@@ -108,10 +130,14 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
         }
 
         try {
-            // FIXME use the live stage when publishing is implemented
-
             return $this->handle(
-                new LoadContentViewMessage($content, ['locale' => $locale, 'stage' => 'draft'])
+                // TODO to support other dimension attributes here
+                // TODO we should maybe get dimension Attributes form request attributes set by a request listener
+                // TODO e.g. $request->attributes->get('_sulu_content_dimension_attributes');
+                new LoadContentViewMessage($content, [
+                    'locale' => $locale,
+                    'stage' => DimensionInterface::STAGE_LIVE,
+                ])
             );
         } catch (HandlerFailedException $exception) {
             return null;
