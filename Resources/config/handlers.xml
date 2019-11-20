@@ -22,6 +22,15 @@
             <argument type="service" id="sulu_content.api_view_resolver"/>
         </service>
 
+        <service id="sulu_content.workflow_transition_content_handler" class="Sulu\Bundle\ContentBundle\Content\Application\MessageHandler\WorkflowTransitionContentMessageHandler">
+            <argument type="service" id="sulu.repository.dimension"/>
+            <argument type="service" id="sulu_content.message_bus"/>
+        </service>
+
+        <service id="sulu_content.copy_content_dimension_handler" class="Sulu\Bundle\ContentBundle\Content\Application\MessageHandler\CopyContentDimensionMessageHandler">
+            <argument type="service" id="sulu_content.message_bus"/>
+        </service>
+
         <service id="sulu_content.load_content_view_dimension_handler" class="Sulu\Bundle\ContentBundle\Content\Application\MessageHandler\LoadContentViewMessageHandler">
             <argument type="service" id="sulu.repository.dimension"/>
             <argument type="service" id="sulu_content.content_dimension_loader"/>

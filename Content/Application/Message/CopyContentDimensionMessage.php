@@ -15,7 +15,7 @@ namespace Sulu\Bundle\ContentBundle\Content\Application\Message;
 
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentInterface;
 
-class WorkflowTransitionContentMessage
+class CopyContentDimensionMessage
 {
     /**
      * @var ContentInterface
@@ -25,21 +25,22 @@ class WorkflowTransitionContentMessage
     /**
      * @var mixed[]
      */
-    private $dimensionAttributes;
+    private $fromDimensionAttributes;
 
     /**
      * @var string
      */
-    private $toWorkflowStage;
+    private $toDimensionAttributes;
 
     /**
-     * @param mixed[] $dimensionAttributes
+     * @param mixed[] $fromDimensionAttributes
+     * @param mixed[] $toDimensionAttributes
      */
-    public function __construct(ContentInterface $content, array $dimensionAttributes, string $toWorkflowStage)
+    public function __construct(ContentInterface $content, array $fromDimensionAttributes, array $toDimensionAttributes)
     {
         $this->content = $content;
-        $this->dimensionAttributes = $dimensionAttributes;
-        $this->toWorkflowStage = $toWorkflowStage;
+        $this->fromDimensionAttributes = $fromDimensionAttributes;
+        $this->toDimensionAttributes = $toDimensionAttributes;
     }
 
     public function getContent(): ContentInterface
@@ -50,13 +51,16 @@ class WorkflowTransitionContentMessage
     /**
      * @return mixed[]
      */
-    public function getDimensionAttributes(): array
+    public function getFromDimensionAttributes(): array
     {
-        return $this->dimensionAttributes;
+        return $this->fromDimensionAttributes;
     }
 
-    public function getToWorkflowStage(): string
+    /**
+     * @return mixed[]
+     */
+    public function getToDimensionAttributes(): array
     {
-        return $this->toWorkflowStage;
+        return $this->toDimensionAttributes;
     }
 }

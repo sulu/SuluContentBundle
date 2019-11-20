@@ -73,13 +73,13 @@ class WorkflowTransitionContentMessageTest extends TestCase
         ], $message->getDimensionAttributes());
     }
 
-    public function testGetWorkflowStage(): void
+    public function testGetToWorkflowStage(): void
     {
         $content = $this->createContentInstance();
         $message = $this->createWorkflowTransitionContentMessage($content, [
             'locale' => 'de',
         ], 'live');
 
-        $this->assertSame('live', $message->getWorkflowStage());
+        $this->assertSame('live', $message->getToWorkflowStage());
     }
 }
