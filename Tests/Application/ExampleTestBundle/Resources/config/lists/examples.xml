@@ -14,7 +14,7 @@
     <joins name="dimension">
         <join>
             <entity-name>%sulu.model.dimension.class%</entity-name>
-            <condition>%sulu.model.dimension.class%.locale = :locale AND %sulu.model.dimension.class%.workflowStage = 'draft'</condition>
+            <condition>%sulu.model.dimension.class%.locale = :locale AND %sulu.model.dimension.class%.stage = 'draft'</condition>
         </join>
     </joins>
 

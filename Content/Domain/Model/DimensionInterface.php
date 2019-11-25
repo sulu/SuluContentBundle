@@ -15,14 +15,14 @@ namespace Sulu\Bundle\ContentBundle\Content\Domain\Model;
 
 interface DimensionInterface
 {
-    const WORKFLOW_STAGE_DRAFT = 'draft';
-    const WORKFLOW_STAGE_LIVE = 'live';
+    const STAGE_DRAFT = 'draft';
+    const STAGE_LIVE = 'live';
 
     public function getId(): string;
 
     public function getLocale(): ?string;
 
-    public function getWorkflowStage(): string;
+    public function getStage(): string;
 
     /**
      * @return mixed[]
