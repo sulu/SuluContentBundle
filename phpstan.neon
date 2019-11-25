@@ -22,7 +22,7 @@ parameters:
     doctrine:
         objectManagerLoader: Tests/phpstan/object-manager.php
     autoload_files:
-        - vendor/bin/.phpunit/phpunit-8/vendor/autoload.php
+        - vendor/bin/.phpunit/phpunit-8-0/vendor/autoload.php
         - vendor/autoload.php
     ignoreErrors:
         # See https://github.com/phpstan/phpstan/issues/2600
