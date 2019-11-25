@@ -33,12 +33,12 @@ class DimensionFactoryTest extends TestCase
     {
         $localizedAttributes = [
             'locale' => 'de',
-            'workflowStage' => 'en',
+            'stage' => 'draft',
         ];
 
         $unlocalizedAttributes = [
             'locale' => null,
-            'workflowStage' => 'en',
+            'stage' => 'draft',
         ];
 
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
@@ -59,19 +59,19 @@ class DimensionFactoryTest extends TestCase
 
         $dimensionCollectionFactory = $this->getDimensionFactoryInstance($dimensionRepository->reveal());
 
-        $dimensionCollectionFactory->create(['locale' => 'de', 'workflowStage' => 'en']);
+        $dimensionCollectionFactory->create(['locale' => 'de', 'stage' => 'draft']);
     }
 
     public function testCreateExist(): void
     {
         $localizedAttributes = [
             'locale' => 'de',
-            'workflowStage' => 'en',
+            'stage' => 'draft',
         ];
 
         $unlocalizedAttributes = [
             'locale' => null,
-            'workflowStage' => 'en',
+            'stage' => 'draft',
         ];
 
         $localizedDimension = new Dimension(null, $localizedAttributes);
@@ -97,7 +97,7 @@ class DimensionFactoryTest extends TestCase
     {
         $unlocalizedAttributes = [
             'locale' => null,
-            'workflowStage' => 'en',
+            'stage' => 'draft',
         ];
 
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
@@ -120,7 +120,7 @@ class DimensionFactoryTest extends TestCase
     {
         $unlocalizedAttributes = [
             'locale' => null,
-            'workflowStage' => 'en',
+            'stage' => 'draft',
         ];
 
         $unlocalizedDimension = new Dimension(null, $unlocalizedAttributes);

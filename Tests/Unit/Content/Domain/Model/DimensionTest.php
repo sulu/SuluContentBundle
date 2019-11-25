@@ -56,19 +56,19 @@ class DimensionTest extends TestCase
     public function testGetPublishedSetNothing(): void
     {
         $dimension = $this->createDimension();
-        $this->assertSame('draft', $dimension->getWorkflowStage());
+        $this->assertSame('draft', $dimension->getStage());
     }
 
     public function testGetPublishedSetLive(): void
     {
-        $dimension = $this->createDimension(null, ['workflowStage' => 'live']);
-        $this->assertSame('live', $dimension->getWorkflowStage());
+        $dimension = $this->createDimension(null, ['stage' => 'live']);
+        $this->assertSame('live', $dimension->getStage());
     }
 
     public function testGetPublishedSetDraft(): void
     {
-        $dimension = $this->createDimension(null, ['workflowStage' => 'draft']);
-        $this->assertSame('draft', $dimension->getWorkflowStage());
+        $dimension = $this->createDimension(null, ['stage' => 'draft']);
+        $this->assertSame('draft', $dimension->getStage());
     }
 
     public function testGetAttributesDefaults(): void
@@ -76,7 +76,7 @@ class DimensionTest extends TestCase
         $dimension = $this->createDimension();
         $this->assertSame([
             'locale' => null,
-            'workflowStage' => 'draft',
+            'stage' => 'draft',
         ], $dimension->getAttributes());
     }
 
@@ -85,25 +85,25 @@ class DimensionTest extends TestCase
         $dimension = $this->createDimension(null, ['locale' => 'de']);
         $this->assertSame([
             'locale' => 'de',
-            'workflowStage' => 'draft',
+            'stage' => 'draft',
         ], $dimension->getAttributes());
     }
 
-    public function testGetAttributesWithWorkflowStage(): void
+    public function testGetAttributesWithStage(): void
     {
-        $dimension = $this->createDimension(null, ['workflowStage' => 'live']);
+        $dimension = $this->createDimension(null, ['stage' => 'live']);
         $this->assertSame([
             'locale' => null,
-            'workflowStage' => 'live',
+            'stage' => 'live',
         ], $dimension->getAttributes());
     }
 
-    public function testGetAttributesWithWorkflowStageAndLocale(): void
+    public function testGetAttributesWithStageAndLocale(): void
     {
-        $dimension = $this->createDimension(null, ['locale' => 'de', 'workflowStage' => 'live']);
+        $dimension = $this->createDimension(null, ['locale' => 'de', 'stage' => 'live']);
         $this->assertSame([
             'locale' => 'de',
-            'workflowStage' => 'live',
+            'stage' => 'live',
         ], $dimension->getAttributes());
     }
 }

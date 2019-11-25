@@ -98,7 +98,7 @@ class ContentRouteDefaultsProviderTest extends TestCase
             Argument::that(
                 function (LoadContentViewMessage $message) use ($content) {
                     return $content->reveal() === $message->getContent()
-                        && ['locale' => 'en', 'workflowStage' => 'draft'] === $message->getDimensionAttributes();
+                        && ['locale' => 'en', 'stage' => 'draft'] === $message->getDimensionAttributes();
                 }
             )
         )->will(
@@ -171,7 +171,7 @@ class ContentRouteDefaultsProviderTest extends TestCase
             Argument::that(
                 function (LoadContentViewMessage $message) use ($content) {
                     return $content->reveal() === $message->getContent()
-                        && ['locale' => 'en', 'workflowStage' => 'draft'] === $message->getDimensionAttributes();
+                        && ['locale' => 'en', 'stage' => 'draft'] === $message->getDimensionAttributes();
                 }
             )
         )->willThrow(new HandlerFailedException(new Envelope(new \stdClass()), [new \Exception()]));
@@ -211,7 +211,7 @@ class ContentRouteDefaultsProviderTest extends TestCase
             Argument::that(
                 function (LoadContentViewMessage $message) use ($content) {
                     return $content->reveal() === $message->getContent()
-                        && ['locale' => 'en', 'workflowStage' => 'draft'] === $message->getDimensionAttributes();
+                        && ['locale' => 'en', 'stage' => 'draft'] === $message->getDimensionAttributes();
                 }
             )
         )->will(
@@ -267,7 +267,7 @@ class ContentRouteDefaultsProviderTest extends TestCase
             Argument::that(
                 function (LoadContentViewMessage $message) use ($content) {
                     return $content->reveal() === $message->getContent()
-                        && ['locale' => 'en', 'workflowStage' => 'draft'] === $message->getDimensionAttributes();
+                        && ['locale' => 'en', 'stage' => 'draft'] === $message->getDimensionAttributes();
                 }
             )
         )->willThrow(new HandlerFailedException(new Envelope(new \stdClass()), [new \Exception()]));
@@ -313,7 +313,7 @@ class ContentRouteDefaultsProviderTest extends TestCase
             Argument::that(
                 function (LoadContentViewMessage $message) use ($content) {
                     return $content->reveal() === $message->getContent()
-                        && ['locale' => 'en', 'workflowStage' => 'draft'] === $message->getDimensionAttributes();
+                        && ['locale' => 'en', 'stage' => 'draft'] === $message->getDimensionAttributes();
                 }
             )
         )->will(

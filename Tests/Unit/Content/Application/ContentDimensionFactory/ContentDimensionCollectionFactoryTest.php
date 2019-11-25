@@ -53,7 +53,7 @@ class ContentDimensionCollectionFactoryTest extends TestCase
 
         $attributes = [
             'locale' => 'de',
-            'workflowStage' => 'draft',
+            'stage' => 'draft',
         ];
 
         $data = [
@@ -98,7 +98,7 @@ class ContentDimensionCollectionFactoryTest extends TestCase
 
         $attributes = [
             'locale' => 'de',
-            'workflowStage' => 'draft',
+            'stage' => 'draft',
         ];
 
         $data = [
@@ -138,7 +138,7 @@ class ContentDimensionCollectionFactoryTest extends TestCase
 
         $attributes = [
             'locale' => 'de',
-            'workflowStage' => 'draft',
+            'stage' => 'draft',
         ];
 
         $data = [
@@ -184,7 +184,7 @@ class ContentDimensionCollectionFactoryTest extends TestCase
 
         $attributes = [
             'locale' => 'de',
-            'workflowStage' => 'draft',
+            'stage' => 'draft',
         ];
 
         $data = [

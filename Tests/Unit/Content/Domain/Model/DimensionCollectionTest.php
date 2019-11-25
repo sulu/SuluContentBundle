@@ -50,12 +50,12 @@ class DimensionCollectionTest extends TestCase
     {
         $dimensionCollection = $this->createDimensionCollection([
             'locale' => 'de',
-            'workflowStage' => 'draft',
+            'stage' => 'draft',
         ]);
 
         $this->assertSame([
             'locale' => 'de',
-            'workflowStage' => 'draft',
+            'stage' => 'draft',
         ], $dimensionCollection->getAttributes());
     }
 
@@ -63,7 +63,7 @@ class DimensionCollectionTest extends TestCase
     {
         $dimensionCollection = $this->createDimensionCollection([
             'locale' => 'de',
-            'workflowStage' => 'draft',
+            'stage' => 'draft',
         ], [
             $this->createDimension('123-456'),
             $this->createDimension('456-789', ['locale' => 'de']),
@@ -91,7 +91,7 @@ class DimensionCollectionTest extends TestCase
     {
         $dimensionCollection = $this->createDimensionCollection([
             'locale' => 'de',
-            'workflowStage' => 'draft',
+            'stage' => 'draft',
         ], [
             $unlocalizedDimension = $this->createDimension('123-456'),
             $this->createDimension('456-789', ['locale' => 'de']),
@@ -104,7 +104,7 @@ class DimensionCollectionTest extends TestCase
     {
         $dimensionCollection = $this->createDimensionCollection([
             'locale' => 'de',
-            'workflowStage' => 'draft',
+            'stage' => 'draft',
         ], [
             $this->createDimension('123-456'),
             $localizedDimdension = $this->createDimension('456-789', ['locale' => 'de']),
@@ -117,7 +117,7 @@ class DimensionCollectionTest extends TestCase
     {
         $dimensionCollection = $this->createDimensionCollection([
             'locale' => 'de',
-            'workflowStage' => 'draft',
+            'stage' => 'draft',
         ], [
             $unlocalizedDimension = $this->createDimension('123-456'),
             $this->createDimension('456-789', ['locale' => 'de']),
@@ -125,7 +125,7 @@ class DimensionCollectionTest extends TestCase
 
         $this->assertSame([
             'locale' => null,
-            'workflowStage' => 'draft',
+            'stage' => 'draft',
         ], $dimensionCollection->getUnlocalizedAttributes());
     }
 
@@ -133,7 +133,7 @@ class DimensionCollectionTest extends TestCase
     {
         $dimensionCollection = $this->createDimensionCollection([
             'locale' => 'de',
-            'workflowStage' => 'draft',
+            'stage' => 'draft',
         ], [
             $this->createDimension('123-456'),
             $localizedDimdension = $this->createDimension('456-789', ['locale' => 'de']),
@@ -141,7 +141,7 @@ class DimensionCollectionTest extends TestCase
 
         $this->assertSame([
             'locale' => 'de',
-            'workflowStage' => 'draft',
+            'stage' => 'draft',
         ], $dimensionCollection->getLocalizedAttributes());
     }
 
@@ -149,7 +149,7 @@ class DimensionCollectionTest extends TestCase
     {
         $dimensionCollection = $this->createDimensionCollection([
             'locale' => 'de',
-            'workflowStage' => 'draft',
+            'stage' => 'draft',
         ], [
             $this->createDimension('123-456'),
             $this->createDimension('456-789', ['locale' => 'de']),

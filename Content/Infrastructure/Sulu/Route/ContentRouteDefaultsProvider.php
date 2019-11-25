@@ -108,10 +108,10 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
         }
 
         try {
-            // FIXME use the live workflow-stage when publishing is implemented
+            // FIXME use the live stage when publishing is implemented
 
             return $this->handle(
-                new LoadContentViewMessage($content, ['locale' => $locale, 'workflowStage' => 'draft'])
+                new LoadContentViewMessage($content, ['locale' => $locale, 'stage' => 'draft'])
             );
         } catch (HandlerFailedException $exception) {
             return null;

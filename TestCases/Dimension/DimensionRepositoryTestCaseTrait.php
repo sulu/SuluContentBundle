@@ -111,17 +111,17 @@ trait DimensionRepositoryTestCaseTrait
         $dimension1 = $dimensionRepository->create(static::$TEST_ID, ['locale' => 'de']);
         $dimensionRepository->add($dimension1);
 
-        $dimension2 = $dimensionRepository->create(static::$TEST_ID2, ['locale' => 'de', 'workflowStage' => 'live']);
+        $dimension2 = $dimensionRepository->create(static::$TEST_ID2, ['locale' => 'de', 'stage' => 'live']);
         $dimensionRepository->add($dimension2);
 
-        $dimension3 = $dimensionRepository->create(static::$TEST_ID3, ['locale' => 'en', 'workflowStage' => 'draft']);
+        $dimension3 = $dimensionRepository->create(static::$TEST_ID3, ['locale' => 'en', 'stage' => 'draft']);
         $dimensionRepository->add($dimension3);
 
         if (!$skipSave) {
             static::saveData();
         }
 
-        $dimension = $dimensionRepository->findOneBy(['locale' => 'de', 'workflowStage' => 'draft']);
+        $dimension = $dimensionRepository->findOneBy(['locale' => 'de', 'stage' => 'draft']);
         $this->assertNotNull($dimension);
         $this->assertSame(static::$TEST_ID, $dimension->getId());
     }
@@ -142,10 +142,10 @@ trait DimensionRepositoryTestCaseTrait
         $dimension1 = $dimensionRepository->create(static::$TEST_ID, ['locale' => 'de']);
         $dimensionRepository->add($dimension1);
 
-        $dimension2 = $dimensionRepository->create(static::$TEST_ID2, ['locale' => 'de', 'workflowStage' => 'live']);
+        $dimension2 = $dimensionRepository->create(static::$TEST_ID2, ['locale' => 'de', 'stage' => 'live']);
         $dimensionRepository->add($dimension2);
 
-        $dimension3 = $dimensionRepository->create(static::$TEST_ID3, ['locale' => 'en', 'workflowStage' => 'draft']);
+        $dimension3 = $dimensionRepository->create(static::$TEST_ID3, ['locale' => 'en', 'stage' => 'draft']);
         $dimensionRepository->add($dimension3);
 
         if (!$skipSave) {
@@ -159,7 +159,7 @@ trait DimensionRepositoryTestCaseTrait
     /**
      * @dataProvider saveSkipDataProvider
      */
-    public function testFindAttributesWithLocaleAndWorkflowStage(bool $skipSave): void
+    public function testFindAttributesWithLocaleAndStage(bool $skipSave): void
     {
         if ($skipSave) {
             $this->markTestSkipped('Currently not implemented to findIdsByAttributes without saving.');
@@ -175,7 +175,7 @@ trait DimensionRepositoryTestCaseTrait
         $dimension2 = $dimensionRepository->create(static::$TEST_ID2, ['locale' => 'en-gb']);
         $dimensionRepository->add($dimension2);
 
-        $dimension3 = $dimensionRepository->create(static::$TEST_ID3, ['locale' => 'de', 'workflowStage' => 'live']);
+        $dimension3 = $dimensionRepository->create(static::$TEST_ID3, ['locale' => 'de', 'stage' => 'live']);
         $dimensionRepository->add($dimension3);
 
         $dimension4 = $dimensionRepository->create(static::$TEST_ID4);
@@ -187,7 +187,7 @@ trait DimensionRepositoryTestCaseTrait
 
         $dimensions = iterator_to_array($dimensionRepository->findByAttributes([
             'locale' => 'en',
-            'workflowStage' => DimensionInterface::WORKFLOW_STAGE_DRAFT,
+            'stage' => DimensionInterface::STAGE_DRAFT,
         ]));
 
         $this->assertCount(2, $dimensions);
@@ -199,7 +199,7 @@ trait DimensionRepositoryTestCaseTrait
     /**
      * @dataProvider saveSkipDataProvider
      */
-    public function testFindByAttributesWithWorkflowStageOnly(bool $skipSave): void
+    public function testFindByAttributesWithStageOnly(bool $skipSave): void
     {
         if ($skipSave) {
             $this->markTestSkipped('Currently not implemented to findByAttributes without saving.');
@@ -215,7 +215,7 @@ trait DimensionRepositoryTestCaseTrait
         $dimension2 = $dimensionRepository->create(static::$TEST_ID2, ['locale' => 'en-gb']);
         $dimensionRepository->add($dimension2);
 
-        $dimension3 = $dimensionRepository->create(static::$TEST_ID3, ['locale' => 'de', 'workflowStage' => 'live']);
+        $dimension3 = $dimensionRepository->create(static::$TEST_ID3, ['locale' => 'de', 'stage' => 'live']);
         $dimensionRepository->add($dimension3);
 
         $dimension4 = $dimensionRepository->create(static::$TEST_ID4);
@@ -226,7 +226,7 @@ trait DimensionRepositoryTestCaseTrait
         }
 
         $dimensions = iterator_to_array($dimensionRepository->findByAttributes([
-            'workflowStage' => DimensionInterface::WORKFLOW_STAGE_DRAFT,
+            'stage' => DimensionInterface::STAGE_DRAFT,
         ]));
 
         $this->assertCount(1, $dimensions);
@@ -254,7 +254,7 @@ trait DimensionRepositoryTestCaseTrait
         $dimension2 = $dimensionRepository->create(static::$TEST_ID2, ['locale' => 'en-gb']);
         $dimensionRepository->add($dimension2);
 
-        $dimension3 = $dimensionRepository->create(static::$TEST_ID3, ['locale' => 'en', 'workflowStage' => 'live']);
+        $dimension3 = $dimensionRepository->create(static::$TEST_ID3, ['locale' => 'en', 'stage' => 'live']);
         $dimensionRepository->add($dimension3);
 
         $dimension4 = $dimensionRepository->create(static::$TEST_ID4);
