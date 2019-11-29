@@ -13,16 +13,16 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Tests\Functional\Content\Infrastructure\Doctrine;
 
-use Sulu\Bundle\ContentBundle\Content\Application\ContentDimensionLoader\ContentDimensionLoaderInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollection;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Repository\ContentDimensionRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleDimension;
 use Sulu\Bundle\ContentBundle\Tests\Functional\BaseTestCase;
 
-class ContentDimensionLoaderTest extends BaseTestCase
+class ContentDimensionRepositoryTest extends BaseTestCase
 {
     public function setUp(): void
     {
@@ -30,9 +30,9 @@ class ContentDimensionLoaderTest extends BaseTestCase
         self::purgeDatabase();
     }
 
-    public function createContentDimensionLoader(): ContentDimensionLoaderInterface
+    public function createContentDimensionRepository(): ContentDimensionRepositoryInterface
     {
-        return self::$container->get('sulu_content.content_dimension_loader');
+        return self::$container->get('sulu_content.content_dimension_repository');
     }
 
     public function testLoadExistAll(): void
@@ -56,8 +56,8 @@ class ContentDimensionLoaderTest extends BaseTestCase
         $this->getEntityManager()->flush();
         $this->getEntityManager()->clear();
 
-        $contentDimensionLoader = $this->createContentDimensionLoader();
-        $contentDimensionCollection = $contentDimensionLoader->load($content, $dimensionCollection);
+        $contentDimensionRepository = $this->createContentDimensionRepository();
+        $contentDimensionCollection = $contentDimensionRepository->load($content, $dimensionCollection);
 
         $this->assertCount(2, $contentDimensionCollection);
 
@@ -87,8 +87,8 @@ class ContentDimensionLoaderTest extends BaseTestCase
         $this->getEntityManager()->flush();
         $this->getEntityManager()->clear();
 
-        $contentDimensionLoader = $this->createContentDimensionLoader();
-        $contentDimensionCollection = $contentDimensionLoader->load($content, $dimensionCollection);
+        $contentDimensionRepository = $this->createContentDimensionRepository();
+        $contentDimensionCollection = $contentDimensionRepository->load($content, $dimensionCollection);
 
         $this->assertCount(1, $contentDimensionCollection);
 
@@ -119,8 +119,8 @@ class ContentDimensionLoaderTest extends BaseTestCase
         $this->getEntityManager()->flush();
         $this->getEntityManager()->clear();
 
-        $contentDimensionLoader = $this->createContentDimensionLoader();
-        $contentDimensionCollection = $contentDimensionLoader->load($content, $dimensionCollection);
+        $contentDimensionRepository = $this->createContentDimensionRepository();
+        $contentDimensionCollection = $contentDimensionRepository->load($content, $dimensionCollection);
 
         $this->assertCount(2, $contentDimensionCollection);
 

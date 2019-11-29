@@ -13,10 +13,10 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Application\MessageHandler;
 
-use Sulu\Bundle\ContentBundle\Content\Application\ContentDimensionLoader\ContentDimensionLoaderInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\Message\LoadContentMessage;
 use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\ApiViewResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ViewFactoryInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Repository\ContentDimensionRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionRepositoryInterface;
 
 class LoadContentMessageHandler
@@ -27,9 +27,9 @@ class LoadContentMessageHandler
     private $dimensionRepository;
 
     /**
-     * @var ContentDimensionLoaderInterface
+     * @var ContentDimensionRepositoryInterface
      */
-    private $contentDimensionLoader;
+    private $contentDimensionRepository;
 
     /**
      * @var ViewFactoryInterface
@@ -43,12 +43,12 @@ class LoadContentMessageHandler
 
     public function __construct(
         DimensionRepositoryInterface $dimensionRepository,
-        ContentDimensionLoaderInterface $contentDimensionLoader,
+        ContentDimensionRepositoryInterface $contentDimensionRepository,
         ViewFactoryInterface $viewFactory,
         ApiViewResolverInterface $viewResolver
     ) {
         $this->dimensionRepository = $dimensionRepository;
-        $this->contentDimensionLoader = $contentDimensionLoader;
+        $this->contentDimensionRepository = $contentDimensionRepository;
         $this->viewFactory = $viewFactory;
         $this->viewResolver = $viewResolver;
     }
@@ -57,7 +57,7 @@ class LoadContentMessageHandler
     {
         $content = $message->getContent();
         $dimensionCollection = $this->dimensionRepository->findByAttributes($message->getDimensionAttributes());
-        $contentDimensionCollection = $this->contentDimensionLoader->load($content, $dimensionCollection);
+        $contentDimensionCollection = $this->contentDimensionRepository->load($content, $dimensionCollection);
         $contentView = $this->viewFactory->create($contentDimensionCollection);
 
         return $this->viewResolver->resolve($contentView);

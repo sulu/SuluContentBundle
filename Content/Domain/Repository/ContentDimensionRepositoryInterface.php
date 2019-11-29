@@ -11,13 +11,13 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Content\Application\ContentDimensionLoader;
+namespace Sulu\Bundle\ContentBundle\Content\Domain\Repository;
 
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionCollectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollectionInterface;
 
-interface ContentDimensionLoaderInterface
+interface ContentDimensionRepositoryInterface
 {
     public function load(
         ContentInterface $content,

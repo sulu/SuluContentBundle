@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\MessageHandler;
 
 use PHPUnit\Framework\TestCase;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentDimensionLoader\ContentDimensionLoaderInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\Message\LoadContentMessage;
 use Sulu\Bundle\ContentBundle\Content\Application\MessageHandler\LoadContentMessageHandler;
 use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\ApiViewResolverInterface;
@@ -27,19 +26,20 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollection;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Repository\ContentDimensionRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionRepositoryInterface;
 
 class LoadContentMessageHandlerTest extends TestCase
 {
     protected function createLoadContentMessageHandlerInstance(
         DimensionRepositoryInterface $dimensionRepository,
-        ContentDimensionLoaderInterface $contentDimensionLoader,
+        ContentDimensionRepositoryInterface $contentDimensionRepository,
         ViewFactoryInterface $viewFactory,
         ApiViewResolverInterface $viewResolver
     ): LoadContentMessageHandler {
         return new LoadContentMessageHandler(
             $dimensionRepository,
-            $contentDimensionLoader,
+            $contentDimensionRepository,
             $viewFactory,
             $viewResolver
         );
@@ -97,8 +97,8 @@ class LoadContentMessageHandlerTest extends TestCase
             $contentDimension2->reveal(),
         ]);
 
-        $contentDimensionLoader = $this->prophesize(ContentDimensionLoaderInterface::class);
-        $contentDimensionLoader->load($content->reveal(), $dimensionCollection)->willReturn($contentDimensionCollection);
+        $contentDimensionRepository = $this->prophesize(ContentDimensionRepositoryInterface::class);
+        $contentDimensionRepository->load($content->reveal(), $dimensionCollection)->willReturn($contentDimensionCollection);
         $contentView = $this->prophesize(ContentViewInterface::class);
         $viewFactory = $this->prophesize(ViewFactoryInterface::class);
         $viewFactory->create($contentDimensionCollection)->willReturn($contentView->reveal())->shouldBeCalled();
@@ -108,7 +108,7 @@ class LoadContentMessageHandlerTest extends TestCase
 
         $createContentMessageHandler = $this->createLoadContentMessageHandlerInstance(
             $dimensionRepository->reveal(),
-            $contentDimensionLoader->reveal(),
+            $contentDimensionRepository->reveal(),
             $viewFactory->reveal(),
             $viewResolver->reveal()
         );

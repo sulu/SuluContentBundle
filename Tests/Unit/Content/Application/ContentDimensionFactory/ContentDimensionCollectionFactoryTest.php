@@ -17,12 +17,12 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentDimensionFactory\ContentDimensionCollectionFactory;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentDimensionFactory\Mapper\MapperInterface;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentDimensionLoader\ContentDimensionLoaderInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionCollection;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollection;
+use Sulu\Bundle\ContentBundle\Content\Domain\Repository\ContentDimensionRepositoryInterface;
 
 class ContentDimensionCollectionFactoryTest extends TestCase
 {
@@ -31,12 +31,12 @@ class ContentDimensionCollectionFactoryTest extends TestCase
      */
     protected function createContentDimensionCollectionFactoryInstance(array $existContentDimensions, iterable $mappers): ContentDimensionCollectionFactory
     {
-        $contentDimensionLoader = $this->prophesize(ContentDimensionLoaderInterface::class);
-        $contentDimensionLoader->load(Argument::any(), Argument::any())->willReturn(
+        $contentDimensionRepository = $this->prophesize(ContentDimensionRepositoryInterface::class);
+        $contentDimensionRepository->load(Argument::any(), Argument::any())->willReturn(
             new ContentDimensionCollection($existContentDimensions)
         );
 
-        return new ContentDimensionCollectionFactory($contentDimensionLoader->reveal(), $mappers);
+        return new ContentDimensionCollectionFactory($contentDimensionRepository->reveal(), $mappers);
     }
 
     public function testCreateWithoutMapperExistContentDimension(): void
