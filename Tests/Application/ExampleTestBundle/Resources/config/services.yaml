@@ -20,6 +20,7 @@ services:
             - '@sulu_core.doctrine_list_builder_factory'
             - '@sulu_core.doctrine_rest_helper'
             - '@sulu_content.message_bus'
+            - '@sulu_content.content_persister'
             - '@doctrine.orm.entity_manager'
         tags:
             - { name: sulu.context, context: admin }

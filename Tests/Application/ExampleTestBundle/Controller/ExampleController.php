@@ -16,8 +16,8 @@ namespace Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Controll
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\ViewHandlerInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersisterInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\Message\LoadContentMessage;
-use Sulu\Bundle\ContentBundle\Content\Application\Message\SaveContentMessage;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
 use Sulu\Component\Rest\AbstractRestController;
 use Sulu\Component\Rest\ListBuilder\Doctrine\DoctrineListBuilder;
@@ -53,6 +53,11 @@ class ExampleController extends AbstractRestController implements ClassResourceI
     private $restHelper;
 
     /**
+     * @var ContentPersisterInterface
+     */
+    private $contentPersister;
+
+    /**
      * @var EntityManagerInterface
      */
     private $entityManager;
@@ -64,12 +69,14 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         DoctrineListBuilderFactoryInterface $listBuilderFactory,
         RestHelperInterface $restHelper,
         MessageBusInterface $suluContentMessageBus,
+        ContentPersisterInterface $contentPersister,
         EntityManagerInterface $entityManager
     ) {
         $this->fieldDescriptorFactory = $fieldDescriptorFactory;
         $this->listBuilderFactory = $listBuilderFactory;
         $this->restHelper = $restHelper;
         $this->messageBus = $suluContentMessageBus;
+        $this->contentPersister = $contentPersister;
         $this->entityManager = $entityManager;
 
         parent::__construct($viewHandler, $tokenStorage);
@@ -117,7 +124,7 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         $data = $this->getData($request);
         $dimensionAttributes = $this->getAttributes($request);
 
-        $contentView = $this->handle(new SaveContentMessage($example, $data, $dimensionAttributes));
+        $contentView = $this->contentPersister->persist($example, $data, $dimensionAttributes);
 
         $this->entityManager->persist($example);
         $this->entityManager->flush();
@@ -139,7 +146,7 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         $data = $this->getData($request);
         $dimensionAttributes = $this->getAttributes($request);
 
-        $contentView = $this->handle(new SaveContentMessage($example, $data, $dimensionAttributes));
+        $contentView = $this->contentPersister->persist($example, $data, $dimensionAttributes);
 
         $this->entityManager->flush();
 

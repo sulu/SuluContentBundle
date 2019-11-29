@@ -69,5 +69,15 @@
 
             <tag name="sulu_route.defaults_provider"/>
         </service>
+
+        <!-- Content Persister -->
+        <service id="sulu_content.content_persister" class="Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersister">
+            <argument type="service" id="sulu_content.dimension_collection_factory"/>
+            <argument type="service" id="sulu_content.content_dimension_factory"/>
+            <argument type="service" id="sulu_content.view_factory"/>
+            <argument type="service" id="sulu_content.api_view_resolver"/>
+        </service>
+
+        <service id="Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersisterInterface" alias="sulu_content.content_persister"/>
     </services>
 </container>

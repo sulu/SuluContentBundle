@@ -8,13 +8,6 @@
         </defaults>
 
         <!-- Handlers -->
-        <service id="sulu_content.save_content_dimension_handler" class="Sulu\Bundle\ContentBundle\Content\Application\MessageHandler\SaveContentMessageHandler">
-            <argument type="service" id="sulu_content.dimension_collection_factory"/>
-            <argument type="service" id="sulu_content.content_dimension_factory"/>
-            <argument type="service" id="sulu_content.view_factory"/>
-            <argument type="service" id="sulu_content.api_view_resolver"/>
-        </service>
-
         <service id="sulu_content.load_content_dimension_handler" class="Sulu\Bundle\ContentBundle\Content\Application\MessageHandler\LoadContentMessageHandler">
             <argument type="service" id="sulu.repository.dimension"/>
             <argument type="service" id="sulu_content.content_dimension_repository"/>

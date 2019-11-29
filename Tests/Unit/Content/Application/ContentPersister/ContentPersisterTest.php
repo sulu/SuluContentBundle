@@ -11,11 +11,11 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\MessageHandler;
+namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentPersister;
 
 use PHPUnit\Framework\TestCase;
-use Sulu\Bundle\ContentBundle\Content\Application\Message\SaveContentMessage;
-use Sulu\Bundle\ContentBundle\Content\Application\MessageHandler\SaveContentMessageHandler;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersister;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersisterInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\ApiViewResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ContentDimensionCollectionFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\DimensionCollectionFactoryInterface;
@@ -29,15 +29,15 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollection;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 
-class SaveContentMessageHandlerTest extends TestCase
+class ContentPersisterTest extends TestCase
 {
-    protected function createSaveContentMessageHandlerInstance(
+    protected function createContentPersisterInstance(
         DimensionCollectionFactoryInterface $dimensionCollectionFactory,
         ContentDimensionCollectionFactoryInterface $contentDimensionCollectionFactory,
         ViewFactoryInterface $viewFactory,
         ApiViewResolverInterface $viewResolver
-    ): SaveContentMessageHandler {
-        return new SaveContentMessageHandler(
+    ): ContentPersisterInterface {
+        return new ContentPersister(
             $dimensionCollectionFactory,
             $contentDimensionCollectionFactory,
             $viewFactory,
@@ -65,7 +65,7 @@ class SaveContentMessageHandlerTest extends TestCase
         };
     }
 
-    public function testInvoke(): void
+    public function testPersist(): void
     {
         $content = $this->createContentInstance();
         $attributes = [
@@ -74,8 +74,6 @@ class SaveContentMessageHandlerTest extends TestCase
         $data = [
             'data' => 'value',
         ];
-
-        $message = new SaveContentMessage($content, $data, $attributes);
 
         $dimension1 = new Dimension('123-456', ['locale' => 'de']);
         $dimension2 = new Dimension('456-789', ['locale' => null]);
@@ -103,13 +101,13 @@ class SaveContentMessageHandlerTest extends TestCase
         $viewResolver = $this->prophesize(ApiViewResolverInterface::class);
         $viewResolver->resolve($contentView->reveal())->willReturn(['resolved' => 'data'])->shouldBeCalled();
 
-        $createContentMessageHandler = $this->createSaveContentMessageHandlerInstance(
+        $createContentMessageHandler = $this->createContentPersisterInstance(
             $dimensionCollectionFactory->reveal(),
             $contentDimensionCollectionFactory->reveal(),
             $viewFactory->reveal(),
             $viewResolver->reveal()
         );
 
-        $this->assertSame(['resolved' => 'data'], $createContentMessageHandler->__invoke($message));
+        $this->assertSame(['resolved' => 'data'], $createContentMessageHandler->persist($content, $data, $attributes));
     }
 }
