@@ -79,5 +79,15 @@
         </service>
 
         <service id="Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersisterInterface" alias="sulu_content.content_persister"/>
+
+        <!-- Content Loader -->
+        <service id="sulu_content.content_loader" class="Sulu\Bundle\ContentBundle\Content\Application\ContentLoader\ContentLoader">
+            <argument type="service" id="sulu.repository.dimension"/>
+            <argument type="service" id="sulu_content.content_dimension_repository"/>
+            <argument type="service" id="sulu_content.view_factory"/>
+            <argument type="service" id="sulu_content.api_view_resolver"/>
+        </service>
+
+        <service id="Sulu\Bundle\ContentBundle\Content\Application\ContentLoader\ContentLoaderInterface" alias="sulu_content.content_loader"/>
     </services>
 </container>

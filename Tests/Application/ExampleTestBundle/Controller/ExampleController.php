@@ -16,8 +16,8 @@ namespace Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Controll
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\ViewHandlerInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentLoader\ContentLoaderInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersisterInterface;
-use Sulu\Bundle\ContentBundle\Content\Application\Message\LoadContentMessage;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
 use Sulu\Component\Rest\AbstractRestController;
 use Sulu\Component\Rest\ListBuilder\Doctrine\DoctrineListBuilder;
@@ -29,14 +29,10 @@ use Sulu\Component\Rest\RestHelperInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Messenger\HandleTrait;
-use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class ExampleController extends AbstractRestController implements ClassResourceInterface
 {
-    use HandleTrait;
-
     /**
      * @var FieldDescriptorFactoryInterface
      */
@@ -51,6 +47,11 @@ class ExampleController extends AbstractRestController implements ClassResourceI
      * @var RestHelperInterface
      */
     private $restHelper;
+
+    /**
+     * @var ContentLoaderInterface
+     */
+    private $contentLoader;
 
     /**
      * @var ContentPersisterInterface
@@ -68,14 +69,14 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         FieldDescriptorFactoryInterface $fieldDescriptorFactory,
         DoctrineListBuilderFactoryInterface $listBuilderFactory,
         RestHelperInterface $restHelper,
-        MessageBusInterface $suluContentMessageBus,
+        ContentLoaderInterface $contentLoader,
         ContentPersisterInterface $contentPersister,
         EntityManagerInterface $entityManager
     ) {
         $this->fieldDescriptorFactory = $fieldDescriptorFactory;
         $this->listBuilderFactory = $listBuilderFactory;
         $this->restHelper = $restHelper;
-        $this->messageBus = $suluContentMessageBus;
+        $this->contentLoader = $contentLoader;
         $this->contentPersister = $contentPersister;
         $this->entityManager = $entityManager;
 
@@ -112,7 +113,7 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         }
 
         $dimensionAttributes = $this->getAttributes($request);
-        $contentView = $this->handle(new LoadContentMessage($example, $dimensionAttributes));
+        $contentView = $this->contentLoader->load($example, $dimensionAttributes);
 
         return $this->handleView($this->view($contentView));
     }

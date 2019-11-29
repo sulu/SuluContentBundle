@@ -11,15 +11,15 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Content\Application\MessageHandler;
+namespace Sulu\Bundle\ContentBundle\Content\Application\ContentLoader;
 
-use Sulu\Bundle\ContentBundle\Content\Application\Message\LoadContentMessage;
 use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\ApiViewResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ViewFactoryInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Repository\ContentDimensionRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionRepositoryInterface;
 
-class LoadContentMessageHandler
+class ContentLoader implements ContentLoaderInterface
 {
     /**
      * @var DimensionRepositoryInterface
@@ -53,10 +53,9 @@ class LoadContentMessageHandler
         $this->viewResolver = $viewResolver;
     }
 
-    public function __invoke(LoadContentMessage $message): array
+    public function load(ContentInterface $content, array $dimensionAttributes): array
     {
-        $content = $message->getContent();
-        $dimensionCollection = $this->dimensionRepository->findByAttributes($message->getDimensionAttributes());
+        $dimensionCollection = $this->dimensionRepository->findByAttributes($dimensionAttributes);
         $contentDimensionCollection = $this->contentDimensionRepository->load($content, $dimensionCollection);
         $contentView = $this->viewFactory->create($contentDimensionCollection);
 
