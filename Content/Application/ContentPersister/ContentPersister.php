@@ -18,6 +18,7 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ContentDimensionCollectionF
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\DimensionCollectionFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ViewFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
 
 class ContentPersister implements ContentPersisterInterface
 {
@@ -44,16 +45,14 @@ class ContentPersister implements ContentPersisterInterface
     public function __construct(
         DimensionCollectionFactoryInterface $dimensionCollectionFactory,
         ContentDimensionCollectionFactoryInterface $contentDimensionCollectionFactory,
-        ViewFactoryInterface $viewFactory,
-        ApiViewResolverInterface $viewResolver
+        ViewFactoryInterface $viewFactory
     ) {
         $this->dimensionCollectionFactory = $dimensionCollectionFactory;
         $this->contentDimensionCollectionFactory = $contentDimensionCollectionFactory;
         $this->viewFactory = $viewFactory;
-        $this->viewResolver = $viewResolver;
     }
 
-    public function persist(ContentInterface $content, array $data, array $dimensionAttributes): array
+    public function persist(ContentInterface $content, array $data, array $dimensionAttributes): ContentViewInterface
     {
         $dimensionCollection = $this->dimensionCollectionFactory->create($dimensionAttributes);
         $contentDimensionCollection = $this->contentDimensionCollectionFactory->create(
@@ -62,8 +61,6 @@ class ContentPersister implements ContentPersisterInterface
             $data
         );
 
-        $contentView = $this->viewFactory->create($contentDimensionCollection);
-
-        return $this->viewResolver->resolve($contentView);
+        return $this->viewFactory->create($contentDimensionCollection);
     }
 }

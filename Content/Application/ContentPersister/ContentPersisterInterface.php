@@ -14,14 +14,13 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentPersister;
 
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
 
 interface ContentPersisterInterface
 {
     /**
      * @param mixed[] $data
      * @param mixed[] $dimensionAttributes
-     *
-     * @return mixed[]
      */
-    public function persist(ContentInterface $content, array $data, array $dimensionAttributes): array;
+    public function persist(ContentInterface $content, array $data, array $dimensionAttributes): ContentViewInterface;
 }

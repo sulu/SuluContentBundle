@@ -62,7 +62,7 @@
         <!-- Route Defaults Provider -->
         <service id="sulu_content.route_defaults_provider" class="Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Route\ContentRouteDefaultsProvider">
             <argument type="service" id="doctrine.orm.entity_manager"/>
-            <argument type="service" id="sulu_content.message_bus"/>
+            <argument type="service" id="sulu_content.content_loader"/>
             <argument type="service" id="sulu_page.structure.factory"/>
             <argument type="service" id="sulu_page.compat.structure.legacy_property_factory"/>
             <argument type="service" id="sulu_http_cache.cache_lifetime.resolver"/>
@@ -75,7 +75,6 @@
             <argument type="service" id="sulu_content.dimension_collection_factory"/>
             <argument type="service" id="sulu_content.content_dimension_factory"/>
             <argument type="service" id="sulu_content.view_factory"/>
-            <argument type="service" id="sulu_content.api_view_resolver"/>
         </service>
 
         <service id="Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersisterInterface" alias="sulu_content.content_persister"/>
@@ -85,7 +84,6 @@
             <argument type="service" id="sulu.repository.dimension"/>
             <argument type="service" id="sulu_content.content_dimension_repository"/>
             <argument type="service" id="sulu_content.view_factory"/>
-            <argument type="service" id="sulu_content.api_view_resolver"/>
         </service>
 
         <service id="Sulu\Bundle\ContentBundle\Content\Application\ContentLoader\ContentLoaderInterface" alias="sulu_content.content_loader"/>

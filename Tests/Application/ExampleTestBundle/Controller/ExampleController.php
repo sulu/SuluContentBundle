@@ -18,6 +18,8 @@ use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\ViewHandlerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentLoader\ContentLoaderInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersisterInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\ApiViewResolverInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
 use Sulu\Component\Rest\AbstractRestController;
 use Sulu\Component\Rest\ListBuilder\Doctrine\DoctrineListBuilder;
@@ -59,6 +61,11 @@ class ExampleController extends AbstractRestController implements ClassResourceI
     private $contentPersister;
 
     /**
+     * @var ApiViewResolverInterface
+     */
+    private $apiViewResolver;
+
+    /**
      * @var EntityManagerInterface
      */
     private $entityManager;
@@ -71,6 +78,7 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         RestHelperInterface $restHelper,
         ContentLoaderInterface $contentLoader,
         ContentPersisterInterface $contentPersister,
+        ApiViewResolverInterface $apiViewResolver,
         EntityManagerInterface $entityManager
     ) {
         $this->fieldDescriptorFactory = $fieldDescriptorFactory;
@@ -78,6 +86,7 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         $this->restHelper = $restHelper;
         $this->contentLoader = $contentLoader;
         $this->contentPersister = $contentPersister;
+        $this->apiViewResolver = $apiViewResolver;
         $this->entityManager = $entityManager;
 
         parent::__construct($viewHandler, $tokenStorage);
@@ -115,7 +124,7 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         $dimensionAttributes = $this->getAttributes($request);
         $contentView = $this->contentLoader->load($example, $dimensionAttributes);
 
-        return $this->handleView($this->view($contentView));
+        return $this->handleView($this->view($this->resolve($example, $contentView)));
     }
 
     public function postAction(Request $request): Response
@@ -130,9 +139,7 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         $this->entityManager->persist($example);
         $this->entityManager->flush();
 
-        $contentView['id'] = $example->getId(); // TODO autoincrement id need to be set manually
-
-        return $this->handleView($this->view($contentView, 201));
+        return $this->handleView($this->view($this->resolve($example, $contentView), 201));
     }
 
     public function putAction(Request $request, int $id): Response
@@ -151,7 +158,7 @@ class ExampleController extends AbstractRestController implements ClassResourceI
 
         $this->entityManager->flush();
 
-        return $this->handleView($this->view($contentView));
+        return $this->handleView($this->view($this->resolve($example, $contentView)));
     }
 
     public function deleteAction(int $id): Response
@@ -180,5 +187,16 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         $data = $request->request->all();
 
         return $data;
+    }
+
+    /**
+     * @return mixed[]
+     */
+    protected function resolve(Example $example, ContentViewInterface $contentView): array
+    {
+        $resolvedData = $this->apiViewResolver->resolve($contentView);
+        $resolvedData['id'] = $example->getId();
+
+        return $resolvedData;
     }
 }

@@ -16,7 +16,6 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentPersis
 use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersister;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersisterInterface;
-use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\ApiViewResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ContentDimensionCollectionFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\DimensionCollectionFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ViewFactoryInterface;
@@ -34,14 +33,12 @@ class ContentPersisterTest extends TestCase
     protected function createContentPersisterInstance(
         DimensionCollectionFactoryInterface $dimensionCollectionFactory,
         ContentDimensionCollectionFactoryInterface $contentDimensionCollectionFactory,
-        ViewFactoryInterface $viewFactory,
-        ApiViewResolverInterface $viewResolver
+        ViewFactoryInterface $viewFactory
     ): ContentPersisterInterface {
         return new ContentPersister(
             $dimensionCollectionFactory,
             $contentDimensionCollectionFactory,
-            $viewFactory,
-            $viewResolver
+            $viewFactory
         );
     }
 
@@ -98,16 +95,12 @@ class ContentPersisterTest extends TestCase
         $viewFactory = $this->prophesize(ViewFactoryInterface::class);
         $viewFactory->create($contentDimensionCollection)->willReturn($contentView->reveal())->shouldBeCalled();
 
-        $viewResolver = $this->prophesize(ApiViewResolverInterface::class);
-        $viewResolver->resolve($contentView->reveal())->willReturn(['resolved' => 'data'])->shouldBeCalled();
-
         $createContentMessageHandler = $this->createContentPersisterInstance(
             $dimensionCollectionFactory->reveal(),
             $contentDimensionCollectionFactory->reveal(),
-            $viewFactory->reveal(),
-            $viewResolver->reveal()
+            $viewFactory->reveal()
         );
 
-        $this->assertSame(['resolved' => 'data'], $createContentMessageHandler->persist($content, $data, $attributes));
+        $this->assertSame($contentView->reveal(), $createContentMessageHandler->persist($content, $data, $attributes));
     }
 }

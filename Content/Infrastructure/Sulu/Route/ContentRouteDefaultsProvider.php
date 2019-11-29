@@ -15,24 +15,25 @@ namespace Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Route;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NoResultException;
-use Sulu\Bundle\ContentBundle\Content\Application\Message\LoadContentViewMessage;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentLoader\ContentLoaderInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Bundle\RouteBundle\Routing\Defaults\RouteDefaultsProviderInterface;
 use Sulu\Component\Content\Compat\Structure\LegacyPropertyFactory;
 use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
-use Symfony\Component\Messenger\Exception\HandlerFailedException;
-use Symfony\Component\Messenger\HandleTrait;
-use Symfony\Component\Messenger\MessageBusInterface;
 
 class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
 {
-    use HandleTrait;
-
     /**
      * @var EntityManagerInterface
      */
     protected $entityManager;
+
+    /**
+     * @var ContentLoaderInterface
+     */
+    protected $contentLoader;
 
     /**
      * @var StructureMetadataFactoryInterface
@@ -44,10 +45,10 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
      */
     private $propertyFactory;
 
-    public function __construct(EntityManagerInterface $entityManager, MessageBusInterface $messageBus, StructureMetadataFactoryInterface $structureMetadataFactory, LegacyPropertyFactory $propertyFactory)
+    public function __construct(EntityManagerInterface $entityManager, ContentLoaderInterface $contentLoader, StructureMetadataFactoryInterface $structureMetadataFactory, LegacyPropertyFactory $propertyFactory)
     {
         $this->entityManager = $entityManager;
-        $this->messageBus = $messageBus;
+        $this->contentLoader = $contentLoader;
         $this->structureMetadataFactory = $structureMetadataFactory;
         $this->propertyFactory = $propertyFactory;
     }
@@ -109,11 +110,14 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
 
         try {
             // FIXME use the live stage when publishing is implemented
+            $contentView = $this->contentLoader->load($content, ['locale' => $locale, 'stage' => 'draft']);
 
-            return $this->handle(
-                new LoadContentViewMessage($content, ['locale' => $locale, 'stage' => 'draft'])
-            );
-        } catch (HandlerFailedException $exception) {
+            if (!$contentView instanceof TemplateInterface) {
+                throw new \RuntimeException(sprintf('Expected to get "%s" from ContentLoader but "%s" given.', TemplateInterface::class, \get_class($contentView)));
+            }
+
+            return $contentView;
+        } catch (ContentNotFoundException $exception) {
             return null;
         }
     }

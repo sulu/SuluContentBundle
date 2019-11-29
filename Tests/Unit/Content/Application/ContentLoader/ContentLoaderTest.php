@@ -16,7 +16,7 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentLoader
 use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentLoader\ContentLoader;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentLoader\ContentLoaderInterface;
-use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\ApiViewResolverInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ViewFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\AbstractContent;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionCollection;
@@ -34,14 +34,12 @@ class ContentLoaderTest extends TestCase
     protected function createContentLoaderInstance(
         DimensionRepositoryInterface $dimensionRepository,
         ContentDimensionRepositoryInterface $contentDimensionRepository,
-        ViewFactoryInterface $viewFactory,
-        ApiViewResolverInterface $viewResolver
+        ViewFactoryInterface $viewFactory
     ): ContentLoaderInterface {
         return new ContentLoader(
             $dimensionRepository,
             $contentDimensionRepository,
-            $viewFactory,
-            $viewResolver
+            $viewFactory
         );
     }
 
@@ -101,16 +99,51 @@ class ContentLoaderTest extends TestCase
         $viewFactory = $this->prophesize(ViewFactoryInterface::class);
         $viewFactory->create($contentDimensionCollection)->willReturn($contentView->reveal())->shouldBeCalled();
 
-        $viewResolver = $this->prophesize(ApiViewResolverInterface::class);
-        $viewResolver->resolve($contentView->reveal())->willReturn(['resolved' => 'data'])->shouldBeCalled();
+        $createContentMessageHandler = $this->createContentLoaderInstance(
+            $dimensionRepository->reveal(),
+            $contentDimensionRepository->reveal(),
+            $viewFactory->reveal()
+        );
+
+        $this->assertSame($contentView->reveal(), $createContentMessageHandler->load($content->reveal(), $attributes));
+    }
+
+    public function testLoadNotFound(): void
+    {
+        $this->expectException(ContentNotFoundException::class);
+
+        $dimension1 = $this->prophesize(DimensionInterface::class);
+        $dimension1->getId()->willReturn('123-456');
+        $dimension2 = $this->prophesize(DimensionInterface::class);
+        $dimension2->getId()->willReturn('456-789');
+
+        $content = $this->prophesize(ContentInterface::class);
+
+        $attributes = [
+            'locale' => 'de',
+        ];
+
+        $dimension1 = new Dimension('123-456', ['locale' => null]);
+        $dimension2 = new Dimension('456-789', ['locale' => 'de']);
+        $dimensionCollection = new DimensionCollection($attributes, [$dimension1, $dimension2]);
+
+        $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
+        $dimensionRepository->findByAttributes($attributes)->willReturn($dimensionCollection)->shouldBeCalled();
+
+        $contentDimensionCollection = new ContentDimensionCollection([]);
+
+        $contentDimensionRepository = $this->prophesize(ContentDimensionRepositoryInterface::class);
+        $contentDimensionRepository->load($content->reveal(), $dimensionCollection)->willReturn($contentDimensionCollection);
+        $contentView = $this->prophesize(ContentViewInterface::class);
+        $viewFactory = $this->prophesize(ViewFactoryInterface::class);
+        $viewFactory->create($contentDimensionCollection)->willReturn($contentView->reveal())->shouldNotBeCalled();
 
         $createContentMessageHandler = $this->createContentLoaderInstance(
             $dimensionRepository->reveal(),
             $contentDimensionRepository->reveal(),
-            $viewFactory->reveal(),
-            $viewResolver->reveal()
+            $viewFactory->reveal()
         );
 
-        $this->assertSame(['resolved' => 'data'], $createContentMessageHandler->load($content->reveal(), $attributes));
+        $this->assertSame($contentView->reveal(), $createContentMessageHandler->load($content->reveal(), $attributes));
     }
 }

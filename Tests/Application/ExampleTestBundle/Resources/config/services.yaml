@@ -21,6 +21,7 @@ services:
             - '@sulu_core.doctrine_rest_helper'
             - '@sulu_content.content_loader'
             - '@sulu_content.content_persister'
+            - '@sulu_content.api_view_resolver'
             - '@doctrine.orm.entity_manager'
         tags:
             - { name: sulu.context, context: admin }

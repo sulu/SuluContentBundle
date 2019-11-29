@@ -14,13 +14,12 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentLoader;
 
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
 
 interface ContentLoaderInterface
 {
     /**
      * @param mixed[] $dimensionAttributes
-     *
-     * @return mixed[]
      */
-    public function load(ContentInterface $content, array $dimensionAttributes): array;
+    public function load(ContentInterface $content, array $dimensionAttributes): ContentViewInterface;
 }
