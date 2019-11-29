@@ -16,7 +16,6 @@ namespace Sulu\Bundle\ContentBundle\Content\Application\ContentDimensionFactory;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentDimensionFactory\Mapper\MapperInterface;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentDimensionLoader\ContentDimensionLoaderInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ContentDimensionCollectionFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionCollection;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionCollectionInterface;
@@ -24,13 +23,14 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Repository\ContentDimensionRepositoryInterface;
 
 class ContentDimensionCollectionFactory implements ContentDimensionCollectionFactoryInterface
 {
     /**
-     * @var ContentDimensionLoaderInterface
+     * @var ContentDimensionRepositoryInterface
      */
-    private $contentDimensionLoader;
+    private $contentDimensionRepository;
 
     /**
      * @var iterable<MapperInterface>
@@ -40,9 +40,9 @@ class ContentDimensionCollectionFactory implements ContentDimensionCollectionFac
     /**
      * @param iterable<MapperInterface> $mappers
      */
-    public function __construct(ContentDimensionLoaderInterface $contentDimensionLoader, iterable $mappers)
+    public function __construct(ContentDimensionRepositoryInterface $contentDimensionRepository, iterable $mappers)
     {
-        $this->contentDimensionLoader = $contentDimensionLoader;
+        $this->contentDimensionRepository = $contentDimensionRepository;
         $this->mappers = $mappers;
     }
 
@@ -51,7 +51,7 @@ class ContentDimensionCollectionFactory implements ContentDimensionCollectionFac
         DimensionCollectionInterface $dimensionCollection,
         array $data
     ): ContentDimensionCollectionInterface {
-        $contentDimensionCollection = $this->contentDimensionLoader->load($content, $dimensionCollection);
+        $contentDimensionCollection = $this->contentDimensionRepository->load($content, $dimensionCollection);
 
         $localizedDimension = $dimensionCollection->getLocalizedDimension();
         $unlocalizedDimension = $dimensionCollection->getUnlocalizedDimension();

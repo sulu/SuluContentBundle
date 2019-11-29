@@ -14,14 +14,14 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Content\Infrastructure\Doctrine;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentDimensionLoader\ContentDimensionLoaderInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionCollection;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionCollectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollectionInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Repository\ContentDimensionRepositoryInterface;
 
-class ContentDimensionLoader implements ContentDimensionLoaderInterface
+class ContentDimensionRepository implements ContentDimensionRepositoryInterface
 {
     /**
      * @var EntityManagerInterface

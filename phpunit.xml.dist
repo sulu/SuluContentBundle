@@ -10,7 +10,6 @@
         <whitelist addUncoveredFilesFromWhitelist="true">
             <directory>.</directory>
             <exclude>
-                <directory>Common/</directory><!-- TODO Tests -->
                 <directory>Resources/</directory>
                 <directory>TestCases/</directory>
                 <directory>Tests/</directory>
