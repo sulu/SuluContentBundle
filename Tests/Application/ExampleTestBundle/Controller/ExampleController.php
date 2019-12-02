@@ -16,9 +16,7 @@ namespace Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Controll
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\ViewHandlerInterface;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentLoader\ContentLoaderInterface;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersisterInterface;
-use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\ApiViewResolverInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentFacade\ContentFacadeInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
 use Sulu\Component\Rest\AbstractRestController;
@@ -51,19 +49,9 @@ class ExampleController extends AbstractRestController implements ClassResourceI
     private $restHelper;
 
     /**
-     * @var ContentLoaderInterface
+     * @var ContentFacadeInterface
      */
-    private $contentLoader;
-
-    /**
-     * @var ContentPersisterInterface
-     */
-    private $contentPersister;
-
-    /**
-     * @var ApiViewResolverInterface
-     */
-    private $apiViewResolver;
+    private $contentFacade;
 
     /**
      * @var EntityManagerInterface
@@ -76,17 +64,13 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         FieldDescriptorFactoryInterface $fieldDescriptorFactory,
         DoctrineListBuilderFactoryInterface $listBuilderFactory,
         RestHelperInterface $restHelper,
-        ContentLoaderInterface $contentLoader,
-        ContentPersisterInterface $contentPersister,
-        ApiViewResolverInterface $apiViewResolver,
+        ContentFacadeInterface $contentFacade,
         EntityManagerInterface $entityManager
     ) {
         $this->fieldDescriptorFactory = $fieldDescriptorFactory;
         $this->listBuilderFactory = $listBuilderFactory;
         $this->restHelper = $restHelper;
-        $this->contentLoader = $contentLoader;
-        $this->contentPersister = $contentPersister;
-        $this->apiViewResolver = $apiViewResolver;
+        $this->contentFacade = $contentFacade;
         $this->entityManager = $entityManager;
 
         parent::__construct($viewHandler, $tokenStorage);
@@ -122,7 +106,7 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         }
 
         $dimensionAttributes = $this->getAttributes($request);
-        $contentView = $this->contentLoader->load($example, $dimensionAttributes);
+        $contentView = $this->contentFacade->load($example, $dimensionAttributes);
 
         return $this->handleView($this->view($this->resolve($example, $contentView)));
     }
@@ -134,7 +118,7 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         $data = $this->getData($request);
         $dimensionAttributes = $this->getAttributes($request);
 
-        $contentView = $this->contentPersister->persist($example, $data, $dimensionAttributes);
+        $contentView = $this->contentFacade->persist($example, $data, $dimensionAttributes);
 
         $this->entityManager->persist($example);
         $this->entityManager->flush();
@@ -154,7 +138,7 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         $data = $this->getData($request);
         $dimensionAttributes = $this->getAttributes($request);
 
-        $contentView = $this->contentPersister->persist($example, $data, $dimensionAttributes);
+        $contentView = $this->contentFacade->persist($example, $data, $dimensionAttributes);
 
         $this->entityManager->flush();
 
@@ -194,7 +178,7 @@ class ExampleController extends AbstractRestController implements ClassResourceI
      */
     protected function resolve(Example $example, ContentViewInterface $contentView): array
     {
-        $resolvedData = $this->apiViewResolver->resolve($contentView);
+        $resolvedData = $this->contentFacade->resolve($contentView);
         $resolvedData['id'] = $example->getId();
 
         return $resolvedData;
