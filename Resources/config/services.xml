@@ -14,13 +14,6 @@
 
         <service id="Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Admin\ContentViewBuilderInterface" alias="sulu_content.content_view_builder"/>
 
-        <!-- ApiViewResolver -->
-        <service id="sulu_content.api_view_resolver" class="Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\ApiViewResolver">
-            <argument type="tagged" tag="sulu_content.api_resolver"/>
-        </service>
-
-        <service id="Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\ApiViewResolverInterface" class="sulu_content.api_view_resolver"/>
-
         <!-- ViewFactory -->
         <service id="sulu_content.view_factory" class="Sulu\Bundle\ContentBundle\Content\Application\ViewFactory\ViewFactory">
             <argument type="tagged" tag="sulu_content.view_factory_merger"/>
@@ -88,11 +81,20 @@
 
         <service id="Sulu\Bundle\ContentBundle\Content\Application\ContentLoader\ContentLoaderInterface" alias="sulu_content.content_loader"/>
 
+        <!-- ApiViewResolver -->
+        <service id="sulu_content.api_view_resolver" class="Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\ApiViewResolver">
+            <argument type="tagged" tag="sulu_content.api_resolver"/>
+        </service>
+
+        <service id="Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\ApiViewResolverInterface" alias="sulu_content.api_view_resolver"/>
+
         <!-- ContentFacade -->
         <service id="sulu_content.content_facade" class="Sulu\Bundle\ContentBundle\Content\Application\ContentFacade\ContentFacade">
             <argument type="service" id="sulu_content.content_loader"/>
             <argument type="service" id="sulu_content.content_persister"/>
             <argument type="service" id="sulu_content.api_view_resolver"/>
         </service>
+
+        <service id="Sulu\Bundle\ContentBundle\Content\Application\ContentFacade\ContentFacadeInterface" alias="sulu_content.content_facade"/>
     </services>
 </container>
