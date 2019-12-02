@@ -16,9 +16,17 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\DependencyInjection;
 use Doctrine\Bundle\DoctrineBundle\DependencyInjection\DoctrineExtension;
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
 use Sulu\Bundle\AdminBundle\DependencyInjection\SuluAdminExtension;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentFacade\ContentFacadeInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentLoader\ContentLoaderInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersisterInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\ApiViewResolverInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ContentDimensionCollectionFactoryInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ViewFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
+use Sulu\Bundle\ContentBundle\Content\Domain\Repository\ContentDimensionRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Doctrine\DimensionRepository;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Doctrine\MetadataLoader;
+use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Admin\ContentViewBuilderInterface;
 use Sulu\Bundle\ContentBundle\DependencyInjection\SuluContentExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -40,8 +48,22 @@ class SuluContentExtensionTest extends AbstractExtensionTestCase
     {
         $this->load();
         $this->assertContainerBuilderHasService('sulu_content.metadata_loader', MetadataLoader::class);
+
+        // Test persistence bundle registered service and parameters
         $this->assertContainerBuilderHasService('sulu.repository.dimension', DimensionRepository::class);
         $this->assertContainerBuilderHasParameter('sulu.model.dimension.class', Dimension::class);
+
+        // Main services aliases
+        $this->assertContainerBuilderHasAlias(ContentFacadeInterface::class, 'sulu_content.content_facade');
+        $this->assertContainerBuilderHasAlias(ContentLoaderInterface::class, 'sulu_content.content_loader');
+        $this->assertContainerBuilderHasAlias(ContentPersisterInterface::class, 'sulu_content.content_persister');
+        $this->assertContainerBuilderHasAlias(ApiViewResolverInterface::class, 'sulu_content.api_view_resolver');
+
+        // Additional services aliases
+        $this->assertContainerBuilderHasAlias(ContentViewBuilderInterface::class, 'sulu_content.content_view_builder');
+        $this->assertContainerBuilderHasAlias(ViewFactoryInterface::class, 'sulu_content.view_factory');
+        $this->assertContainerBuilderHasAlias(ContentDimensionCollectionFactoryInterface::class, 'sulu_content.content_dimension_factory');
+        $this->assertContainerBuilderHasAlias(ContentDimensionRepositoryInterface::class, 'sulu_content.content_dimension_repository');
     }
 
     public function testLoadObjects(): void
