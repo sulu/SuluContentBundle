@@ -16,8 +16,8 @@ namespace Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Controll
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\ViewHandlerInterface;
-use Sulu\Bundle\ContentBundle\Content\Application\Message\LoadContentMessage;
-use Sulu\Bundle\ContentBundle\Content\Application\Message\SaveContentMessage;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentFacade\ContentFacadeInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
 use Sulu\Component\Rest\AbstractRestController;
 use Sulu\Component\Rest\ListBuilder\Doctrine\DoctrineListBuilder;
@@ -29,14 +29,10 @@ use Sulu\Component\Rest\RestHelperInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Messenger\HandleTrait;
-use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class ExampleController extends AbstractRestController implements ClassResourceInterface
 {
-    use HandleTrait;
-
     /**
      * @var FieldDescriptorFactoryInterface
      */
@@ -53,6 +49,11 @@ class ExampleController extends AbstractRestController implements ClassResourceI
     private $restHelper;
 
     /**
+     * @var ContentFacadeInterface
+     */
+    private $contentFacade;
+
+    /**
      * @var EntityManagerInterface
      */
     private $entityManager;
@@ -63,13 +64,13 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         FieldDescriptorFactoryInterface $fieldDescriptorFactory,
         DoctrineListBuilderFactoryInterface $listBuilderFactory,
         RestHelperInterface $restHelper,
-        MessageBusInterface $suluContentMessageBus,
+        ContentFacadeInterface $contentFacade,
         EntityManagerInterface $entityManager
     ) {
         $this->fieldDescriptorFactory = $fieldDescriptorFactory;
         $this->listBuilderFactory = $listBuilderFactory;
         $this->restHelper = $restHelper;
-        $this->messageBus = $suluContentMessageBus;
+        $this->contentFacade = $contentFacade;
         $this->entityManager = $entityManager;
 
         parent::__construct($viewHandler, $tokenStorage);
@@ -105,9 +106,9 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         }
 
         $dimensionAttributes = $this->getAttributes($request);
-        $contentView = $this->handle(new LoadContentMessage($example, $dimensionAttributes));
+        $contentView = $this->contentFacade->load($example, $dimensionAttributes);
 
-        return $this->handleView($this->view($contentView));
+        return $this->handleView($this->view($this->resolve($example, $contentView)));
     }
 
     public function postAction(Request $request): Response
@@ -117,14 +118,12 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         $data = $this->getData($request);
         $dimensionAttributes = $this->getAttributes($request);
 
-        $contentView = $this->handle(new SaveContentMessage($example, $data, $dimensionAttributes));
+        $contentView = $this->contentFacade->persist($example, $data, $dimensionAttributes);
 
         $this->entityManager->persist($example);
         $this->entityManager->flush();
 
-        $contentView['id'] = $example->getId(); // TODO autoincrement id need to be set manually
-
-        return $this->handleView($this->view($contentView, 201));
+        return $this->handleView($this->view($this->resolve($example, $contentView), 201));
     }
 
     public function putAction(Request $request, int $id): Response
@@ -139,11 +138,11 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         $data = $this->getData($request);
         $dimensionAttributes = $this->getAttributes($request);
 
-        $contentView = $this->handle(new SaveContentMessage($example, $data, $dimensionAttributes));
+        $contentView = $this->contentFacade->persist($example, $data, $dimensionAttributes);
 
         $this->entityManager->flush();
 
-        return $this->handleView($this->view($contentView));
+        return $this->handleView($this->view($this->resolve($example, $contentView)));
     }
 
     public function deleteAction(int $id): Response
@@ -172,5 +171,16 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         $data = $request->request->all();
 
         return $data;
+    }
+
+    /**
+     * @return mixed[]
+     */
+    protected function resolve(Example $example, ContentViewInterface $contentView): array
+    {
+        $resolvedData = $this->contentFacade->resolve($contentView);
+        $resolvedData['id'] = $example->getId();
+
+        return $resolvedData;
     }
 }

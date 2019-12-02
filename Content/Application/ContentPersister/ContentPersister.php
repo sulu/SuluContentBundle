@@ -11,15 +11,16 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Content\Application\MessageHandler;
+namespace Sulu\Bundle\ContentBundle\Content\Application\ContentPersister;
 
-use Sulu\Bundle\ContentBundle\Content\Application\Message\SaveContentMessage;
 use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\ApiViewResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ContentDimensionCollectionFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\DimensionCollectionFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ViewFactoryInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
 
-class SaveContentMessageHandler
+class ContentPersister implements ContentPersisterInterface
 {
     /**
      * @var DimensionCollectionFactoryInterface
@@ -44,23 +45,22 @@ class SaveContentMessageHandler
     public function __construct(
         DimensionCollectionFactoryInterface $dimensionCollectionFactory,
         ContentDimensionCollectionFactoryInterface $contentDimensionCollectionFactory,
-        ViewFactoryInterface $viewFactory,
-        ApiViewResolverInterface $viewResolver
+        ViewFactoryInterface $viewFactory
     ) {
         $this->dimensionCollectionFactory = $dimensionCollectionFactory;
         $this->contentDimensionCollectionFactory = $contentDimensionCollectionFactory;
         $this->viewFactory = $viewFactory;
-        $this->viewResolver = $viewResolver;
     }
 
-    public function __invoke(SaveContentMessage $message): array
+    public function persist(ContentInterface $content, array $data, array $dimensionAttributes): ContentViewInterface
     {
-        $dimensionCollection = $this->dimensionCollectionFactory->create($message->getDimensionAttributes());
+        $dimensionCollection = $this->dimensionCollectionFactory->create($dimensionAttributes);
         $contentDimensionCollection = $this->contentDimensionCollectionFactory->create(
-            $message->getContent(), $dimensionCollection, $message->getData()
+            $content,
+            $dimensionCollection,
+            $data
         );
-        $contentView = $this->viewFactory->create($contentDimensionCollection);
 
-        return $this->viewResolver->resolve($contentView);
+        return $this->viewFactory->create($contentDimensionCollection);
     }
 }

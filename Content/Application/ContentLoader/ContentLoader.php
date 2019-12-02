@@ -11,15 +11,16 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Content\Application\MessageHandler;
+namespace Sulu\Bundle\ContentBundle\Content\Application\ContentLoader;
 
-use Sulu\Bundle\ContentBundle\Content\Application\Message\LoadContentMessage;
-use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\ApiViewResolverInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ViewFactoryInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Repository\ContentDimensionRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionRepositoryInterface;
 
-class LoadContentMessageHandler
+class ContentLoader implements ContentLoaderInterface
 {
     /**
      * @var DimensionRepositoryInterface
@@ -36,30 +37,25 @@ class LoadContentMessageHandler
      */
     private $viewFactory;
 
-    /**
-     * @var ApiViewResolverInterface
-     */
-    private $viewResolver;
-
     public function __construct(
         DimensionRepositoryInterface $dimensionRepository,
         ContentDimensionRepositoryInterface $contentDimensionRepository,
-        ViewFactoryInterface $viewFactory,
-        ApiViewResolverInterface $viewResolver
+        ViewFactoryInterface $viewFactory
     ) {
         $this->dimensionRepository = $dimensionRepository;
         $this->contentDimensionRepository = $contentDimensionRepository;
         $this->viewFactory = $viewFactory;
-        $this->viewResolver = $viewResolver;
     }
 
-    public function __invoke(LoadContentMessage $message): array
+    public function load(ContentInterface $content, array $dimensionAttributes): ContentViewInterface
     {
-        $content = $message->getContent();
-        $dimensionCollection = $this->dimensionRepository->findByAttributes($message->getDimensionAttributes());
+        $dimensionCollection = $this->dimensionRepository->findByAttributes($dimensionAttributes);
         $contentDimensionCollection = $this->contentDimensionRepository->load($content, $dimensionCollection);
-        $contentView = $this->viewFactory->create($contentDimensionCollection);
 
-        return $this->viewResolver->resolve($contentView);
+        if (0 === \count($contentDimensionCollection)) {
+            throw new ContentNotFoundException($content, $dimensionAttributes);
+        }
+
+        return $this->viewFactory->create($contentDimensionCollection);
     }
 }
