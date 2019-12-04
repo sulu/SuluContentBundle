@@ -76,6 +76,9 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         parent::__construct($viewHandler, $tokenStorage);
     }
 
+    /**
+     * The cgetAction looks like for a normal list action.
+     */
     public function cgetAction(Request $request): Response
     {
         /** @var DoctrineFieldDescriptorInterface[] $fieldDescriptors */
@@ -96,6 +99,9 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         return $this->handleView($this->view($listRepresentation));
     }
 
+    /**
+     * The getAction handles first the main entity and then load the content for it based on dimensionAttributes.
+     */
     public function getAction(Request $request, int $id): Response
     {
         /** @var Example|null $example */
@@ -105,18 +111,21 @@ class ExampleController extends AbstractRestController implements ClassResourceI
             throw new NotFoundHttpException();
         }
 
-        $dimensionAttributes = $this->getAttributes($request);
+        $dimensionAttributes = $this->getDimensionAttributes($request);
         $contentView = $this->contentFacade->load($example, $dimensionAttributes);
 
         return $this->handleView($this->view($this->resolve($example, $contentView)));
     }
 
+    /**
+     * The postAction handles first the main entity and then save the content for it based on dimensionAttributes.
+     */
     public function postAction(Request $request): Response
     {
         $example = new Example();
 
         $data = $this->getData($request);
-        $dimensionAttributes = $this->getAttributes($request);
+        $dimensionAttributes = $this->getDimensionAttributes($request); // ["locale" => "en", "stage" => "draft"]
 
         $contentView = $this->contentFacade->persist($example, $data, $dimensionAttributes);
 
@@ -126,6 +135,9 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         return $this->handleView($this->view($this->resolve($example, $contentView), 201));
     }
 
+    /**
+     * The putAction handles first the main entity and then save the content for it based on dimensionAttributes.
+     */
     public function putAction(Request $request, int $id): Response
     {
         /** @var Example|null $example */
@@ -136,7 +148,7 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         }
 
         $data = $this->getData($request);
-        $dimensionAttributes = $this->getAttributes($request);
+        $dimensionAttributes = $this->getDimensionAttributes($request);
 
         $contentView = $this->contentFacade->persist($example, $data, $dimensionAttributes);
 
@@ -145,6 +157,9 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         return $this->handleView($this->view($this->resolve($example, $contentView)));
     }
 
+    /**
+     * The deleteAction handles the main entity through cascading also the content will be removed.
+     */
     public function deleteAction(int $id): Response
     {
         /** @var Example $example */
@@ -156,14 +171,18 @@ class ExampleController extends AbstractRestController implements ClassResourceI
     }
 
     /**
+     * Will return e.g. ['locale' => 'en'].
+     *
      * @return array<string, mixed>
      */
-    protected function getAttributes(Request $request): array
+    protected function getDimensionAttributes(Request $request): array
     {
         return $request->query->all();
     }
 
     /**
+     * Will return e.g. ['title' => 'Test', 'template' => 'example-2', ...].
+     *
      * @return array<string, mixed>
      */
     protected function getData(Request $request): array
@@ -174,11 +193,16 @@ class ExampleController extends AbstractRestController implements ClassResourceI
     }
 
     /**
+     * Resolve will convert the ContentView object into a normalized array.
+     *
      * @return mixed[]
      */
     protected function resolve(Example $example, ContentViewInterface $contentView): array
     {
         $resolvedData = $this->contentFacade->resolve($contentView);
+
+        // If used autoincrement ids the id need to be set here on
+        // the resolvedData else on create no id will be returned
         $resolvedData['id'] = $example->getId();
 
         return $resolvedData;
