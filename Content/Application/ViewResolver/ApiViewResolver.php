@@ -15,6 +15,7 @@ namespace Sulu\Bundle\ContentBundle\Content\Application\ViewResolver;
 
 use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\Resolver\ResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\Serializer;
@@ -73,7 +74,7 @@ class ApiViewResolver implements ViewResolverInterface, ApiViewResolverInterface
 
     private function createSerializer(): NormalizerInterface
     {
-        $normalizers = [new GetSetMethodNormalizer()];
+        $normalizers = [new DateTimeNormalizer(), new GetSetMethodNormalizer()];
 
         return new Serializer($normalizers);
     }
