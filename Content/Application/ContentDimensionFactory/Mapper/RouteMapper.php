@@ -91,7 +91,9 @@ class RouteMapper implements MapperInterface
 
         /** @var string $name */
         $name = $property->getName();
-        if (!\array_key_exists($name, $data)) {
+
+        $currentRoutePath = $localizedContentDimension->getTemplateData()[$name] ?? null;
+        if (!\array_key_exists($name, $data) && null !== $currentRoutePath) {
             return;
         }
 
