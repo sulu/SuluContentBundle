@@ -88,11 +88,18 @@
 
         <service id="Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\ApiViewResolverInterface" alias="sulu_content.api_view_resolver"/>
 
+        <service id="sulu_content.content_copier" class="Sulu\Bundle\ContentBundle\Content\Application\ContentCopier\ContentCopier">
+            <argument type="service" id="sulu_content.content_loader"/>
+            <argument type="service" id="sulu_content.content_persister"/>
+            <argument type="service" id="sulu_content.api_view_resolver"/>
+        </service>
+
         <!-- ContentFacade -->
         <service id="sulu_content.content_facade" class="Sulu\Bundle\ContentBundle\Content\Application\ContentFacade\ContentFacade">
             <argument type="service" id="sulu_content.content_loader"/>
             <argument type="service" id="sulu_content.content_persister"/>
             <argument type="service" id="sulu_content.api_view_resolver"/>
+            <argument type="service" id="sulu_content.content_copier"/>
         </service>
 
         <service id="Sulu\Bundle\ContentBundle\Content\Application\ContentFacade\ContentFacadeInterface" alias="sulu_content.content_facade"/>

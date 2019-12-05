@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentFacade;
 
+use Sulu\Bundle\ContentBundle\Content\Application\ContentCopier\ContentCopierInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentLoader\ContentLoaderInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersisterInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\ApiViewResolverInterface;
@@ -36,11 +37,17 @@ class ContentFacade implements ContentFacadeInterface
      */
     private $contentResolver;
 
-    public function __construct(ContentLoaderInterface $contentLoader, ContentPersisterInterface $contentPersister, ApiViewResolverInterface $contentResolver)
+    /**
+     * @var ContentCopierInterface
+     */
+    private $contentCopier;
+
+    public function __construct(ContentLoaderInterface $contentLoader, ContentPersisterInterface $contentPersister, ApiViewResolverInterface $contentResolver, ContentCopierInterface $contentCopier)
     {
         $this->contentLoader = $contentLoader;
         $this->contentPersister = $contentPersister;
         $this->contentResolver = $contentResolver;
+        $this->contentCopier = $contentCopier;
     }
 
     public function load(ContentInterface $content, array $dimensionAttributes): ContentViewInterface
@@ -56,5 +63,19 @@ class ContentFacade implements ContentFacadeInterface
     public function resolve(ContentViewInterface $contentView): array
     {
         return $this->contentResolver->resolve($contentView);
+    }
+
+    public function copy(
+        ContentInterface $sourceContent,
+        array $sourceDimensionAttributes,
+        ContentInterface $targetContent,
+        array $targetDimensionAttributes
+    ): ContentViewInterface {
+        return $this->contentCopier->copy(
+            $sourceContent,
+            $sourceDimensionAttributes,
+            $targetContent,
+            $targetDimensionAttributes
+        );
     }
 }

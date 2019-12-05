@@ -15,5 +15,9 @@
         <service id="sulu_content.template_view_factory_merger" class="Sulu\Bundle\ContentBundle\Content\Application\ViewFactory\Merger\TemplateMerger">
             <tag name="sulu_content.view_factory_merger" />
         </service>
+
+        <service id="sulu_content.workflow_view_factory_merger" class="Sulu\Bundle\ContentBundle\Content\Application\ViewFactory\Merger\WorkflowMerger">
+            <tag name="sulu_content.view_factory_merger" />
+        </service>
     </services>
 </container>

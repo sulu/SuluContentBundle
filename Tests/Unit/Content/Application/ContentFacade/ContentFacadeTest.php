@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentFacade;
 
 use PHPUnit\Framework\TestCase;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentCopier\ContentCopierInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentFacade\ContentFacade;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentFacade\ContentFacadeInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentLoader\ContentLoaderInterface;
@@ -27,9 +28,10 @@ class ContentFacadeTest extends TestCase
     protected function createContentFacadeInstance(
         ContentLoaderInterface $contentLoader,
         ContentPersisterInterface $contentPersister,
-        ApiViewResolverInterface $contentResolver
+        ApiViewResolverInterface $contentResolver,
+        ContentCopierInterface $contentCopier
     ): ContentFacadeInterface {
-        return new ContentFacade($contentLoader, $contentPersister, $contentResolver);
+        return new ContentFacade($contentLoader, $contentPersister, $contentResolver, $contentCopier);
     }
 
     public function testLoad(): void
@@ -41,17 +43,23 @@ class ContentFacadeTest extends TestCase
         $contentLoader = $this->prophesize(ContentLoaderInterface::class);
         $contentPersister = $this->prophesize(ContentPersisterInterface::class);
         $contentResolver = $this->prophesize(ApiViewResolverInterface::class);
+        $contentCopier = $this->prophesize(ContentCopierInterface::class);
 
         $contentFacade = $this->createContentFacadeInstance(
             $contentLoader->reveal(),
             $contentPersister->reveal(),
-            $contentResolver->reveal()
+            $contentResolver->reveal(),
+            $contentCopier->reveal()
         );
 
         $contentLoader->load($content->reveal(), $dimensionAttributes)
             ->willReturn($contentView->reveal())
             ->shouldBeCalled();
-        $contentFacade->load($content->reveal(), $dimensionAttributes);
+
+        $this->assertSame(
+            $contentView->reveal(),
+            $contentFacade->load($content->reveal(), $dimensionAttributes)
+        );
     }
 
     public function testPersist(): void
@@ -64,17 +72,23 @@ class ContentFacadeTest extends TestCase
         $contentLoader = $this->prophesize(ContentLoaderInterface::class);
         $contentPersister = $this->prophesize(ContentPersisterInterface::class);
         $contentResolver = $this->prophesize(ApiViewResolverInterface::class);
+        $contentCopier = $this->prophesize(ContentCopierInterface::class);
 
         $contentFacade = $this->createContentFacadeInstance(
             $contentLoader->reveal(),
             $contentPersister->reveal(),
-            $contentResolver->reveal()
+            $contentResolver->reveal(),
+            $contentCopier->reveal()
         );
 
         $contentPersister->persist($content->reveal(), $data, $dimensionAttributes)
             ->willReturn($contentView->reveal())
             ->shouldBeCalled();
-        $contentFacade->persist($content->reveal(), $data, $dimensionAttributes);
+
+        $this->assertSame(
+            $contentView->reveal(),
+            $contentFacade->persist($content->reveal(), $data, $dimensionAttributes)
+        );
     }
 
     public function testResolve(): void
@@ -84,16 +98,63 @@ class ContentFacadeTest extends TestCase
         $contentLoader = $this->prophesize(ContentLoaderInterface::class);
         $contentPersister = $this->prophesize(ContentPersisterInterface::class);
         $contentResolver = $this->prophesize(ApiViewResolverInterface::class);
+        $contentCopier = $this->prophesize(ContentCopierInterface::class);
 
         $contentFacade = $this->createContentFacadeInstance(
             $contentLoader->reveal(),
             $contentPersister->reveal(),
-            $contentResolver->reveal()
+            $contentResolver->reveal(),
+            $contentCopier->reveal()
         );
 
         $contentResolver->resolve($contentView->reveal())
             ->willReturn(['resolved' => 'data'])
             ->shouldBeCalled();
-        $contentFacade->resolve($contentView->reveal());
+
+        $this->assertSame(
+            ['resolved' => 'data'],
+            $contentFacade->resolve($contentView->reveal())
+        );
+    }
+
+    public function testCopy(): void
+    {
+        $contentView = $this->prophesize(ContentViewInterface::class);
+
+        $sourceContent = $this->prophesize(ContentInterface::class);
+        $sourceDimensionAttributes = ['locale' => 'en'];
+        $targetContent = $this->prophesize(ContentInterface::class);
+        $targetDimensionAttributes = ['locale' => 'de'];
+
+        $contentLoader = $this->prophesize(ContentLoaderInterface::class);
+        $contentPersister = $this->prophesize(ContentPersisterInterface::class);
+        $contentResolver = $this->prophesize(ApiViewResolverInterface::class);
+        $contentCopier = $this->prophesize(ContentCopierInterface::class);
+
+        $contentFacade = $this->createContentFacadeInstance(
+            $contentLoader->reveal(),
+            $contentPersister->reveal(),
+            $contentResolver->reveal(),
+            $contentCopier->reveal()
+        );
+
+        $contentCopier->copy(
+            $sourceContent->reveal(),
+            $sourceDimensionAttributes,
+            $targetContent->reveal(),
+            $targetDimensionAttributes
+        )
+            ->willReturn($contentView->reveal())
+            ->shouldBeCalled();
+
+        $this->assertSame(
+            $contentView->reveal(),
+            $contentFacade->copy(
+                $sourceContent->reveal(),
+                $sourceDimensionAttributes,
+                $targetContent->reveal(),
+                $targetDimensionAttributes
+            )
+        );
     }
 }

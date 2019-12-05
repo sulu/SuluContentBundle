@@ -23,7 +23,10 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentLoader\ContentLoaderInt
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Route\ContentRouteDefaultsProvider;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Route\ContentStructureBridge;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
@@ -81,6 +84,14 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $content = $this->prophesize(ContentInterface::class);
         $contentView = $this->prophesize(TemplateInterface::class);
         $contentView->willImplement(ContentViewInterface::class);
+        $contentView->getDimensionId()->willReturn('123-456');
+
+        $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
+        $dimensionRepository->findOneBy(['id' => '123-456'])->willReturn(new Dimension('123-456', [
+            'locale' => 'en',
+            'stage' => 'live',
+        ]));
+        $entityManager->getRepository(DimensionInterface::class)->willReturn($dimensionRepository->reveal());
 
         $queryBuilder = $this->prophesize(QueryBuilder::class);
         $query = $this->prophesize(AbstractQuery::class);
@@ -95,10 +106,171 @@ class ContentRouteDefaultsProviderTest extends TestCase
 
         $contentLoader->load(
             $content->reveal(),
-            ['locale' => 'en', 'stage' => 'draft']
+            ['locale' => 'en', 'stage' => 'live']
         )->willReturn($contentView->reveal());
 
         $this->assertTrue($contentRouteDefaultsProvider->isPublished(Example::class, '123-123-123', 'en'));
+    }
+
+    public function testIsPublishedNoDimension(): void
+    {
+        $entityManager = $this->prophesize(EntityManagerInterface::class);
+        $contentLoader = $this->prophesize(ContentLoaderInterface::class);
+        $structureMetadataFactory = $this->prophesize(StructureMetadataFactoryInterface::class);
+        $propertyFactory = $this->prophesize(LegacyPropertyFactory::class);
+
+        $contentRouteDefaultsProvider = $this->getContentRouteDefaultsProvider(
+            $entityManager->reveal(),
+            $contentLoader->reveal(),
+            $structureMetadataFactory->reveal(),
+            $propertyFactory->reveal()
+        );
+
+        $content = $this->prophesize(ContentInterface::class);
+        $contentView = $this->prophesize(TemplateInterface::class);
+        $contentView->willImplement(ContentViewInterface::class);
+
+        $queryBuilder = $this->prophesize(QueryBuilder::class);
+        $query = $this->prophesize(AbstractQuery::class);
+
+        $entityManager->createQueryBuilder()->willReturn($queryBuilder->reveal());
+        $queryBuilder->select('entity')->willReturn($queryBuilder->reveal());
+        $queryBuilder->from(Example::class, 'entity')->willReturn($queryBuilder->reveal());
+        $queryBuilder->where('entity.id = :id')->willReturn($queryBuilder->reveal());
+        $queryBuilder->setParameter('id', '123-123-123')->willReturn($queryBuilder->reveal());
+        $queryBuilder->getQuery()->willReturn($query);
+        $query->getSingleResult()->willReturn($content->reveal());
+
+        $contentLoader->load(
+            $content->reveal(),
+            ['locale' => 'en', 'stage' => 'live']
+        )->willThrow(new ContentNotFoundException($content->reveal(), ['locale' => 'en', 'stage' => 'live']));
+
+        $this->assertFalse($contentRouteDefaultsProvider->isPublished(Example::class, '123-123-123', 'en'));
+    }
+
+    public function testIsPublishedWithDimension(): void
+    {
+        $entityManager = $this->prophesize(EntityManagerInterface::class);
+        $contentLoader = $this->prophesize(ContentLoaderInterface::class);
+        $structureMetadataFactory = $this->prophesize(StructureMetadataFactoryInterface::class);
+        $propertyFactory = $this->prophesize(LegacyPropertyFactory::class);
+
+        $contentRouteDefaultsProvider = $this->getContentRouteDefaultsProvider(
+            $entityManager->reveal(),
+            $contentLoader->reveal(),
+            $structureMetadataFactory->reveal(),
+            $propertyFactory->reveal()
+        );
+        $content = $this->prophesize(ContentInterface::class);
+        $contentView = $this->prophesize(TemplateInterface::class);
+        $contentView->willImplement(ContentViewInterface::class);
+        $contentView->getDimensionId()->willReturn('123-456');
+
+        $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
+        $dimensionRepository->findOneBy(['id' => '123-456'])->willReturn(new Dimension('123-456', [
+            'locale' => 'en',
+            'stage' => 'live',
+        ]));
+
+        $entityManager->getRepository(DimensionInterface::class)->willReturn($dimensionRepository->reveal());
+        $queryBuilder = $this->prophesize(QueryBuilder::class);
+        $query = $this->prophesize(AbstractQuery::class);
+        $entityManager->createQueryBuilder()->willReturn($queryBuilder->reveal());
+        $queryBuilder->select('entity')->willReturn($queryBuilder->reveal());
+        $queryBuilder->from(Example::class, 'entity')->willReturn($queryBuilder->reveal());
+        $queryBuilder->where('entity.id = :id')->willReturn($queryBuilder->reveal());
+        $queryBuilder->setParameter('id', '123-123-123')->willReturn($queryBuilder->reveal());
+        $queryBuilder->getQuery()->willReturn($query);
+        $query->getSingleResult()->willReturn($content->reveal());
+
+        $contentLoader->load($content->reveal(), ['locale' => 'en', 'stage' => 'live'])
+            ->willReturn($contentView->reveal())
+            ->shouldBeCalled();
+
+        $this->assertTrue($contentRouteDefaultsProvider->isPublished(Example::class, '123-123-123', 'en'));
+    }
+
+    public function testIsNotPublishedWithMissingDimension(): void
+    {
+        $entityManager = $this->prophesize(EntityManagerInterface::class);
+        $contentLoader = $this->prophesize(ContentLoaderInterface::class);
+        $structureMetadataFactory = $this->prophesize(StructureMetadataFactoryInterface::class);
+        $propertyFactory = $this->prophesize(LegacyPropertyFactory::class);
+
+        $contentRouteDefaultsProvider = $this->getContentRouteDefaultsProvider(
+            $entityManager->reveal(),
+            $contentLoader->reveal(),
+            $structureMetadataFactory->reveal(),
+            $propertyFactory->reveal()
+        );
+
+        $content = $this->prophesize(ContentInterface::class);
+        $contentView = $this->prophesize(TemplateInterface::class);
+        $contentView->willImplement(ContentViewInterface::class);
+        $contentView->getDimensionId()->willReturn('123-456');
+
+        $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
+        $dimensionRepository->findOneBy(['id' => '123-456'])->willReturn(null);
+
+        $entityManager->getRepository(DimensionInterface::class)->willReturn($dimensionRepository->reveal());
+        $queryBuilder = $this->prophesize(QueryBuilder::class);
+        $query = $this->prophesize(AbstractQuery::class);
+        $entityManager->createQueryBuilder()->willReturn($queryBuilder->reveal());
+        $queryBuilder->select('entity')->willReturn($queryBuilder->reveal());
+        $queryBuilder->from(Example::class, 'entity')->willReturn($queryBuilder->reveal());
+        $queryBuilder->where('entity.id = :id')->willReturn($queryBuilder->reveal());
+        $queryBuilder->setParameter('id', '123-123-123')->willReturn($queryBuilder->reveal());
+        $queryBuilder->getQuery()->willReturn($query);
+        $query->getSingleResult()->willReturn($content->reveal());
+
+        $contentLoader->load($content->reveal(), ['locale' => 'en', 'stage' => 'live'])
+            ->willReturn($contentView->reveal())
+            ->shouldBeCalled();
+
+        $this->assertFalse($contentRouteDefaultsProvider->isPublished(Example::class, '123-123-123', 'en'));
+    }
+
+    public function testIsNotPublishedWithDimension(): void
+    {
+        $entityManager = $this->prophesize(EntityManagerInterface::class);
+        $contentLoader = $this->prophesize(ContentLoaderInterface::class);
+        $structureMetadataFactory = $this->prophesize(StructureMetadataFactoryInterface::class);
+        $propertyFactory = $this->prophesize(LegacyPropertyFactory::class);
+
+        $contentRouteDefaultsProvider = $this->getContentRouteDefaultsProvider(
+            $entityManager->reveal(),
+            $contentLoader->reveal(),
+            $structureMetadataFactory->reveal(),
+            $propertyFactory->reveal()
+        );
+
+        $content = $this->prophesize(ContentInterface::class);
+        $contentView = $this->prophesize(TemplateInterface::class);
+        $contentView->willImplement(ContentViewInterface::class);
+        $contentView->getDimensionId()->willReturn('123-456');
+        $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
+        $dimensionRepository->findOneBy(['id' => '123-456'])->willReturn(new Dimension('123-456', [
+            'locale' => 'en',
+            'stage' => 'draft',
+        ]));
+
+        $entityManager->getRepository(DimensionInterface::class)->willReturn($dimensionRepository->reveal());
+        $queryBuilder = $this->prophesize(QueryBuilder::class);
+        $query = $this->prophesize(AbstractQuery::class);
+        $entityManager->createQueryBuilder()->willReturn($queryBuilder->reveal());
+        $queryBuilder->select('entity')->willReturn($queryBuilder->reveal());
+        $queryBuilder->from(Example::class, 'entity')->willReturn($queryBuilder->reveal());
+        $queryBuilder->where('entity.id = :id')->willReturn($queryBuilder->reveal());
+        $queryBuilder->setParameter('id', '123-123-123')->willReturn($queryBuilder->reveal());
+        $queryBuilder->getQuery()->willReturn($query);
+        $query->getSingleResult()->willReturn($content->reveal());
+
+        $contentLoader->load($content->reveal(), ['locale' => 'en', 'stage' => 'live'])
+            ->willReturn($contentView->reveal())
+            ->shouldBeCalled();
+
+        $this->assertFalse($contentRouteDefaultsProvider->isPublished(Example::class, '123-123-123', 'en'));
     }
 
     public function testGetByEntityReturnNoneTemplate(): void
@@ -139,7 +311,7 @@ class ContentRouteDefaultsProviderTest extends TestCase
 
         $contentLoader->load(
             $content->reveal(),
-            ['locale' => 'en', 'stage' => 'draft']
+            ['locale' => 'en', 'stage' => 'live']
         )->willReturn($contentView->reveal());
 
         $contentRouteDefaultsProvider->getByEntity(Example::class, '123-123-123', 'en');
@@ -202,7 +374,7 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $queryBuilder->getQuery()->willReturn($query);
         $query->getSingleResult()->willReturn($content->reveal());
 
-        $contentLoader->load($content->reveal(), ['locale' => 'en', 'stage' => 'draft'])
+        $contentLoader->load($content->reveal(), ['locale' => 'en', 'stage' => 'live'])
             ->will(function ($arguments) {
                 throw new ContentNotFoundException($arguments[0], $arguments[1]);
             });
@@ -239,7 +411,7 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $queryBuilder->getQuery()->willReturn($query);
         $query->getSingleResult()->willReturn($content->reveal());
 
-        $contentLoader->load($content->reveal(), ['locale' => 'en', 'stage' => 'draft'])
+        $contentLoader->load($content->reveal(), ['locale' => 'en', 'stage' => 'live'])
             ->willReturn($contentView->reveal());
 
         $contentView->getTemplateType()->willReturn('example');
@@ -285,7 +457,7 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $queryBuilder->getQuery()->willReturn($query);
         $query->getSingleResult()->willReturn($content->reveal());
 
-        $contentLoader->load($content->reveal(), ['locale' => 'en', 'stage' => 'draft'])
+        $contentLoader->load($content->reveal(), ['locale' => 'en', 'stage' => 'live'])
             ->will(function ($arguments) {
                 throw new ContentNotFoundException($arguments[0], $arguments[1]);
             });
@@ -328,7 +500,7 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $queryBuilder->getQuery()->willReturn($query);
         $query->getSingleResult()->willReturn($content->reveal());
 
-        $contentLoader->load($content->reveal(), ['locale' => 'en', 'stage' => 'draft'])
+        $contentLoader->load($content->reveal(), ['locale' => 'en', 'stage' => 'live'])
             ->willReturn($contentView->reveal());
 
         $contentView->getTemplateType()->willReturn('example');
