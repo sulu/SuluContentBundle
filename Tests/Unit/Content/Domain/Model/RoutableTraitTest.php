@@ -17,12 +17,9 @@ use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\RoutableInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\RoutableTrait;
-use Sulu\Bundle\ContentBundle\TestCases\Content\RoutableTestCaseTrait;
 
 class RoutableTraitTest extends TestCase
 {
-    use RoutableTestCaseTrait;
-
     protected function getRoutableInstance(DimensionInterface $dimension): RoutableInterface
     {
         return new class($dimension) implements RoutableInterface {
@@ -53,5 +50,14 @@ class RoutableTraitTest extends TestCase
                 return $this->dimension;
             }
         };
+    }
+
+    public function testGetLocale(): void
+    {
+        $dimension = $this->prophesize(DimensionInterface::class);
+        $dimension->getLocale()->willReturn('en');
+
+        $model = $this->getRoutableInstance($dimension->reveal());
+        $this->assertSame('en', $model->getLocale());
     }
 }
