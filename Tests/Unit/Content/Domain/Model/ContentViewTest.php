@@ -16,12 +16,9 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Domain\Model;
 use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\AbstractContentView;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
-use Sulu\Bundle\ContentBundle\TestCases\Content\ContentViewTestCaseTrait;
 
 class ContentViewTest extends TestCase
 {
-    use ContentViewTestCaseTrait;
-
     protected function getContentViewInstance(): ContentViewInterface
     {
         return new class() extends AbstractContentView {
@@ -33,5 +30,23 @@ class ContentViewTest extends TestCase
                 return 5;
             }
         };
+    }
+
+    public function testGetId(): void
+    {
+        $model = $this->getContentViewInstance();
+        $this->assertSame(1, $model->getId());
+    }
+
+    public function testGetDimensionId(): void
+    {
+        $model = $this->getContentViewInstance();
+        $this->assertSame('123-456', $model->getDimensionId());
+    }
+
+    public function testGetContentId(): void
+    {
+        $model = $this->getContentViewInstance();
+        $this->assertSame(5, $model->getContentId());
     }
 }

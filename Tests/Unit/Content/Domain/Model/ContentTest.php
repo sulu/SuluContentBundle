@@ -26,12 +26,9 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoTrait;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateTrait;
-use Sulu\Bundle\ContentBundle\TestCases\Content\ContentTestCaseTrait;
 
 class ContentTest extends TestCase
 {
-    use ContentTestCaseTrait;
-
     protected function getInstance(): AbstractContent
     {
         return new class() extends AbstractContent {
@@ -111,5 +108,29 @@ class ContentTest extends TestCase
         $modelDimension->setId($id);
 
         return $modelDimension;
+    }
+
+    public function testGetAddRemoveDimension(): void
+    {
+        $model = $this->getInstance();
+
+        $this->assertEmpty($model->getDimensions());
+
+        $modelDimension1 = $this->getInstanceDimension(1);
+        $modelDimension2 = $this->getInstanceDimension(2);
+
+        $model->addDimension($modelDimension1);
+        $model->addDimension($modelDimension2);
+
+        $this->assertSame([
+            $modelDimension1,
+            $modelDimension2,
+        ], iterator_to_array($model->getDimensions()));
+
+        $model->removeDimension($modelDimension2);
+
+        $this->assertSame([
+            $modelDimension1,
+        ], iterator_to_array($model->getDimensions()));
     }
 }
