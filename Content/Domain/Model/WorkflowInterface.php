@@ -27,6 +27,20 @@ interface WorkflowInterface
 
     const WORKFLOW_PLACE_REVIEW_DRAFT = 'review_draft'; // published but has draft data in review
 
+    const WORKFLOW_TRANSITION_REQUEST_FOR_REVIEW = 'request_for_review';
+
+    const WORKFLOW_TRANSITION_REJECT = 'reject';
+
+    const WORKFLOW_TRANSITION_PUBLISH = 'publish';
+
+    const WORKFLOW_TRANSITION_CREATE_DRAFT = 'create_draft';
+
+    const WORKFLOW_TRANSITION_REMOVE_DRAFT = 'remove_draft';
+
+    const WORKFLOW_TRANSITION_REQUEST_FOR_REVIEW_DRAFT = 'request_for_review_draft';
+
+    const WORKFLOW_TRANSITION_REJECT_DRAFT = 'request_draft';
+
     public function getWorkflowPlace(): string;
 
     public function setWorkflowPlace(string $workflowPlace): void;
