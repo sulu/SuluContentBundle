@@ -105,6 +105,10 @@ class RouteMapper implements MapperInterface
                 ['route_schema' => '/{object.getTitle()}']
             );
 
+            if ('/' === $routePath) {
+                return;
+            }
+
             $localizedContentDimension->setTemplateData(
                 array_merge(
                     $localizedContentDimension->getTemplateData(),
