@@ -292,6 +292,52 @@ class RouteMapperTest extends TestCase
         $mapper->map($data, $contentDimension->reveal(), $localizedContentDimension->reveal());
     }
 
+    public function testMapNoRoutePropertyDataAndNoOldRouteIgnoreSlash(): void
+    {
+        $data = [
+            'template' => 'default',
+        ];
+
+        $contentDimension = $this->prophesize(ContentDimensionInterface::class);
+        $localizedContentDimension = $this->prophesize(ContentDimensionInterface::class);
+        $localizedContentDimension->willImplement(RoutableInterface::class);
+        $localizedContentDimension->willImplement(TemplateInterface::class);
+
+        $factory = $this->prophesize(StructureMetadataFactoryInterface::class);
+        $routeGenerator = $this->prophesize(RouteGeneratorInterface::class);
+        $routeManager = $this->prophesize(RouteManagerInterface::class);
+
+        $metadata = $this->prophesize(StructureMetadata::class);
+        $property = $this->prophesize(PropertyMetadata::class);
+        $property->getType()->willReturn('route');
+        $property->getName()->willReturn('url');
+
+        $metadata->getProperties()->WillReturn([$property->reveal()]);
+
+        $localizedContentDimension->getContentClass()->willReturn('App\Entity\Example');
+
+        $localizedContentDimension->getContentId()->willReturn('123-123-123');
+        $localizedContentDimension->getTemplateType()->willReturn('example');
+        $localizedContentDimension->getTemplateData()->willReturn([]);
+        $localizedContentDimension->getLocale()->willReturn('en');
+        $factory->getStructureMetadata('example', 'default')->willReturn($metadata->reveal())->shouldBeCalled();
+
+        $routeGenerator->generate($localizedContentDimension, ['route_schema' => '/{object.getTitle()}'])
+            ->willReturn('/');
+
+        $localizedContentDimension->setTemplateData(Argument::cetera())->shouldNotBeCalled();
+
+        $routeManager->createOrUpdateByAttributes(Argument::cetera())->shouldNotBeCalled();
+
+        $mapper = $this->createRouteMapperInstance(
+            $factory->reveal(),
+            $routeGenerator->reveal(),
+            $routeManager->reveal()
+        );
+
+        $mapper->map($data, $contentDimension->reveal(), $localizedContentDimension->reveal());
+    }
+
     public function testMapNoContentId(): void
     {
         $data = [
