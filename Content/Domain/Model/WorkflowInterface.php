@@ -15,17 +15,19 @@ namespace Sulu\Bundle\ContentBundle\Content\Domain\Model;
 
 interface WorkflowInterface
 {
-    const WORKFLOW_STAGE_UNPUBLISHED = 'unpublished';
+    // See https://github.com/sulu/SuluContentBundle/pull/53 for graphic about workflow
 
-    const WORKFLOW_STAGE_REVIEW = 'review';
+    const WORKFLOW_PLACE_UNPUBLISHED = 'unpublished'; // was never published or set to review
 
-    const WORKFLOW_STAGE_PUBLISHED = 'published';
+    const WORKFLOW_PLACE_REVIEW = 'review'; // unpublished changes are in review
 
-    const WORKFLOW_STAGE_DRAFT = 'draft';
+    const WORKFLOW_PLACE_PUBLISHED = 'published'; // is published
 
-    const WORKFLOW_STAGE_REVIEW_DRAFT = 'review_draft';
+    const WORKFLOW_PLACE_DRAFT = 'draft'; // published but has a draft data
 
-    public function getWorkflowStage(): string;
+    const WORKFLOW_PLACE_REVIEW_DRAFT = 'review_draft'; // published but has draft data in review
 
-    public function setWorkflowStage(string $workflowStage): void;
+    public function getWorkflowPlace(): string;
+
+    public function setWorkflowPlace(string $workflowPlace): void;
 }

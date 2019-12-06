@@ -91,7 +91,7 @@ class ContentLoaderTest extends TestCase
         $contentDimensionCollection = new ContentDimensionCollection([
             $contentDimension1->reveal(),
             $contentDimension2->reveal(),
-        ]);
+        ], new DimensionCollection($attributes, [$dimension1, $dimension2]));
 
         $contentDimensionRepository = $this->prophesize(ContentDimensionRepositoryInterface::class);
         $contentDimensionRepository->load($content->reveal(), $dimensionCollection)->willReturn($contentDimensionCollection);
@@ -130,7 +130,10 @@ class ContentLoaderTest extends TestCase
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
         $dimensionRepository->findByAttributes($attributes)->willReturn($dimensionCollection)->shouldBeCalled();
 
-        $contentDimensionCollection = new ContentDimensionCollection([]);
+        $contentDimensionCollection = new ContentDimensionCollection(
+            [],
+            new DimensionCollection($attributes, [$dimension1, $dimension2])
+        );
 
         $contentDimensionRepository = $this->prophesize(ContentDimensionRepositoryInterface::class);
         $contentDimensionRepository->load($content->reveal(), $dimensionCollection)->willReturn($contentDimensionCollection);

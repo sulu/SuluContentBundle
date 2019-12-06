@@ -93,7 +93,7 @@ class ContentDimensionCollectionFactory implements ContentDimensionCollectionFac
             $mapper->map($data, $unlocalizedContentDimension, $localizedContentDimension);
         }
 
-        return new ContentDimensionCollection($orderedContentDimensions);
+        return new ContentDimensionCollection($orderedContentDimensions, $dimensionCollection);
     }
 
     private function getOrCreateContentDimension(

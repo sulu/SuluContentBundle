@@ -18,15 +18,15 @@ trait WorkflowTrait
     /**
      * @var string
      */
-    protected $workflowStage = WorkflowInterface::WORKFLOW_STAGE_UNPUBLISHED;
+    protected $workflowPlace = WorkflowInterface::WORKFLOW_PLACE_UNPUBLISHED;
 
-    public function getWorkflowStage(): string
+    public function getWorkflowPlace(): string
     {
-        return $this->workflowStage;
+        return $this->workflowPlace;
     }
 
-    public function setWorkflowStage(string $workflowStage): void
+    public function setWorkflowPlace(string $workflowPlace): void
     {
-        $this->workflowStage = $workflowStage;
+        $this->workflowPlace = $workflowPlace;
     }
 }

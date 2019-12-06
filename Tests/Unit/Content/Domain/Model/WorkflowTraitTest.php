@@ -28,16 +28,44 @@ class WorkflowTraitTest extends TestCase
         };
     }
 
-    public function testGetWorkflowStage(): void
+    public function testGetWorkflowPlace(): void
     {
         $workflow = $this->getWorkflowInstance();
-        $this->assertSame(WorkflowInterface::WORKFLOW_STAGE_UNPUBLISHED, $workflow->getWorkflowStage());
+        $this->assertSame('unpublished', $workflow->getWorkflowPlace());
     }
 
-    public function testSetWorkflowStage(): void
+    public function testSetWorkflowPlaceReview(): void
     {
         $workflow = $this->getWorkflowInstance();
-        $workflow->setWorkflowStage(WorkflowInterface::WORKFLOW_STAGE_REVIEW);
-        $this->assertSame(WorkflowInterface::WORKFLOW_STAGE_REVIEW, $workflow->getWorkflowStage());
+        $workflow->setWorkflowPlace(WorkflowInterface::WORKFLOW_PLACE_REVIEW);
+        $this->assertSame('review', $workflow->getWorkflowPlace());
+    }
+
+    public function testSetWorkflowPlaceUnpublished(): void
+    {
+        $workflow = $this->getWorkflowInstance();
+        $workflow->setWorkflowPlace(WorkflowInterface::WORKFLOW_PLACE_UNPUBLISHED);
+        $this->assertSame('unpublished', $workflow->getWorkflowPlace());
+    }
+
+    public function testSetWorkflowPlaceDraft(): void
+    {
+        $workflow = $this->getWorkflowInstance();
+        $workflow->setWorkflowPlace(WorkflowInterface::WORKFLOW_PLACE_DRAFT);
+        $this->assertSame('draft', $workflow->getWorkflowPlace());
+    }
+
+    public function testSetWorkflowPlacePublished(): void
+    {
+        $workflow = $this->getWorkflowInstance();
+        $workflow->setWorkflowPlace(WorkflowInterface::WORKFLOW_PLACE_PUBLISHED);
+        $this->assertSame('published', $workflow->getWorkflowPlace());
+    }
+
+    public function testSetWorkflowPlaceReviewDraft(): void
+    {
+        $workflow = $this->getWorkflowInstance();
+        $workflow->setWorkflowPlace(WorkflowInterface::WORKFLOW_PLACE_REVIEW_DRAFT);
+        $this->assertSame('review_draft', $workflow->getWorkflowPlace());
     }
 }

@@ -36,7 +36,7 @@ class WorkflowMergerTest extends TestCase
 
         $contentView = $this->prophesize(ContentViewInterface::class);
         $contentView->willImplement(WorkflowInterface::class);
-        $contentView->setWorkflowStage(Argument::any())->shouldNotBeCalled();
+        $contentView->setWorkflowPlace(Argument::any())->shouldNotBeCalled();
 
         $merger->merge($contentView->reveal(), $contentDimension->reveal());
     }
@@ -47,7 +47,7 @@ class WorkflowMergerTest extends TestCase
 
         $contentDimension = $this->prophesize(ContentDimensionInterface::class);
         $contentDimension->willImplement(WorkflowInterface::class);
-        $contentDimension->getWorkflowStage(Argument::any())->shouldNotBeCalled();
+        $contentDimension->getWorkflowPlace(Argument::any())->shouldNotBeCalled();
 
         $contentView = $this->prophesize(ContentViewInterface::class);
 
@@ -60,11 +60,11 @@ class WorkflowMergerTest extends TestCase
 
         $contentDimension = $this->prophesize(ContentDimensionInterface::class);
         $contentDimension->willImplement(WorkflowInterface::class);
-        $contentDimension->getWorkflowStage()->willReturn('draft')->shouldBeCalled();
+        $contentDimension->getWorkflowPlace()->willReturn('draft')->shouldBeCalled();
 
         $contentView = $this->prophesize(ContentViewInterface::class);
         $contentView->willImplement(WorkflowInterface::class);
-        $contentView->setWorkflowStage('draft')->shouldBeCalled();
+        $contentView->setWorkflowPlace('draft')->shouldBeCalled();
 
         $merger->merge($contentView->reveal(), $contentDimension->reveal());
     }
