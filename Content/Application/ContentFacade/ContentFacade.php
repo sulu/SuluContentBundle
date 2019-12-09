@@ -91,9 +91,6 @@ class ContentFacade implements ContentFacadeInterface
         );
     }
 
-    /**
-     * @param mixed[] $dimensionAttributes
-     */
     public function transition(
         ContentInterface $content,
         array $dimensionAttributes,

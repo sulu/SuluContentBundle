@@ -24,8 +24,10 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoTrait;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateTrait;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowTrait;
 
-class ExampleDimension extends AbstractContentDimension implements ExcerptInterface, SeoInterface, TemplateInterface, RoutableInterface
+class ExampleDimension extends AbstractContentDimension implements ExcerptInterface, SeoInterface, TemplateInterface, RoutableInterface, WorkflowInterface
 {
     use ExcerptTrait;
     use SeoTrait;
@@ -34,6 +36,7 @@ class ExampleDimension extends AbstractContentDimension implements ExcerptInterf
         setTemplateData as parentSetTemplateData;
     }
     use RoutableTrait;
+    use WorkflowTrait;
 
     /**
      * @var Example

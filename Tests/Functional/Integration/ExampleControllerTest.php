@@ -24,18 +24,57 @@ class ExampleControllerTest extends BaseTestCase
 {
     protected $client;
 
-    public static function setUpBeforeClass(): void
-    {
-        self::purgeDatabase();
-    }
-
     public function setUp(): void
     {
         $this->client = $this->createAuthenticatedClient();
     }
 
+    public function testPostPublish(): void
+    {
+        self::purgeDatabase();
+        self::initPhpcr();
+
+        $this->client->request('POST', '/admin/api/examples?locale=en&action=publish', [
+            'template' => 'example-2',
+            'title' => 'Test Example',
+            'url' => '/my-example',
+            'images' => null,
+            'seoTitle' => 'Seo Title',
+            'seoDescription' => 'Seo Description',
+            'seoCanonicalUrl' => 'https://sulu.io/',
+            'seoKeywords' => 'Seo Keyword 1, Seo Keyword 2',
+            'seoNoIndex' => true,
+            'seoNoFollow' => true,
+            'seoHideInSitemap' => true,
+            'excerptTitle' => 'Excerpt Title',
+            'excerptDescription' => 'Excerpt Description',
+            'excerptMore' => 'Excerpt More',
+            'excerptTags' => ['Tag 1', 'Tag 2'],
+            'excerptCategories' => [],
+            'excerptIcon' => null,
+            'excerptMedia' => null,
+        ]);
+
+        $response = $this->client->getResponse();
+
+        $this->assertResponseContent('example_post_publish.json', $response, 201);
+
+        self::ensureKernelShutdown();
+
+        $websiteClient = $this->createWebsiteClient();
+        $websiteClient->request('GET', '/en/my-example');
+
+        $response = $websiteClient->getResponse();
+        $this->assertHttpStatusCode(200, $response);
+        $content = $response->getContent();
+        $this->assertIsString($content);
+        $this->assertStringContainsString('EXAMPLE DEFAULT TEMPLATE', $content);
+    }
+
     public function testPost(): int
     {
+        self::purgeDatabase();
+
         $this->client->request('POST', '/admin/api/examples?locale=en', [
             'template' => 'example-2',
             'title' => 'Test Example',
@@ -74,6 +113,14 @@ class ExampleControllerTest extends BaseTestCase
         $this->client->request('GET', '/admin/api/examples/' . $id . '?locale=en');
         $response = $this->client->getResponse();
         $this->assertResponseContent('example_get.json', $response, 200);
+
+        self::ensureKernelShutdown();
+
+        $websiteClient = $this->createWebsiteClient();
+        $websiteClient->request('GET', '/en/my-example');
+
+        $response = $websiteClient->getResponse();
+        $this->assertHttpStatusCode(404, $response);
     }
 
     /**

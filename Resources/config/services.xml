@@ -91,6 +91,7 @@
         <!-- Content Copier -->
         <service id="sulu_content.content_copier" class="Sulu\Bundle\ContentBundle\Content\Application\ContentCopier\ContentCopier">
             <argument type="service" id="sulu_content.content_loader"/>
+            <argument type="service" id="sulu_content.view_factory"/>
             <argument type="service" id="sulu_content.content_persister"/>
             <argument type="service" id="sulu_content.api_view_resolver"/>
         </service>
@@ -102,9 +103,18 @@
             <argument type="service" id="sulu.repository.dimension"/>
             <argument type="service" id="sulu_content.content_dimension_repository"/>
             <argument type="service" id="sulu_content.view_factory"/>
+            <argument type="service" id="workflow.registry" on-invalid="null"/>
+            <argument type="service" id="event_dispatcher"/>
         </service>
 
         <service id="Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\ContentWorkflowInterface" alias="sulu_content.content_workflow" />
+
+        <!-- Content Publish Subscriber -->
+        <service id="sulu_content.content_publish_subscriber" class="Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\Subscriber\ContentPublishSubscriber">
+            <argument type="service" id="sulu_content.content_copier"/>
+
+            <tag name="kernel.event_subscriber"/>
+        </service>
 
         <!-- ContentFacade -->
         <service id="sulu_content.content_facade" class="Sulu\Bundle\ContentBundle\Content\Application\ContentFacade\ContentFacade">

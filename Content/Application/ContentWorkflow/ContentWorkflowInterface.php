@@ -21,5 +21,9 @@ interface ContentWorkflowInterface
     /**
      * @param mixed[] $dimensionAttributes
      */
-    public function transition(ContentInterface $content, array $dimensionAttributes, string $transitionName): ContentViewInterface;
+    public function transition(
+        ContentInterface $content,
+        array $dimensionAttributes,
+        string $transitionName
+    ): ContentViewInterface;
 }

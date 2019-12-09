@@ -33,15 +33,21 @@ interface WorkflowInterface
 
     const WORKFLOW_TRANSITION_PUBLISH = 'publish';
 
+    const WORKFLOW_TRANSITION_UNPUBLISH = 'unpublish';
+
     const WORKFLOW_TRANSITION_CREATE_DRAFT = 'create_draft';
 
     const WORKFLOW_TRANSITION_REMOVE_DRAFT = 'remove_draft';
 
     const WORKFLOW_TRANSITION_REQUEST_FOR_REVIEW_DRAFT = 'request_for_review_draft';
 
-    const WORKFLOW_TRANSITION_REJECT_DRAFT = 'request_draft';
+    const WORKFLOW_TRANSITION_REJECT_DRAFT = 'reject_draft';
 
     public function getWorkflowPlace(): string;
 
     public function setWorkflowPlace(string $workflowPlace): void;
+
+    public function getWorkflowPublished(): ?\DateTimeImmutable;
+
+    public function setWorkflowPublished(?\DateTimeImmutable $workflowPublished): void;
 }

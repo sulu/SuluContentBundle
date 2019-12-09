@@ -28,6 +28,7 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Doctrine\MetadataLoader;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleDimension;
 use Sulu\Bundle\TagBundle\Tag\TagInterface;
@@ -66,6 +67,7 @@ class MetadataLoaderTest extends TestCase
         $reflectionClass->implementsInterface(SeoInterface::class)->willReturn(\in_array(SeoInterface::class, $interfaces, true));
         $reflectionClass->implementsInterface(ExcerptInterface::class)->willReturn(\in_array(ExcerptInterface::class, $interfaces, true));
         $reflectionClass->implementsInterface(TemplateInterface::class)->willReturn(\in_array(TemplateInterface::class, $interfaces, true));
+        $reflectionClass->implementsInterface(WorkflowInterface::class)->willReturn(\in_array(WorkflowInterface::class, $interfaces, true));
 
         foreach ($interfaces as $interface) {
             $reflectionClass->implementsInterface($interface)->willReturn(true);
@@ -222,6 +224,19 @@ class MetadataLoaderTest extends TestCase
             [
                 'excerptTags' => true,
                 'excerptCategories' => false,
+            ],
+            [],
+        ];
+
+        yield [
+            [
+                WorkflowInterface::class,
+            ],
+            [
+                'workflowPlace' => true,
+                'workflowPublished' => true,
+            ],
+            [
             ],
             [],
         ];

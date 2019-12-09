@@ -30,5 +30,9 @@ class WorkflowMerger implements MergerInterface
         if ($workflowPlace = $contentDimension->getWorkflowPlace()) {
             $contentView->setWorkflowPlace($workflowPlace);
         }
+
+        if ($workflowPublished = $contentDimension->getWorkflowPublished()) {
+            $contentView->setWorkflowPublished($workflowPublished);
+        }
     }
 }

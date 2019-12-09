@@ -82,6 +82,7 @@ jobs:
             - checkout
             - attach_workspace:
                   at: .
+            - run: php composer.phar config platform.php "7.2.25"
             - run: php composer.phar info
             - run: php composer.phar bootstrap-test-environment
             - run: php composer.phar lint

@@ -25,6 +25,7 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 use Sulu\Bundle\MediaBundle\Entity\MediaInterface;
 use Sulu\Bundle\TagBundle\Tag\TagInterface;
 
@@ -111,6 +112,11 @@ class MetadataLoader implements EventSubscriber
 
             $this->addManyToMany($event, $metadata, 'excerptTags', TagInterface::class, 'tag_id');
             $this->addManyToMany($event, $metadata, 'excerptCategories', CategoryInterface::class, 'category_id');
+        }
+
+        if ($reflection->implementsInterface(WorkflowInterface::class)) {
+            $this->addField($metadata, 'workflowPlace', 'string', ['length' => 32]);
+            $this->addField($metadata, 'workflowPublished', 'datetime_immutable', ['nullable' => true]);
         }
     }
 

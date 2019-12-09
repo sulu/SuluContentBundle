@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ViewFactory\Merger;
 
 use PHPUnit\Framework\TestCase;
-use Prophecy\Argument;
 use Sulu\Bundle\ContentBundle\Content\Application\ViewFactory\Merger\MergerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ViewFactory\Merger\WorkflowMerger;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionInterface;
@@ -36,7 +35,8 @@ class WorkflowMergerTest extends TestCase
 
         $contentView = $this->prophesize(ContentViewInterface::class);
         $contentView->willImplement(WorkflowInterface::class);
-        $contentView->setWorkflowPlace(Argument::any())->shouldNotBeCalled();
+        $contentView->getWorkflowPlace()->shouldNotBeCalled();
+        $contentView->getWorkflowPublished()->shouldNotBeCalled();
 
         $merger->merge($contentView->reveal(), $contentDimension->reveal());
     }
@@ -47,7 +47,8 @@ class WorkflowMergerTest extends TestCase
 
         $contentDimension = $this->prophesize(ContentDimensionInterface::class);
         $contentDimension->willImplement(WorkflowInterface::class);
-        $contentDimension->getWorkflowPlace(Argument::any())->shouldNotBeCalled();
+        $contentDimension->getWorkflowPlace()->shouldNotBeCalled();
+        $contentDimension->getWorkflowPublished()->shouldNotBeCalled();
 
         $contentView = $this->prophesize(ContentViewInterface::class);
 
@@ -60,11 +61,14 @@ class WorkflowMergerTest extends TestCase
 
         $contentDimension = $this->prophesize(ContentDimensionInterface::class);
         $contentDimension->willImplement(WorkflowInterface::class);
+        $published = new \DateTimeImmutable();
         $contentDimension->getWorkflowPlace()->willReturn('draft')->shouldBeCalled();
+        $contentDimension->getWorkflowPublished()->willReturn($published)->shouldBeCalled();
 
         $contentView = $this->prophesize(ContentViewInterface::class);
         $contentView->willImplement(WorkflowInterface::class);
         $contentView->setWorkflowPlace('draft')->shouldBeCalled();
+        $contentView->setWorkflowPublished($published)->shouldBeCalled();
 
         $merger->merge($contentView->reveal(), $contentDimension->reveal());
     }

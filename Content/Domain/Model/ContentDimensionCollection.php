@@ -47,7 +47,7 @@ class ContentDimensionCollection implements \IteratorAggregate, ContentDimension
                 function (ContentDimensionInterface $contentDimension) use ($unlocalizedDimension) {
                     return $contentDimension->getDimension()->getId() === $unlocalizedDimension->getId();
                 }
-            )->first();
+            )->first() ?: null;
         }
 
         $localizedDimension = $dimensionCollection->getLocalizedDimension();
@@ -56,7 +56,7 @@ class ContentDimensionCollection implements \IteratorAggregate, ContentDimension
                 function (ContentDimensionInterface $contentDimension) use ($localizedDimension) {
                     return $contentDimension->getDimension()->getId() === $localizedDimension->getId();
                 }
-            )->first();
+            )->first() ?: null;
         }
 
         $this->contentDimensions = array_values($contentDimensions);

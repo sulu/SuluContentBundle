@@ -12,6 +12,8 @@
     "excerptTitle": "Excerpt Title",
     "id": "@integer@",
     "images": null,
+    "published": null,
+    "publishedState": false,
     "seoCanonicalUrl": "https://sulu.io/",
     "seoDescription": "Seo Description",
     "seoHideInSitemap": true,
@@ -21,5 +23,6 @@
     "seoTitle": "Seo Title",
     "template": "example-2",
     "title": "Test Example",
-    "url": "/my-example"
+    "url": "/my-example",
+    "workflowPlace": "unpublished"
 }

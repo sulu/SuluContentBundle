@@ -18,6 +18,7 @@ use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\ViewHandlerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentFacade\ContentFacadeInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
 use Sulu\Component\Rest\AbstractRestController;
 use Sulu\Component\Rest\ListBuilder\Doctrine\DoctrineListBuilder;
@@ -132,6 +133,16 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         $this->entityManager->persist($example);
         $this->entityManager->flush();
 
+        if ('publish' === $request->query->get('action')) {
+            $contentView = $this->contentFacade->transition(
+                $example,
+                $dimensionAttributes,
+                WorkflowInterface::WORKFLOW_TRANSITION_PUBLISH
+            );
+
+            $this->entityManager->flush();
+        }
+
         return $this->handleView($this->view($this->resolve($example, $contentView), 201));
     }
 
@@ -148,11 +159,21 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         }
 
         $data = $this->getData($request);
-        $dimensionAttributes = $this->getDimensionAttributes($request);
+        $dimensionAttributes = $this->getDimensionAttributes($request); // ["locale" => "en", "stage" => "draft"]
 
         $contentView = $this->contentFacade->persist($example, $data, $dimensionAttributes);
 
         $this->entityManager->flush();
+
+        if ('publish' === $request->query->get('action')) {
+            $contentView = $this->contentFacade->transition(
+                $example,
+                $dimensionAttributes,
+                WorkflowInterface::WORKFLOW_TRANSITION_PUBLISH
+            );
+
+            $this->entityManager->flush();
+        }
 
         return $this->handleView($this->view($this->resolve($example, $contentView)));
     }

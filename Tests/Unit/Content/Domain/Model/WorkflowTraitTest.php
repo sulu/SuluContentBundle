@@ -60,6 +60,9 @@ class WorkflowTraitTest extends TestCase
         $workflow = $this->getWorkflowInstance();
         $workflow->setWorkflowPlace(WorkflowInterface::WORKFLOW_PLACE_PUBLISHED);
         $this->assertSame('published', $workflow->getWorkflowPlace());
+        $published = $workflow->getWorkflowPublished();
+        $this->assertInstanceOf(\DateTimeImmutable::class, $published);
+        $this->assertSame(date('Y-m-d H:i:s'), $published->format('Y-m-d H:i:s'));
     }
 
     public function testSetWorkflowPlaceReviewDraft(): void
@@ -67,5 +70,26 @@ class WorkflowTraitTest extends TestCase
         $workflow = $this->getWorkflowInstance();
         $workflow->setWorkflowPlace(WorkflowInterface::WORKFLOW_PLACE_REVIEW_DRAFT);
         $this->assertSame('review_draft', $workflow->getWorkflowPlace());
+    }
+
+    public function testGetWorkflowPublished(): void
+    {
+        $workflow = $this->getWorkflowInstance();
+        $this->assertNull($workflow->getWorkflowPublished());
+    }
+
+    public function testSetWorkflowPublished(): void
+    {
+        $workflow = $this->getWorkflowInstance();
+        $dateTime = new \DateTimeImmutable();
+        $workflow->setWorkflowPublished($dateTime);
+        $this->assertSame($dateTime, $workflow->getWorkflowPublished());
+    }
+
+    public function testSetWorkflowPublishedBzkk(): void
+    {
+        $workflow = $this->getWorkflowInstance();
+        $workflow->setWorkflowPublished(null);
+        $this->assertNull($workflow->getWorkflowPublished());
     }
 }
