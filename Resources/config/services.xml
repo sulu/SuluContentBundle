@@ -88,11 +88,23 @@
 
         <service id="Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\ApiViewResolverInterface" alias="sulu_content.api_view_resolver"/>
 
+        <!-- Content Copier -->
         <service id="sulu_content.content_copier" class="Sulu\Bundle\ContentBundle\Content\Application\ContentCopier\ContentCopier">
             <argument type="service" id="sulu_content.content_loader"/>
             <argument type="service" id="sulu_content.content_persister"/>
             <argument type="service" id="sulu_content.api_view_resolver"/>
         </service>
+
+        <service id="Sulu\Bundle\ContentBundle\Content\Application\ContentCopier\ContentCopierInterface" alias="sulu_content.content_copier"/>
+
+        <!-- Content Workflow -->
+        <service id="sulu_content.content_workflow" class="Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\ContentWorkflow">
+            <argument type="service" id="sulu.repository.dimension"/>
+            <argument type="service" id="sulu_content.content_dimension_repository"/>
+            <argument type="service" id="sulu_content.view_factory"/>
+        </service>
+
+        <service id="Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\ContentWorkflowInterface" alias="sulu_content.content_workflow" />
 
         <!-- ContentFacade -->
         <service id="sulu_content.content_facade" class="Sulu\Bundle\ContentBundle\Content\Application\ContentFacade\ContentFacade">
@@ -100,6 +112,7 @@
             <argument type="service" id="sulu_content.content_persister"/>
             <argument type="service" id="sulu_content.api_view_resolver"/>
             <argument type="service" id="sulu_content.content_copier"/>
+            <argument type="service" id="sulu_content.content_workflow"/>
         </service>
 
         <service id="Sulu\Bundle\ContentBundle\Content\Application\ContentFacade\ContentFacadeInterface" alias="sulu_content.content_facade"/>

@@ -16,9 +16,11 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\DependencyInjection;
 use Doctrine\Bundle\DoctrineBundle\DependencyInjection\DoctrineExtension;
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
 use Sulu\Bundle\AdminBundle\DependencyInjection\SuluAdminExtension;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentCopier\ContentCopierInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentFacade\ContentFacadeInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentLoader\ContentLoaderInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersisterInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\ContentWorkflowInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\ApiViewResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ContentDimensionCollectionFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ViewFactoryInterface;
@@ -58,6 +60,8 @@ class SuluContentExtensionTest extends AbstractExtensionTestCase
         $this->assertContainerBuilderHasAlias(ContentLoaderInterface::class, 'sulu_content.content_loader');
         $this->assertContainerBuilderHasAlias(ContentPersisterInterface::class, 'sulu_content.content_persister');
         $this->assertContainerBuilderHasAlias(ApiViewResolverInterface::class, 'sulu_content.api_view_resolver');
+        $this->assertContainerBuilderHasAlias(ContentCopierInterface::class, 'sulu_content.content_copier');
+        $this->assertContainerBuilderHasAlias(ContentWorkflowInterface::class, 'sulu_content.content_workflow');
 
         // Additional services aliases
         $this->assertContainerBuilderHasAlias(ContentViewBuilderInterface::class, 'sulu_content.content_view_builder');
