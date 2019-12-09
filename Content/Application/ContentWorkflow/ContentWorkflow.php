@@ -26,7 +26,7 @@ use Symfony\Component\Workflow\Transition;
 use Symfony\Component\Workflow\Workflow;
 use Symfony\Component\Workflow\WorkflowInterface as SymfonyWorkflowInterface;
 
-class ContentWorkflow
+class ContentWorkflow implements ContentWorkflowInterface
 {
     /**
      * @var DimensionRepositoryInterface
@@ -43,11 +43,6 @@ class ContentWorkflow
      */
     private $viewFactory;
 
-    /**
-     * @var SymfonyWorkflowInterface
-     */
-    private $workflow;
-
     public function __construct(
         DimensionRepositoryInterface $dimensionRepository,
         ContentDimensionRepositoryInterface $contentDimensionRepository,
@@ -58,9 +53,6 @@ class ContentWorkflow
         $this->viewFactory = $viewFactory;
     }
 
-    /**
-     * @param mixed[] $dimensionAttributes
-     */
     public function transition(
         ContentInterface $content,
         array $dimensionAttributes,
@@ -79,15 +71,14 @@ class ContentWorkflow
             throw new \RuntimeException(sprintf('Expected "%s" but "%s" given.', WorkflowInterface::class, \get_class($localizedContentDimension)));
         }
 
-        // TODO get workflow from a pool for specific entity
-        $workflow = $this->getWorkflow();
+        $workflow = $this->getWorkflow(); // TODO get workflow from a pool for specific entity
 
         $workflow->can($localizedContentDimension, $transitionName);
 
         return $this->viewFactory->create($contentDimensionCollection);
     }
 
-    private function getWorkflow()
+    private function getWorkflow(): SymfonyWorkflowInterface
     {
         $definitionBuilder = new DefinitionBuilder();
 

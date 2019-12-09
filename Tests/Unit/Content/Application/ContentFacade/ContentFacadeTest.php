@@ -19,6 +19,7 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentFacade\ContentFacade;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentFacade\ContentFacadeInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentLoader\ContentLoaderInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersisterInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\ContentWorkflowInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\ApiViewResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
@@ -29,9 +30,10 @@ class ContentFacadeTest extends TestCase
         ContentLoaderInterface $contentLoader,
         ContentPersisterInterface $contentPersister,
         ApiViewResolverInterface $contentResolver,
-        ContentCopierInterface $contentCopier
+        ContentCopierInterface $contentCopier,
+        ContentWorkflowInterface $contentWorkflow
     ): ContentFacadeInterface {
-        return new ContentFacade($contentLoader, $contentPersister, $contentResolver, $contentCopier);
+        return new ContentFacade($contentLoader, $contentPersister, $contentResolver, $contentCopier, $contentWorkflow);
     }
 
     public function testLoad(): void
@@ -44,12 +46,14 @@ class ContentFacadeTest extends TestCase
         $contentPersister = $this->prophesize(ContentPersisterInterface::class);
         $contentResolver = $this->prophesize(ApiViewResolverInterface::class);
         $contentCopier = $this->prophesize(ContentCopierInterface::class);
+        $contentWorkflow = $this->prophesize(ContentWorkflowInterface::class);
 
         $contentFacade = $this->createContentFacadeInstance(
             $contentLoader->reveal(),
             $contentPersister->reveal(),
             $contentResolver->reveal(),
-            $contentCopier->reveal()
+            $contentCopier->reveal(),
+            $contentWorkflow->reveal()
         );
 
         $contentLoader->load($content->reveal(), $dimensionAttributes)
@@ -73,12 +77,14 @@ class ContentFacadeTest extends TestCase
         $contentPersister = $this->prophesize(ContentPersisterInterface::class);
         $contentResolver = $this->prophesize(ApiViewResolverInterface::class);
         $contentCopier = $this->prophesize(ContentCopierInterface::class);
+        $contentWorkflow = $this->prophesize(ContentWorkflowInterface::class);
 
         $contentFacade = $this->createContentFacadeInstance(
             $contentLoader->reveal(),
             $contentPersister->reveal(),
             $contentResolver->reveal(),
-            $contentCopier->reveal()
+            $contentCopier->reveal(),
+            $contentWorkflow->reveal()
         );
 
         $contentPersister->persist($content->reveal(), $data, $dimensionAttributes)
@@ -99,12 +105,14 @@ class ContentFacadeTest extends TestCase
         $contentPersister = $this->prophesize(ContentPersisterInterface::class);
         $contentResolver = $this->prophesize(ApiViewResolverInterface::class);
         $contentCopier = $this->prophesize(ContentCopierInterface::class);
+        $contentWorkflow = $this->prophesize(ContentWorkflowInterface::class);
 
         $contentFacade = $this->createContentFacadeInstance(
             $contentLoader->reveal(),
             $contentPersister->reveal(),
             $contentResolver->reveal(),
-            $contentCopier->reveal()
+            $contentCopier->reveal(),
+            $contentWorkflow->reveal()
         );
 
         $contentResolver->resolve($contentView->reveal())
@@ -130,12 +138,14 @@ class ContentFacadeTest extends TestCase
         $contentPersister = $this->prophesize(ContentPersisterInterface::class);
         $contentResolver = $this->prophesize(ApiViewResolverInterface::class);
         $contentCopier = $this->prophesize(ContentCopierInterface::class);
+        $contentWorkflow = $this->prophesize(ContentWorkflowInterface::class);
 
         $contentFacade = $this->createContentFacadeInstance(
             $contentLoader->reveal(),
             $contentPersister->reveal(),
             $contentResolver->reveal(),
-            $contentCopier->reveal()
+            $contentCopier->reveal(),
+            $contentWorkflow->reveal()
         );
 
         $contentCopier->copy(
@@ -154,6 +164,46 @@ class ContentFacadeTest extends TestCase
                 $sourceDimensionAttributes,
                 $targetContent->reveal(),
                 $targetDimensionAttributes
+            )
+        );
+    }
+
+    public function testTransition(): void
+    {
+        $contentView = $this->prophesize(ContentViewInterface::class);
+
+        $content = $this->prophesize(ContentInterface::class);
+        $dimensionAttributes = ['locale' => 'en'];
+        $transitionName = 'review';
+
+        $contentLoader = $this->prophesize(ContentLoaderInterface::class);
+        $contentPersister = $this->prophesize(ContentPersisterInterface::class);
+        $contentResolver = $this->prophesize(ApiViewResolverInterface::class);
+        $contentCopier = $this->prophesize(ContentCopierInterface::class);
+        $contentWorkflow = $this->prophesize(ContentWorkflowInterface::class);
+
+        $contentFacade = $this->createContentFacadeInstance(
+            $contentLoader->reveal(),
+            $contentPersister->reveal(),
+            $contentResolver->reveal(),
+            $contentCopier->reveal(),
+            $contentWorkflow->reveal()
+        );
+
+        $contentWorkflow->transition(
+            $content->reveal(),
+            $dimensionAttributes,
+            $transitionName
+        )
+            ->willReturn($contentView->reveal())
+            ->shouldBeCalled();
+
+        $this->assertSame(
+            $contentView->reveal(),
+            $contentFacade->transition(
+                $content->reveal(),
+                $dimensionAttributes,
+                $transitionName
             )
         );
     }
