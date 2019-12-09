@@ -54,15 +54,16 @@ jobs:
             - run: composer config -g cache-dir "$(pwd)/.composer-cache"
             - restore_cache:
                   keys:
-                      - v8-composer-cache-{{ checksum "composer.json" }}
-                      - v8-composer-cache-
-            - run: composer install -n --prefer-dist --ignore-platform-reqs --no-scripts
+                      - v9-composer-cache-{{ checksum "composer.json" }}
+                      - v9-composer-cache-
+            - run: composer config platform.php "7.2.25"
+            - run: composer install -n --prefer-dist --no-scripts
             - run: composer phpunit -- install
             - run: curl --show-error --silent https://getcomposer.org/installer | php
             - save_cache:
                   paths:
                       - .composer-cache
-                  key: v8-composer-cache-{{ checksum "composer.json" }}
+                  key: v9-composer-cache-{{ checksum "composer.json" }}
             - persist_to_workspace:
                   root: .
                   paths:
