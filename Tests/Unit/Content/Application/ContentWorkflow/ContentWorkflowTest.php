@@ -184,6 +184,10 @@ class ContentWorkflowTest extends TestCase
             ->willReturn('unpublished')
             ->shouldBeCalled();
 
+        $contentDimension2->getWorkflowName()
+            ->willReturn('content_workflow')
+            ->shouldBeCalled();
+
         $contentDimensionCollection = new ContentDimensionCollection([
             $contentDimension1->reveal(),
             $contentDimension2->reveal(),
@@ -243,6 +247,10 @@ class ContentWorkflowTest extends TestCase
 
         $contentDimension2->getWorkflowPlace()
             ->willReturn($currentPlace)
+            ->shouldBeCalled();
+
+        $contentDimension2->getWorkflowName()
+            ->willReturn('content_workflow')
             ->shouldBeCalled();
 
         if ($isTransitionAllowed) {

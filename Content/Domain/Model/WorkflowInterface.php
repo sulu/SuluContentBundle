@@ -43,6 +43,8 @@ interface WorkflowInterface
 
     const WORKFLOW_TRANSITION_REJECT_DRAFT = 'reject_draft';
 
+    const WORKFLOW_DEFAULT_NAME = 'content_workflow';
+
     public function getWorkflowPlace(): string;
 
     public function setWorkflowPlace(string $workflowPlace): void;
@@ -50,4 +52,6 @@ interface WorkflowInterface
     public function getWorkflowPublished(): ?\DateTimeImmutable;
 
     public function setWorkflowPublished(?\DateTimeImmutable $workflowPublished): void;
+
+    public function getWorkflowName(): string;
 }

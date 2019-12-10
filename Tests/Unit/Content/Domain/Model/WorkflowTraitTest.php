@@ -86,10 +86,16 @@ class WorkflowTraitTest extends TestCase
         $this->assertSame($dateTime, $workflow->getWorkflowPublished());
     }
 
-    public function testSetWorkflowPublishedBzkk(): void
+    public function testSetWorkflowPublishedNull(): void
     {
         $workflow = $this->getWorkflowInstance();
         $workflow->setWorkflowPublished(null);
         $this->assertNull($workflow->getWorkflowPublished());
+    }
+
+    public function testGetWorkflowName(): void
+    {
+        $workflow = $this->getWorkflowInstance();
+        $this->assertSame('content_workflow', $workflow->getWorkflowName());
     }
 }

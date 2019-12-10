@@ -72,7 +72,7 @@ class ContentWorkflow implements ContentWorkflowInterface
         // TODO get workflow from outside
         $this->workflowRegistry = $workflowRegistry ?: new Registry();
         $this->workflowRegistry->addWorkflow(
-            $this->getWorkflow($this->eventDispatcher),
+            $this->getWorkflow(),
             new InstanceOfSupportStrategy(WorkflowInterface::class)
         );
     }
@@ -95,18 +95,13 @@ class ContentWorkflow implements ContentWorkflowInterface
             throw new \RuntimeException(sprintf('Expected "%s" but "%s" given.', WorkflowInterface::class, \get_class($localizedContentDimension)));
         }
 
-        $workflow = $this->workflowRegistry->get($localizedContentDimension, 'content_workflow');
+        $workflow = $this->workflowRegistry->get(
+            $localizedContentDimension,
+            $localizedContentDimension->getWorkflowName()
+        );
 
         if (!$workflow->can($localizedContentDimension, $transitionName)) {
-            $transitionNames = array_map(function (Transition $transition) {
-                return $transition->getName();
-            }, $workflow->getDefinition()->getTransitions());
-
-            if (!\in_array($transitionName, $transitionNames, true)) {
-                throw new \LogicException(sprintf('The transition "%s" does not exist.', $transitionName));
-            }
-
-            throw new ContentInvalidWorkflowException($localizedContentDimension, $transitionName, array_map(function (Transition $transition) { return $transition->getName(); }, $workflow->getEnabledTransitions($localizedContentDimension)));
+            throw $this->createInvalidWorkflowException($workflow, $localizedContentDimension, $transitionName);
         }
 
         $workflow->apply($localizedContentDimension, $transitionName, [
@@ -118,9 +113,27 @@ class ContentWorkflow implements ContentWorkflowInterface
         return $this->viewFactory->create($contentDimensionCollection);
     }
 
-    private function getWorkflow(EventDispatcherInterface $eventDispatcher): SymfonyWorkflowInterface
+    private function getWorkflow(): SymfonyWorkflowInterface
     {
         $definitionBuilder = new DefinitionBuilder();
+
+        //                                                              unpublish
+        //                    +----------------------------------------------------------------------------------------------+
+        //                    |                                                                                              |
+        //                    |                              publish                                                         |
+        //                    |     +--------------------------------------------------------+                               |
+        //                    |     |                                                        |                               |
+        //                    |     |                       unpublish                        |           publish             |
+        //                    |     |     +----------------------------------------------+   |   +---------------------+     |
+        //                    V     |     V                                              |   V   V                     |     |
+        // +-----+           +-------------+  request for review  +--------+           +------------+  remove draft  +---------+  request draft for review   +---------------+
+        // |     |  create   |             |--------------------->|        |  publish  |            |<---------------|         |---------------------------->|               |
+        // | New |---------->| Unpublished |                      | Review |---------->| Published  |                |  draft  |                             | Review draft  |
+        // |     |           |             |<---------------------|        |           |            |--------------->|         |<----------------------------|               |
+        // +-----+           +-------------+       reject         +--------+           +------------+  create draft  +---------+        reject draft         +---------------+
+        //                                                                                   A                                                                       |
+        //                                                                                   |                             publish                                   |
+        //                                                                                   +-----------------------------------------------------------------------+
 
         // Configures places
         $definition = $definitionBuilder
@@ -209,6 +222,37 @@ class ContentWorkflow implements ContentWorkflowInterface
         $property = 'workflowPlace';
         $marking = new MethodMarkingStore($singleState, $property);
 
-        return new Workflow($definition, $marking, $eventDispatcher, 'content_workflow');
+        return new Workflow(
+            $definition,
+            $marking,
+            $this->eventDispatcher,
+            WorkflowInterface::WORKFLOW_DEFAULT_NAME
+        );
+    }
+
+    private function createInvalidWorkflowException(
+        Workflow $workflow,
+        WorkflowInterface $localizedContentDimension,
+        string $transitionName
+    ): \Throwable {
+        $transitionNames = array_map(
+            function (Transition $transition) {
+                return $transition->getName();
+            },
+            $workflow->getDefinition()->getTransitions()
+        );
+
+        if (!\in_array($transitionName, $transitionNames, true)) {
+            return new \LogicException(sprintf('The transition "%s" does not exist.', $transitionName));
+        }
+
+        $enabledTransitions = array_map(
+            function (Transition $transition) {
+                return $transition->getName();
+            },
+            $workflow->getEnabledTransitions($localizedContentDimension)
+        );
+
+        return new ContentInvalidWorkflowException($localizedContentDimension, $transitionName, $enabledTransitions);
     }
 }
