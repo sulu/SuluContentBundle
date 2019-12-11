@@ -13,7 +13,8 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow;
 
-use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentInvalidWorkflowException;
+use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentInvalidTransitionException;
+use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotExistTransitionException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ViewFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentInterface;
@@ -24,6 +25,8 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionRepositoryInter
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Workflow\DefinitionBuilder;
+use Symfony\Component\Workflow\Exception\NotEnabledTransitionException;
+use Symfony\Component\Workflow\Exception\UndefinedTransitionException;
 use Symfony\Component\Workflow\MarkingStore\MethodMarkingStore;
 use Symfony\Component\Workflow\Registry;
 use Symfony\Component\Workflow\SupportStrategy\InstanceOfSupportStrategy;
@@ -77,7 +80,7 @@ class ContentWorkflow implements ContentWorkflowInterface
         );
     }
 
-    public function transition(
+    public function apply(
         ContentInterface $content,
         array $dimensionAttributes,
         string $transitionName
@@ -100,15 +103,17 @@ class ContentWorkflow implements ContentWorkflowInterface
             $localizedContentDimension->getWorkflowName()
         );
 
-        if (!$workflow->can($localizedContentDimension, $transitionName)) {
-            throw $this->createInvalidWorkflowException($workflow, $localizedContentDimension, $transitionName);
+        try {
+            $workflow->apply($localizedContentDimension, $transitionName, [
+                'contentRichEntity' => $content,
+                'contentDimensionCollection' => $contentDimensionCollection,
+                'dimensionAttributes' => $dimensionAttributes,
+            ]);
+        } catch (UndefinedTransitionException $e) {
+            throw new ContentNotExistTransitionException($e->getMessage(), $e->getCode(), $e);
+        } catch (NotEnabledTransitionException $e) {
+            throw new ContentInvalidTransitionException($e->getMessage(), $e->getCode(), $e);
         }
-
-        $workflow->apply($localizedContentDimension, $transitionName, [
-            'contentRichEntity' => $content,
-            'contentDimensionCollection' => $contentDimensionCollection,
-            'dimensionAttributes' => $dimensionAttributes,
-        ]);
 
         return $this->viewFactory->create($contentDimensionCollection);
     }
@@ -117,23 +122,23 @@ class ContentWorkflow implements ContentWorkflowInterface
     {
         $definitionBuilder = new DefinitionBuilder();
 
-        //                                                              unpublish
-        //                    +----------------------------------------------------------------------------------------------+
-        //                    |                                                                                              |
-        //                    |                              publish                                                         |
-        //                    |     +--------------------------------------------------------+                               |
-        //                    |     |                                                        |                               |
-        //                    |     |                       unpublish                        |           publish             |
-        //                    |     |     +----------------------------------------------+   |   +---------------------+     |
-        //                    V     |     V                                              |   V   V                     |     |
-        // +-----+           +-------------+  request for review  +--------+           +------------+  remove draft  +---------+  request draft for review   +---------------+
-        // |     |  create   |             |--------------------->|        |  publish  |            |<---------------|         |---------------------------->|               |
-        // | New |---------->| Unpublished |                      | Review |---------->| Published  |                |  draft  |                             | Review draft  |
-        // |     |           |             |<---------------------|        |           |            |--------------->|         |<----------------------------|               |
-        // +-----+           +-------------+       reject         +--------+           +------------+  create draft  +---------+        reject draft         +---------------+
-        //                                                                                   A                                                                       |
-        //                                                                                   |                             publish                                   |
-        //                                                                                   +-----------------------------------------------------------------------+
+        //                                                           unpublish
+        //                   +--------------------------------------------------------------------------------------------+
+        //                   |                                                                                            |
+        //                   |                              publish                                                       |
+        //                   |     +--------------------------------------------------------+                             |
+        //                   |     |                                                        |                             |
+        //                   |     |                       unpublish                        |           publish           |
+        //                   |     |     +----------------------------------------------+   |   +---------------------+   |
+        //                   V     |     V                                              |   V   V                     |   |
+        // +-----+          +-------------+  request for review  +--------+           +------------+  remove draft  +-------+  request draft for review   +---------------+
+        // |     |  create  |             |--------------------->|        |  publish  |            |<---------------|       |---------------------------->|               |
+        // | New |--------->| Unpublished |                      | Review |---------->| Published  |                | draft |                             | Review draft  |
+        // |     |          |             |<---------------------|        |           |            |--------------->|       |<----------------------------|               |
+        // +-----+          +-------------+       reject         +--------+           +------------+  create draft  +-------+        reject draft         +---------------+
+        //                                                                                  A                                                                     |
+        //                                                                                  |                             publish                                 |
+        //                                                                                  +---------------------------------------------------------------------+
 
         // Configures places
         $definition = $definitionBuilder
@@ -163,7 +168,7 @@ class ContentWorkflow implements ContentWorkflowInterface
             ->addTransition(new Transition(
                 WorkflowInterface::WORKFLOW_TRANSITION_PUBLISH,
                 WorkflowInterface::WORKFLOW_PLACE_UNPUBLISHED,
-            WorkflowInterface::WORKFLOW_PLACE_PUBLISHED
+                WorkflowInterface::WORKFLOW_PLACE_PUBLISHED
             ))
             ->addTransition(new Transition(
                 WorkflowInterface::WORKFLOW_TRANSITION_PUBLISH,
@@ -228,31 +233,5 @@ class ContentWorkflow implements ContentWorkflowInterface
             $this->eventDispatcher,
             WorkflowInterface::WORKFLOW_DEFAULT_NAME
         );
-    }
-
-    private function createInvalidWorkflowException(
-        Workflow $workflow,
-        WorkflowInterface $localizedContentDimension,
-        string $transitionName
-    ): \Throwable {
-        $transitionNames = array_map(
-            function (Transition $transition) {
-                return $transition->getName();
-            },
-            $workflow->getDefinition()->getTransitions()
-        );
-
-        if (!\in_array($transitionName, $transitionNames, true)) {
-            return new \LogicException(sprintf('The transition "%s" does not exist.', $transitionName));
-        }
-
-        $enabledTransitions = array_map(
-            function (Transition $transition) {
-                return $transition->getName();
-            },
-            $workflow->getEnabledTransitions($localizedContentDimension)
-        );
-
-        return new ContentInvalidWorkflowException($localizedContentDimension, $transitionName, $enabledTransitions);
     }
 }

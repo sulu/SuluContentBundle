@@ -134,7 +134,7 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         $this->entityManager->flush();
 
         if ('publish' === $request->query->get('action')) {
-            $contentView = $this->contentFacade->transition(
+            $contentView = $this->contentFacade->applyTransition(
                 $example,
                 $dimensionAttributes,
                 WorkflowInterface::WORKFLOW_TRANSITION_PUBLISH
@@ -166,7 +166,7 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         $this->entityManager->flush();
 
         if ('publish' === $request->query->get('action')) {
-            $contentView = $this->contentFacade->transition(
+            $contentView = $this->contentFacade->applyTransition(
                 $example,
                 $dimensionAttributes,
                 WorkflowInterface::WORKFLOW_TRANSITION_PUBLISH

@@ -91,11 +91,11 @@ class ContentFacade implements ContentFacadeInterface
         );
     }
 
-    public function transition(
+    public function applyTransition(
         ContentInterface $content,
         array $dimensionAttributes,
         string $transitionName
     ): ContentViewInterface {
-        return $this->contentWorkflow->transition($content, $dimensionAttributes, $transitionName);
+        return $this->contentWorkflow->apply($content, $dimensionAttributes, $transitionName);
     }
 }

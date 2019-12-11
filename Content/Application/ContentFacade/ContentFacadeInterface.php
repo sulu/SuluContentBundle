@@ -48,7 +48,7 @@ interface ContentFacadeInterface
     /**
      * @param mixed[] $dimensionAttributes
      */
-    public function transition(
+    public function applyTransition(
         ContentInterface $content,
         array $dimensionAttributes,
         string $transitionName

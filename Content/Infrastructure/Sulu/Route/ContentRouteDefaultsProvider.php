@@ -125,9 +125,10 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
         }
 
         try {
-            // TODO to support other dimension attributes here
-            // TODO we should maybe get dimension Attributes form request attributes set by a request listener
-            // TODO e.g. $request->attributes->get('_sulu_content_dimension_attributes');
+            // TODO:
+            //      to support other dimension attributes here
+            //      we should maybe get dimension Attributes from request attributes set by a request listener
+            //      e.g. $request->attributes->get('_sulu_content_dimension_attributes');
             $contentView = $this->contentLoader->load(
                 $content,
                 [

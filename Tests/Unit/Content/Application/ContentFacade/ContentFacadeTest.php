@@ -190,7 +190,7 @@ class ContentFacadeTest extends TestCase
             $contentWorkflow->reveal()
         );
 
-        $contentWorkflow->transition(
+        $contentWorkflow->apply(
             $content->reveal(),
             $dimensionAttributes,
             $transitionName
@@ -200,7 +200,7 @@ class ContentFacadeTest extends TestCase
 
         $this->assertSame(
             $contentView->reveal(),
-            $contentFacade->transition(
+            $contentFacade->applyTransition(
                 $content->reveal(),
                 $dimensionAttributes,
                 $transitionName

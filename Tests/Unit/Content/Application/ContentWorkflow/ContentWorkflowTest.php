@@ -17,7 +17,8 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\ContentWorkflow;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\ContentWorkflowInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentInvalidWorkflowException;
+use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentInvalidTransitionException;
+use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotExistTransitionException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ViewFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionCollection;
@@ -91,7 +92,7 @@ class ContentWorkflowTest extends TestCase
             ->willReturn($contentDimensionCollection)
             ->shouldBeCalled();
 
-        $contentWorkflow->transition(
+        $contentWorkflow->apply(
             $content->reveal(),
             $dimensionAttributes,
             $transitionName
@@ -136,7 +137,7 @@ class ContentWorkflowTest extends TestCase
             ->willReturn($contentDimensionCollection)
             ->shouldBeCalled();
 
-        $contentWorkflow->transition(
+        $contentWorkflow->apply(
             $content->reveal(),
             $dimensionAttributes,
             $transitionName
@@ -145,11 +146,10 @@ class ContentWorkflowTest extends TestCase
 
     public function testNotExistTransition(): void
     {
-        $this->expectException(\LogicException::class);
-        $this->expectExceptionMessage(sprintf(
-            'The transition "%s" does not exist.',
-            'not-exist-transition'
-        ));
+        $this->expectException(ContentNotExistTransitionException::class);
+        $this->expectExceptionMessage(
+            'Transition "not-exist-transition" is not defined for workflow "content_workflow".'
+        );
 
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
         $contentDimensionRepository = $this->prophesize(ContentDimensionRepositoryInterface::class);
@@ -197,7 +197,7 @@ class ContentWorkflowTest extends TestCase
             ->willReturn($contentDimensionCollection)
             ->shouldBeCalled();
 
-        $contentWorkflow->transition(
+        $contentWorkflow->apply(
             $content->reveal(),
             $dimensionAttributes,
             'not-exist-transition'
@@ -213,7 +213,7 @@ class ContentWorkflowTest extends TestCase
         bool $isTransitionAllowed
     ): void {
         if (!$isTransitionAllowed) {
-            $this->expectException(ContentInvalidWorkflowException::class);
+            $this->expectException(ContentInvalidTransitionException::class);
         }
 
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
@@ -275,7 +275,7 @@ class ContentWorkflowTest extends TestCase
 
         $this->assertSame(
             $isTransitionAllowed ? $contentView->reveal() : null,
-            $contentWorkflow->transition(
+            $contentWorkflow->apply(
                 $content->reveal(),
                 $dimensionAttributes,
                 $transitionName
