@@ -16,13 +16,13 @@ namespace Sulu\Bundle\ContentBundle\EventSubscriber;
 use JMS\Serializer\EventDispatcher\Events;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
-use JMS\Serializer\JsonSerializationVisitor;
+use JMS\Serializer\Metadata\StaticPropertyMetadata;
+use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use Sulu\Bundle\ContentBundle\Model\Content\ContentViewInterface;
 use Sulu\Component\Content\Compat\StructureInterface;
 use Sulu\Component\Content\Compat\StructureManagerInterface;
 use Sulu\Component\Content\ContentTypeManagerInterface;
 use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
-use Sulu\Component\Serializer\ArraySerializationVisitor;
 
 class ContentViewSerializationSubscriber implements EventSubscriberInterface
 {
@@ -83,21 +83,16 @@ class ContentViewSerializationSubscriber implements EventSubscriberInterface
             return;
         }
 
-        /** @var JsonSerializationVisitor $visitor */
+        /** @var SerializationVisitorInterface $visitor */
         $visitor = $event->getVisitor();
         foreach ($metadata->getProperties() as $property) {
-            $name = $property->getName();
-            if (\is_float($name)) {
-                $name = (string) $name;
-            }
+            $name = (string) $property->getName();
+            $value = $data[$name] ?? null;
 
-            if (\array_key_exists($name, $data)) {
-                $visitor->setData((string) $name, $data[$name]);
-
-                continue;
-            }
-
-            $visitor->setData((string) $name, null);
+            $visitor->visitProperty(
+                new StaticPropertyMetadata('', $name, $value),
+                $value
+            );
         }
     }
 
@@ -115,10 +110,20 @@ class ContentViewSerializationSubscriber implements EventSubscriberInterface
 
         $data = $object->getData() ?? [];
 
-        /** @var ArraySerializationVisitor $visitor */
+        /** @var SerializationVisitorInterface $visitor */
         $visitor = $event->getVisitor();
-        $visitor->setData('content', $this->resolveContent($structure, $data));
-        $visitor->setData('view', $this->resolveView($structure, $data));
+
+        $content = $this->resolveContent($structure, $data);
+        $visitor->visitProperty(
+            new StaticPropertyMetadata('', 'content', $content),
+            $content
+        );
+
+        $view = $this->resolveView($structure, $data);
+        $visitor->visitProperty(
+            new StaticPropertyMetadata('', 'view', $view),
+            $view
+        );
     }
 
     private function getStructure(ContentViewInterface $contentView): ?StructureInterface

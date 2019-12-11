@@ -22,6 +22,7 @@ use Sulu\Bundle\ContentBundle\Model\Content\Message\ModifyContentMessage;
 use Sulu\Bundle\ContentBundle\Model\Content\Query\FindContentQuery;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\Exception\HandlerFailedException;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 abstract class AbstractContentController implements ClassResourceInterface
@@ -60,7 +61,11 @@ abstract class AbstractContentController implements ClassResourceInterface
             $message = new FindContentQuery($this->getContentResourceKey(), $id, $request->query->get('locale'));
             $this->messageBus->dispatch($message);
             $content = $message->getContent();
-        } catch (ContentNotFoundException $exception) {
+        } catch (HandlerFailedException $exception) {
+            if (!$exception->getPrevious() instanceof ContentNotFoundException) {
+                throw $exception;
+            }
+
             // need to return an empty content-view object because the sulu frontend does not expect any errors here
             // TODO: review this code when subresource handling is implemented in the sulu frontend
             $content = new ContentView(
