@@ -108,6 +108,34 @@ class ContentLoaderTest extends TestCase
         $this->assertSame($contentView->reveal(), $createContentMessageHandler->load($content->reveal(), $attributes));
     }
 
+    public function testLoadDimensionNotFound(): void
+    {
+        $this->expectException(ContentNotFoundException::class);
+
+        $content = $this->prophesize(ContentInterface::class);
+
+        $attributes = [
+            'locale' => 'de',
+        ];
+
+        $dimensionCollection = new DimensionCollection($attributes, []);
+
+        $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
+        $dimensionRepository->findByAttributes($attributes)->willReturn($dimensionCollection)->shouldBeCalled();
+
+        $contentDimensionRepository = $this->prophesize(ContentDimensionRepositoryInterface::class);
+        $contentView = $this->prophesize(ContentViewInterface::class);
+        $viewFactory = $this->prophesize(ViewFactoryInterface::class);
+
+        $createContentMessageHandler = $this->createContentLoaderInstance(
+            $dimensionRepository->reveal(),
+            $contentDimensionRepository->reveal(),
+            $viewFactory->reveal()
+        );
+
+        $this->assertSame($contentView->reveal(), $createContentMessageHandler->load($content->reveal(), $attributes));
+    }
+
     public function testLoadNotFound(): void
     {
         $this->expectException(ContentNotFoundException::class);

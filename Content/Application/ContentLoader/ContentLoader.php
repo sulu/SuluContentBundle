@@ -50,6 +50,11 @@ class ContentLoader implements ContentLoaderInterface
     public function load(ContentInterface $content, array $dimensionAttributes): ContentViewInterface
     {
         $dimensionCollection = $this->dimensionRepository->findByAttributes($dimensionAttributes);
+
+        if (0 === \count($dimensionCollection)) {
+            throw new ContentNotFoundException($content, $dimensionAttributes);
+        }
+
         $contentDimensionCollection = $this->contentDimensionRepository->load($content, $dimensionCollection);
 
         if (0 === \count($contentDimensionCollection)) {

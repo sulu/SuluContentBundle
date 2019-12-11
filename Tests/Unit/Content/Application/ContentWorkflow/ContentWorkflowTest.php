@@ -144,6 +144,37 @@ class ContentWorkflowTest extends TestCase
         );
     }
 
+    public function testTransitionNoDimensions(): void
+    {
+        $this->expectException(ContentNotFoundException::class);
+
+        $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
+        $contentDimensionRepository = $this->prophesize(ContentDimensionRepositoryInterface::class);
+        $viewFactory = $this->prophesize(ViewFactoryInterface::class);
+
+        $contentWorkflow = $this->createContentWorkflowInstance(
+            $dimensionRepository->reveal(),
+            $contentDimensionRepository->reveal(),
+            $viewFactory->reveal()
+        );
+
+        $content = $this->prophesize(ContentInterface::class);
+        $dimensionAttributes = ['locale' => 'de', 'stage' => 'draft'];
+        $transitionName = 'request_for_review';
+
+        $dimensionCollection = new DimensionCollection($dimensionAttributes, []);
+
+        $dimensionRepository->findByAttributes($dimensionAttributes)
+            ->willReturn($dimensionCollection)
+            ->shouldBeCalled();
+
+        $contentWorkflow->apply(
+            $content->reveal(),
+            $dimensionAttributes,
+            $transitionName
+        );
+    }
+
     public function testNotExistTransition(): void
     {
         $this->expectException(ContentNotExistTransitionException::class);

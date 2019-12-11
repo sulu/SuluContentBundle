@@ -86,6 +86,11 @@ class ContentWorkflow implements ContentWorkflowInterface
         string $transitionName
     ): ContentViewInterface {
         $dimensionCollection = $this->dimensionRepository->findByAttributes($dimensionAttributes);
+
+        if (0 === \count($dimensionCollection)) {
+            throw new ContentNotFoundException($content, $dimensionAttributes);
+        }
+
         $contentDimensionCollection = $this->contentDimensionRepository->load($content, $dimensionCollection);
 
         $localizedContentDimension = $contentDimensionCollection->getLocalizedContentDimension();
