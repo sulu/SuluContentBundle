@@ -231,10 +231,7 @@ class ModifyExcerptMessageHandler
     {
         $tag = $this->tagRepository->findTagByName($tagName);
         if (!$tag) {
-            throw EntityNotFoundException::fromClassNameAndIdentifier(
-                TagInterface::class,
-                ['name' => $tagName]
-            );
+            throw EntityNotFoundException::fromClassNameAndIdentifier(TagInterface::class, ['name' => $tagName]);
         }
 
         return $tag;
@@ -244,10 +241,7 @@ class ModifyExcerptMessageHandler
     {
         $category = $this->categoryRepository->findCategoryById($categoryId);
         if (!$category) {
-            throw EntityNotFoundException::fromClassNameAndIdentifier(
-                CategoryInterface::class,
-                ['id' => (string) $categoryId]
-            );
+            throw EntityNotFoundException::fromClassNameAndIdentifier(CategoryInterface::class, ['id' => (string) $categoryId]);
         }
 
         return $category;
@@ -258,10 +252,7 @@ class ModifyExcerptMessageHandler
         /** @var ?MediaInterface */
         $media = $this->mediaRepository->findMediaById($mediaId);
         if (!$media) {
-            throw EntityNotFoundException::fromClassNameAndIdentifier(
-                MediaInterface::class,
-                ['id' => (string) $mediaId]
-            );
+            throw EntityNotFoundException::fromClassNameAndIdentifier(MediaInterface::class, ['id' => (string) $mediaId]);
         }
 
         return $media;
