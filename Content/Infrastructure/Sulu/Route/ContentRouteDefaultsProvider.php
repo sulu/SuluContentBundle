@@ -18,7 +18,10 @@ use Doctrine\ORM\NoResultException;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentLoader\ContentLoaderInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionRepositoryInterface;
 use Sulu\Bundle\RouteBundle\Routing\Defaults\RouteDefaultsProviderInterface;
 use Sulu\Component\Content\Compat\Structure\LegacyPropertyFactory;
 use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
@@ -85,6 +88,19 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
     {
         $entity = $this->loadEntity($entityClass, $id, $locale);
 
+        if ($entity instanceof ContentViewInterface) {
+            $dimensionId = $entity->getDimensionId();
+            /** @var DimensionRepositoryInterface $dimensionRepository */
+            $dimensionRepository = $this->entityManager->getRepository(DimensionInterface::class);
+            $dimension = $dimensionRepository->findOneBy(['id' => $dimensionId]);
+            if (!$dimension) {
+                // Return false if dimension does not longer exists
+                return false;
+            }
+
+            return DimensionInterface::STAGE_LIVE === $dimension->getStage();
+        }
+
         return null !== $entity;
     }
 
@@ -109,8 +125,17 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
         }
 
         try {
-            // FIXME use the live stage when publishing is implemented
-            $contentView = $this->contentLoader->load($content, ['locale' => $locale, 'stage' => 'draft']);
+            // TODO:
+            //      to support other dimension attributes here
+            //      we should maybe get dimension Attributes from request attributes set by a request listener
+            //      e.g. $request->attributes->get('_sulu_content_dimension_attributes');
+            $contentView = $this->contentLoader->load(
+                $content,
+                [
+                    'locale' => $locale,
+                    'stage' => DimensionInterface::STAGE_LIVE,
+                ]
+            );
 
             if (!$contentView instanceof TemplateInterface) {
                 throw new \RuntimeException(sprintf('Expected to get "%s" from ContentLoader but "%s" given.', TemplateInterface::class, \get_class($contentView)));

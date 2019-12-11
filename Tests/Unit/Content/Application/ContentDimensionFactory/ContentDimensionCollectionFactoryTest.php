@@ -22,18 +22,29 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollection;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Repository\ContentDimensionRepositoryInterface;
 
 class ContentDimensionCollectionFactoryTest extends TestCase
 {
     /**
+     * @param mixed[] $dimensionAttributes
+     * @param DimensionInterface[] $existDimensions
      * @param ContentDimensionInterface[] $existContentDimensions
+     * @param MapperInterface[] $mappers
      */
-    protected function createContentDimensionCollectionFactoryInstance(array $existContentDimensions, iterable $mappers): ContentDimensionCollectionFactory
-    {
+    protected function createContentDimensionCollectionFactoryInstance(
+        array $dimensionAttributes,
+        array $existDimensions,
+        array $existContentDimensions,
+        iterable $mappers
+    ): ContentDimensionCollectionFactory {
         $contentDimensionRepository = $this->prophesize(ContentDimensionRepositoryInterface::class);
         $contentDimensionRepository->load(Argument::any(), Argument::any())->willReturn(
-            new ContentDimensionCollection($existContentDimensions)
+            new ContentDimensionCollection(
+                $existContentDimensions,
+                new DimensionCollection($dimensionAttributes, $existDimensions)
+            )
         );
 
         return new ContentDimensionCollectionFactory($contentDimensionRepository->reveal(), $mappers);
@@ -63,6 +74,11 @@ class ContentDimensionCollectionFactoryTest extends TestCase
         $dimensionCollection = new DimensionCollection($attributes, [$dimension1, $dimension2]);
 
         $contentDimensionCollectionFactoryInstance = $this->createContentDimensionCollectionFactoryInstance(
+            $attributes,
+            [
+                $dimension1,
+                $dimension2,
+            ],
             [
                 $contentDimension1->reveal(),
                 $contentDimension2->reveal(),
@@ -109,6 +125,11 @@ class ContentDimensionCollectionFactoryTest extends TestCase
         $dimensionCollection = new DimensionCollection($attributes, [$dimension2]);
 
         $contentDimensionCollectionFactoryInstance = $this->createContentDimensionCollectionFactoryInstance(
+            $attributes,
+            [
+                $dimension1,
+                $dimension2,
+            ],
             [
                 $contentDimension1->reveal(),
                 $contentDimension2->reveal(),
@@ -150,6 +171,11 @@ class ContentDimensionCollectionFactoryTest extends TestCase
         $dimensionCollection = new DimensionCollection($attributes, [$dimension1, $dimension2]);
 
         $contentDimensionCollectionFactoryInstance = $this->createContentDimensionCollectionFactoryInstance(
+            $attributes,
+            [
+                $dimension1,
+                $dimension2,
+            ],
             [
                 $contentDimension1->reveal(),
             ],
@@ -199,6 +225,11 @@ class ContentDimensionCollectionFactoryTest extends TestCase
         $mapper2->map($data, $contentDimension1->reveal(), $contentDimension2->reveal())->shouldBeCalled();
 
         $contentDimensionCollectionFactoryInstance = $this->createContentDimensionCollectionFactoryInstance(
+            $attributes,
+            [
+                $dimension1,
+                $dimension2,
+            ],
             [
                 $contentDimension1->reveal(),
                 $contentDimension2->reveal(),

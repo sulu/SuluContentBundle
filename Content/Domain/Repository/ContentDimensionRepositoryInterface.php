@@ -21,6 +21,6 @@ interface ContentDimensionRepositoryInterface
 {
     public function load(
         ContentInterface $content,
-        DimensionCollectionInterface $collection
+        DimensionCollectionInterface $dimensionCollection
     ): ContentDimensionCollectionInterface;
 }

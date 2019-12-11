@@ -80,11 +80,13 @@ class ContentPersisterTest extends TestCase
         $dimensionCollectionFactory->create($attributes)->willReturn($dimensionCollection)->shouldBeCalled();
 
         $contentDimension1 = $this->prophesize(ContentDimensionInterface::class);
+        $contentDimension1->getDimension()->willReturn($dimension1);
         $contentDimension2 = $this->prophesize(ContentDimensionInterface::class);
+        $contentDimension2->getDimension()->willReturn($dimension2);
         $contentDimensionCollection = new ContentDimensionCollection([
             $contentDimension1->reveal(),
             $contentDimension2->reveal(),
-        ]);
+        ], $dimensionCollection);
 
         $contentDimensionCollectionFactory = $this->prophesize(ContentDimensionCollectionFactoryInterface::class);
         $contentDimensionCollectionFactory->create($content, $dimensionCollection, $data)

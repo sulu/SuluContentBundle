@@ -33,4 +33,24 @@ interface ContentFacadeInterface
      * @return mixed[]
      */
     public function resolve(ContentViewInterface $contentView): array;
+
+    /**
+     * @param mixed[] $sourceDimensionAttributes
+     * @param mixed[] $targetDimensionAttributes
+     */
+    public function copy(
+        ContentInterface $sourceContent,
+        array $sourceDimensionAttributes,
+        ContentInterface $targetContent,
+        array $targetDimensionAttributes
+    ): ContentViewInterface;
+
+    /**
+     * @param mixed[] $dimensionAttributes
+     */
+    public function applyTransition(
+        ContentInterface $content,
+        array $dimensionAttributes,
+        string $transitionName
+    ): ContentViewInterface;
 }

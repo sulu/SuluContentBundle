@@ -35,7 +35,7 @@ class ContentDimensionRepository implements ContentDimensionRepositoryInterface
 
     public function load(
         ContentInterface $content,
-        DimensionCollectionInterface $collection
+        DimensionCollectionInterface $dimensionCollection
     ): ContentDimensionCollectionInterface {
         $classMetadata = $this->entityManager->getClassMetadata(\get_class($content));
         $associationMapping = $classMetadata->getAssociationMapping('dimensions');
@@ -50,7 +50,7 @@ class ContentDimensionRepository implements ContentDimensionRepositoryInterface
             ->where('content.id = :id')
             ->setParameter('id', $content->getId());
 
-        $dimensionIds = $collection->getDimensionIds();
+        $dimensionIds = $dimensionCollection->getDimensionIds();
 
         $queryBuilder->andWhere($queryBuilder->expr()->in('dimension.id', $dimensionIds));
 
@@ -66,6 +66,6 @@ class ContentDimensionRepository implements ContentDimensionRepositoryInterface
 
         ksort($contentDimensions);
 
-        return new ContentDimensionCollection($contentDimensions);
+        return new ContentDimensionCollection($contentDimensions, $dimensionCollection);
     }
 }

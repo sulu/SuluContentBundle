@@ -21,12 +21,15 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoTrait;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateTrait;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowTrait;
 
-class ExampleView extends AbstractContentView implements SeoInterface, ExcerptInterface, TemplateInterface
+class ExampleView extends AbstractContentView implements SeoInterface, ExcerptInterface, TemplateInterface, WorkflowInterface
 {
     use SeoTrait;
     use ExcerptTrait;
     use TemplateTrait;
+    use WorkflowTrait;
 
     /**
      * @var Example

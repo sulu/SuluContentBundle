@@ -12,6 +12,8 @@
     ],
     "excerptTitle": "Excerpt Title 2",
     "id": "@integer@",
+    "published": null,
+    "publishedState": false,
     "seoCanonicalUrl": "https://sulu.io/2",
     "seoDescription": "Seo Description 2",
     "seoHideInSitemap": false,
@@ -21,5 +23,7 @@
     "seoTitle": "Seo Title 2",
     "template": "default",
     "title": "Test Example 2",
-    "url": "/my-example-2"
+    "url": "/my-example-2",
+    "workflowName": "content_workflow",
+    "workflowPlace": "unpublished"
 }

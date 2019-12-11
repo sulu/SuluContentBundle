@@ -19,6 +19,7 @@ use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\ApiViewResolver;
 use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\ApiViewResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\Resolver\ExcerptResolver;
 use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\Resolver\TemplateResolver;
+use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\Resolver\WorkflowResolver;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\AbstractContentView;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptTrait;
@@ -26,6 +27,8 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoTrait;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateTrait;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowTrait;
 use Sulu\Bundle\TagBundle\Tag\TagInterface;
 
 class ApiViewResolverTest extends TestCase
@@ -35,6 +38,7 @@ class ApiViewResolverTest extends TestCase
         return new ApiViewResolver([
             new ExcerptResolver(),
             new TemplateResolver(),
+            new WorkflowResolver(),
         ]);
     }
 
@@ -59,10 +63,11 @@ class ApiViewResolverTest extends TestCase
 
     public function testResolveFull(): void
     {
-        $contentView = new class() extends AbstractContentView implements ExcerptInterface, SeoInterface, TemplateInterface {
+        $contentView = new class() extends AbstractContentView implements ExcerptInterface, SeoInterface, TemplateInterface, WorkflowInterface {
             use ExcerptTrait;
             use SeoTrait;
             use TemplateTrait;
+            use WorkflowTrait;
 
             protected $id = 2;
             protected $dimensionId = '123-456';
@@ -127,6 +132,8 @@ class ApiViewResolverTest extends TestCase
             ],
             'excerptTitle' => 'Excerpt Title',
             'id' => 5,
+            'published' => null,
+            'publishedState' => false,
             'seoCanonicalUrl' => 'https://caninical.localhost/',
             'seoDescription' => 'Seo Description',
             'seoHideInSitemap' => true,
@@ -136,6 +143,8 @@ class ApiViewResolverTest extends TestCase
             'seoTitle' => 'Seo Title',
             'someTemplate' => 'data',
             'template' => 'template-key',
+            'workflowName' => 'content_workflow',
+            'workflowPlace' => 'unpublished',
         ], $apiViewResolver->resolve($contentView));
     }
 }

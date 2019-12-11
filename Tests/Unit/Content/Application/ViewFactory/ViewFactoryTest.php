@@ -20,6 +20,7 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ViewFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionCollection;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollection;
 
 class ViewFactoryTest extends TestCase
 {
@@ -33,7 +34,7 @@ class ViewFactoryTest extends TestCase
         $this->expectException(\RuntimeException::class);
 
         $viewFactory = $this->getViewFactoryInstance();
-        $viewFactory->create(new ContentDimensionCollection([]));
+        $viewFactory->create(new ContentDimensionCollection([], new DimensionCollection([], [])));
     }
 
     public function testCreate(): void
@@ -51,7 +52,7 @@ class ViewFactoryTest extends TestCase
             $contentViewDimension1->reveal(),
             $contentViewDimension2->reveal(),
             $contentViewDimension3->reveal(),
-        ]));
+        ], new DimensionCollection([], [])));
     }
 
     public function testCreateMergers(): void
@@ -89,6 +90,6 @@ class ViewFactoryTest extends TestCase
             $contentViewDimension1->reveal(),
             $contentViewDimension2->reveal(),
             $contentViewDimension3->reveal(),
-        ]));
+        ], new DimensionCollection([], [])));
     }
 }

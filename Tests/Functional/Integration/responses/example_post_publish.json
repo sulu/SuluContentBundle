@@ -12,8 +12,8 @@
     "excerptTitle": "Excerpt Title",
     "id": "@integer@",
     "images": null,
-    "published": null,
-    "publishedState": false,
+    "published": "@string@.isDateTime()",
+    "publishedState": true,
     "seoCanonicalUrl": "https://sulu.io/",
     "seoDescription": "Seo Description",
     "seoHideInSitemap": true,
@@ -25,5 +25,5 @@
     "title": "Test Example",
     "url": "/my-example",
     "workflowName": "content_workflow",
-    "workflowPlace": "unpublished"
+    "workflowPlace": "published"
 }
