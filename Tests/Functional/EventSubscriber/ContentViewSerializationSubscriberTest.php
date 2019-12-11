@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Tests\Functional\EventSubscriber;
 
+use JMS\Serializer\SerializationContext;
 use Sulu\Bundle\ContentBundle\Model\Content\ContentView;
 use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
 
@@ -30,7 +31,11 @@ class ContentViewSerializationSubscriberTest extends SuluTestCase
             ['title' => 'Sulu', 'article' => '<p>Sulu is awesome</p>']
         );
 
-        $result = $this->getContainer()->get('jms_serializer')->serialize($contentView, 'json');
+        $result = $this->getContainer()->get('jms_serializer')->serialize(
+            $contentView,
+            'json',
+            SerializationContext::create()->setSerializeNull(true)
+        );
 
         $this->assertSame(
             [
@@ -53,7 +58,11 @@ class ContentViewSerializationSubscriberTest extends SuluTestCase
             ['title' => 'Sulu']
         );
 
-        $result = $this->getContainer()->get('jms_serializer')->serialize($contentView, 'json');
+        $result = $this->getContainer()->get('jms_serializer')->serialize(
+            $contentView,
+            'json',
+            SerializationContext::create()->setSerializeNull(true)
+        );
 
         $this->assertSame(
             [
@@ -63,64 +72,6 @@ class ContentViewSerializationSubscriberTest extends SuluTestCase
                 'article' => null,
             ],
             json_decode($result, true)
-        );
-    }
-
-    public function testSerializeToArray(): void
-    {
-        $contentView = new ContentView(
-            self::RESOURCE_KEY,
-            '123-123-123',
-            'de',
-            'default',
-            ['title' => 'Sulu', 'article' => '<p>Sulu is awesome</p>']
-        );
-
-        $result = $this->getContainer()->get('jms_serializer')->serialize($contentView, 'array');
-
-        $this->assertSame(
-            [
-                'id' => '123-123-123',
-                'template' => 'default',
-                'content' => [
-                    'title' => 'Sulu',
-                    'article' => '<p>Sulu is awesome</p>',
-                ],
-                'view' => [
-                    'title' => [],
-                    'article' => [],
-                ],
-            ],
-            $result
-        );
-    }
-
-    public function testSerializeToArrayMissingField(): void
-    {
-        $contentView = new ContentView(
-            self::RESOURCE_KEY,
-            '123-123-123',
-            'de',
-            'default',
-            ['title' => 'Sulu']
-        );
-
-        $result = $this->getContainer()->get('jms_serializer')->serialize($contentView, 'array');
-
-        $this->assertSame(
-            [
-                'id' => '123-123-123',
-                'template' => 'default',
-                'content' => [
-                    'title' => 'Sulu',
-                    'article' => null,
-                ],
-                'view' => [
-                    'title' => [],
-                    'article' => [],
-                ],
-            ],
-            $result
         );
     }
 }
