@@ -105,8 +105,14 @@ class AbstractExcerptControllerTest extends SuluTestCase
         $client->request('GET', '/api/test-resource-excerpts/test-resource-1?locale=en');
 
         $response = $client->getResponse();
-        $result = json_decode($client->getResponse()->getContent(), true);
-        $this->assertSame(200, $response->getStatusCode());
+        $this->assertHttpStatusCode(200, $response);
+
+        $responseContent = $response->getContent();
+        if (!$responseContent) {
+            $this->fail();
+        }
+
+        $result = json_decode($responseContent, true);
 
         $this->assertSame(
             [
@@ -133,8 +139,14 @@ class AbstractExcerptControllerTest extends SuluTestCase
         $client->request('GET', '/api/test-resource-excerpts/absent-resource?locale=en');
 
         $response = $client->getResponse();
-        $result = json_decode($client->getResponse()->getContent(), true);
-        $this->assertSame(200, $response->getStatusCode());
+        $this->assertHttpStatusCode(200, $response);
+
+        $responseContent = $response->getContent();
+        if (!$responseContent) {
+            $this->fail();
+        }
+
+        $result = json_decode($responseContent, true);
 
         $this->assertSame(
             [
@@ -196,8 +208,14 @@ class AbstractExcerptControllerTest extends SuluTestCase
         $client->request('PUT', '/api/test-resource-excerpts/test-resource-1?locale=en', $payload);
 
         $response = $client->getResponse();
-        $result = json_decode($client->getResponse()->getContent(), true);
-        $this->assertSame(200, $response->getStatusCode());
+        $this->assertHttpStatusCode(200, $response);
+
+        $responseContent = $response->getContent();
+        if (!$responseContent) {
+            $this->fail();
+        }
+
+        $result = json_decode($responseContent, true);
 
         $this->assertSame(
             [
@@ -246,8 +264,14 @@ class AbstractExcerptControllerTest extends SuluTestCase
         $client->request('PUT', '/api/test-resource-excerpts/absent-resource?locale=en', $payload);
 
         $response = $client->getResponse();
-        $result = json_decode($client->getResponse()->getContent(), true);
-        $this->assertSame(200, $response->getStatusCode());
+        $this->assertHttpStatusCode(200, $response);
+
+        $responseContent = $response->getContent();
+        if (!$responseContent) {
+            $this->fail();
+        }
+
+        $result = json_decode($responseContent, true);
 
         $this->assertSame(
             [
@@ -298,8 +322,14 @@ class AbstractExcerptControllerTest extends SuluTestCase
         $client->request('PUT', '/api/test-resource-excerpts/test-resource-1?locale=en&action=publish', $payload);
 
         $response = $client->getResponse();
-        $result = json_decode($client->getResponse()->getContent(), true);
-        $this->assertSame(200, $response->getStatusCode());
+        $this->assertHttpStatusCode(200, $response);
+
+        $responseContent = $response->getContent();
+        if (!$responseContent) {
+            $this->fail();
+        }
+
+        $result = json_decode($responseContent, true);
 
         $this->assertSame(
             [
@@ -335,6 +365,6 @@ class AbstractExcerptControllerTest extends SuluTestCase
         $client->request('DELETE', '/api/test-resource-excerpts/test-resource-1?locale=en');
 
         $response = $client->getResponse();
-        $this->assertSame(204, $response->getStatusCode());
+        $this->assertHttpStatusCode(204, $response);
     }
 }
