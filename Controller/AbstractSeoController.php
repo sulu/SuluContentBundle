@@ -23,6 +23,7 @@ use Sulu\Bundle\ContentBundle\Model\Seo\Query\FindSeoQuery;
 use Sulu\Bundle\ContentBundle\Model\Seo\SeoView;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\Exception\HandlerFailedException;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 abstract class AbstractSeoController implements ClassResourceInterface
@@ -54,7 +55,11 @@ abstract class AbstractSeoController implements ClassResourceInterface
             $message = new FindSeoQuery($this->getSeoResourceKey(), $id, $request->query->get('locale'));
             $this->messageBus->dispatch($message);
             $seo = $message->getSeo();
-        } catch (SeoNotFoundException $exception) {
+        } catch (HandlerFailedException $exception) {
+            if (!$exception->getPrevious() instanceof SeoNotFoundException) {
+                throw $exception;
+            }
+
             // need to return an empty seo-view object because the sulu frontend does not expect any errors here
             // TODO: review this code when subresource handling is implemented in the sulu frontend
             $seo = new SeoView($this->getSeoResourceKey(), $id, $request->query->get('locale'));

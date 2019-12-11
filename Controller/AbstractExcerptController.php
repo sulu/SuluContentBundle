@@ -23,6 +23,7 @@ use Sulu\Bundle\ContentBundle\Model\Excerpt\Message\ModifyExcerptMessage;
 use Sulu\Bundle\ContentBundle\Model\Excerpt\Query\FindExcerptQuery;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\Exception\HandlerFailedException;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 abstract class AbstractExcerptController implements ClassResourceInterface
@@ -54,7 +55,11 @@ abstract class AbstractExcerptController implements ClassResourceInterface
             $message = new FindExcerptQuery($this->getExcerptResourceKey(), $id, $request->query->get('locale'));
             $this->messageBus->dispatch($message);
             $excerpt = $message->getExcerpt();
-        } catch (ExcerptNotFoundException $exception) {
+        } catch (HandlerFailedException $exception) {
+            if (!$exception->getPrevious() instanceof ExcerptNotFoundException) {
+                throw $exception;
+            }
+
             // need to return an empty excerpt-view object because the sulu frontend does not expect any errors here
             // TODO: review this code when subresource handling is implemented in the sulu frontend
             $excerpt = new ExcerptView($this->getExcerptResourceKey(), $id, $request->query->get('locale'));
