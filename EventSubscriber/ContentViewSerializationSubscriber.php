@@ -31,13 +31,7 @@ class ContentViewSerializationSubscriber implements EventSubscriberInterface
         return [
             [
                 'event' => Events::POST_SERIALIZE,
-                'format' => 'json',
-                'method' => 'onPostSerializeJson',
-            ],
-            [
-                'event' => Events::POST_SERIALIZE,
-                'format' => 'array',
-                'method' => 'onPostSerializeArray',
+                'method' => 'onPostSerialize',
             ],
         ];
     }
@@ -65,6 +59,15 @@ class ContentViewSerializationSubscriber implements EventSubscriberInterface
         $this->factory = $factory;
         $this->structureManager = $structureManager;
         $this->contentTypeManager = $contentTypeManager;
+    }
+
+    public function onPostSerialize(ObjectEvent $event): void
+    {
+        if ($event->getContext()->hasAttribute('array_serializer')) {
+            $this->onPostSerializeArray($event);
+        } else {
+            $this->onPostSerializeJson($event);
+        }
     }
 
     public function onPostSerializeJson(ObjectEvent $event): void
