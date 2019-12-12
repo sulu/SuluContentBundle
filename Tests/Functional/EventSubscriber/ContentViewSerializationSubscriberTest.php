@@ -74,4 +74,68 @@ class ContentViewSerializationSubscriberTest extends SuluTestCase
             json_decode($result, true)
         );
     }
+
+    public function testSerializeToArray(): void
+    {
+        $contentView = new ContentView(
+            self::RESOURCE_KEY,
+            '123-123-123',
+            'de',
+            'default',
+            ['title' => 'Sulu', 'article' => '<p>Sulu is awesome</p>']
+        );
+
+        $result = $this->getContainer()->get('sulu_core.array_serializer')->serialize(
+            $contentView,
+            SerializationContext::create()->setSerializeNull(true)
+        );
+
+        $this->assertSame(
+            [
+                'id' => '123-123-123',
+                'template' => 'default',
+                'content' => [
+                    'title' => 'Sulu',
+                    'article' => '<p>Sulu is awesome</p>',
+                ],
+                'view' => [
+                    'title' => [],
+                    'article' => [],
+                ],
+            ],
+            $result
+        );
+    }
+
+    public function testSerializeToArrayMissingField(): void
+    {
+        $contentView = new ContentView(
+            self::RESOURCE_KEY,
+            '123-123-123',
+            'de',
+            'default',
+            ['title' => 'Sulu']
+        );
+
+        $result = $this->getContainer()->get('sulu_core.array_serializer')->serialize(
+            $contentView,
+            SerializationContext::create()->setSerializeNull(true)
+        );
+
+        $this->assertSame(
+            [
+                'id' => '123-123-123',
+                'template' => 'default',
+                'content' => [
+                    'title' => 'Sulu',
+                    'article' => null,
+                ],
+                'view' => [
+                    'title' => [],
+                    'article' => [],
+                ],
+            ],
+            $result
+        );
+    }
 }
