@@ -18,10 +18,9 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentLoader\ContentLoader;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentLoader\ContentLoaderInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ViewFactoryInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\AbstractContent;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionCollection;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollection;
@@ -43,26 +42,6 @@ class ContentLoaderTest extends TestCase
         );
     }
 
-    protected function createContentInstance(): ContentInterface
-    {
-        return new class() extends AbstractContent {
-            public static function getResourceKey(): string
-            {
-                return 'example';
-            }
-
-            public function createDimension(DimensionInterface $dimension): ContentDimensionInterface
-            {
-                throw new \RuntimeException('Should not be called in a unit test.');
-            }
-
-            public function getId()
-            {
-                return null;
-            }
-        };
-    }
-
     public function testLoad(): void
     {
         $dimension1 = $this->prophesize(DimensionInterface::class);
@@ -75,7 +54,7 @@ class ContentLoaderTest extends TestCase
         $contentDimension2 = $this->prophesize(ContentDimensionInterface::class);
         $contentDimension2->getDimension()->willReturn($dimension2->reveal());
 
-        $content = $this->prophesize(ContentInterface::class);
+        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
 
         $attributes = [
             'locale' => 'de',
@@ -94,7 +73,7 @@ class ContentLoaderTest extends TestCase
         ], new DimensionCollection($attributes, [$dimension1, $dimension2]));
 
         $contentDimensionRepository = $this->prophesize(ContentDimensionRepositoryInterface::class);
-        $contentDimensionRepository->load($content->reveal(), $dimensionCollection)->willReturn($contentDimensionCollection);
+        $contentDimensionRepository->load($contentRichEntity->reveal(), $dimensionCollection)->willReturn($contentDimensionCollection);
         $contentView = $this->prophesize(ContentViewInterface::class);
         $viewFactory = $this->prophesize(ViewFactoryInterface::class);
         $viewFactory->create($contentDimensionCollection)->willReturn($contentView->reveal())->shouldBeCalled();
@@ -105,14 +84,14 @@ class ContentLoaderTest extends TestCase
             $viewFactory->reveal()
         );
 
-        $this->assertSame($contentView->reveal(), $createContentMessageHandler->load($content->reveal(), $attributes));
+        $this->assertSame($contentView->reveal(), $createContentMessageHandler->load($contentRichEntity->reveal(), $attributes));
     }
 
     public function testLoadDimensionNotFound(): void
     {
         $this->expectException(ContentNotFoundException::class);
 
-        $content = $this->prophesize(ContentInterface::class);
+        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
 
         $attributes = [
             'locale' => 'de',
@@ -133,7 +112,7 @@ class ContentLoaderTest extends TestCase
             $viewFactory->reveal()
         );
 
-        $this->assertSame($contentView->reveal(), $createContentMessageHandler->load($content->reveal(), $attributes));
+        $this->assertSame($contentView->reveal(), $createContentMessageHandler->load($contentRichEntity->reveal(), $attributes));
     }
 
     public function testLoadNotFound(): void
@@ -145,7 +124,7 @@ class ContentLoaderTest extends TestCase
         $dimension2 = $this->prophesize(DimensionInterface::class);
         $dimension2->getId()->willReturn('456-789');
 
-        $content = $this->prophesize(ContentInterface::class);
+        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
 
         $attributes = [
             'locale' => 'de',
@@ -164,7 +143,7 @@ class ContentLoaderTest extends TestCase
         );
 
         $contentDimensionRepository = $this->prophesize(ContentDimensionRepositoryInterface::class);
-        $contentDimensionRepository->load($content->reveal(), $dimensionCollection)->willReturn($contentDimensionCollection);
+        $contentDimensionRepository->load($contentRichEntity->reveal(), $dimensionCollection)->willReturn($contentDimensionCollection);
         $contentView = $this->prophesize(ContentViewInterface::class);
         $viewFactory = $this->prophesize(ViewFactoryInterface::class);
         $viewFactory->create($contentDimensionCollection)->willReturn($contentView->reveal())->shouldNotBeCalled();
@@ -175,6 +154,6 @@ class ContentLoaderTest extends TestCase
             $viewFactory->reveal()
         );
 
-        $this->assertSame($contentView->reveal(), $createContentMessageHandler->load($content->reveal(), $attributes));
+        $this->assertSame($contentView->reveal(), $createContentMessageHandler->load($contentRichEntity->reveal(), $attributes));
     }
 }

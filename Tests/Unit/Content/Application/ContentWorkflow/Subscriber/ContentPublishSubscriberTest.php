@@ -19,7 +19,7 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentCopier\ContentCopierInt
 use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\Subscriber\ContentPublishSubscriber;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionCollectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 use Symfony\Component\Workflow\Event\TransitionEvent;
@@ -65,7 +65,7 @@ class ContentPublishSubscriberTest extends TestCase
         $this->expectExceptionMessage('No "contentDimensionCollection" given.');
 
         $contentDimension = $this->prophesize(ContentDimensionInterface::class);
-        $content = $this->prophesize(ContentInterface::class);
+        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
         $dimensionAttributes = ['locale' => 'en', 'stage' => 'draft'];
 
         $event = new TransitionEvent(
@@ -74,7 +74,7 @@ class ContentPublishSubscriberTest extends TestCase
         );
         $event->setContext([
             'dimensionAttributes' => $dimensionAttributes,
-            'contentRichEntity' => $content->reveal(),
+            'contentRichEntity' => $contentRichEntity->reveal(),
         ]);
 
         $contentCopier = $this->prophesize(ContentCopierInterface::class);
@@ -120,7 +120,7 @@ class ContentPublishSubscriberTest extends TestCase
 
         $contentDimension = $this->prophesize(ContentDimensionInterface::class);
         $contentDimensionCollection = $this->prophesize(ContentDimensionCollectionInterface::class);
-        $content = $this->prophesize(ContentInterface::class);
+        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
 
         $event = new TransitionEvent(
             $contentDimension->reveal(),
@@ -128,7 +128,7 @@ class ContentPublishSubscriberTest extends TestCase
         );
         $event->setContext([
             'contentDimensionCollection' => $contentDimensionCollection->reveal(),
-            'contentRichEntity' => $content->reveal(),
+            'contentRichEntity' => $contentRichEntity->reveal(),
         ]);
 
         $contentCopier = $this->prophesize(ContentCopierInterface::class);
@@ -144,7 +144,7 @@ class ContentPublishSubscriberTest extends TestCase
     {
         $contentDimension = $this->prophesize(ContentDimensionInterface::class);
         $contentDimensionCollection = $this->prophesize(ContentDimensionCollectionInterface::class);
-        $content = $this->prophesize(ContentInterface::class);
+        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
         $dimensionAttributes = ['locale' => 'en', 'stage' => 'draft'];
 
         $event = new TransitionEvent(
@@ -154,7 +154,7 @@ class ContentPublishSubscriberTest extends TestCase
         $event->setContext([
             'contentDimensionCollection' => $contentDimensionCollection->reveal(),
             'dimensionAttributes' => $dimensionAttributes,
-            'contentRichEntity' => $content->reveal(),
+            'contentRichEntity' => $contentRichEntity->reveal(),
         ]);
 
         $contentCopier = $this->prophesize(ContentCopierInterface::class);
@@ -163,7 +163,7 @@ class ContentPublishSubscriberTest extends TestCase
         $copiedContentView = $this->prophesize(ContentViewInterface::class);
         $contentCopier->copyFromContentDimensionCollection(
             $contentDimensionCollection->reveal(),
-            $content->reveal(),
+            $contentRichEntity->reveal(),
             $sourceDimensionAttributes
         )
             ->willReturn($copiedContentView->reveal())

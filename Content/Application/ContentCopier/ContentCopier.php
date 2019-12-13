@@ -18,7 +18,7 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersis
 use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\ApiViewResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ViewFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionCollectionInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
 
 class ContentCopier implements ContentCopierInterface
@@ -56,33 +56,33 @@ class ContentCopier implements ContentCopierInterface
     }
 
     public function copy(
-        ContentInterface $sourceContent,
+        ContentRichEntityInterface $sourceContentRichEntity,
         array $sourceDimensionAttributes,
-        ContentInterface $targetContent,
+        ContentRichEntityInterface $targetContentRichEntity,
         array $targetDimensionAttributes
     ): ContentViewInterface {
-        $sourceContentView = $this->contentLoader->load($sourceContent, $sourceDimensionAttributes);
+        $sourceContentView = $this->contentLoader->load($sourceContentRichEntity, $sourceDimensionAttributes);
 
-        return $this->copyFromContentView($sourceContentView, $targetContent, $targetDimensionAttributes);
+        return $this->copyFromContentView($sourceContentView, $targetContentRichEntity, $targetDimensionAttributes);
     }
 
     public function copyFromContentDimensionCollection(
         ContentDimensionCollectionInterface $contentDimensionCollection,
-        ContentInterface $targetContent,
+        ContentRichEntityInterface $targetContentRichEntity,
         array $targetDimensionAttributes
     ): ContentViewInterface {
         $sourceContentView = $this->viewFactory->create($contentDimensionCollection);
 
-        return $this->copyFromContentView($sourceContentView, $targetContent, $targetDimensionAttributes);
+        return $this->copyFromContentView($sourceContentView, $targetContentRichEntity, $targetDimensionAttributes);
     }
 
     public function copyFromContentView(
         ContentViewInterface $sourceContentView,
-        ContentInterface $targetContent,
+        ContentRichEntityInterface $targetContentRichENtity,
         array $targetDimensionAttributes
     ): ContentViewInterface {
         $data = $this->contentResolver->resolve($sourceContentView);
 
-        return $this->contentPersister->persist($targetContent, $data, $targetDimensionAttributes);
+        return $this->contentPersister->persist($targetContentRichENtity, $data, $targetDimensionAttributes);
     }
 }

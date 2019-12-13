@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow;
 
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
 
 interface ContentWorkflowInterface
@@ -22,7 +22,7 @@ interface ContentWorkflowInterface
      * @param mixed[] $dimensionAttributes
      */
     public function apply(
-        ContentInterface $content,
+        ContentRichEntityInterface $contentRichEntity,
         array $dimensionAttributes,
         string $transitionName
     ): ContentViewInterface;

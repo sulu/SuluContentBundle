@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentFacade;
 
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
 
 interface ContentFacadeInterface
@@ -21,13 +21,13 @@ interface ContentFacadeInterface
     /**
      * @param mixed[] $dimensionAttributes
      */
-    public function load(ContentInterface $content, array $dimensionAttributes): ContentViewInterface;
+    public function load(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes): ContentViewInterface;
 
     /**
      * @param mixed[] $data
      * @param mixed[] $dimensionAttributes
      */
-    public function persist(ContentInterface $content, array $data, array $dimensionAttributes): ContentViewInterface;
+    public function persist(ContentRichEntityInterface $contentRichEntity, array $data, array $dimensionAttributes): ContentViewInterface;
 
     /**
      * @return mixed[]
@@ -39,9 +39,9 @@ interface ContentFacadeInterface
      * @param mixed[] $targetDimensionAttributes
      */
     public function copy(
-        ContentInterface $sourceContent,
+        ContentRichEntityInterface $sourceContentRichEntity,
         array $sourceDimensionAttributes,
-        ContentInterface $targetContent,
+        ContentRichEntityInterface $targetContentRichEntity,
         array $targetDimensionAttributes
     ): ContentViewInterface;
 
@@ -49,7 +49,7 @@ interface ContentFacadeInterface
      * @param mixed[] $dimensionAttributes
      */
     public function applyTransition(
-        ContentInterface $content,
+        ContentRichEntityInterface $contentRichEntity,
         array $dimensionAttributes,
         string $transitionName
     ): ContentViewInterface;

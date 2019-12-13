@@ -21,7 +21,7 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersis
 use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\ApiViewResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ViewFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionCollectionInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
 
 class ContentCopierTest extends TestCase
@@ -45,9 +45,9 @@ class ContentCopierTest extends TestCase
         $sourceContentView = $this->prophesize(ContentViewInterface::class);
         $targetContentView = $this->prophesize(ContentViewInterface::class);
 
-        $sourceContent = $this->prophesize(ContentInterface::class);
+        $sourceContentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
         $sourceDimensionAttributes = ['locale' => 'en'];
-        $targetContent = $this->prophesize(ContentInterface::class);
+        $targetContentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
         $targetDimensionAttributes = ['locale' => 'de'];
 
         $contentLoader = $this->prophesize(ContentLoaderInterface::class);
@@ -55,7 +55,7 @@ class ContentCopierTest extends TestCase
         $contentPersister = $this->prophesize(ContentPersisterInterface::class);
         $contentResolver = $this->prophesize(ApiViewResolverInterface::class);
 
-        $contentLoader->load($sourceContent->reveal(), $sourceDimensionAttributes)
+        $contentLoader->load($sourceContentRichEntity->reveal(), $sourceDimensionAttributes)
             ->willReturn($sourceContentView->reveal())
             ->shouldBeCalled();
 
@@ -63,7 +63,7 @@ class ContentCopierTest extends TestCase
             ->willReturn(['resolved' => 'data'])
             ->shouldBeCalled();
 
-        $contentPersister->persist($targetContent, ['resolved' => 'data'], $targetDimensionAttributes)
+        $contentPersister->persist($targetContentRichEntity, ['resolved' => 'data'], $targetDimensionAttributes)
             ->willReturn($targetContentView->reveal())
             ->shouldBeCalled();
 
@@ -77,9 +77,9 @@ class ContentCopierTest extends TestCase
         $this->assertSame(
             $targetContentView->reveal(),
             $contentCopier->copy(
-                $sourceContent->reveal(),
+                $sourceContentRichEntity->reveal(),
                 $sourceDimensionAttributes,
-                $targetContent->reveal(),
+                $targetContentRichEntity->reveal(),
                 $targetDimensionAttributes
             )
         );
@@ -91,7 +91,7 @@ class ContentCopierTest extends TestCase
         $targetContentView = $this->prophesize(ContentViewInterface::class);
 
         $sourceContentDimensionCollection = $this->prophesize(ContentDimensionCollectionInterface::class);
-        $targetContent = $this->prophesize(ContentInterface::class);
+        $targetContentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
         $targetDimensionAttributes = ['locale' => 'de'];
 
         $contentLoader = $this->prophesize(ContentLoaderInterface::class);
@@ -107,7 +107,7 @@ class ContentCopierTest extends TestCase
             ->willReturn(['resolved' => 'data'])
             ->shouldBeCalled();
 
-        $contentPersister->persist($targetContent, ['resolved' => 'data'], $targetDimensionAttributes)
+        $contentPersister->persist($targetContentRichEntity, ['resolved' => 'data'], $targetDimensionAttributes)
             ->willReturn($targetContentView->reveal())
             ->shouldBeCalled();
 
@@ -122,7 +122,7 @@ class ContentCopierTest extends TestCase
             $targetContentView->reveal(),
             $contentCopier->copyFromContentDimensionCollection(
                 $sourceContentDimensionCollection->reveal(),
-                $targetContent->reveal(),
+                $targetContentRichEntity->reveal(),
                 $targetDimensionAttributes
             )
         );
@@ -133,7 +133,7 @@ class ContentCopierTest extends TestCase
         $sourceContentView = $this->prophesize(ContentViewInterface::class);
         $targetContentView = $this->prophesize(ContentViewInterface::class);
 
-        $targetContent = $this->prophesize(ContentInterface::class);
+        $targetContentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
         $targetDimensionAttributes = ['locale' => 'de'];
 
         $contentLoader = $this->prophesize(ContentLoaderInterface::class);
@@ -145,7 +145,7 @@ class ContentCopierTest extends TestCase
             ->willReturn(['resolved' => 'data'])
             ->shouldBeCalled();
 
-        $contentPersister->persist($targetContent, ['resolved' => 'data'], $targetDimensionAttributes)
+        $contentPersister->persist($targetContentRichEntity, ['resolved' => 'data'], $targetDimensionAttributes)
             ->willReturn($targetContentView->reveal())
             ->shouldBeCalled();
 
@@ -160,7 +160,7 @@ class ContentCopierTest extends TestCase
             $targetContentView->reveal(),
             $contentCopier->copyFromContentView(
                 $sourceContentView->reveal(),
-                $targetContent->reveal(),
+                $targetContentRichEntity->reveal(),
                 $targetDimensionAttributes
             )
         );

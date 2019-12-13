@@ -43,10 +43,10 @@ class ContentDimensionRepositoryTest extends BaseTestCase
         $dimension2 = $this->createDimension('456-789', ['locale' => 'de']);
         $dimension3 = $this->createDimension('789-456', ['locale' => 'en']);
 
-        $content = $this->createContent();
-        $contentDimension1 = $this->createContentDimension($content, $dimension1);
-        $contentDimension2 = $this->createContentDimension($content, $dimension2);
-        $this->createContentDimension($content, $dimension3);
+        $contentRichEntity = $this->createContentRichEntity();
+        $contentDimension1 = $this->createContentDimension($contentRichEntity, $dimension1);
+        $contentDimension2 = $this->createContentDimension($contentRichEntity, $dimension2);
+        $this->createContentDimension($contentRichEntity, $dimension3);
 
         $dimensionCollection = new DimensionCollection($attributes, [
             $dimension1,
@@ -57,7 +57,7 @@ class ContentDimensionRepositoryTest extends BaseTestCase
         $this->getEntityManager()->clear();
 
         $contentDimensionRepository = $this->createContentDimensionRepository();
-        $contentDimensionCollection = $contentDimensionRepository->load($content, $dimensionCollection);
+        $contentDimensionCollection = $contentDimensionRepository->load($contentRichEntity, $dimensionCollection);
 
         $this->assertCount(2, $contentDimensionCollection);
 
@@ -76,8 +76,8 @@ class ContentDimensionRepositoryTest extends BaseTestCase
         $dimension1 = $this->createDimension('123-456', []);
         $dimension2 = $this->createDimension('456-789', ['locale' => 'de']);
 
-        $content = $this->createContent();
-        $contentDimension1 = $this->createContentDimension($content, $dimension1);
+        $contentRichEntity = $this->createContentRichEntity();
+        $contentDimension1 = $this->createContentDimension($contentRichEntity, $dimension1);
 
         $dimensionCollection = new DimensionCollection($attributes, [
             $dimension1,
@@ -88,7 +88,7 @@ class ContentDimensionRepositoryTest extends BaseTestCase
         $this->getEntityManager()->clear();
 
         $contentDimensionRepository = $this->createContentDimensionRepository();
-        $contentDimensionCollection = $contentDimensionRepository->load($content, $dimensionCollection);
+        $contentDimensionCollection = $contentDimensionRepository->load($contentRichEntity, $dimensionCollection);
 
         $this->assertCount(1, $contentDimensionCollection);
 
@@ -106,10 +106,10 @@ class ContentDimensionRepositoryTest extends BaseTestCase
         $dimension1 = $this->createDimension('123-456', []);
         $dimension2 = $this->createDimension('456-789', ['locale' => 'de']);
 
-        $content = $this->createContent();
+        $contentRichEntity = $this->createContentRichEntity();
         // First create the dimension 2 to test if its still the last dimension
-        $contentDimension2 = $this->createContentDimension($content, $dimension2);
-        $contentDimension1 = $this->createContentDimension($content, $dimension1);
+        $contentDimension2 = $this->createContentDimension($contentRichEntity, $dimension2);
+        $contentDimension1 = $this->createContentDimension($contentRichEntity, $dimension1);
 
         $dimensionCollection = new DimensionCollection($attributes, [
             $dimension1,
@@ -120,7 +120,7 @@ class ContentDimensionRepositoryTest extends BaseTestCase
         $this->getEntityManager()->clear();
 
         $contentDimensionRepository = $this->createContentDimensionRepository();
-        $contentDimensionCollection = $contentDimensionRepository->load($content, $dimensionCollection);
+        $contentDimensionCollection = $contentDimensionRepository->load($contentRichEntity, $dimensionCollection);
 
         $this->assertCount(2, $contentDimensionCollection);
 
@@ -143,7 +143,7 @@ class ContentDimensionRepositoryTest extends BaseTestCase
         return $dimension;
     }
 
-    private function createContent(): Example
+    private function createContentRichEntity(): Example
     {
         $example = new Example();
         $this->getEntityManager()->persist($example);

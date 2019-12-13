@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Domain\Model;
 
 use PHPUnit\Framework\TestCase;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\AbstractContent;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\AbstractContentDimension;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\AbstractContentRichEntity;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\AbstractContentView;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
@@ -27,11 +27,11 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoTrait;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateTrait;
 
-class ContentTest extends TestCase
+class ContentRichEntityTest extends TestCase
 {
-    protected function getInstance(): AbstractContent
+    protected function getInstance(): AbstractContentRichEntity
     {
-        return new class() extends AbstractContent {
+        return new class() extends AbstractContentRichEntity {
             public static function getResourceKey(): string
             {
                 return 'example';

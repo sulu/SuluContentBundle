@@ -19,10 +19,10 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersis
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ContentDimensionCollectionFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\DimensionCollectionFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ViewFactoryInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\AbstractContent;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\AbstractContentRichEntity;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionCollection;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollection;
@@ -42,9 +42,9 @@ class ContentPersisterTest extends TestCase
         );
     }
 
-    protected function createContentInstance(): ContentInterface
+    protected function createContentRichEntityInstance(): ContentRichEntityInterface
     {
-        return new class() extends AbstractContent {
+        return new class() extends AbstractContentRichEntity {
             public static function getResourceKey(): string
             {
                 return 'example';
@@ -64,7 +64,7 @@ class ContentPersisterTest extends TestCase
 
     public function testPersist(): void
     {
-        $content = $this->createContentInstance();
+        $contentRichEntity = $this->createContentRichEntityInstance();
         $attributes = [
             'locale' => 'de',
         ];
@@ -89,7 +89,7 @@ class ContentPersisterTest extends TestCase
         ], $dimensionCollection);
 
         $contentDimensionCollectionFactory = $this->prophesize(ContentDimensionCollectionFactoryInterface::class);
-        $contentDimensionCollectionFactory->create($content, $dimensionCollection, $data)
+        $contentDimensionCollectionFactory->create($contentRichEntity, $dimensionCollection, $data)
             ->willReturn($contentDimensionCollection)
             ->shouldBeCalled();
 
@@ -103,6 +103,6 @@ class ContentPersisterTest extends TestCase
             $viewFactory->reveal()
         );
 
-        $this->assertSame($contentView->reveal(), $createContentMessageHandler->persist($content, $data, $attributes));
+        $this->assertSame($contentView->reveal(), $createContentMessageHandler->persist($contentRichEntity, $data, $attributes));
     }
 }

@@ -20,7 +20,7 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ContentDimensionCollectionF
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionCollection;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionCollectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Repository\ContentDimensionRepositoryInterface;
@@ -47,11 +47,11 @@ class ContentDimensionCollectionFactory implements ContentDimensionCollectionFac
     }
 
     public function create(
-        ContentInterface $content,
+        ContentRichEntityInterface $contentRichEntity,
         DimensionCollectionInterface $dimensionCollection,
         array $data
     ): ContentDimensionCollectionInterface {
-        $contentDimensionCollection = $this->contentDimensionRepository->load($content, $dimensionCollection);
+        $contentDimensionCollection = $this->contentDimensionRepository->load($contentRichEntity, $dimensionCollection);
 
         $localizedDimension = $dimensionCollection->getLocalizedDimension();
         $unlocalizedDimension = $dimensionCollection->getUnlocalizedDimension();
@@ -63,7 +63,7 @@ class ContentDimensionCollectionFactory implements ContentDimensionCollectionFac
         }
 
         $unlocalizedContentDimension = $this->getOrCreateContentDimension(
-            $content,
+            $contentRichEntity,
             $contentDimensions,
             $unlocalizedDimension
         );
@@ -71,7 +71,7 @@ class ContentDimensionCollectionFactory implements ContentDimensionCollectionFac
         $localizedContentDimension = null;
         if ($localizedDimension) {
             $localizedContentDimension = $this->getOrCreateContentDimension(
-                $content,
+                $contentRichEntity,
                 $contentDimensions,
                 $localizedDimension
             );
@@ -97,7 +97,7 @@ class ContentDimensionCollectionFactory implements ContentDimensionCollectionFac
     }
 
     private function getOrCreateContentDimension(
-        ContentInterface $content,
+        ContentRichEntityInterface $contentRichEntity,
         Collection $contentDimensions,
         DimensionInterface $dimension
     ): ContentDimensionInterface {
@@ -106,8 +106,8 @@ class ContentDimensionCollectionFactory implements ContentDimensionCollectionFac
         })->first();
 
         if (!$contentDimension) {
-            $contentDimension = $content->createDimension($dimension);
-            $content->addDimension($contentDimension);
+            $contentDimension = $contentRichEntity->createDimension($dimension);
+            $contentRichEntity->addDimension($contentDimension);
             $contentDimensions->add($contentDimension);
         }
 

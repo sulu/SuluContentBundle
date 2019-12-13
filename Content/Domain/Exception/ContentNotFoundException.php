@@ -13,15 +13,15 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Domain\Exception;
 
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 
 class ContentNotFoundException extends \Exception
 {
-    public function __construct(ContentInterface $content, array $dimensionAttributes)
+    public function __construct(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes)
     {
         parent::__construct(sprintf(
             'Could not load content with id "%s" and attributes: %s',
-            $content->getId(),
+            $contentRichEntity->getId(),
             json_encode($dimensionAttributes)
         ));
     }

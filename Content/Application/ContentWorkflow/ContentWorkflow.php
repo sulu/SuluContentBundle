@@ -17,7 +17,7 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentInvalidTransitionE
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotExistTransitionException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ViewFactoryInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Repository\ContentDimensionRepositoryInterface;
@@ -81,22 +81,22 @@ class ContentWorkflow implements ContentWorkflowInterface
     }
 
     public function apply(
-        ContentInterface $content,
+        ContentRichEntityInterface $contentRichEntity,
         array $dimensionAttributes,
         string $transitionName
     ): ContentViewInterface {
         $dimensionCollection = $this->dimensionRepository->findByAttributes($dimensionAttributes);
 
         if (0 === \count($dimensionCollection)) {
-            throw new ContentNotFoundException($content, $dimensionAttributes);
+            throw new ContentNotFoundException($contentRichEntity, $dimensionAttributes);
         }
 
-        $contentDimensionCollection = $this->contentDimensionRepository->load($content, $dimensionCollection);
+        $contentDimensionCollection = $this->contentDimensionRepository->load($contentRichEntity, $dimensionCollection);
 
         $localizedContentDimension = $contentDimensionCollection->getLocalizedContentDimension();
 
         if (!$localizedContentDimension) {
-            throw new ContentNotFoundException($content, $dimensionAttributes);
+            throw new ContentNotFoundException($contentRichEntity, $dimensionAttributes);
         }
 
         if (!$localizedContentDimension instanceof WorkflowInterface) {
@@ -110,7 +110,7 @@ class ContentWorkflow implements ContentWorkflowInterface
 
         try {
             $workflow->apply($localizedContentDimension, $transitionName, [
-                'contentRichEntity' => $content,
+                'contentRichEntity' => $contentRichEntity,
                 'contentDimensionCollection' => $contentDimensionCollection,
                 'dimensionAttributes' => $dimensionAttributes,
             ]);

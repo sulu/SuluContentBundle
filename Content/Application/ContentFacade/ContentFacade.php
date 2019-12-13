@@ -18,7 +18,7 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentLoader\ContentLoaderInt
 use Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersisterInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\ContentWorkflowInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\ApiViewResolverInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
 
 class ContentFacade implements ContentFacadeInterface
@@ -62,14 +62,14 @@ class ContentFacade implements ContentFacadeInterface
         $this->contentWorkflow = $contentWorkflow;
     }
 
-    public function load(ContentInterface $content, array $dimensionAttributes): ContentViewInterface
+    public function load(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes): ContentViewInterface
     {
-        return $this->contentLoader->load($content, $dimensionAttributes);
+        return $this->contentLoader->load($contentRichEntity, $dimensionAttributes);
     }
 
-    public function persist(ContentInterface $content, array $data, array $dimensionAttributes): ContentViewInterface
+    public function persist(ContentRichEntityInterface $contentRichEntity, array $data, array $dimensionAttributes): ContentViewInterface
     {
-        return $this->contentPersister->persist($content, $data, $dimensionAttributes);
+        return $this->contentPersister->persist($contentRichEntity, $data, $dimensionAttributes);
     }
 
     public function resolve(ContentViewInterface $contentView): array
@@ -78,24 +78,24 @@ class ContentFacade implements ContentFacadeInterface
     }
 
     public function copy(
-        ContentInterface $sourceContent,
+        ContentRichEntityInterface $sourceContentRichEntity,
         array $sourceDimensionAttributes,
-        ContentInterface $targetContent,
+        ContentRichEntityInterface $targetContentRichEntity,
         array $targetDimensionAttributes
     ): ContentViewInterface {
         return $this->contentCopier->copy(
-            $sourceContent,
+            $sourceContentRichEntity,
             $sourceDimensionAttributes,
-            $targetContent,
+            $targetContentRichEntity,
             $targetDimensionAttributes
         );
     }
 
     public function applyTransition(
-        ContentInterface $content,
+        ContentRichEntityInterface $contentRichEntity,
         array $dimensionAttributes,
         string $transitionName
     ): ContentViewInterface {
-        return $this->contentWorkflow->apply($content, $dimensionAttributes, $transitionName);
+        return $this->contentWorkflow->apply($contentRichEntity, $dimensionAttributes, $transitionName);
     }
 }

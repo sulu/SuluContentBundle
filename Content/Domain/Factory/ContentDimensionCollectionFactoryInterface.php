@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Content\Domain\Factory;
 
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionCollectionInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollectionInterface;
 
 interface ContentDimensionCollectionFactoryInterface
@@ -23,7 +23,7 @@ interface ContentDimensionCollectionFactoryInterface
      * @param array<string, mixed> $data
      */
     public function create(
-        ContentInterface $content,
+        ContentRichEntityInterface $contentRichEntity,
         DimensionCollectionInterface $dimensionCollection,
         array $data
     ): ContentDimensionCollectionInterface;

@@ -17,7 +17,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NoResultException;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentLoader\ContentLoaderInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
@@ -106,14 +106,14 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
 
     public function supports($entityClass)
     {
-        return is_a($entityClass, ContentInterface::class, true);
+        return is_a($entityClass, ContentRichEntityInterface::class, true);
     }
 
     protected function loadEntity(string $entityClass, string $id, string $locale): ?TemplateInterface
     {
         try {
-            /** @var ContentInterface $content */
-            $content = $this->entityManager->createQueryBuilder()
+            /** @var ContentRichEntityInterface $contentRichEntity */
+            $contentRichEntity = $this->entityManager->createQueryBuilder()
                 ->select('entity')
                 ->from($entityClass, 'entity')
                 ->where('entity.id = :id')
@@ -130,7 +130,7 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
             //      we should maybe get dimension Attributes from request attributes set by a request listener
             //      e.g. $request->attributes->get('_sulu_content_dimension_attributes');
             $contentView = $this->contentLoader->load(
-                $content,
+                $contentRichEntity,
                 [
                     'locale' => $locale,
                     'stage' => DimensionInterface::STAGE_LIVE,
