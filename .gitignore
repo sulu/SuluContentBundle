@@ -17,6 +17,9 @@
 # System files
 .DS_Store
 
+# Deptract
+.deptrac.cache
+
 # Node
 node_modules/
 package-lock.json

@@ -29,6 +29,7 @@
         "coduo/php-matcher": "^3.2",
         "doctrine/doctrine-fixtures-bundle": "^2.0 || ^3.0",
         "handcraftedinthealps/code-coverage-checker": "^0.1",
+        "handcraftedinthealps/zendsearch": "@dev",
         "jackalope/jackalope-doctrine-dbal": "^1.3.4",
         "jangregor/phpstan-prophecy": "^0.4",
         "massive/build-bundle": "^0.4.0",
@@ -40,13 +41,16 @@
         "phpstan/phpstan-shim": "^0.11",
         "phpstan/phpstan-symfony": "^0.11",
         "phpstan/phpstan-webmozart-assert": "^0.11",
+        "sensiolabs-de/deptrac-shim": "^0.6.0",
         "symfony/browser-kit": "^4.3",
         "symfony/dotenv": "^4.3",
         "symfony/monolog-bundle": "^3.1",
         "symfony/phpunit-bridge": "^4.3",
         "symfony/templating": "^4.3",
-        "thecodingmachine/phpstan-strict-rules": "^0.11",
-        "handcraftedinthealps/zendsearch": "@dev"
+        "thecodingmachine/phpstan-strict-rules": "^0.11"
+    },
+    "conflict": {
+        "doctrine/persistence": "1.3.2"
     },
     "config": {
         "sort-packages": true
@@ -67,7 +71,8 @@
             "@lint-composer",
             "@phpstan",
             "@lint-yaml",
-            "@lint-schema"
+            "@lint-schema",
+            "@deptract"
         ],
         "test": [
             "@phpunit"
@@ -81,6 +86,7 @@
         "lint-composer": "@composer validate --strict",
         "lint-yaml": "Tests/Application/bin/adminconsole lint:yaml Resources/config",
         "lint-schema": "Tests/Application/bin/adminconsole doctrine:schema:validate",
+        "deptract": "vendor/bin/deptrac",
         "phpstan": [
             "Tests/Application/bin/adminconsole cache:warmup --env test",
             "vendor/bin/simple-phpunit install",
