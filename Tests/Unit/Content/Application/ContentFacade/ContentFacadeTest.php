@@ -19,8 +19,8 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentFacade\ContentFacade;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentFacade\ContentFacadeInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentLoader\ContentLoaderInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersisterInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionNormalizer\ContentProjectionNormalizerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\ContentWorkflowInterface;
-use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\ApiViewResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 
@@ -29,11 +29,11 @@ class ContentFacadeTest extends TestCase
     protected function createContentFacadeInstance(
         ContentLoaderInterface $contentLoader,
         ContentPersisterInterface $contentPersister,
-        ApiViewResolverInterface $contentResolver,
+        ContentProjectionNormalizerInterface $contentProjectionNormalizer,
         ContentCopierInterface $contentCopier,
         ContentWorkflowInterface $contentWorkflow
     ): ContentFacadeInterface {
-        return new ContentFacade($contentLoader, $contentPersister, $contentResolver, $contentCopier, $contentWorkflow);
+        return new ContentFacade($contentLoader, $contentPersister, $contentProjectionNormalizer, $contentCopier, $contentWorkflow);
     }
 
     public function testLoad(): void
@@ -44,14 +44,14 @@ class ContentFacadeTest extends TestCase
 
         $contentLoader = $this->prophesize(ContentLoaderInterface::class);
         $contentPersister = $this->prophesize(ContentPersisterInterface::class);
-        $contentResolver = $this->prophesize(ApiViewResolverInterface::class);
+        $contentProjectionNormalizer = $this->prophesize(ContentProjectionNormalizerInterface::class);
         $contentCopier = $this->prophesize(ContentCopierInterface::class);
         $contentWorkflow = $this->prophesize(ContentWorkflowInterface::class);
 
         $contentFacade = $this->createContentFacadeInstance(
             $contentLoader->reveal(),
             $contentPersister->reveal(),
-            $contentResolver->reveal(),
+            $contentProjectionNormalizer->reveal(),
             $contentCopier->reveal(),
             $contentWorkflow->reveal()
         );
@@ -75,14 +75,14 @@ class ContentFacadeTest extends TestCase
 
         $contentLoader = $this->prophesize(ContentLoaderInterface::class);
         $contentPersister = $this->prophesize(ContentPersisterInterface::class);
-        $contentResolver = $this->prophesize(ApiViewResolverInterface::class);
+        $contentProjectionNormalizer = $this->prophesize(ContentProjectionNormalizerInterface::class);
         $contentCopier = $this->prophesize(ContentCopierInterface::class);
         $contentWorkflow = $this->prophesize(ContentWorkflowInterface::class);
 
         $contentFacade = $this->createContentFacadeInstance(
             $contentLoader->reveal(),
             $contentPersister->reveal(),
-            $contentResolver->reveal(),
+            $contentProjectionNormalizer->reveal(),
             $contentCopier->reveal(),
             $contentWorkflow->reveal()
         );
@@ -103,25 +103,25 @@ class ContentFacadeTest extends TestCase
 
         $contentLoader = $this->prophesize(ContentLoaderInterface::class);
         $contentPersister = $this->prophesize(ContentPersisterInterface::class);
-        $contentResolver = $this->prophesize(ApiViewResolverInterface::class);
+        $contentProjectionNormalizer = $this->prophesize(ContentProjectionNormalizerInterface::class);
         $contentCopier = $this->prophesize(ContentCopierInterface::class);
         $contentWorkflow = $this->prophesize(ContentWorkflowInterface::class);
 
         $contentFacade = $this->createContentFacadeInstance(
             $contentLoader->reveal(),
             $contentPersister->reveal(),
-            $contentResolver->reveal(),
+            $contentProjectionNormalizer->reveal(),
             $contentCopier->reveal(),
             $contentWorkflow->reveal()
         );
 
-        $contentResolver->resolve($contentProjection->reveal())
+        $contentProjectionNormalizer->normalize($contentProjection->reveal())
             ->willReturn(['resolved' => 'data'])
             ->shouldBeCalled();
 
         $this->assertSame(
             ['resolved' => 'data'],
-            $contentFacade->resolve($contentProjection->reveal())
+            $contentFacade->normalize($contentProjection->reveal())
         );
     }
 
@@ -136,14 +136,14 @@ class ContentFacadeTest extends TestCase
 
         $contentLoader = $this->prophesize(ContentLoaderInterface::class);
         $contentPersister = $this->prophesize(ContentPersisterInterface::class);
-        $contentResolver = $this->prophesize(ApiViewResolverInterface::class);
+        $contentProjectionNormalizer = $this->prophesize(ContentProjectionNormalizerInterface::class);
         $contentCopier = $this->prophesize(ContentCopierInterface::class);
         $contentWorkflow = $this->prophesize(ContentWorkflowInterface::class);
 
         $contentFacade = $this->createContentFacadeInstance(
             $contentLoader->reveal(),
             $contentPersister->reveal(),
-            $contentResolver->reveal(),
+            $contentProjectionNormalizer->reveal(),
             $contentCopier->reveal(),
             $contentWorkflow->reveal()
         );
@@ -178,14 +178,14 @@ class ContentFacadeTest extends TestCase
 
         $contentLoader = $this->prophesize(ContentLoaderInterface::class);
         $contentPersister = $this->prophesize(ContentPersisterInterface::class);
-        $contentResolver = $this->prophesize(ApiViewResolverInterface::class);
+        $contentProjectionNormalizer = $this->prophesize(ContentProjectionNormalizerInterface::class);
         $contentCopier = $this->prophesize(ContentCopierInterface::class);
         $contentWorkflow = $this->prophesize(ContentWorkflowInterface::class);
 
         $contentFacade = $this->createContentFacadeInstance(
             $contentLoader->reveal(),
             $contentPersister->reveal(),
-            $contentResolver->reveal(),
+            $contentProjectionNormalizer->reveal(),
             $contentCopier->reveal(),
             $contentWorkflow->reveal()
         );

@@ -11,14 +11,14 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Content\Application\ViewResolver;
+namespace Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionNormalizer;
 
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 
-interface ViewResolverInterface
+interface ContentProjectionNormalizerInterface
 {
     /**
      * @return mixed[]
      */
-    public function resolve(ContentProjectionInterface $contentProjection): array;
+    public function normalize(ContentProjectionInterface $contentProjection): array;
 }

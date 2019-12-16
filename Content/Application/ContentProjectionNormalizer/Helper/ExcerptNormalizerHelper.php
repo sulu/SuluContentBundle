@@ -11,15 +11,15 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\Resolver;
+namespace Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionNormalizer\Helper;
 
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 
-class ExcerptResolver implements ResolverInterface
+class ExcerptNormalizerHelper implements NormalizerHelperInterface
 {
-    public function resolve(object $contentProjection, array $viewData): array
+    public function normalize(object $object, array $viewData): array
     {
-        if (!$contentProjection instanceof ExcerptInterface) {
+        if (!$object instanceof ExcerptInterface) {
             return $viewData;
         }
 
@@ -31,7 +31,7 @@ class ExcerptResolver implements ResolverInterface
         return $viewData;
     }
 
-    public function getIgnoredAttributes(object $contentProjection): array
+    public function getIgnoredAttributes(object $object): array
     {
         return [
             'excerptTags',

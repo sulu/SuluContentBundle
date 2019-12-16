@@ -220,7 +220,7 @@ class ExampleController extends AbstractRestController implements ClassResourceI
      */
     protected function resolve(Example $example, ContentProjectionInterface $contentProjection): array
     {
-        $resolvedData = $this->contentFacade->resolve($contentProjection);
+        $resolvedData = $this->contentFacade->normalize($contentProjection);
 
         // If used autoincrement ids the id need to be set here on
         // the resolvedData else on create no id will be returned

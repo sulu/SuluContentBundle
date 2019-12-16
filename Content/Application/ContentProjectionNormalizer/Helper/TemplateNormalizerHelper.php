@@ -11,15 +11,15 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\Resolver;
+namespace Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionNormalizer\Helper;
 
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 
-class TemplateResolver implements ResolverInterface
+class TemplateNormalizerHelper implements NormalizerHelperInterface
 {
-    public function resolve(object $contentProjection, array $viewData): array
+    public function normalize(object $object, array $viewData): array
     {
-        if (!$contentProjection instanceof TemplateInterface) {
+        if (!$object instanceof TemplateInterface) {
             return $viewData;
         }
 
@@ -32,7 +32,7 @@ class TemplateResolver implements ResolverInterface
         return $viewData;
     }
 
-    public function getIgnoredAttributes(object $contentProjection): array
+    public function getIgnoredAttributes(object $object): array
     {
         return [
             'templateType',

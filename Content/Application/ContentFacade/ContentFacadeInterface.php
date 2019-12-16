@@ -32,7 +32,7 @@ interface ContentFacadeInterface
     /**
      * @return mixed[]
      */
-    public function resolve(ContentProjectionInterface $contentProjection): array;
+    public function normalize(ContentProjectionInterface $contentProjection): array;
 
     /**
      * @param mixed[] $sourceDimensionAttributes

@@ -11,21 +11,21 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Content\Application\ViewResolver;
+namespace Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionNormalizer;
 
-use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\Resolver\ResolverInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionNormalizer\Helper\NormalizerHelperInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\Serializer;
 
-class ApiViewResolver implements ViewResolverInterface, ApiViewResolverInterface
+class ContentProjectionNormalizer implements ContentProjectionNormalizerInterface
 {
     /**
-     * @var iterable<ResolverInterface>
+     * @var iterable<NormalizerHelperInterface>
      */
-    private $resolvers;
+    private $helpers;
 
     /**
      * @var NormalizerInterface
@@ -33,21 +33,21 @@ class ApiViewResolver implements ViewResolverInterface, ApiViewResolverInterface
     private $serializer;
 
     /**
-     * @param iterable<ResolverInterface> $resolvers
+     * @param iterable<NormalizerHelperInterface> $helpers
      */
     public function __construct(
-        iterable $resolvers,
+        iterable $helpers,
         ?NormalizerInterface $serializer = null
     ) {
-        $this->resolvers = $resolvers;
+        $this->helpers = $helpers;
         $this->serializer = $serializer ?: $this->createSerializer();
     }
 
-    public function resolve(ContentProjectionInterface $contentProjection): array
+    public function normalize(ContentProjectionInterface $contentProjection): array
     {
         $ignoreAttributes = ['id'];
 
-        foreach ($this->resolvers as $resolver) {
+        foreach ($this->helpers as $resolver) {
             $ignoreAttributes = array_merge(
                 $ignoreAttributes,
                 $resolver->getIgnoredAttributes($contentProjection)
@@ -63,8 +63,8 @@ class ApiViewResolver implements ViewResolverInterface, ApiViewResolverInterface
         $viewData['id'] = $viewData['contentId'];
         unset($viewData['contentId']);
 
-        foreach ($this->resolvers as $resolver) {
-            $viewData = $resolver->resolve($contentProjection, $viewData);
+        foreach ($this->helpers as $helper) {
+            $viewData = $helper->normalize($contentProjection, $viewData);
         }
 
         ksort($viewData);

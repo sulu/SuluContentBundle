@@ -11,19 +11,19 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\Resolver;
+namespace Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionNormalizer\Helper;
 
-interface ResolverInterface
+interface NormalizerHelperInterface
 {
     /**
      * @param mixed[] $viewData
      *
      * @return mixed[]
      */
-    public function resolve(object $contentProjection, array $viewData): array;
+    public function normalize(object $object, array $viewData): array;
 
     /**
      * @return string[]
      */
-    public function getIgnoredAttributes(object $contentProjection): array;
+    public function getIgnoredAttributes(object $object): array;
 }
