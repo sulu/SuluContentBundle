@@ -113,7 +113,7 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         }
 
         $dimensionAttributes = $this->getDimensionAttributes($request);
-        $contentProjection = $this->contentFacade->load($example, $dimensionAttributes);
+        $contentProjection = $this->contentFacade->resolve($example, $dimensionAttributes);
 
         return $this->handleView($this->view($this->resolve($example, $contentProjection)));
     }

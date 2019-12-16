@@ -16,9 +16,9 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentCopier
 use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentCopier\ContentCopier;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentCopier\ContentCopierInterface;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentLoader\ContentLoaderInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersisterInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionNormalizer\ContentProjectionNormalizerInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ContentProjectionFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
@@ -27,13 +27,13 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInt
 class ContentCopierTest extends TestCase
 {
     protected function createContentCopierInstance(
-        ContentLoaderInterface $contentLoader,
+        ContentResolverInterface $contentResolver,
         ContentProjectionFactoryInterface $viewFactory,
         ContentPersisterInterface $contentPersister,
         ContentProjectionNormalizerInterface $contentProjectionNormalizer
     ): ContentCopierInterface {
         return new ContentCopier(
-            $contentLoader,
+            $contentResolver,
             $viewFactory,
             $contentPersister,
             $contentProjectionNormalizer
@@ -50,12 +50,12 @@ class ContentCopierTest extends TestCase
         $targetContentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
         $targetDimensionAttributes = ['locale' => 'de'];
 
-        $contentLoader = $this->prophesize(ContentLoaderInterface::class);
+        $contentResolver = $this->prophesize(ContentResolverInterface::class);
         $contentProjectionFactory = $this->prophesize(ContentProjectionFactoryInterface::class);
         $contentPersister = $this->prophesize(ContentPersisterInterface::class);
         $contentProjectionNormalizer = $this->prophesize(ContentProjectionNormalizerInterface::class);
 
-        $contentLoader->load($sourceContentRichEntity->reveal(), $sourceDimensionAttributes)
+        $contentResolver->resolve($sourceContentRichEntity->reveal(), $sourceDimensionAttributes)
             ->willReturn($sourceContentProjection->reveal())
             ->shouldBeCalled();
 
@@ -68,7 +68,7 @@ class ContentCopierTest extends TestCase
             ->shouldBeCalled();
 
         $contentCopier = $this->createContentCopierInstance(
-            $contentLoader->reveal(),
+            $contentResolver->reveal(),
             $contentProjectionFactory->reveal(),
             $contentPersister->reveal(),
             $contentProjectionNormalizer->reveal()
@@ -94,7 +94,7 @@ class ContentCopierTest extends TestCase
         $targetContentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
         $targetDimensionAttributes = ['locale' => 'de'];
 
-        $contentLoader = $this->prophesize(ContentLoaderInterface::class);
+        $contentResolver = $this->prophesize(ContentResolverInterface::class);
         $contentProjectionFactory = $this->prophesize(ContentProjectionFactoryInterface::class);
         $contentPersister = $this->prophesize(ContentPersisterInterface::class);
         $contentProjectionNormalizer = $this->prophesize(ContentProjectionNormalizerInterface::class);
@@ -112,7 +112,7 @@ class ContentCopierTest extends TestCase
             ->shouldBeCalled();
 
         $contentCopier = $this->createContentCopierInstance(
-            $contentLoader->reveal(),
+            $contentResolver->reveal(),
             $contentProjectionFactory->reveal(),
             $contentPersister->reveal(),
             $contentProjectionNormalizer->reveal()
@@ -136,7 +136,7 @@ class ContentCopierTest extends TestCase
         $targetContentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
         $targetDimensionAttributes = ['locale' => 'de'];
 
-        $contentLoader = $this->prophesize(ContentLoaderInterface::class);
+        $contentResolver = $this->prophesize(ContentResolverInterface::class);
         $contentProjectionFactory = $this->prophesize(ContentProjectionFactoryInterface::class);
         $contentPersister = $this->prophesize(ContentPersisterInterface::class);
         $contentProjectionNormalizer = $this->prophesize(ContentProjectionNormalizerInterface::class);
@@ -150,7 +150,7 @@ class ContentCopierTest extends TestCase
             ->shouldBeCalled();
 
         $contentCopier = $this->createContentCopierInstance(
-            $contentLoader->reveal(),
+            $contentResolver->reveal(),
             $contentProjectionFactory->reveal(),
             $contentPersister->reveal(),
             $contentProjectionNormalizer->reveal()

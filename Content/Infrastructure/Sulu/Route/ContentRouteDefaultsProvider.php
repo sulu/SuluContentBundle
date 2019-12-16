@@ -15,7 +15,7 @@ namespace Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Route;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NoResultException;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentLoader\ContentLoaderInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
@@ -34,9 +34,9 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
     protected $entityManager;
 
     /**
-     * @var ContentLoaderInterface
+     * @var ContentResolverInterface
      */
-    protected $contentLoader;
+    protected $contentResolver;
 
     /**
      * @var StructureMetadataFactoryInterface
@@ -48,10 +48,10 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
      */
     private $propertyFactory;
 
-    public function __construct(EntityManagerInterface $entityManager, ContentLoaderInterface $contentLoader, StructureMetadataFactoryInterface $structureMetadataFactory, LegacyPropertyFactory $propertyFactory)
+    public function __construct(EntityManagerInterface $entityManager, ContentResolverInterface $contentResolver, StructureMetadataFactoryInterface $structureMetadataFactory, LegacyPropertyFactory $propertyFactory)
     {
         $this->entityManager = $entityManager;
-        $this->contentLoader = $contentLoader;
+        $this->contentResolver = $contentResolver;
         $this->structureMetadataFactory = $structureMetadataFactory;
         $this->propertyFactory = $propertyFactory;
     }
@@ -129,7 +129,7 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
             //      to support other dimension attributes here
             //      we should maybe get dimension Attributes from request attributes set by a request listener
             //      e.g. $request->attributes->get('_sulu_content_dimension_attributes');
-            $contentProjection = $this->contentLoader->load(
+            $contentProjection = $this->contentResolver->resolve(
                 $contentRichEntity,
                 [
                     'locale' => $locale,
@@ -138,7 +138,7 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
             );
 
             if (!$contentProjection instanceof TemplateInterface) {
-                throw new \RuntimeException(sprintf('Expected to get "%s" from ContentLoader but "%s" given.', TemplateInterface::class, \get_class($contentProjection)));
+                throw new \RuntimeException(sprintf('Expected to get "%s" from ContentResolver but "%s" given.', TemplateInterface::class, \get_class($contentProjection)));
             }
 
             return $contentProjection;

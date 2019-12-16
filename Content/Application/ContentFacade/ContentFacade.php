@@ -14,9 +14,9 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentFacade;
 
 use Sulu\Bundle\ContentBundle\Content\Application\ContentCopier\ContentCopierInterface;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentLoader\ContentLoaderInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersisterInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionNormalizer\ContentProjectionNormalizerInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\ContentWorkflowInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
@@ -24,9 +24,9 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 class ContentFacade implements ContentFacadeInterface
 {
     /**
-     * @var ContentLoaderInterface
+     * @var ContentResolverInterface
      */
-    private $contentLoader;
+    private $contentResolver;
 
     /**
      * @var ContentPersisterInterface
@@ -49,22 +49,22 @@ class ContentFacade implements ContentFacadeInterface
     private $contentWorkflow;
 
     public function __construct(
-        ContentLoaderInterface $contentLoader,
+        ContentResolverInterface $contentResolver,
         ContentPersisterInterface $contentPersister,
         ContentProjectionNormalizerInterface $contentProjectionNormalizer,
         ContentCopierInterface $contentCopier,
         ContentWorkflowInterface $contentWorkflow
     ) {
-        $this->contentLoader = $contentLoader;
+        $this->contentResolver = $contentResolver;
         $this->contentPersister = $contentPersister;
         $this->contentProjectionNormalizer = $contentProjectionNormalizer;
         $this->contentCopier = $contentCopier;
         $this->contentWorkflow = $contentWorkflow;
     }
 
-    public function load(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes): ContentProjectionInterface
+    public function resolve(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes): ContentProjectionInterface
     {
-        return $this->contentLoader->load($contentRichEntity, $dimensionAttributes);
+        return $this->contentResolver->resolve($contentRichEntity, $dimensionAttributes);
     }
 
     public function persist(ContentRichEntityInterface $contentRichEntity, array $data, array $dimensionAttributes): ContentProjectionInterface

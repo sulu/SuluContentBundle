@@ -19,7 +19,7 @@ use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\QueryBuilder;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentLoader\ContentLoaderInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
@@ -38,25 +38,25 @@ class ContentRouteDefaultsProviderTest extends TestCase
 {
     protected function getContentRouteDefaultsProvider(
         EntityManagerInterface $entityManager,
-        ContentLoaderInterface $contentLoader,
+        ContentResolverInterface $contentResolver,
         StructureMetadataFactoryInterface $structureMetadataFactory,
         LegacyPropertyFactory $propertyFactory
     ): ContentRouteDefaultsProvider {
         return new ContentRouteDefaultsProvider(
-            $entityManager, $contentLoader, $structureMetadataFactory, $propertyFactory
+            $entityManager, $contentResolver, $structureMetadataFactory, $propertyFactory
         );
     }
 
     public function testSupports(): void
     {
         $entityManager = $this->prophesize(EntityManagerInterface::class);
-        $contentLoader = $this->prophesize(ContentLoaderInterface::class);
+        $contentResolver = $this->prophesize(ContentResolverInterface::class);
         $structureMetadataFactory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $propertyFactory = $this->prophesize(LegacyPropertyFactory::class);
 
         $contentRouteDefaultsProvider = $this->getContentRouteDefaultsProvider(
             $entityManager->reveal(),
-            $contentLoader->reveal(),
+            $contentResolver->reveal(),
             $structureMetadataFactory->reveal(),
             $propertyFactory->reveal()
         );
@@ -70,13 +70,13 @@ class ContentRouteDefaultsProviderTest extends TestCase
     public function testIsPublished(): void
     {
         $entityManager = $this->prophesize(EntityManagerInterface::class);
-        $contentLoader = $this->prophesize(ContentLoaderInterface::class);
+        $contentResolver = $this->prophesize(ContentResolverInterface::class);
         $structureMetadataFactory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $propertyFactory = $this->prophesize(LegacyPropertyFactory::class);
 
         $contentRouteDefaultsProvider = $this->getContentRouteDefaultsProvider(
             $entityManager->reveal(),
-            $contentLoader->reveal(),
+            $contentResolver->reveal(),
             $structureMetadataFactory->reveal(),
             $propertyFactory->reveal()
         );
@@ -104,7 +104,7 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $queryBuilder->getQuery()->willReturn($query);
         $query->getSingleResult()->willReturn($contentRichEntity->reveal());
 
-        $contentLoader->load(
+        $contentResolver->resolve(
             $contentRichEntity->reveal(),
             ['locale' => 'en', 'stage' => 'live']
         )->willReturn($contentProjection->reveal());
@@ -115,13 +115,13 @@ class ContentRouteDefaultsProviderTest extends TestCase
     public function testIsPublishedNoDimension(): void
     {
         $entityManager = $this->prophesize(EntityManagerInterface::class);
-        $contentLoader = $this->prophesize(ContentLoaderInterface::class);
+        $contentResolver = $this->prophesize(ContentResolverInterface::class);
         $structureMetadataFactory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $propertyFactory = $this->prophesize(LegacyPropertyFactory::class);
 
         $contentRouteDefaultsProvider = $this->getContentRouteDefaultsProvider(
             $entityManager->reveal(),
-            $contentLoader->reveal(),
+            $contentResolver->reveal(),
             $structureMetadataFactory->reveal(),
             $propertyFactory->reveal()
         );
@@ -141,7 +141,7 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $queryBuilder->getQuery()->willReturn($query);
         $query->getSingleResult()->willReturn($contentRichEntity->reveal());
 
-        $contentLoader->load(
+        $contentResolver->resolve(
             $contentRichEntity->reveal(),
             ['locale' => 'en', 'stage' => 'live']
         )->willThrow(new ContentNotFoundException($contentRichEntity->reveal(), ['locale' => 'en', 'stage' => 'live']));
@@ -152,13 +152,13 @@ class ContentRouteDefaultsProviderTest extends TestCase
     public function testIsPublishedWithDimension(): void
     {
         $entityManager = $this->prophesize(EntityManagerInterface::class);
-        $contentLoader = $this->prophesize(ContentLoaderInterface::class);
+        $contentResolver = $this->prophesize(ContentResolverInterface::class);
         $structureMetadataFactory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $propertyFactory = $this->prophesize(LegacyPropertyFactory::class);
 
         $contentRouteDefaultsProvider = $this->getContentRouteDefaultsProvider(
             $entityManager->reveal(),
-            $contentLoader->reveal(),
+            $contentResolver->reveal(),
             $structureMetadataFactory->reveal(),
             $propertyFactory->reveal()
         );
@@ -184,7 +184,7 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $queryBuilder->getQuery()->willReturn($query);
         $query->getSingleResult()->willReturn($contentRichEntity->reveal());
 
-        $contentLoader->load($contentRichEntity->reveal(), ['locale' => 'en', 'stage' => 'live'])
+        $contentResolver->resolve($contentRichEntity->reveal(), ['locale' => 'en', 'stage' => 'live'])
             ->willReturn($contentProjection->reveal())
             ->shouldBeCalled();
 
@@ -194,13 +194,13 @@ class ContentRouteDefaultsProviderTest extends TestCase
     public function testIsNotPublishedWithMissingDimension(): void
     {
         $entityManager = $this->prophesize(EntityManagerInterface::class);
-        $contentLoader = $this->prophesize(ContentLoaderInterface::class);
+        $contentResolver = $this->prophesize(ContentResolverInterface::class);
         $structureMetadataFactory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $propertyFactory = $this->prophesize(LegacyPropertyFactory::class);
 
         $contentRouteDefaultsProvider = $this->getContentRouteDefaultsProvider(
             $entityManager->reveal(),
-            $contentLoader->reveal(),
+            $contentResolver->reveal(),
             $structureMetadataFactory->reveal(),
             $propertyFactory->reveal()
         );
@@ -224,7 +224,7 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $queryBuilder->getQuery()->willReturn($query);
         $query->getSingleResult()->willReturn($contentRichEntity->reveal());
 
-        $contentLoader->load($contentRichEntity->reveal(), ['locale' => 'en', 'stage' => 'live'])
+        $contentResolver->resolve($contentRichEntity->reveal(), ['locale' => 'en', 'stage' => 'live'])
             ->willReturn($contentProjection->reveal())
             ->shouldBeCalled();
 
@@ -234,13 +234,13 @@ class ContentRouteDefaultsProviderTest extends TestCase
     public function testIsNotPublishedWithDimension(): void
     {
         $entityManager = $this->prophesize(EntityManagerInterface::class);
-        $contentLoader = $this->prophesize(ContentLoaderInterface::class);
+        $contentResolver = $this->prophesize(ContentResolverInterface::class);
         $structureMetadataFactory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $propertyFactory = $this->prophesize(LegacyPropertyFactory::class);
 
         $contentRouteDefaultsProvider = $this->getContentRouteDefaultsProvider(
             $entityManager->reveal(),
-            $contentLoader->reveal(),
+            $contentResolver->reveal(),
             $structureMetadataFactory->reveal(),
             $propertyFactory->reveal()
         );
@@ -266,7 +266,7 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $queryBuilder->getQuery()->willReturn($query);
         $query->getSingleResult()->willReturn($contentRichEntity->reveal());
 
-        $contentLoader->load($contentRichEntity->reveal(), ['locale' => 'en', 'stage' => 'live'])
+        $contentResolver->resolve($contentRichEntity->reveal(), ['locale' => 'en', 'stage' => 'live'])
             ->willReturn($contentProjection->reveal())
             ->shouldBeCalled();
 
@@ -279,19 +279,19 @@ class ContentRouteDefaultsProviderTest extends TestCase
 
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage(sprintf(
-            'Expected to get "%s" from ContentLoader but "%s" given.',
+            'Expected to get "%s" from ContentResolver but "%s" given.',
             TemplateInterface::class,
             \get_class($contentProjection->reveal())
         ));
 
         $entityManager = $this->prophesize(EntityManagerInterface::class);
-        $contentLoader = $this->prophesize(ContentLoaderInterface::class);
+        $contentResolver = $this->prophesize(ContentResolverInterface::class);
         $structureMetadataFactory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $propertyFactory = $this->prophesize(LegacyPropertyFactory::class);
 
         $contentRouteDefaultsProvider = $this->getContentRouteDefaultsProvider(
             $entityManager->reveal(),
-            $contentLoader->reveal(),
+            $contentResolver->reveal(),
             $structureMetadataFactory->reveal(),
             $propertyFactory->reveal()
         );
@@ -309,7 +309,7 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $queryBuilder->getQuery()->willReturn($query);
         $query->getSingleResult()->willReturn($contentRichEntity->reveal());
 
-        $contentLoader->load(
+        $contentResolver->resolve(
             $contentRichEntity->reveal(),
             ['locale' => 'en', 'stage' => 'live']
         )->willReturn($contentProjection->reveal());
@@ -320,13 +320,13 @@ class ContentRouteDefaultsProviderTest extends TestCase
     public function testIsPublishedNotExists(): void
     {
         $entityManager = $this->prophesize(EntityManagerInterface::class);
-        $contentLoader = $this->prophesize(ContentLoaderInterface::class);
+        $contentResolver = $this->prophesize(ContentResolverInterface::class);
         $structureMetadataFactory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $propertyFactory = $this->prophesize(LegacyPropertyFactory::class);
 
         $contentRouteDefaultsProvider = $this->getContentRouteDefaultsProvider(
             $entityManager->reveal(),
-            $contentLoader->reveal(),
+            $contentResolver->reveal(),
             $structureMetadataFactory->reveal(),
             $propertyFactory->reveal()
         );
@@ -342,7 +342,7 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $queryBuilder->getQuery()->willReturn($query);
         $query->getSingleResult()->willThrow(new NoResultException());
 
-        $contentLoader->load(Argument::cetera())->shouldNotBeCalled();
+        $contentResolver->resolve(Argument::cetera())->shouldNotBeCalled();
 
         $this->assertFalse($contentRouteDefaultsProvider->isPublished(Example::class, '123-123-123', 'en'));
     }
@@ -350,13 +350,13 @@ class ContentRouteDefaultsProviderTest extends TestCase
     public function testIsNotPublished(): void
     {
         $entityManager = $this->prophesize(EntityManagerInterface::class);
-        $contentLoader = $this->prophesize(ContentLoaderInterface::class);
+        $contentResolver = $this->prophesize(ContentResolverInterface::class);
         $structureMetadataFactory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $propertyFactory = $this->prophesize(LegacyPropertyFactory::class);
 
         $contentRouteDefaultsProvider = $this->getContentRouteDefaultsProvider(
             $entityManager->reveal(),
-            $contentLoader->reveal(),
+            $contentResolver->reveal(),
             $structureMetadataFactory->reveal(),
             $propertyFactory->reveal()
         );
@@ -374,7 +374,7 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $queryBuilder->getQuery()->willReturn($query);
         $query->getSingleResult()->willReturn($contentRichEntity->reveal());
 
-        $contentLoader->load($contentRichEntity->reveal(), ['locale' => 'en', 'stage' => 'live'])
+        $contentResolver->resolve($contentRichEntity->reveal(), ['locale' => 'en', 'stage' => 'live'])
             ->will(function ($arguments) {
                 throw new ContentNotFoundException($arguments[0], $arguments[1]);
             });
@@ -385,13 +385,13 @@ class ContentRouteDefaultsProviderTest extends TestCase
     public function testGetByEntity(): void
     {
         $entityManager = $this->prophesize(EntityManagerInterface::class);
-        $contentLoader = $this->prophesize(ContentLoaderInterface::class);
+        $contentResolver = $this->prophesize(ContentResolverInterface::class);
         $structureMetadataFactory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $propertyFactory = $this->prophesize(LegacyPropertyFactory::class);
 
         $contentRouteDefaultsProvider = $this->getContentRouteDefaultsProvider(
             $entityManager->reveal(),
-            $contentLoader->reveal(),
+            $contentResolver->reveal(),
             $structureMetadataFactory->reveal(),
             $propertyFactory->reveal()
         );
@@ -411,7 +411,7 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $queryBuilder->getQuery()->willReturn($query);
         $query->getSingleResult()->willReturn($contentRichEntity->reveal());
 
-        $contentLoader->load($contentRichEntity->reveal(), ['locale' => 'en', 'stage' => 'live'])
+        $contentResolver->resolve($contentRichEntity->reveal(), ['locale' => 'en', 'stage' => 'live'])
             ->willReturn($contentProjection->reveal());
 
         $contentProjection->getTemplateType()->willReturn('example');
@@ -433,13 +433,13 @@ class ContentRouteDefaultsProviderTest extends TestCase
     public function testGetByEntityNotPublished(): void
     {
         $entityManager = $this->prophesize(EntityManagerInterface::class);
-        $contentLoader = $this->prophesize(ContentLoaderInterface::class);
+        $contentResolver = $this->prophesize(ContentResolverInterface::class);
         $structureMetadataFactory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $propertyFactory = $this->prophesize(LegacyPropertyFactory::class);
 
         $contentRouteDefaultsProvider = $this->getContentRouteDefaultsProvider(
             $entityManager->reveal(),
-            $contentLoader->reveal(),
+            $contentResolver->reveal(),
             $structureMetadataFactory->reveal(),
             $propertyFactory->reveal()
         );
@@ -457,7 +457,7 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $queryBuilder->getQuery()->willReturn($query);
         $query->getSingleResult()->willReturn($contentRichEntity->reveal());
 
-        $contentLoader->load($contentRichEntity->reveal(), ['locale' => 'en', 'stage' => 'live'])
+        $contentResolver->resolve($contentRichEntity->reveal(), ['locale' => 'en', 'stage' => 'live'])
             ->will(function ($arguments) {
                 throw new ContentNotFoundException($arguments[0], $arguments[1]);
             });
@@ -474,13 +474,13 @@ class ContentRouteDefaultsProviderTest extends TestCase
     public function testGetByEntityNoMetadata(): void
     {
         $entityManager = $this->prophesize(EntityManagerInterface::class);
-        $contentLoader = $this->prophesize(ContentLoaderInterface::class);
+        $contentResolver = $this->prophesize(ContentResolverInterface::class);
         $structureMetadataFactory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $propertyFactory = $this->prophesize(LegacyPropertyFactory::class);
 
         $contentRouteDefaultsProvider = $this->getContentRouteDefaultsProvider(
             $entityManager->reveal(),
-            $contentLoader->reveal(),
+            $contentResolver->reveal(),
             $structureMetadataFactory->reveal(),
             $propertyFactory->reveal()
         );
@@ -500,7 +500,7 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $queryBuilder->getQuery()->willReturn($query);
         $query->getSingleResult()->willReturn($contentRichEntity->reveal());
 
-        $contentLoader->load($contentRichEntity->reveal(), ['locale' => 'en', 'stage' => 'live'])
+        $contentResolver->resolve($contentRichEntity->reveal(), ['locale' => 'en', 'stage' => 'live'])
             ->willReturn($contentProjection->reveal());
 
         $contentProjection->getTemplateType()->willReturn('example');
