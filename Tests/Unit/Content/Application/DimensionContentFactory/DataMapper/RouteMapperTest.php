@@ -11,11 +11,11 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\DimensionContentFactory\Mapper;
+namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\DimensionContentFactory\DataMapper;
 
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
-use Sulu\Bundle\ContentBundle\Content\Application\DimensionContentFactory\Mapper\RouteMapper;
+use Sulu\Bundle\ContentBundle\Content\Application\DimensionContentFactory\DataMapper\RouteDataMapper;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\RoutableInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
@@ -27,12 +27,12 @@ use Sulu\Component\Content\Metadata\StructureMetadata;
 
 class RouteMapperTest extends TestCase
 {
-    protected function createRouteMapperInstance(
+    protected function createRouteDataMapperInstance(
         StructureMetadataFactoryInterface $factory,
         RouteGeneratorInterface $routeGenerator,
         RouteManagerInterface $routeManager
-    ): RouteMapper {
-        return new RouteMapper($factory, $routeGenerator, $routeManager);
+    ): RouteDataMapper {
+        return new RouteDataMapper($factory, $routeGenerator, $routeManager);
     }
 
     public function testMapNoRoutable(): void
@@ -49,7 +49,7 @@ class RouteMapperTest extends TestCase
         $factory->getStructureMetadata(Argument::cetera())->shouldNotBeCalled();
         $routeManager->createOrUpdateByAttributes(Argument::cetera())->shouldNotBeCalled();
 
-        $mapper = $this->createRouteMapperInstance(
+        $mapper = $this->createRouteDataMapperInstance(
             $factory->reveal(),
             $routeGenerator->reveal(),
             $routeManager->reveal()
@@ -71,7 +71,7 @@ class RouteMapperTest extends TestCase
         $factory->getStructureMetadata(Argument::cetera())->shouldNotBeCalled();
         $routeManager->createOrUpdateByAttributes(Argument::cetera())->shouldNotBeCalled();
 
-        $mapper = $this->createRouteMapperInstance(
+        $mapper = $this->createRouteDataMapperInstance(
             $factory->reveal(),
             $routeGenerator->reveal(),
             $routeManager->reveal()
@@ -98,7 +98,7 @@ class RouteMapperTest extends TestCase
         $routeManager->createOrUpdateByAttributes(Argument::cetera())->shouldNotBeCalled();
         $localizedDimensionContent->getContentId()->shouldNotBeCalled();
 
-        $mapper = $this->createRouteMapperInstance(
+        $mapper = $this->createRouteDataMapperInstance(
             $factory->reveal(),
             $routeGenerator->reveal(),
             $routeManager->reveal()
@@ -126,7 +126,7 @@ class RouteMapperTest extends TestCase
         $routeManager->createOrUpdateByAttributes(Argument::cetera())->shouldNotBeCalled();
         $localizedDimensionContent->getContentId()->shouldNotBeCalled();
 
-        $mapper = $this->createRouteMapperInstance(
+        $mapper = $this->createRouteDataMapperInstance(
             $factory->reveal(),
             $routeGenerator->reveal(),
             $routeManager->reveal()
@@ -155,7 +155,7 @@ class RouteMapperTest extends TestCase
         $localizedDimensionContent->getTemplateType()->willReturn('example');
         $factory->getStructureMetadata('example', 'default')->willReturn(null)->shouldBeCalled();
 
-        $mapper = $this->createRouteMapperInstance(
+        $mapper = $this->createRouteDataMapperInstance(
             $factory->reveal(),
             $routeGenerator->reveal(),
             $routeManager->reveal()
@@ -193,7 +193,7 @@ class RouteMapperTest extends TestCase
         $localizedDimensionContent->getLocale()->willReturn('de');
         $factory->getStructureMetadata('example', 'default')->willReturn($metadata->reveal())->shouldBeCalled();
 
-        $mapper = $this->createRouteMapperInstance(
+        $mapper = $this->createRouteDataMapperInstance(
             $factory->reveal(),
             $routeGenerator->reveal(),
             $routeManager->reveal()
@@ -232,7 +232,7 @@ class RouteMapperTest extends TestCase
         $localizedDimensionContent->getLocale()->willReturn('de');
         $factory->getStructureMetadata('example', 'default')->willReturn($metadata->reveal())->shouldBeCalled();
 
-        $mapper = $this->createRouteMapperInstance(
+        $mapper = $this->createRouteDataMapperInstance(
             $factory->reveal(),
             $routeGenerator->reveal(),
             $routeManager->reveal()
@@ -283,7 +283,7 @@ class RouteMapperTest extends TestCase
             '/test'
         )->shouldBeCalled();
 
-        $mapper = $this->createRouteMapperInstance(
+        $mapper = $this->createRouteDataMapperInstance(
             $factory->reveal(),
             $routeGenerator->reveal(),
             $routeManager->reveal()
@@ -329,7 +329,7 @@ class RouteMapperTest extends TestCase
 
         $routeManager->createOrUpdateByAttributes(Argument::cetera())->shouldNotBeCalled();
 
-        $mapper = $this->createRouteMapperInstance(
+        $mapper = $this->createRouteDataMapperInstance(
             $factory->reveal(),
             $routeGenerator->reveal(),
             $routeManager->reveal()
@@ -366,7 +366,7 @@ class RouteMapperTest extends TestCase
 
         $localizedDimensionContent->getContentId()->willReturn(null);
 
-        $mapper = $this->createRouteMapperInstance(
+        $mapper = $this->createRouteDataMapperInstance(
             $factory->reveal(),
             $routeGenerator->reveal(),
             $routeManager->reveal()
@@ -404,7 +404,7 @@ class RouteMapperTest extends TestCase
         $localizedDimensionContent->getContentId()->willReturn('123-123-123');
         $localizedDimensionContent->getLocale()->willReturn(null);
 
-        $mapper = $this->createRouteMapperInstance(
+        $mapper = $this->createRouteDataMapperInstance(
             $factory->reveal(),
             $routeGenerator->reveal(),
             $routeManager->reveal()
@@ -457,7 +457,7 @@ class RouteMapperTest extends TestCase
             '/test'
         )->shouldBeCalled();
 
-        $mapper = $this->createRouteMapperInstance(
+        $mapper = $this->createRouteDataMapperInstance(
             $factory->reveal(),
             $routeGenerator->reveal(),
             $routeManager->reveal()
@@ -507,7 +507,7 @@ class RouteMapperTest extends TestCase
             '/test'
         )->shouldBeCalled();
 
-        $mapper = $this->createRouteMapperInstance(
+        $mapper = $this->createRouteDataMapperInstance(
             $factory->reveal(),
             $routeGenerator->reveal(),
             $routeManager->reveal()

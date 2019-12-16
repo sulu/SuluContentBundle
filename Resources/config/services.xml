@@ -40,7 +40,7 @@
         <!-- Content Dimension Factory -->
         <service id="sulu_content.dimension_content_collection_factory" class="Sulu\Bundle\ContentBundle\Content\Application\DimensionContentFactory\DimensionContentCollectionFactory">
             <argument type="service" id="sulu_content.dimension_content_repository"/>
-            <argument type="tagged" tag="sulu_content.content_dimension_mapper"/>
+            <argument type="tagged" tag="sulu_content.data_mapper"/>
         </service>
 
         <service id="Sulu\Bundle\ContentBundle\Content\Domain\Factory\DimensionContentCollectionFactoryInterface" alias="sulu_content.dimension_content_collection_factory"/>

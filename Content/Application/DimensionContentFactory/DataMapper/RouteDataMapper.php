@@ -11,7 +11,7 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Content\Application\DimensionContentFactory\Mapper;
+namespace Sulu\Bundle\ContentBundle\Content\Application\DimensionContentFactory\DataMapper;
 
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\RoutableInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
@@ -21,7 +21,7 @@ use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
 use Sulu\Component\Content\Metadata\PropertyMetadata;
 use Sulu\Component\Content\Metadata\StructureMetadata;
 
-class RouteMapper implements MapperInterface
+class RouteDataMapper implements DataMapperInterface
 {
     /**
      * @var StructureMetadataFactoryInterface
@@ -50,15 +50,15 @@ class RouteMapper implements MapperInterface
 
     public function map(
         array $data,
-        object $dimensionContent,
-        ?object $localizedDimensionContent = null
+        object $unlocalizedObject,
+        ?object $localizedObject = null
     ): void {
-        if (!$localizedDimensionContent || !$localizedDimensionContent instanceof RoutableInterface) {
+        if (!$localizedObject || !$localizedObject instanceof RoutableInterface) {
             return;
         }
 
-        if (!$localizedDimensionContent instanceof TemplateInterface) {
-            throw new \RuntimeException('ContentDimension needs to extend the TemplateInterface');
+        if (!$localizedObject instanceof TemplateInterface) {
+            throw new \RuntimeException('LocalizedObject needs to extend the TemplateInterface');
         }
 
         if (!isset($data['template'])) {
@@ -66,7 +66,7 @@ class RouteMapper implements MapperInterface
         }
 
         $template = $data['template'];
-        $type = $localizedDimensionContent->getTemplateType();
+        $type = $localizedObject->getTemplateType();
 
         $metadata = $this->factory->getStructureMetadata($type, $template);
         if (!$metadata) {
@@ -78,13 +78,13 @@ class RouteMapper implements MapperInterface
             return;
         }
 
-        if (!$localizedDimensionContent->getContentId()) {
+        if (!$localizedObject->getContentId()) {
             // FIXME the code only works if the content-dimension is flushed once and has a valid id
 
             return;
         }
 
-        $locale = $localizedDimensionContent->getLocale();
+        $locale = $localizedObject->getLocale();
         if (!$locale) {
             return;
         }
@@ -92,7 +92,7 @@ class RouteMapper implements MapperInterface
         /** @var string $name */
         $name = $property->getName();
 
-        $currentRoutePath = $localizedDimensionContent->getTemplateData()[$name] ?? null;
+        $currentRoutePath = $localizedObject->getTemplateData()[$name] ?? null;
         if (!\array_key_exists($name, $data) && null !== $currentRoutePath) {
             return;
         }
@@ -101,7 +101,7 @@ class RouteMapper implements MapperInterface
         if (!$routePath) {
             // FIXME this should be handled directly in the form - see pages as an example
             $routePath = $this->routeGenerator->generate(
-                $localizedDimensionContent,
+                $localizedObject,
                 ['route_schema' => '/{object.getTitle()}']
             );
 
@@ -109,17 +109,17 @@ class RouteMapper implements MapperInterface
                 return;
             }
 
-            $localizedDimensionContent->setTemplateData(
+            $localizedObject->setTemplateData(
                 array_merge(
-                    $localizedDimensionContent->getTemplateData(),
+                    $localizedObject->getTemplateData(),
                     [$name => $routePath]
                 )
             );
         }
 
         $this->routeManager->createOrUpdateByAttributes(
-            $localizedDimensionContent->getContentClass(),
-            (string) $localizedDimensionContent->getContentId(),
+            $localizedObject->getContentClass(),
+            (string) $localizedObject->getContentId(),
             $locale,
             $routePath
         );

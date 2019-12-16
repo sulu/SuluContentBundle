@@ -11,16 +11,16 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Content\Application\DimensionContentFactory\Mapper;
+namespace Sulu\Bundle\ContentBundle\Content\Application\DimensionContentFactory\DataMapper;
 
-interface MapperInterface
+interface DataMapperInterface
 {
     /**
      * @param array<string, mixed> $data
      */
     public function map(
         array $data,
-        object $dimensionContent,
-        ?object $localizedDimensionContent = null
+        object $unlocalizedObject,
+        ?object $localizedObject = null
     ): void;
 }

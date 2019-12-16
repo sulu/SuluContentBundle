@@ -11,18 +11,18 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\DimensionContentFactory\Mapper;
+namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\DimensionContentFactory\DataMapper;
 
 use PHPUnit\Framework\TestCase;
-use Sulu\Bundle\ContentBundle\Content\Application\DimensionContentFactory\Mapper\SeoMapper;
+use Sulu\Bundle\ContentBundle\Content\Application\DimensionContentFactory\DataMapper\SeoDataMapper;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
 
 class SeoMapperTest extends TestCase
 {
-    protected function createSeoMapperInstance(): SeoMapper
+    protected function createSeoDataMapperInstance(): SeoDataMapper
     {
-        return new SeoMapper();
+        return new SeoDataMapper();
     }
 
     public function testMapNoSeo(): void
@@ -40,7 +40,7 @@ class SeoMapperTest extends TestCase
         $dimensionContent = $this->prophesize(DimensionContentInterface::class);
         $localizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
 
-        $seoMapper = $this->createSeoMapperInstance();
+        $seoMapper = $this->createSeoDataMapperInstance();
         $seoMapper->map($data, $dimensionContent->reveal(), $localizedDimensionContent->reveal());
         $this->assertTrue(true); // Avoid risky test as this is an early return test
     }
@@ -64,7 +64,7 @@ class SeoMapperTest extends TestCase
 
         $localizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
 
-        $seoMapper = $this->createSeoMapperInstance();
+        $seoMapper = $this->createSeoDataMapperInstance();
 
         $seoMapper->map($data, $dimensionContent->reveal(), $localizedDimensionContent->reveal());
     }
@@ -91,7 +91,7 @@ class SeoMapperTest extends TestCase
         $dimensionContent->setSeoNoIndex(true)->shouldBeCalled();
         $dimensionContent->setSeoNoFollow(true)->shouldBeCalled();
 
-        $seoMapper = $this->createSeoMapperInstance();
+        $seoMapper = $this->createSeoDataMapperInstance();
 
         $seoMapper->map($data, $dimensionContent->reveal());
     }
@@ -121,7 +121,7 @@ class SeoMapperTest extends TestCase
         $localizedDimensionContent->setSeoNoIndex(true)->shouldBeCalled();
         $localizedDimensionContent->setSeoNoFollow(true)->shouldBeCalled();
 
-        $seoMapper = $this->createSeoMapperInstance();
+        $seoMapper = $this->createSeoDataMapperInstance();
 
         $seoMapper->map($data, $dimensionContent->reveal(), $localizedDimensionContent->reveal());
     }
