@@ -13,12 +13,12 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Application\ViewResolver;
 
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 
 interface ViewResolverInterface
 {
     /**
      * @return mixed[]
      */
-    public function resolve(ContentViewInterface $contentView): array;
+    public function resolve(ContentProjectionInterface $contentProjection): array;
 }

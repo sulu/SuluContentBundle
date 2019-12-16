@@ -13,13 +13,13 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentLoader;
 
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
 
 interface ContentLoaderInterface
 {
     /**
      * @param mixed[] $dimensionAttributes
      */
-    public function load(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes): ContentViewInterface;
+    public function load(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes): ContentProjectionInterface;
 }

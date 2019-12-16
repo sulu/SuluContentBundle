@@ -11,14 +11,14 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ViewFactory\Merger;
+namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentProjectionFactory\Merger;
 
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Sulu\Bundle\CategoryBundle\Entity\CategoryInterface;
-use Sulu\Bundle\ContentBundle\Content\Application\ViewFactory\Merger\ExcerptMerger;
-use Sulu\Bundle\ContentBundle\Content\Application\ViewFactory\Merger\MergerInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionFactory\Merger\ExcerptMerger;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionFactory\Merger\MergerInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 use Sulu\Bundle\TagBundle\Tag\TagInterface;
@@ -36,11 +36,11 @@ class ExcerptMergerTest extends TestCase
 
         $dimensionContent = $this->prophesize(DimensionContentInterface::class);
 
-        $contentView = $this->prophesize(ContentViewInterface::class);
-        $contentView->willImplement(ExcerptInterface::class);
-        $contentView->setExcerptTitle(Argument::any())->shouldNotBeCalled();
+        $contentProjection = $this->prophesize(ContentProjectionInterface::class);
+        $contentProjection->willImplement(ExcerptInterface::class);
+        $contentProjection->setExcerptTitle(Argument::any())->shouldNotBeCalled();
 
-        $merger->merge($contentView->reveal(), $dimensionContent->reveal());
+        $merger->merge($contentProjection->reveal(), $dimensionContent->reveal());
     }
 
     public function testMergeViewNotImplementExcerptInterface(): void
@@ -51,9 +51,9 @@ class ExcerptMergerTest extends TestCase
         $dimensionContent->willImplement(ExcerptInterface::class);
         $dimensionContent->getExcerptTitle(Argument::any())->shouldNotBeCalled();
 
-        $contentView = $this->prophesize(ContentViewInterface::class);
+        $contentProjection = $this->prophesize(ContentProjectionInterface::class);
 
-        $merger->merge($contentView->reveal(), $dimensionContent->reveal());
+        $merger->merge($contentProjection->reveal(), $dimensionContent->reveal());
     }
 
     public function testMergeSet(): void
@@ -80,25 +80,25 @@ class ExcerptMergerTest extends TestCase
         $dimensionContent->getExcerptImage()->willReturn(['id' => 8])->shouldBeCalled();
         $dimensionContent->getExcerptIcon()->willReturn(['id' => 9])->shouldBeCalled();
 
-        $contentView = $this->prophesize(ContentViewInterface::class);
-        $contentView->willImplement(ExcerptInterface::class);
-        $contentView->setExcerptTitle('Excerpt Title')->shouldBeCalled();
-        $contentView->setExcerptDescription('Excerpt Description')->shouldBeCalled();
-        $contentView->setExcerptMore('Excerpt More')->shouldBeCalled();
-        $contentView->setExcerptTags(Argument::that(function ($tags) {
+        $contentProjection = $this->prophesize(ContentProjectionInterface::class);
+        $contentProjection->willImplement(ExcerptInterface::class);
+        $contentProjection->setExcerptTitle('Excerpt Title')->shouldBeCalled();
+        $contentProjection->setExcerptDescription('Excerpt Description')->shouldBeCalled();
+        $contentProjection->setExcerptMore('Excerpt More')->shouldBeCalled();
+        $contentProjection->setExcerptTags(Argument::that(function ($tags) {
             return array_map(function (TagInterface $tag) {
                 return $tag->getId();
             }, $tags) === [1, 2];
         }))->shouldBeCalled();
-        $contentView->setExcerptCategories(Argument::that(function ($categories) {
+        $contentProjection->setExcerptCategories(Argument::that(function ($categories) {
             return array_map(function (CategoryInterface $category) {
                 return $category->getId();
             }, $categories) === [3, 4];
         }))->shouldBeCalled();
-        $contentView->setExcerptImage(['id' => 8])->shouldBeCalled();
-        $contentView->setExcerptIcon(['id' => 9])->shouldBeCalled();
+        $contentProjection->setExcerptImage(['id' => 8])->shouldBeCalled();
+        $contentProjection->setExcerptIcon(['id' => 9])->shouldBeCalled();
 
-        $merger->merge($contentView->reveal(), $dimensionContent->reveal());
+        $merger->merge($contentProjection->reveal(), $dimensionContent->reveal());
     }
 
     public function testMergeNotSet(): void
@@ -115,16 +115,16 @@ class ExcerptMergerTest extends TestCase
         $dimensionContent->getExcerptImage()->willReturn(null)->shouldBeCalled();
         $dimensionContent->getExcerptIcon()->willReturn(null)->shouldBeCalled();
 
-        $contentView = $this->prophesize(ContentViewInterface::class);
-        $contentView->willImplement(ExcerptInterface::class);
-        $contentView->setExcerptTitle(Argument::any())->shouldNotBeCalled();
-        $contentView->setExcerptDescription(Argument::any())->shouldNotBeCalled();
-        $contentView->setExcerptMore(Argument::any())->shouldNotBeCalled();
-        $contentView->setExcerptTags(Argument::any())->shouldNotBeCalled();
-        $contentView->setExcerptCategories(Argument::any())->shouldNotBeCalled();
-        $contentView->setExcerptImage(Argument::any())->shouldNotBeCalled();
-        $contentView->setExcerptIcon(Argument::any())->shouldNotBeCalled();
+        $contentProjection = $this->prophesize(ContentProjectionInterface::class);
+        $contentProjection->willImplement(ExcerptInterface::class);
+        $contentProjection->setExcerptTitle(Argument::any())->shouldNotBeCalled();
+        $contentProjection->setExcerptDescription(Argument::any())->shouldNotBeCalled();
+        $contentProjection->setExcerptMore(Argument::any())->shouldNotBeCalled();
+        $contentProjection->setExcerptTags(Argument::any())->shouldNotBeCalled();
+        $contentProjection->setExcerptCategories(Argument::any())->shouldNotBeCalled();
+        $contentProjection->setExcerptImage(Argument::any())->shouldNotBeCalled();
+        $contentProjection->setExcerptIcon(Argument::any())->shouldNotBeCalled();
 
-        $merger->merge($contentView->reveal(), $dimensionContent->reveal());
+        $merger->merge($contentProjection->reveal(), $dimensionContent->reveal());
     }
 }

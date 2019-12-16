@@ -11,15 +11,15 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Content\Application\ViewFactory\Merger;
+namespace Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionFactory\Merger;
 
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 
 class TemplateMerger implements MergerInterface
 {
-    public function merge(object $contentView, object $dimensionContent): void
+    public function merge(object $contentProjection, object $dimensionContent): void
     {
-        if (!$contentView instanceof TemplateInterface) {
+        if (!$contentProjection instanceof TemplateInterface) {
             return;
         }
 
@@ -28,11 +28,11 @@ class TemplateMerger implements MergerInterface
         }
 
         if ($templateKey = $dimensionContent->getTemplateKey()) {
-            $contentView->setTemplateKey($templateKey);
+            $contentProjection->setTemplateKey($templateKey);
         }
 
-        $contentView->setTemplateData(array_merge(
-            $contentView->getTemplateData(),
+        $contentProjection->setTemplateData(array_merge(
+            $contentProjection->getTemplateData(),
             $dimensionContent->getTemplateData()
         ));
     }

@@ -11,15 +11,15 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Content\Application\ViewFactory\Merger;
+namespace Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionFactory\Merger;
 
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
 
 class SeoMerger implements MergerInterface
 {
-    public function merge(object $contentView, object $dimensionContent): void
+    public function merge(object $contentProjection, object $dimensionContent): void
     {
-        if (!$contentView instanceof SeoInterface) {
+        if (!$contentProjection instanceof SeoInterface) {
             return;
         }
 
@@ -28,31 +28,31 @@ class SeoMerger implements MergerInterface
         }
 
         if ($seoTitle = $dimensionContent->getSeoTitle()) {
-            $contentView->setSeoTitle($seoTitle);
+            $contentProjection->setSeoTitle($seoTitle);
         }
 
         if ($seoDescription = $dimensionContent->getSeoDescription()) {
-            $contentView->setSeoDescription($seoDescription);
+            $contentProjection->setSeoDescription($seoDescription);
         }
 
         if ($seoKeywords = $dimensionContent->getSeoKeywords()) {
-            $contentView->setSeoKeywords($seoKeywords);
+            $contentProjection->setSeoKeywords($seoKeywords);
         }
 
         if ($seoCanonicalUrl = $dimensionContent->getSeoCanonicalUrl()) {
-            $contentView->setSeoCanonicalUrl($seoCanonicalUrl);
+            $contentProjection->setSeoCanonicalUrl($seoCanonicalUrl);
         }
 
         if ($seoNoIndex = $dimensionContent->getSeoNoIndex()) {
-            $contentView->setSeoNoIndex($seoNoIndex);
+            $contentProjection->setSeoNoIndex($seoNoIndex);
         }
 
         if ($seoNoFollow = $dimensionContent->getSeoNoFollow()) {
-            $contentView->setSeoNoFollow($seoNoFollow);
+            $contentProjection->setSeoNoFollow($seoNoFollow);
         }
 
         if ($seoHideInSitemap = $dimensionContent->getSeoHideInSitemap()) {
-            $contentView->setSeoHideInSitemap($seoHideInSitemap);
+            $contentProjection->setSeoHideInSitemap($seoHideInSitemap);
         }
     }
 }

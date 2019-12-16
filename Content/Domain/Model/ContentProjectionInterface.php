@@ -13,25 +13,14 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Domain\Model;
 
-trait ContentViewTrait
+interface ContentProjectionInterface
 {
-    /**
-     * @var int
-     */
-    protected $id;
+    public function getId(): int;
 
     /**
-     * @var string
+     * @return mixed
      */
-    protected $dimensionId;
+    public function getContentId();
 
-    public function getId(): int
-    {
-        return $this->id;
-    }
-
-    public function getDimensionId(): string
-    {
-        return $this->dimensionId;
-    }
+    public function getDimensionId(): string;
 }

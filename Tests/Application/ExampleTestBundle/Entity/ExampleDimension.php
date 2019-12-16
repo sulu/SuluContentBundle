@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity;
 
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\AbstractDimensionContent;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptTrait;
@@ -84,12 +84,12 @@ class ExampleDimension extends AbstractDimensionContent implements ExcerptInterf
         $this->parentSetTemplateData($templateData);
     }
 
-    public function createViewInstance(): ContentViewInterface
+    public function createViewInstance(): ContentProjectionInterface
     {
-        $contentView = new ExampleView($this->getExample(), $this->dimension);
-        $contentView->setTitle($this->getTitle());
+        $contentProjection = new ExampleView($this->getExample(), $this->dimension);
+        $contentProjection->setTitle($this->getTitle());
 
-        return $contentView;
+        return $contentProjection;
     }
 
     public function getTemplateType(): string

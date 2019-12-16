@@ -16,9 +16,9 @@ namespace Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow;
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentInvalidTransitionException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotExistTransitionException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
-use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ViewFactoryInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ContentProjectionFactoryInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionContentRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionRepositoryInterface;
@@ -47,7 +47,7 @@ class ContentWorkflow implements ContentWorkflowInterface
     private $dimensionContentRepository;
 
     /**
-     * @var ViewFactoryInterface
+     * @var ContentProjectionFactoryInterface
      */
     private $viewFactory;
 
@@ -64,7 +64,7 @@ class ContentWorkflow implements ContentWorkflowInterface
     public function __construct(
         DimensionRepositoryInterface $dimensionRepository,
         DimensionContentRepositoryInterface $dimensionContentRepository,
-        ViewFactoryInterface $viewFactory,
+        ContentProjectionFactoryInterface $viewFactory,
         ?Registry $workflowRegistry = null,
         ?EventDispatcherInterface $eventDispatcher = null
     ) {
@@ -84,7 +84,7 @@ class ContentWorkflow implements ContentWorkflowInterface
         ContentRichEntityInterface $contentRichEntity,
         array $dimensionAttributes,
         string $transitionName
-    ): ContentViewInterface {
+    ): ContentProjectionInterface {
         $dimensionCollection = $this->dimensionRepository->findByAttributes($dimensionAttributes);
 
         if (0 === \count($dimensionCollection)) {

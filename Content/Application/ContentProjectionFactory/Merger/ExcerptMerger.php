@@ -11,15 +11,15 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Content\Application\ViewFactory\Merger;
+namespace Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionFactory\Merger;
 
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 
 class ExcerptMerger implements MergerInterface
 {
-    public function merge(object $contentView, object $dimensionContent): void
+    public function merge(object $contentProjection, object $dimensionContent): void
     {
-        if (!$contentView instanceof ExcerptInterface) {
+        if (!$contentProjection instanceof ExcerptInterface) {
             return;
         }
 
@@ -28,34 +28,34 @@ class ExcerptMerger implements MergerInterface
         }
 
         if ($excerptTitle = $dimensionContent->getExcerptTitle()) {
-            $contentView->setExcerptTitle($excerptTitle);
+            $contentProjection->setExcerptTitle($excerptTitle);
         }
 
         if ($excerptDescription = $dimensionContent->getExcerptDescription()) {
-            $contentView->setExcerptDescription($excerptDescription);
+            $contentProjection->setExcerptDescription($excerptDescription);
         }
 
         if ($excerptMore = $dimensionContent->getExcerptMore()) {
-            $contentView->setExcerptMore($excerptMore);
+            $contentProjection->setExcerptMore($excerptMore);
         }
 
         if ($excerptIcon = $dimensionContent->getExcerptIcon()) {
-            $contentView->setExcerptIcon($excerptIcon);
+            $contentProjection->setExcerptIcon($excerptIcon);
         }
 
         if ($excerptImage = $dimensionContent->getExcerptImage()) {
-            $contentView->setExcerptImage($excerptImage);
+            $contentProjection->setExcerptImage($excerptImage);
         }
 
         if ($excerptTags = $dimensionContent->getExcerptTags()) {
             if (!empty($excerptTags)) {
-                $contentView->setExcerptTags($excerptTags);
+                $contentProjection->setExcerptTags($excerptTags);
             }
         }
 
         if ($excerptCategories = $dimensionContent->getExcerptCategories()) {
             if (!empty($excerptCategories)) {
-                $contentView->setExcerptCategories($excerptCategories);
+                $contentProjection->setExcerptCategories($excerptCategories);
             }
         }
     }

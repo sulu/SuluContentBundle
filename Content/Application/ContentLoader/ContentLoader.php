@@ -14,9 +14,9 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentLoader;
 
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
-use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ViewFactoryInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ContentProjectionFactoryInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionContentRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionRepositoryInterface;
 
@@ -33,21 +33,21 @@ class ContentLoader implements ContentLoaderInterface
     private $dimensionContentRepository;
 
     /**
-     * @var ViewFactoryInterface
+     * @var ContentProjectionFactoryInterface
      */
     private $viewFactory;
 
     public function __construct(
         DimensionRepositoryInterface $dimensionRepository,
         DimensionContentRepositoryInterface $dimensionContentRepository,
-        ViewFactoryInterface $viewFactory
+        ContentProjectionFactoryInterface $viewFactory
     ) {
         $this->dimensionRepository = $dimensionRepository;
         $this->dimensionContentRepository = $dimensionContentRepository;
         $this->viewFactory = $viewFactory;
     }
 
-    public function load(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes): ContentViewInterface
+    public function load(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes): ContentProjectionInterface
     {
         $dimensionCollection = $this->dimensionRepository->findByAttributes($dimensionAttributes);
 

@@ -4,20 +4,20 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
         <!-- Merger -->
-        <service id="sulu_content.excerpt_view_factory_merger" class="Sulu\Bundle\ContentBundle\Content\Application\ViewFactory\Merger\ExcerptMerger">
-            <tag name="sulu_content.view_factory_merger" />
+        <service id="sulu_content.excerpt_content_projection_factory_merger" class="Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionFactory\Merger\ExcerptMerger">
+            <tag name="sulu_content.content_projection_factory_merger" />
         </service>
 
-        <service id="sulu_content.seo_view_factory_merger" class="Sulu\Bundle\ContentBundle\Content\Application\ViewFactory\Merger\SeoMerger">
-            <tag name="sulu_content.view_factory_merger" />
+        <service id="sulu_content.seo_content_projection_factory_merger" class="Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionFactory\Merger\SeoMerger">
+            <tag name="sulu_content.content_projection_factory_merger" />
         </service>
 
-        <service id="sulu_content.template_view_factory_merger" class="Sulu\Bundle\ContentBundle\Content\Application\ViewFactory\Merger\TemplateMerger">
-            <tag name="sulu_content.view_factory_merger" />
+        <service id="sulu_content.template_content_projection_factory_merger" class="Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionFactory\Merger\TemplateMerger">
+            <tag name="sulu_content.content_projection_factory_merger" />
         </service>
 
-        <service id="sulu_content.workflow_view_factory_merger" class="Sulu\Bundle\ContentBundle\Content\Application\ViewFactory\Merger\WorkflowMerger">
-            <tag name="sulu_content.view_factory_merger" />
+        <service id="sulu_content.workflow_content_projection_factory_merger" class="Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionFactory\Merger\WorkflowMerger">
+            <tag name="sulu_content.content_projection_factory_merger" />
         </service>
     </services>
 </container>

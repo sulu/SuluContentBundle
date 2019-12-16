@@ -17,9 +17,9 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 
 class WorkflowResolver implements ResolverInterface
 {
-    public function resolve(object $contentView, array $viewData): array
+    public function resolve(object $contentProjection, array $viewData): array
     {
-        if (!$contentView instanceof WorkflowInterface) {
+        if (!$contentProjection instanceof WorkflowInterface) {
             return $viewData;
         }
 
@@ -30,7 +30,7 @@ class WorkflowResolver implements ResolverInterface
         return $viewData;
     }
 
-    public function getIgnoredAttributes(object $contentView): array
+    public function getIgnoredAttributes(object $contentProjection): array
     {
         return [];
     }

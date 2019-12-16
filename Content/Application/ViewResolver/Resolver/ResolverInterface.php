@@ -20,10 +20,10 @@ interface ResolverInterface
      *
      * @return mixed[]
      */
-    public function resolve(object $contentView, array $viewData): array;
+    public function resolve(object $contentProjection, array $viewData): array;
 
     /**
      * @return string[]
      */
-    public function getIgnoredAttributes(object $contentView): array;
+    public function getIgnoredAttributes(object $contentProjection): array;
 }

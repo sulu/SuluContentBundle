@@ -20,9 +20,9 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\ContentWorkflo
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentInvalidTransitionException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotExistTransitionException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
-use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ViewFactoryInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ContentProjectionFactoryInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollection;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollection;
@@ -36,7 +36,7 @@ class ContentWorkflowTest extends TestCase
     protected function createContentWorkflowInstance(
         DimensionRepositoryInterface $dimensionRepository,
         DimensionContentRepositoryInterface $dimensionContentRepository,
-        ViewFactoryInterface $viewFactory
+        ContentProjectionFactoryInterface $viewFactory
     ): ContentWorkflowInterface {
         return new ContentWorkflow(
             $dimensionRepository,
@@ -51,7 +51,7 @@ class ContentWorkflowTest extends TestCase
 
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
         $dimensionContentRepository = $this->prophesize(DimensionContentRepositoryInterface::class);
-        $viewFactory = $this->prophesize(ViewFactoryInterface::class);
+        $viewFactory = $this->prophesize(ContentProjectionFactoryInterface::class);
 
         $contentWorkflow = $this->createContentWorkflowInstance(
             $dimensionRepository->reveal(),
@@ -105,7 +105,7 @@ class ContentWorkflowTest extends TestCase
 
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
         $dimensionContentRepository = $this->prophesize(DimensionContentRepositoryInterface::class);
-        $viewFactory = $this->prophesize(ViewFactoryInterface::class);
+        $viewFactory = $this->prophesize(ContentProjectionFactoryInterface::class);
 
         $contentWorkflow = $this->createContentWorkflowInstance(
             $dimensionRepository->reveal(),
@@ -150,7 +150,7 @@ class ContentWorkflowTest extends TestCase
 
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
         $dimensionContentRepository = $this->prophesize(DimensionContentRepositoryInterface::class);
-        $viewFactory = $this->prophesize(ViewFactoryInterface::class);
+        $viewFactory = $this->prophesize(ContentProjectionFactoryInterface::class);
 
         $contentWorkflow = $this->createContentWorkflowInstance(
             $dimensionRepository->reveal(),
@@ -184,7 +184,7 @@ class ContentWorkflowTest extends TestCase
 
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
         $dimensionContentRepository = $this->prophesize(DimensionContentRepositoryInterface::class);
-        $viewFactory = $this->prophesize(ViewFactoryInterface::class);
+        $viewFactory = $this->prophesize(ContentProjectionFactoryInterface::class);
 
         $contentWorkflow = $this->createContentWorkflowInstance(
             $dimensionRepository->reveal(),
@@ -249,7 +249,7 @@ class ContentWorkflowTest extends TestCase
 
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
         $dimensionContentRepository = $this->prophesize(DimensionContentRepositoryInterface::class);
-        $viewFactory = $this->prophesize(ViewFactoryInterface::class);
+        $viewFactory = $this->prophesize(ContentProjectionFactoryInterface::class);
 
         $contentWorkflow = $this->createContentWorkflowInstance(
             $dimensionRepository->reveal(),
@@ -298,14 +298,14 @@ class ContentWorkflowTest extends TestCase
             ->willReturn($dimensionContentCollection)
             ->shouldBeCalled();
 
-        $contentView = $this->prophesize(ContentViewInterface::class);
+        $contentProjection = $this->prophesize(ContentProjectionInterface::class);
 
         $viewFactory->create($dimensionContentCollection)
-            ->willReturn($contentView)
+            ->willReturn($contentProjection)
             ->shouldBeCalledTimes($isTransitionAllowed ? 1 : 0);
 
         $this->assertSame(
-            $isTransitionAllowed ? $contentView->reveal() : null,
+            $isTransitionAllowed ? $contentProjection->reveal() : null,
             $contentWorkflow->apply(
                 $contentRichEntity->reveal(),
                 $dimensionAttributes,

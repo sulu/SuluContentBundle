@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity;
 
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\AbstractContentView;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\AbstractContentProjection;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptTrait;
@@ -24,7 +24,7 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateTrait;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowTrait;
 
-class ExampleView extends AbstractContentView implements SeoInterface, ExcerptInterface, TemplateInterface, WorkflowInterface
+class ExampleView extends AbstractContentProjection implements SeoInterface, ExcerptInterface, TemplateInterface, WorkflowInterface
 {
     use SeoTrait;
     use ExcerptTrait;

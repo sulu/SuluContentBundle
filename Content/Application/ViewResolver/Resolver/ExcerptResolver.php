@@ -17,9 +17,9 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 
 class ExcerptResolver implements ResolverInterface
 {
-    public function resolve(object $contentView, array $viewData): array
+    public function resolve(object $contentProjection, array $viewData): array
     {
-        if (!$contentView instanceof ExcerptInterface) {
+        if (!$contentProjection instanceof ExcerptInterface) {
             return $viewData;
         }
 
@@ -31,7 +31,7 @@ class ExcerptResolver implements ResolverInterface
         return $viewData;
     }
 
-    public function getIgnoredAttributes(object $contentView): array
+    public function getIgnoredAttributes(object $contentProjection): array
     {
         return [
             'excerptTags',

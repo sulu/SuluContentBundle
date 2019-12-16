@@ -13,26 +13,26 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentFacade;
 
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
 
 interface ContentFacadeInterface
 {
     /**
      * @param mixed[] $dimensionAttributes
      */
-    public function load(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes): ContentViewInterface;
+    public function load(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes): ContentProjectionInterface;
 
     /**
      * @param mixed[] $data
      * @param mixed[] $dimensionAttributes
      */
-    public function persist(ContentRichEntityInterface $contentRichEntity, array $data, array $dimensionAttributes): ContentViewInterface;
+    public function persist(ContentRichEntityInterface $contentRichEntity, array $data, array $dimensionAttributes): ContentProjectionInterface;
 
     /**
      * @return mixed[]
      */
-    public function resolve(ContentViewInterface $contentView): array;
+    public function resolve(ContentProjectionInterface $contentProjection): array;
 
     /**
      * @param mixed[] $sourceDimensionAttributes
@@ -43,7 +43,7 @@ interface ContentFacadeInterface
         array $sourceDimensionAttributes,
         ContentRichEntityInterface $targetContentRichEntity,
         array $targetDimensionAttributes
-    ): ContentViewInterface;
+    ): ContentProjectionInterface;
 
     /**
      * @param mixed[] $dimensionAttributes
@@ -52,5 +52,5 @@ interface ContentFacadeInterface
         ContentRichEntityInterface $contentRichEntity,
         array $dimensionAttributes,
         string $transitionName
-    ): ContentViewInterface;
+    ): ContentProjectionInterface;
 }

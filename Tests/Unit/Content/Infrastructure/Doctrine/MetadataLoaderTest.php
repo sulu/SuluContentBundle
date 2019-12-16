@@ -22,7 +22,7 @@ use Doctrine\ORM\Mapping\UnderscoreNamingStrategy;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Sulu\Bundle\CategoryBundle\Entity\CategoryInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
@@ -62,7 +62,7 @@ class MetadataLoaderTest extends TestCase
         $metadataLoader = $this->getMetadataLoader();
         $reflectionClass = $this->prophesize(\ReflectionClass::class);
 
-        $reflectionClass->implementsInterface(ContentViewInterface::class)->willReturn(\in_array(ContentViewInterface::class, $interfaces, true));
+        $reflectionClass->implementsInterface(ContentProjectionInterface::class)->willReturn(\in_array(ContentProjectionInterface::class, $interfaces, true));
         $reflectionClass->implementsInterface(DimensionContentInterface::class)->willReturn(\in_array(DimensionContentInterface::class, $interfaces, true));
         $reflectionClass->implementsInterface(SeoInterface::class)->willReturn(\in_array(SeoInterface::class, $interfaces, true));
         $reflectionClass->implementsInterface(ExcerptInterface::class)->willReturn(\in_array(ExcerptInterface::class, $interfaces, true));
@@ -154,7 +154,7 @@ class MetadataLoaderTest extends TestCase
 
         yield [
             [
-                ContentViewInterface::class,
+                ContentProjectionInterface::class,
             ],
             [
                 'dimensionId' => false,

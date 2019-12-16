@@ -40,17 +40,17 @@ class ContentViewBuilderTest extends TestCase
             'add_parent_key'
         );
 
-        /** @var FormViewBuilderInterface $editContentView */
-        $editContentView = $viewCollection->get('edit_parent_key.content');
+        /** @var FormViewBuilderInterface $editContentProjection */
+        $editContentProjection = $viewCollection->get('edit_parent_key.content');
         $editExcerptView = $viewCollection->get('edit_parent_key.excerpt');
         $editSeoView = $viewCollection->get('edit_parent_key.seo');
-        $addContentView = $viewCollection->get('add_parent_key.content');
+        $addContentProjection = $viewCollection->get('add_parent_key.content');
 
         $this->assertCount(4, $viewCollection->all());
 
         // Test Edit Content View
-        $this->assertInstanceOf(FormViewBuilderInterface::class, $editContentView);
-        $this->assertSame('example', $editContentView->getView()->getOption('formKey'));
+        $this->assertInstanceOf(FormViewBuilderInterface::class, $editContentProjection);
+        $this->assertSame('example', $editContentProjection->getView()->getOption('formKey'));
 
         // Test Edit Excerpt View
         $this->assertInstanceOf(FormViewBuilderInterface::class, $editExcerptView);
@@ -61,7 +61,7 @@ class ContentViewBuilderTest extends TestCase
         $this->assertSame('content_seo', $editSeoView->getView()->getOption('formKey'));
 
         // Test Add Content View
-        $this->assertInstanceOf(FormViewBuilderInterface::class, $addContentView);
-        $this->assertSame('example', $addContentView->getView()->getOption('formKey'));
+        $this->assertInstanceOf(FormViewBuilderInterface::class, $addContentProjection);
+        $this->assertSame('example', $addContentProjection->getView()->getOption('formKey'));
     }
 }

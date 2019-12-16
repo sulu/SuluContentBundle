@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Content\Application\ViewResolver;
 
 use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\Resolver\ResolverInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
@@ -43,19 +43,19 @@ class ApiViewResolver implements ViewResolverInterface, ApiViewResolverInterface
         $this->serializer = $serializer ?: $this->createSerializer();
     }
 
-    public function resolve(ContentViewInterface $contentView): array
+    public function resolve(ContentProjectionInterface $contentProjection): array
     {
         $ignoreAttributes = ['id'];
 
         foreach ($this->resolvers as $resolver) {
             $ignoreAttributes = array_merge(
                 $ignoreAttributes,
-                $resolver->getIgnoredAttributes($contentView)
+                $resolver->getIgnoredAttributes($contentProjection)
             );
         }
 
         /** @var mixed[] $viewData */
-        $viewData = $this->serializer->normalize($contentView, null, [
+        $viewData = $this->serializer->normalize($contentProjection, null, [
             'ignored_attributes' => $ignoreAttributes,
         ]);
 
@@ -64,7 +64,7 @@ class ApiViewResolver implements ViewResolverInterface, ApiViewResolverInterface
         unset($viewData['contentId']);
 
         foreach ($this->resolvers as $resolver) {
-            $viewData = $resolver->resolve($contentView, $viewData);
+            $viewData = $resolver->resolve($contentProjection, $viewData);
         }
 
         ksort($viewData);

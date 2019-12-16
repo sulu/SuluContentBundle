@@ -14,10 +14,10 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Domain\Model;
 
 use PHPUnit\Framework\TestCase;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\AbstractContentProjection;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\AbstractContentRichEntity;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\AbstractContentView;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\AbstractDimensionContent;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
@@ -61,9 +61,9 @@ class ContentRichEntityTest extends TestCase
                 $this->id = $id;
             }
 
-            public function createViewInstance(): ContentViewInterface
+            public function createViewInstance(): ContentProjectionInterface
             {
-                return new class() extends AbstractContentView {
+                return new class() extends AbstractContentProjection {
                     public function getContentId()
                     {
                         return 5;
@@ -82,9 +82,9 @@ class ContentRichEntityTest extends TestCase
         return $modelDimension;
     }
 
-    protected function getInstanceView(int $id): ContentViewInterface
+    protected function getInstanceView(int $id): ContentProjectionInterface
     {
-        $modelDimension = new class() extends AbstractContentView implements SeoInterface, ExcerptInterface, TemplateInterface {
+        $modelDimension = new class() extends AbstractContentProjection implements SeoInterface, ExcerptInterface, TemplateInterface {
             use ExcerptTrait;
             use SeoTrait;
             use TemplateTrait;

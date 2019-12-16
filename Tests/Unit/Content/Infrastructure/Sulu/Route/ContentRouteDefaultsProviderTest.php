@@ -21,8 +21,8 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentLoader\ContentLoaderInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
@@ -82,9 +82,9 @@ class ContentRouteDefaultsProviderTest extends TestCase
         );
 
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
-        $contentView = $this->prophesize(TemplateInterface::class);
-        $contentView->willImplement(ContentViewInterface::class);
-        $contentView->getDimensionId()->willReturn('123-456');
+        $contentProjection = $this->prophesize(TemplateInterface::class);
+        $contentProjection->willImplement(ContentProjectionInterface::class);
+        $contentProjection->getDimensionId()->willReturn('123-456');
 
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
         $dimensionRepository->findOneBy(['id' => '123-456'])->willReturn(new Dimension('123-456', [
@@ -107,7 +107,7 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $contentLoader->load(
             $contentRichEntity->reveal(),
             ['locale' => 'en', 'stage' => 'live']
-        )->willReturn($contentView->reveal());
+        )->willReturn($contentProjection->reveal());
 
         $this->assertTrue($contentRouteDefaultsProvider->isPublished(Example::class, '123-123-123', 'en'));
     }
@@ -127,8 +127,8 @@ class ContentRouteDefaultsProviderTest extends TestCase
         );
 
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
-        $contentView = $this->prophesize(TemplateInterface::class);
-        $contentView->willImplement(ContentViewInterface::class);
+        $contentProjection = $this->prophesize(TemplateInterface::class);
+        $contentProjection->willImplement(ContentProjectionInterface::class);
 
         $queryBuilder = $this->prophesize(QueryBuilder::class);
         $query = $this->prophesize(AbstractQuery::class);
@@ -163,9 +163,9 @@ class ContentRouteDefaultsProviderTest extends TestCase
             $propertyFactory->reveal()
         );
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
-        $contentView = $this->prophesize(TemplateInterface::class);
-        $contentView->willImplement(ContentViewInterface::class);
-        $contentView->getDimensionId()->willReturn('123-456');
+        $contentProjection = $this->prophesize(TemplateInterface::class);
+        $contentProjection->willImplement(ContentProjectionInterface::class);
+        $contentProjection->getDimensionId()->willReturn('123-456');
 
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
         $dimensionRepository->findOneBy(['id' => '123-456'])->willReturn(new Dimension('123-456', [
@@ -185,7 +185,7 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $query->getSingleResult()->willReturn($contentRichEntity->reveal());
 
         $contentLoader->load($contentRichEntity->reveal(), ['locale' => 'en', 'stage' => 'live'])
-            ->willReturn($contentView->reveal())
+            ->willReturn($contentProjection->reveal())
             ->shouldBeCalled();
 
         $this->assertTrue($contentRouteDefaultsProvider->isPublished(Example::class, '123-123-123', 'en'));
@@ -206,9 +206,9 @@ class ContentRouteDefaultsProviderTest extends TestCase
         );
 
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
-        $contentView = $this->prophesize(TemplateInterface::class);
-        $contentView->willImplement(ContentViewInterface::class);
-        $contentView->getDimensionId()->willReturn('123-456');
+        $contentProjection = $this->prophesize(TemplateInterface::class);
+        $contentProjection->willImplement(ContentProjectionInterface::class);
+        $contentProjection->getDimensionId()->willReturn('123-456');
 
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
         $dimensionRepository->findOneBy(['id' => '123-456'])->willReturn(null);
@@ -225,7 +225,7 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $query->getSingleResult()->willReturn($contentRichEntity->reveal());
 
         $contentLoader->load($contentRichEntity->reveal(), ['locale' => 'en', 'stage' => 'live'])
-            ->willReturn($contentView->reveal())
+            ->willReturn($contentProjection->reveal())
             ->shouldBeCalled();
 
         $this->assertFalse($contentRouteDefaultsProvider->isPublished(Example::class, '123-123-123', 'en'));
@@ -246,9 +246,9 @@ class ContentRouteDefaultsProviderTest extends TestCase
         );
 
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
-        $contentView = $this->prophesize(TemplateInterface::class);
-        $contentView->willImplement(ContentViewInterface::class);
-        $contentView->getDimensionId()->willReturn('123-456');
+        $contentProjection = $this->prophesize(TemplateInterface::class);
+        $contentProjection->willImplement(ContentProjectionInterface::class);
+        $contentProjection->getDimensionId()->willReturn('123-456');
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
         $dimensionRepository->findOneBy(['id' => '123-456'])->willReturn(new Dimension('123-456', [
             'locale' => 'en',
@@ -267,7 +267,7 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $query->getSingleResult()->willReturn($contentRichEntity->reveal());
 
         $contentLoader->load($contentRichEntity->reveal(), ['locale' => 'en', 'stage' => 'live'])
-            ->willReturn($contentView->reveal())
+            ->willReturn($contentProjection->reveal())
             ->shouldBeCalled();
 
         $this->assertFalse($contentRouteDefaultsProvider->isPublished(Example::class, '123-123-123', 'en'));
@@ -275,13 +275,13 @@ class ContentRouteDefaultsProviderTest extends TestCase
 
     public function testGetByEntityReturnNoneTemplate(): void
     {
-        $contentView = $this->prophesize(ContentViewInterface::class);
+        $contentProjection = $this->prophesize(ContentProjectionInterface::class);
 
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage(sprintf(
             'Expected to get "%s" from ContentLoader but "%s" given.',
             TemplateInterface::class,
-            \get_class($contentView->reveal())
+            \get_class($contentProjection->reveal())
         ));
 
         $entityManager = $this->prophesize(EntityManagerInterface::class);
@@ -312,7 +312,7 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $contentLoader->load(
             $contentRichEntity->reveal(),
             ['locale' => 'en', 'stage' => 'live']
-        )->willReturn($contentView->reveal());
+        )->willReturn($contentProjection->reveal());
 
         $contentRouteDefaultsProvider->getByEntity(Example::class, '123-123-123', 'en');
     }
@@ -397,8 +397,8 @@ class ContentRouteDefaultsProviderTest extends TestCase
         );
 
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
-        $contentView = $this->prophesize(TemplateInterface::class);
-        $contentView->willImplement(ContentViewInterface::class);
+        $contentProjection = $this->prophesize(TemplateInterface::class);
+        $contentProjection->willImplement(ContentProjectionInterface::class);
 
         $queryBuilder = $this->prophesize(QueryBuilder::class);
         $query = $this->prophesize(AbstractQuery::class);
@@ -412,10 +412,10 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $query->getSingleResult()->willReturn($contentRichEntity->reveal());
 
         $contentLoader->load($contentRichEntity->reveal(), ['locale' => 'en', 'stage' => 'live'])
-            ->willReturn($contentView->reveal());
+            ->willReturn($contentProjection->reveal());
 
-        $contentView->getTemplateType()->willReturn('example');
-        $contentView->getTemplateKey()->willReturn('default');
+        $contentProjection->getTemplateType()->willReturn('example');
+        $contentProjection->getTemplateKey()->willReturn('default');
 
         $metadata = $this->prophesize(StructureMetadata::class);
         $metadata->getView()->willReturn('default');
@@ -424,7 +424,7 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $structureMetadataFactory->getStructureMetadata('example', 'default')->willReturn($metadata->reveal());
 
         $result = $contentRouteDefaultsProvider->getByEntity(Example::class, '123-123-123', 'en');
-        $this->assertSame($contentView->reveal(), $result['object']);
+        $this->assertSame($contentProjection->reveal(), $result['object']);
         $this->assertSame('default', $result['view']);
         $this->assertInstanceOf(ContentStructureBridge::class, $result['structure']);
         $this->assertSame('App\Controller\TestController:testAction', $result['_controller']);
@@ -486,8 +486,8 @@ class ContentRouteDefaultsProviderTest extends TestCase
         );
 
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
-        $contentView = $this->prophesize(TemplateInterface::class);
-        $contentView->willImplement(ContentViewInterface::class);
+        $contentProjection = $this->prophesize(TemplateInterface::class);
+        $contentProjection->willImplement(ContentProjectionInterface::class);
 
         $queryBuilder = $this->prophesize(QueryBuilder::class);
         $query = $this->prophesize(AbstractQuery::class);
@@ -501,10 +501,10 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $query->getSingleResult()->willReturn($contentRichEntity->reveal());
 
         $contentLoader->load($contentRichEntity->reveal(), ['locale' => 'en', 'stage' => 'live'])
-            ->willReturn($contentView->reveal());
+            ->willReturn($contentProjection->reveal());
 
-        $contentView->getTemplateType()->willReturn('example');
-        $contentView->getTemplateKey()->willReturn('default');
+        $contentProjection->getTemplateType()->willReturn('example');
+        $contentProjection->getTemplateKey()->willReturn('default');
 
         $structureMetadataFactory->getStructureMetadata('example', 'default')->willReturn(null);
 

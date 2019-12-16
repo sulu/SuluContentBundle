@@ -17,8 +17,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NoResultException;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentLoader\ContentLoaderInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionRepositoryInterface;
@@ -88,7 +88,7 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
     {
         $entity = $this->loadEntity($entityClass, $id, $locale);
 
-        if ($entity instanceof ContentViewInterface) {
+        if ($entity instanceof ContentProjectionInterface) {
             $dimensionId = $entity->getDimensionId();
             /** @var DimensionRepositoryInterface $dimensionRepository */
             $dimensionRepository = $this->entityManager->getRepository(DimensionInterface::class);
@@ -129,7 +129,7 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
             //      to support other dimension attributes here
             //      we should maybe get dimension Attributes from request attributes set by a request listener
             //      e.g. $request->attributes->get('_sulu_content_dimension_attributes');
-            $contentView = $this->contentLoader->load(
+            $contentProjection = $this->contentLoader->load(
                 $contentRichEntity,
                 [
                     'locale' => $locale,
@@ -137,11 +137,11 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
                 ]
             );
 
-            if (!$contentView instanceof TemplateInterface) {
-                throw new \RuntimeException(sprintf('Expected to get "%s" from ContentLoader but "%s" given.', TemplateInterface::class, \get_class($contentView)));
+            if (!$contentProjection instanceof TemplateInterface) {
+                throw new \RuntimeException(sprintf('Expected to get "%s" from ContentLoader but "%s" given.', TemplateInterface::class, \get_class($contentProjection)));
             }
 
-            return $contentView;
+            return $contentProjection;
         } catch (ContentNotFoundException $exception) {
             return null;
         }

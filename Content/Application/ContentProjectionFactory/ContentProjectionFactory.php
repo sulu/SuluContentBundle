@@ -11,15 +11,15 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Content\Application\ViewFactory;
+namespace Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionFactory;
 
-use Sulu\Bundle\ContentBundle\Content\Application\ViewFactory\Merger\MergerInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ViewFactoryInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionFactory\Merger\MergerInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ContentProjectionFactoryInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 
-class ViewFactory implements ViewFactoryInterface
+class ContentProjectionFactory implements ContentProjectionFactoryInterface
 {
     /**
      * @var iterable<MergerInterface>
@@ -34,7 +34,7 @@ class ViewFactory implements ViewFactoryInterface
         $this->mergers = $mergers;
     }
 
-    public function create(DimensionContentCollectionInterface $dimensionContentCollection): ContentViewInterface
+    public function create(DimensionContentCollectionInterface $dimensionContentCollection): ContentProjectionInterface
     {
         if (!$dimensionContentCollection->count()) {
             throw new \RuntimeException('Expected at least one dimensionContent given.');
@@ -44,15 +44,15 @@ class ViewFactory implements ViewFactoryInterface
         $dimensionContentCollectionArray = iterator_to_array($dimensionContentCollection);
         $lastKey = \count($dimensionContentCollectionArray) - 1;
 
-        $contentView = $dimensionContentCollectionArray[$lastKey]->createViewInstance();
+        $contentProjection = $dimensionContentCollectionArray[$lastKey]->createViewInstance();
 
         foreach ($dimensionContentCollection as $dimensionContent) {
             /** @var MergerInterface $merger */
             foreach ($this->mergers as $merger) {
-                $merger->merge($contentView, $dimensionContent);
+                $merger->merge($contentProjection, $dimensionContent);
             }
         }
 
-        return $contentView;
+        return $contentProjection;
     }
 }

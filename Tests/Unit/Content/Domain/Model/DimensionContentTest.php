@@ -14,9 +14,9 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Domain\Model;
 
 use PHPUnit\Framework\TestCase;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\AbstractContentView;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\AbstractContentProjection;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\AbstractDimensionContent;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
@@ -35,9 +35,9 @@ class DimensionContentTest extends TestCase
                 $this->dimension = $dimension;
             }
 
-            public function createViewInstance(): ContentViewInterface
+            public function createViewInstance(): ContentProjectionInterface
             {
-                return new class() extends AbstractContentView {
+                return new class() extends AbstractContentProjection {
                     public function getContentId()
                     {
                         return 5;
