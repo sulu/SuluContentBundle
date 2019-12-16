@@ -11,12 +11,12 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Content\Application\ContentFacade;
+namespace Sulu\Bundle\ContentBundle\Content\Application\ContentManager;
 
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 
-interface ContentFacadeInterface
+interface ContentManagerInterface
 {
     /**
      * @param mixed[] $dimensionAttributes
