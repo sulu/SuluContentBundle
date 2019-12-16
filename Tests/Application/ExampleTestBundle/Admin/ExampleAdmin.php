@@ -135,7 +135,7 @@ class ExampleAdmin extends Admin
             $this->contentViewBuilder->build(
                  $viewCollection,
                 $resourceKey,
-                Example::TYPE_KEY,
+                Example::TEMPLATE_TYPE,
                  static::EDIT_TABS_VIEW,
                 static::ADD_TABS_VIEW
             );

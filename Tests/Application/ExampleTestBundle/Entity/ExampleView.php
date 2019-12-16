@@ -64,6 +64,6 @@ class ExampleView extends AbstractContentView implements SeoInterface, ExcerptIn
 
     public function getTemplateType(): string
     {
-        return Example::TYPE_KEY;
+        return Example::TEMPLATE_TYPE;
     }
 }
