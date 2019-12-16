@@ -11,13 +11,13 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentDimensionFactory\Mapper;
+namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\DimensionContentFactory\Mapper;
 
 use PHPUnit\Framework\TestCase;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentDimensionFactory\Mapper\ExcerptMapper;
+use Sulu\Bundle\ContentBundle\Content\Application\DimensionContentFactory\Mapper\ExcerptMapper;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\CategoryFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\TagFactoryInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 use Sulu\Bundle\TagBundle\Tag\TagInterface;
 
@@ -42,14 +42,14 @@ class ExcerptMapperTest extends TestCase
             'excerptCategories' => [3, 4],
         ];
 
-        $contentDimension = $this->prophesize(ContentDimensionInterface::class);
-        $localizedContentDimension = $this->prophesize(ContentDimensionInterface::class);
+        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $localizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
 
         $tagFactory = $this->prophesize(TagFactoryInterface::class);
         $categoryFactory = $this->prophesize(CategoryFactoryInterface::class);
 
         $excerptMapper = $this->createExcerptMapperInstance($tagFactory->reveal(), $categoryFactory->reveal());
-        $excerptMapper->map($data, $contentDimension->reveal(), $localizedContentDimension->reveal());
+        $excerptMapper->map($data, $dimensionContent->reveal(), $localizedDimensionContent->reveal());
         $this->assertTrue(true); // Avoid risky test as this is an early return test
     }
 
@@ -67,17 +67,17 @@ class ExcerptMapperTest extends TestCase
             'excerptCategories' => [3, 4],
         ];
 
-        $contentDimension = $this->prophesize(ContentDimensionInterface::class);
-        $contentDimension->willImplement(ExcerptInterface::class);
+        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent->willImplement(ExcerptInterface::class);
 
-        $localizedContentDimension = $this->prophesize(ContentDimensionInterface::class);
+        $localizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
 
         $tagFactory = $this->prophesize(TagFactoryInterface::class);
         $categoryFactory = $this->prophesize(CategoryFactoryInterface::class);
 
         $excerptMapper = $this->createExcerptMapperInstance($tagFactory->reveal(), $categoryFactory->reveal());
 
-        $excerptMapper->map($data, $contentDimension->reveal(), $localizedContentDimension->reveal());
+        $excerptMapper->map($data, $dimensionContent->reveal(), $localizedDimensionContent->reveal());
     }
 
     public function testMapUnlocalizedExcerpt(): void
@@ -103,19 +103,19 @@ class ExcerptMapperTest extends TestCase
         $category2 = $this->prophesize(TagInterface::class);
         $categoryFactory->create([3, 4])->willReturn([$category1->reveal(), $category2->reveal()])->shouldBeCalled();
 
-        $contentDimension = $this->prophesize(ContentDimensionInterface::class);
-        $contentDimension->willImplement(ExcerptInterface::class);
-        $contentDimension->setExcerptTitle('Excerpt Title')->shouldBeCalled();
-        $contentDimension->setExcerptDescription('Excerpt Description')->shouldBeCalled();
-        $contentDimension->setExcerptMore('Excerpt More')->shouldBeCalled();
-        $contentDimension->setExcerptImage(['id' => 1])->shouldBeCalled();
-        $contentDimension->setExcerptIcon(['id' => 2])->shouldBeCalled();
-        $contentDimension->setExcerptTags([$tag1->reveal(), $tag2->reveal()])->shouldBeCalled();
-        $contentDimension->setExcerptCategories([$category1->reveal(), $category2->reveal()])->shouldBeCalled();
+        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent->willImplement(ExcerptInterface::class);
+        $dimensionContent->setExcerptTitle('Excerpt Title')->shouldBeCalled();
+        $dimensionContent->setExcerptDescription('Excerpt Description')->shouldBeCalled();
+        $dimensionContent->setExcerptMore('Excerpt More')->shouldBeCalled();
+        $dimensionContent->setExcerptImage(['id' => 1])->shouldBeCalled();
+        $dimensionContent->setExcerptIcon(['id' => 2])->shouldBeCalled();
+        $dimensionContent->setExcerptTags([$tag1->reveal(), $tag2->reveal()])->shouldBeCalled();
+        $dimensionContent->setExcerptCategories([$category1->reveal(), $category2->reveal()])->shouldBeCalled();
 
         $excerptMapper = $this->createExcerptMapperInstance($tagFactory->reveal(), $categoryFactory->reveal());
 
-        $excerptMapper->map($data, $contentDimension->reveal());
+        $excerptMapper->map($data, $dimensionContent->reveal());
     }
 
     public function testMapLocalizedExcerpt(): void
@@ -141,21 +141,21 @@ class ExcerptMapperTest extends TestCase
         $category2 = $this->prophesize(TagInterface::class);
         $categoryFactory->create([3, 4])->willReturn([$category1->reveal(), $category2->reveal()])->shouldBeCalled();
 
-        $contentDimension = $this->prophesize(ContentDimensionInterface::class);
-        $contentDimension->willImplement(ExcerptInterface::class);
+        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent->willImplement(ExcerptInterface::class);
 
-        $localizedContentDimension = $this->prophesize(ContentDimensionInterface::class);
-        $localizedContentDimension->willImplement(ExcerptInterface::class);
-        $localizedContentDimension->setExcerptTitle('Excerpt Title')->shouldBeCalled();
-        $localizedContentDimension->setExcerptDescription('Excerpt Description')->shouldBeCalled();
-        $localizedContentDimension->setExcerptMore('Excerpt More')->shouldBeCalled();
-        $localizedContentDimension->setExcerptImage(['id' => 1])->shouldBeCalled();
-        $localizedContentDimension->setExcerptIcon(['id' => 2])->shouldBeCalled();
-        $localizedContentDimension->setExcerptTags([$tag1->reveal(), $tag2->reveal()])->shouldBeCalled();
-        $localizedContentDimension->setExcerptCategories([$category1->reveal(), $category2->reveal()])->shouldBeCalled();
+        $localizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $localizedDimensionContent->willImplement(ExcerptInterface::class);
+        $localizedDimensionContent->setExcerptTitle('Excerpt Title')->shouldBeCalled();
+        $localizedDimensionContent->setExcerptDescription('Excerpt Description')->shouldBeCalled();
+        $localizedDimensionContent->setExcerptMore('Excerpt More')->shouldBeCalled();
+        $localizedDimensionContent->setExcerptImage(['id' => 1])->shouldBeCalled();
+        $localizedDimensionContent->setExcerptIcon(['id' => 2])->shouldBeCalled();
+        $localizedDimensionContent->setExcerptTags([$tag1->reveal(), $tag2->reveal()])->shouldBeCalled();
+        $localizedDimensionContent->setExcerptCategories([$category1->reveal(), $category2->reveal()])->shouldBeCalled();
 
         $excerptMapper = $this->createExcerptMapperInstance($tagFactory->reveal(), $categoryFactory->reveal());
 
-        $excerptMapper->map($data, $contentDimension->reveal(), $localizedContentDimension->reveal());
+        $excerptMapper->map($data, $dimensionContent->reveal(), $localizedDimensionContent->reveal());
     }
 }

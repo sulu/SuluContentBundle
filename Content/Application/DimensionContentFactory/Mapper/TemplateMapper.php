@@ -11,7 +11,7 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Content\Application\ContentDimensionFactory\Mapper;
+namespace Sulu\Bundle\ContentBundle\Content\Application\DimensionContentFactory\Mapper;
 
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
@@ -30,10 +30,10 @@ class TemplateMapper implements MapperInterface
 
     public function map(
         array $data,
-        object $contentDimension,
-        ?object $localizedContentDimension = null
+        object $dimensionContent,
+        ?object $localizedDimensionContent = null
     ): void {
-        if (!$contentDimension instanceof TemplateInterface) {
+        if (!$dimensionContent instanceof TemplateInterface) {
             return;
         }
 
@@ -45,27 +45,27 @@ class TemplateMapper implements MapperInterface
 
         list($unlocalizedData, $localizedData) = $this->getTemplateData(
             $data,
-            $contentDimension->getTemplateType(),
+            $dimensionContent->getTemplateType(),
             $template
         );
 
-        if ($localizedContentDimension) {
-            if (!$localizedContentDimension instanceof TemplateInterface) {
-                throw new \RuntimeException(sprintf('Expected "$localizedContentDimension" from type "%s" but "%s" given.', TemplateInterface::class, \get_class($localizedContentDimension)));
+        if ($localizedDimensionContent) {
+            if (!$localizedDimensionContent instanceof TemplateInterface) {
+                throw new \RuntimeException(sprintf('Expected "$localizedDimensionContent" from type "%s" but "%s" given.', TemplateInterface::class, \get_class($localizedDimensionContent)));
             }
 
-            $localizedContentDimension->setTemplateKey($template);
-            $localizedContentDimension->setTemplateData($localizedData);
+            $localizedDimensionContent->setTemplateKey($template);
+            $localizedDimensionContent->setTemplateData($localizedData);
         }
 
-        if (!$localizedContentDimension) {
+        if (!$localizedDimensionContent) {
             // Only set templateKey to unlocalizedDimension when no localizedDimension exist
-            $contentDimension->setTemplateKey($template);
+            $dimensionContent->setTemplateKey($template);
         }
 
         // Unlocalized dimensions can contain data of different templates so we need to merge them together
-        $contentDimension->setTemplateData(array_merge(
-            $contentDimension->getTemplateData(),
+        $dimensionContent->setTemplateData(array_merge(
+            $dimensionContent->getTemplateData(),
             $unlocalizedData
         ));
     }

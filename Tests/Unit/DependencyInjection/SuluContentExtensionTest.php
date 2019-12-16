@@ -22,10 +22,10 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentLoader\ContentLoaderInt
 use Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersisterInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\ContentWorkflowInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\ApiViewResolverInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ContentDimensionCollectionFactoryInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Factory\DimensionContentCollectionFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ViewFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
-use Sulu\Bundle\ContentBundle\Content\Domain\Repository\ContentDimensionRepositoryInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionContentRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Doctrine\DimensionRepository;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Doctrine\MetadataLoader;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Admin\ContentViewBuilderInterface;
@@ -66,8 +66,8 @@ class SuluContentExtensionTest extends AbstractExtensionTestCase
         // Additional services aliases
         $this->assertContainerBuilderHasAlias(ContentViewBuilderInterface::class, 'sulu_content.content_view_builder');
         $this->assertContainerBuilderHasAlias(ViewFactoryInterface::class, 'sulu_content.view_factory');
-        $this->assertContainerBuilderHasAlias(ContentDimensionCollectionFactoryInterface::class, 'sulu_content.content_dimension_factory');
-        $this->assertContainerBuilderHasAlias(ContentDimensionRepositoryInterface::class, 'sulu_content.content_dimension_repository');
+        $this->assertContainerBuilderHasAlias(DimensionContentCollectionFactoryInterface::class, 'sulu_content.dimension_content_collection_factory');
+        $this->assertContainerBuilderHasAlias(DimensionContentRepositoryInterface::class, 'sulu_content.dimension_content_repository');
     }
 
     public function testLoadObjects(): void

@@ -14,11 +14,11 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Domain\Model;
 
 use PHPUnit\Framework\TestCase;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\AbstractContentDimension;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\AbstractContentRichEntity;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\AbstractContentView;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\AbstractDimensionContent;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptTrait;
@@ -37,7 +37,7 @@ class ContentRichEntityTest extends TestCase
                 return 'example';
             }
 
-            public function createDimension(DimensionInterface $dimension): ContentDimensionInterface
+            public function createDimensionContent(DimensionInterface $dimension): DimensionContentInterface
             {
                 throw new \RuntimeException();
             }
@@ -49,9 +49,9 @@ class ContentRichEntityTest extends TestCase
         };
     }
 
-    protected function getInstanceDimension(int $id): ContentDimensionInterface
+    protected function getInstanceDimension(int $id): DimensionContentInterface
     {
-        $modelDimension = new class() extends AbstractContentDimension implements SeoInterface, ExcerptInterface, TemplateInterface {
+        $modelDimension = new class() extends AbstractDimensionContent implements SeoInterface, ExcerptInterface, TemplateInterface {
             use ExcerptTrait;
             use SeoTrait;
             use TemplateTrait;
@@ -114,23 +114,23 @@ class ContentRichEntityTest extends TestCase
     {
         $model = $this->getInstance();
 
-        $this->assertEmpty($model->getDimensions());
+        $this->assertEmpty($model->getDimensionContents());
 
         $modelDimension1 = $this->getInstanceDimension(1);
         $modelDimension2 = $this->getInstanceDimension(2);
 
-        $model->addDimension($modelDimension1);
-        $model->addDimension($modelDimension2);
+        $model->addDimensionContent($modelDimension1);
+        $model->addDimensionContent($modelDimension2);
 
         $this->assertSame([
             $modelDimension1,
             $modelDimension2,
-        ], iterator_to_array($model->getDimensions()));
+        ], iterator_to_array($model->getDimensionContents()));
 
-        $model->removeDimension($modelDimension2);
+        $model->removeDimensionContent($modelDimension2);
 
         $this->assertSame([
             $modelDimension1,
-        ], iterator_to_array($model->getDimensions()));
+        ], iterator_to_array($model->getDimensionContents()));
     }
 }

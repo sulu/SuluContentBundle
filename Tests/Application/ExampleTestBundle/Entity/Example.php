@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity;
 
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\AbstractContentRichEntity;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 
 class Example extends AbstractContentRichEntity
@@ -40,7 +40,7 @@ class Example extends AbstractContentRichEntity
         return self::RESOURCE_KEY;
     }
 
-    public function createDimension(DimensionInterface $dimension): ContentDimensionInterface
+    public function createDimensionContent(DimensionInterface $dimension): DimensionContentInterface
     {
         return new ExampleDimension($this, $dimension);
     }

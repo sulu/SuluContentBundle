@@ -25,13 +25,13 @@ interface ContentRichEntityInterface
     public function getId();
 
     /**
-     * @return Collection<ContentDimensionInterface>
+     * @return Collection<DimensionContentInterface>
      */
-    public function getDimensions(): Collection;
+    public function getDimensionContents(): Collection;
 
-    public function createDimension(DimensionInterface $dimension): ContentDimensionInterface;
+    public function createDimensionContent(DimensionInterface $dimension): DimensionContentInterface;
 
-    public function addDimension(ContentDimensionInterface $contentDimension): void;
+    public function addDimensionContent(DimensionContentInterface $dimensionContent): void;
 
-    public function removeDimension(ContentDimensionInterface $contentDimension): void;
+    public function removeDimensionContent(DimensionContentInterface $dimensionContent): void;
 }

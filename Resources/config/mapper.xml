@@ -4,24 +4,24 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
         <!-- Mapper -->
-        <service id="sulu_content.template_mapper" class="Sulu\Bundle\ContentBundle\Content\Application\ContentDimensionFactory\Mapper\TemplateMapper">
+        <service id="sulu_content.template_mapper" class="Sulu\Bundle\ContentBundle\Content\Application\DimensionContentFactory\Mapper\TemplateMapper">
             <argument type="service" id="sulu_page.structure.factory"/>
 
             <tag name="sulu_content.content_dimension_mapper"/>
         </service>
 
-        <service id="sulu_content.seo_mapper" class="Sulu\Bundle\ContentBundle\Content\Application\ContentDimensionFactory\Mapper\SeoMapper">
+        <service id="sulu_content.seo_mapper" class="Sulu\Bundle\ContentBundle\Content\Application\DimensionContentFactory\Mapper\SeoMapper">
             <tag name="sulu_content.content_dimension_mapper"/>
         </service>
 
-        <service id="sulu_content.excerpt_mapper" class="Sulu\Bundle\ContentBundle\Content\Application\ContentDimensionFactory\Mapper\ExcerptMapper">
+        <service id="sulu_content.excerpt_mapper" class="Sulu\Bundle\ContentBundle\Content\Application\DimensionContentFactory\Mapper\ExcerptMapper">
             <argument type="service" id="sulu_content.tag_factory"/>
             <argument type="service" id="sulu_content.category_factory"/>
 
             <tag name="sulu_content.content_dimension_mapper"/>
         </service>
 
-        <service id="sulu_content.route_mapper" class="Sulu\Bundle\ContentBundle\Content\Application\ContentDimensionFactory\Mapper\RouteMapper">
+        <service id="sulu_content.route_mapper" class="Sulu\Bundle\ContentBundle\Content\Application\DimensionContentFactory\Mapper\RouteMapper">
             <argument type="service" id="sulu_page.structure.factory"/>
             <argument type="service" id="sulu_route.generator.route_generator"/>
             <argument type="service" id="sulu_route.manager.route_manager"/>

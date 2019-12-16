@@ -16,8 +16,8 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ViewFactory\M
 use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\ContentBundle\Content\Application\ViewFactory\Merger\MergerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ViewFactory\Merger\WorkflowMerger;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 
 class WorkflowMergerTest extends TestCase
@@ -31,45 +31,45 @@ class WorkflowMergerTest extends TestCase
     {
         $merger = $this->getWorkflowMergerInstance();
 
-        $contentDimension = $this->prophesize(ContentDimensionInterface::class);
+        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
 
         $contentView = $this->prophesize(ContentViewInterface::class);
         $contentView->willImplement(WorkflowInterface::class);
         $contentView->getWorkflowPlace()->shouldNotBeCalled();
         $contentView->getWorkflowPublished()->shouldNotBeCalled();
 
-        $merger->merge($contentView->reveal(), $contentDimension->reveal());
+        $merger->merge($contentView->reveal(), $dimensionContent->reveal());
     }
 
     public function testMergeViewNotImplementWorkflowInterface(): void
     {
         $merger = $this->getWorkflowMergerInstance();
 
-        $contentDimension = $this->prophesize(ContentDimensionInterface::class);
-        $contentDimension->willImplement(WorkflowInterface::class);
-        $contentDimension->getWorkflowPlace()->shouldNotBeCalled();
-        $contentDimension->getWorkflowPublished()->shouldNotBeCalled();
+        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent->willImplement(WorkflowInterface::class);
+        $dimensionContent->getWorkflowPlace()->shouldNotBeCalled();
+        $dimensionContent->getWorkflowPublished()->shouldNotBeCalled();
 
         $contentView = $this->prophesize(ContentViewInterface::class);
 
-        $merger->merge($contentView->reveal(), $contentDimension->reveal());
+        $merger->merge($contentView->reveal(), $dimensionContent->reveal());
     }
 
     public function testMergeSet(): void
     {
         $merger = $this->getWorkflowMergerInstance();
 
-        $contentDimension = $this->prophesize(ContentDimensionInterface::class);
-        $contentDimension->willImplement(WorkflowInterface::class);
+        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent->willImplement(WorkflowInterface::class);
         $published = new \DateTimeImmutable();
-        $contentDimension->getWorkflowPlace()->willReturn('draft')->shouldBeCalled();
-        $contentDimension->getWorkflowPublished()->willReturn($published)->shouldBeCalled();
+        $dimensionContent->getWorkflowPlace()->willReturn('draft')->shouldBeCalled();
+        $dimensionContent->getWorkflowPublished()->willReturn($published)->shouldBeCalled();
 
         $contentView = $this->prophesize(ContentViewInterface::class);
         $contentView->willImplement(WorkflowInterface::class);
         $contentView->setWorkflowPlace('draft')->shouldBeCalled();
         $contentView->setWorkflowPublished($published)->shouldBeCalled();
 
-        $merger->merge($contentView->reveal(), $contentDimension->reveal());
+        $merger->merge($contentView->reveal(), $dimensionContent->reveal());
     }
 }

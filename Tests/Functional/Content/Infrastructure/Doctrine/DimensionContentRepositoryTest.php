@@ -13,16 +13,16 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Tests\Functional\Content\Infrastructure\Doctrine;
 
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollection;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Repository\ContentDimensionRepositoryInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionContentRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleDimension;
 use Sulu\Bundle\ContentBundle\Tests\Functional\BaseTestCase;
 
-class ContentDimensionRepositoryTest extends BaseTestCase
+class DimensionContentRepositoryTest extends BaseTestCase
 {
     public function setUp(): void
     {
@@ -30,9 +30,9 @@ class ContentDimensionRepositoryTest extends BaseTestCase
         self::purgeDatabase();
     }
 
-    public function createContentDimensionRepository(): ContentDimensionRepositoryInterface
+    public function createContentDimensionRepository(): DimensionContentRepositoryInterface
     {
-        return self::$container->get('sulu_content.content_dimension_repository');
+        return self::$container->get('sulu_content.dimension_content_repository');
     }
 
     public function testLoadExistAll(): void
@@ -44,8 +44,8 @@ class ContentDimensionRepositoryTest extends BaseTestCase
         $dimension3 = $this->createDimension('789-456', ['locale' => 'en']);
 
         $contentRichEntity = $this->createContentRichEntity();
-        $contentDimension1 = $this->createContentDimension($contentRichEntity, $dimension1);
-        $contentDimension2 = $this->createContentDimension($contentRichEntity, $dimension2);
+        $dimensionContent1 = $this->createContentDimension($contentRichEntity, $dimension1);
+        $dimensionContent2 = $this->createContentDimension($contentRichEntity, $dimension2);
         $this->createContentDimension($contentRichEntity, $dimension3);
 
         $dimensionCollection = new DimensionCollection($attributes, [
@@ -56,17 +56,17 @@ class ContentDimensionRepositoryTest extends BaseTestCase
         $this->getEntityManager()->flush();
         $this->getEntityManager()->clear();
 
-        $contentDimensionRepository = $this->createContentDimensionRepository();
-        $contentDimensionCollection = $contentDimensionRepository->load($contentRichEntity, $dimensionCollection);
+        $dimensionContentRepository = $this->createContentDimensionRepository();
+        $dimensionContentCollection = $dimensionContentRepository->load($contentRichEntity, $dimensionCollection);
 
-        $this->assertCount(2, $contentDimensionCollection);
+        $this->assertCount(2, $dimensionContentCollection);
 
         $this->assertSame([
-            $contentDimension1->getId(),
-            $contentDimension2->getId(),
-        ], array_map(function (ContentDimensionInterface $contentDimension) {
-            return $contentDimension->getId();
-        }, iterator_to_array($contentDimensionCollection)));
+            $dimensionContent1->getId(),
+            $dimensionContent2->getId(),
+        ], array_map(function (DimensionContentInterface $dimensionContent) {
+            return $dimensionContent->getId();
+        }, iterator_to_array($dimensionContentCollection)));
     }
 
     public function testLoadOneNotExist(): void
@@ -77,7 +77,7 @@ class ContentDimensionRepositoryTest extends BaseTestCase
         $dimension2 = $this->createDimension('456-789', ['locale' => 'de']);
 
         $contentRichEntity = $this->createContentRichEntity();
-        $contentDimension1 = $this->createContentDimension($contentRichEntity, $dimension1);
+        $dimensionContent1 = $this->createContentDimension($contentRichEntity, $dimension1);
 
         $dimensionCollection = new DimensionCollection($attributes, [
             $dimension1,
@@ -87,16 +87,16 @@ class ContentDimensionRepositoryTest extends BaseTestCase
         $this->getEntityManager()->flush();
         $this->getEntityManager()->clear();
 
-        $contentDimensionRepository = $this->createContentDimensionRepository();
-        $contentDimensionCollection = $contentDimensionRepository->load($contentRichEntity, $dimensionCollection);
+        $dimensionContentRepository = $this->createContentDimensionRepository();
+        $dimensionContentCollection = $dimensionContentRepository->load($contentRichEntity, $dimensionCollection);
 
-        $this->assertCount(1, $contentDimensionCollection);
+        $this->assertCount(1, $dimensionContentCollection);
 
         $this->assertSame([
-            $contentDimension1->getId(),
-        ], array_map(function (ContentDimensionInterface $contentDimension) {
-            return $contentDimension->getId();
-        }, iterator_to_array($contentDimensionCollection)));
+            $dimensionContent1->getId(),
+        ], array_map(function (DimensionContentInterface $dimensionContent) {
+            return $dimensionContent->getId();
+        }, iterator_to_array($dimensionContentCollection)));
     }
 
     public function testLoadExistOrderedDifferent(): void
@@ -108,8 +108,8 @@ class ContentDimensionRepositoryTest extends BaseTestCase
 
         $contentRichEntity = $this->createContentRichEntity();
         // First create the dimension 2 to test if its still the last dimension
-        $contentDimension2 = $this->createContentDimension($contentRichEntity, $dimension2);
-        $contentDimension1 = $this->createContentDimension($contentRichEntity, $dimension1);
+        $dimensionContent2 = $this->createContentDimension($contentRichEntity, $dimension2);
+        $dimensionContent1 = $this->createContentDimension($contentRichEntity, $dimension1);
 
         $dimensionCollection = new DimensionCollection($attributes, [
             $dimension1,
@@ -119,17 +119,17 @@ class ContentDimensionRepositoryTest extends BaseTestCase
         $this->getEntityManager()->flush();
         $this->getEntityManager()->clear();
 
-        $contentDimensionRepository = $this->createContentDimensionRepository();
-        $contentDimensionCollection = $contentDimensionRepository->load($contentRichEntity, $dimensionCollection);
+        $dimensionContentRepository = $this->createContentDimensionRepository();
+        $dimensionContentCollection = $dimensionContentRepository->load($contentRichEntity, $dimensionCollection);
 
-        $this->assertCount(2, $contentDimensionCollection);
+        $this->assertCount(2, $dimensionContentCollection);
 
         $this->assertSame([
-            $contentDimension1->getId(),
-            $contentDimension2->getId(), // Dimension 2 should be the last one in this case
-        ], array_map(function (ContentDimensionInterface $contentDimension) {
-            return $contentDimension->getId();
-        }, iterator_to_array($contentDimensionCollection)));
+            $dimensionContent1->getId(),
+            $dimensionContent2->getId(), // Dimension 2 should be the last one in this case
+        ], array_map(function (DimensionContentInterface $dimensionContent) {
+            return $dimensionContent->getId();
+        }, iterator_to_array($dimensionContentCollection)));
     }
 
     /**

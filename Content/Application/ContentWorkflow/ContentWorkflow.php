@@ -20,7 +20,7 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ViewFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Repository\ContentDimensionRepositoryInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionContentRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionRepositoryInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -42,9 +42,9 @@ class ContentWorkflow implements ContentWorkflowInterface
     private $dimensionRepository;
 
     /**
-     * @var ContentDimensionRepositoryInterface
+     * @var DimensionContentRepositoryInterface
      */
-    private $contentDimensionRepository;
+    private $dimensionContentRepository;
 
     /**
      * @var ViewFactoryInterface
@@ -63,13 +63,13 @@ class ContentWorkflow implements ContentWorkflowInterface
 
     public function __construct(
         DimensionRepositoryInterface $dimensionRepository,
-        ContentDimensionRepositoryInterface $contentDimensionRepository,
+        DimensionContentRepositoryInterface $dimensionContentRepository,
         ViewFactoryInterface $viewFactory,
         ?Registry $workflowRegistry = null,
         ?EventDispatcherInterface $eventDispatcher = null
     ) {
         $this->dimensionRepository = $dimensionRepository;
-        $this->contentDimensionRepository = $contentDimensionRepository;
+        $this->dimensionContentRepository = $dimensionContentRepository;
         $this->viewFactory = $viewFactory;
         $this->eventDispatcher = $eventDispatcher ?: new EventDispatcher();
         // TODO get workflow from outside
@@ -91,27 +91,27 @@ class ContentWorkflow implements ContentWorkflowInterface
             throw new ContentNotFoundException($contentRichEntity, $dimensionAttributes);
         }
 
-        $contentDimensionCollection = $this->contentDimensionRepository->load($contentRichEntity, $dimensionCollection);
+        $dimensionContentCollection = $this->dimensionContentRepository->load($contentRichEntity, $dimensionCollection);
 
-        $localizedContentDimension = $contentDimensionCollection->getLocalizedContentDimension();
+        $localizedDimensionContent = $dimensionContentCollection->getLocalizedDimensionContent();
 
-        if (!$localizedContentDimension) {
+        if (!$localizedDimensionContent) {
             throw new ContentNotFoundException($contentRichEntity, $dimensionAttributes);
         }
 
-        if (!$localizedContentDimension instanceof WorkflowInterface) {
-            throw new \RuntimeException(sprintf('Expected "%s" but "%s" given.', WorkflowInterface::class, \get_class($localizedContentDimension)));
+        if (!$localizedDimensionContent instanceof WorkflowInterface) {
+            throw new \RuntimeException(sprintf('Expected "%s" but "%s" given.', WorkflowInterface::class, \get_class($localizedDimensionContent)));
         }
 
         $workflow = $this->workflowRegistry->get(
-            $localizedContentDimension,
-            $localizedContentDimension->getWorkflowName()
+            $localizedDimensionContent,
+            $localizedDimensionContent->getWorkflowName()
         );
 
         try {
-            $workflow->apply($localizedContentDimension, $transitionName, [
+            $workflow->apply($localizedDimensionContent, $transitionName, [
                 'contentRichEntity' => $contentRichEntity,
-                'contentDimensionCollection' => $contentDimensionCollection,
+                'dimensionContentCollection' => $dimensionContentCollection,
                 'dimensionAttributes' => $dimensionAttributes,
             ]);
         } catch (UndefinedTransitionException $e) {
@@ -120,7 +120,7 @@ class ContentWorkflow implements ContentWorkflowInterface
             throw new ContentInvalidTransitionException($e->getMessage(), $e->getCode(), $e);
         }
 
-        return $this->viewFactory->create($contentDimensionCollection);
+        return $this->viewFactory->create($dimensionContentCollection);
     }
 
     private function getWorkflow(): SymfonyWorkflowInterface

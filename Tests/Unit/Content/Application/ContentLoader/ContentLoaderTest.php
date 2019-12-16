@@ -18,26 +18,26 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentLoader\ContentLoader;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentLoader\ContentLoaderInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ViewFactoryInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionCollection;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollection;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollection;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Repository\ContentDimensionRepositoryInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionContentRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionRepositoryInterface;
 
 class ContentLoaderTest extends TestCase
 {
     protected function createContentLoaderInstance(
         DimensionRepositoryInterface $dimensionRepository,
-        ContentDimensionRepositoryInterface $contentDimensionRepository,
+        DimensionContentRepositoryInterface $dimensionContentRepository,
         ViewFactoryInterface $viewFactory
     ): ContentLoaderInterface {
         return new ContentLoader(
             $dimensionRepository,
-            $contentDimensionRepository,
+            $dimensionContentRepository,
             $viewFactory
         );
     }
@@ -49,10 +49,10 @@ class ContentLoaderTest extends TestCase
         $dimension2 = $this->prophesize(DimensionInterface::class);
         $dimension2->getId()->willReturn('456-789');
 
-        $contentDimension1 = $this->prophesize(ContentDimensionInterface::class);
-        $contentDimension1->getDimension()->willReturn($dimension1->reveal());
-        $contentDimension2 = $this->prophesize(ContentDimensionInterface::class);
-        $contentDimension2->getDimension()->willReturn($dimension2->reveal());
+        $dimensionContent1 = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent1->getDimension()->willReturn($dimension1->reveal());
+        $dimensionContent2 = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent2->getDimension()->willReturn($dimension2->reveal());
 
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
 
@@ -67,20 +67,20 @@ class ContentLoaderTest extends TestCase
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
         $dimensionRepository->findByAttributes($attributes)->willReturn($dimensionCollection)->shouldBeCalled();
 
-        $contentDimensionCollection = new ContentDimensionCollection([
-            $contentDimension1->reveal(),
-            $contentDimension2->reveal(),
+        $dimensionContentCollection = new DimensionContentCollection([
+            $dimensionContent1->reveal(),
+            $dimensionContent2->reveal(),
         ], new DimensionCollection($attributes, [$dimension1, $dimension2]));
 
-        $contentDimensionRepository = $this->prophesize(ContentDimensionRepositoryInterface::class);
-        $contentDimensionRepository->load($contentRichEntity->reveal(), $dimensionCollection)->willReturn($contentDimensionCollection);
+        $dimensionContentRepository = $this->prophesize(DimensionContentRepositoryInterface::class);
+        $dimensionContentRepository->load($contentRichEntity->reveal(), $dimensionCollection)->willReturn($dimensionContentCollection);
         $contentView = $this->prophesize(ContentViewInterface::class);
         $viewFactory = $this->prophesize(ViewFactoryInterface::class);
-        $viewFactory->create($contentDimensionCollection)->willReturn($contentView->reveal())->shouldBeCalled();
+        $viewFactory->create($dimensionContentCollection)->willReturn($contentView->reveal())->shouldBeCalled();
 
         $createContentMessageHandler = $this->createContentLoaderInstance(
             $dimensionRepository->reveal(),
-            $contentDimensionRepository->reveal(),
+            $dimensionContentRepository->reveal(),
             $viewFactory->reveal()
         );
 
@@ -102,13 +102,13 @@ class ContentLoaderTest extends TestCase
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
         $dimensionRepository->findByAttributes($attributes)->willReturn($dimensionCollection)->shouldBeCalled();
 
-        $contentDimensionRepository = $this->prophesize(ContentDimensionRepositoryInterface::class);
+        $dimensionContentRepository = $this->prophesize(DimensionContentRepositoryInterface::class);
         $contentView = $this->prophesize(ContentViewInterface::class);
         $viewFactory = $this->prophesize(ViewFactoryInterface::class);
 
         $createContentMessageHandler = $this->createContentLoaderInstance(
             $dimensionRepository->reveal(),
-            $contentDimensionRepository->reveal(),
+            $dimensionContentRepository->reveal(),
             $viewFactory->reveal()
         );
 
@@ -137,20 +137,20 @@ class ContentLoaderTest extends TestCase
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
         $dimensionRepository->findByAttributes($attributes)->willReturn($dimensionCollection)->shouldBeCalled();
 
-        $contentDimensionCollection = new ContentDimensionCollection(
+        $dimensionContentCollection = new DimensionContentCollection(
             [],
             new DimensionCollection($attributes, [$dimension1, $dimension2])
         );
 
-        $contentDimensionRepository = $this->prophesize(ContentDimensionRepositoryInterface::class);
-        $contentDimensionRepository->load($contentRichEntity->reveal(), $dimensionCollection)->willReturn($contentDimensionCollection);
+        $dimensionContentRepository = $this->prophesize(DimensionContentRepositoryInterface::class);
+        $dimensionContentRepository->load($contentRichEntity->reveal(), $dimensionCollection)->willReturn($dimensionContentCollection);
         $contentView = $this->prophesize(ContentViewInterface::class);
         $viewFactory = $this->prophesize(ViewFactoryInterface::class);
-        $viewFactory->create($contentDimensionCollection)->willReturn($contentView->reveal())->shouldNotBeCalled();
+        $viewFactory->create($dimensionContentCollection)->willReturn($contentView->reveal())->shouldNotBeCalled();
 
         $createContentMessageHandler = $this->createContentLoaderInstance(
             $dimensionRepository->reveal(),
-            $contentDimensionRepository->reveal(),
+            $dimensionContentRepository->reveal(),
             $viewFactory->reveal()
         );
 

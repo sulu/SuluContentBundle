@@ -38,19 +38,19 @@
         </service>
 
         <!-- Content Dimension Factory -->
-        <service id="sulu_content.content_dimension_factory" class="Sulu\Bundle\ContentBundle\Content\Application\ContentDimensionFactory\ContentDimensionCollectionFactory">
-            <argument type="service" id="sulu_content.content_dimension_repository"/>
+        <service id="sulu_content.dimension_content_collection_factory" class="Sulu\Bundle\ContentBundle\Content\Application\DimensionContentFactory\DimensionContentCollectionFactory">
+            <argument type="service" id="sulu_content.dimension_content_repository"/>
             <argument type="tagged" tag="sulu_content.content_dimension_mapper"/>
         </service>
 
-        <service id="Sulu\Bundle\ContentBundle\Content\Domain\Factory\ContentDimensionCollectionFactoryInterface" alias="sulu_content.content_dimension_factory"/>
+        <service id="Sulu\Bundle\ContentBundle\Content\Domain\Factory\DimensionContentCollectionFactoryInterface" alias="sulu_content.dimension_content_collection_factory"/>
 
         <!-- Content Dimension Loader -->
-        <service id="sulu_content.content_dimension_repository" class="Sulu\Bundle\ContentBundle\Content\Infrastructure\Doctrine\ContentDimensionRepository">
+        <service id="sulu_content.dimension_content_repository" class="Sulu\Bundle\ContentBundle\Content\Infrastructure\Doctrine\DimensionContentRepository">
             <argument type="service" id="doctrine.orm.entity_manager"/>
         </service>
 
-        <service id="Sulu\Bundle\ContentBundle\Content\Domain\Repository\ContentDimensionRepositoryInterface" alias="sulu_content.content_dimension_repository"/>
+        <service id="Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionContentRepositoryInterface" alias="sulu_content.dimension_content_repository"/>
 
         <!-- Route Defaults Provider -->
         <service id="sulu_content.route_defaults_provider" class="Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Route\ContentRouteDefaultsProvider">
@@ -66,7 +66,7 @@
         <!-- Content Persister -->
         <service id="sulu_content.content_persister" class="Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersister">
             <argument type="service" id="sulu_content.dimension_collection_factory"/>
-            <argument type="service" id="sulu_content.content_dimension_factory"/>
+            <argument type="service" id="sulu_content.dimension_content_collection_factory"/>
             <argument type="service" id="sulu_content.view_factory"/>
         </service>
 
@@ -75,7 +75,7 @@
         <!-- Content Loader -->
         <service id="sulu_content.content_loader" class="Sulu\Bundle\ContentBundle\Content\Application\ContentLoader\ContentLoader">
             <argument type="service" id="sulu.repository.dimension"/>
-            <argument type="service" id="sulu_content.content_dimension_repository"/>
+            <argument type="service" id="sulu_content.dimension_content_repository"/>
             <argument type="service" id="sulu_content.view_factory"/>
         </service>
 
@@ -101,7 +101,7 @@
         <!-- Content Workflow -->
         <service id="sulu_content.content_workflow" class="Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\ContentWorkflow">
             <argument type="service" id="sulu.repository.dimension"/>
-            <argument type="service" id="sulu_content.content_dimension_repository"/>
+            <argument type="service" id="sulu_content.dimension_content_repository"/>
             <argument type="service" id="sulu_content.view_factory"/>
             <argument type="service" id="workflow.registry" on-invalid="null"/>
             <argument type="service" id="event_dispatcher"/>

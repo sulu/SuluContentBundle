@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Domain\Model;
 
-interface ContentDimensionInterface
+interface DimensionContentInterface
 {
     /**
      * @return mixed

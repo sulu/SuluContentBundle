@@ -15,9 +15,9 @@ namespace Sulu\Bundle\ContentBundle\Content\Application\ViewFactory;
 
 use Sulu\Bundle\ContentBundle\Content\Application\ViewFactory\Merger\MergerInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ViewFactoryInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionCollectionInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 
 class ViewFactory implements ViewFactoryInterface
 {
@@ -34,22 +34,22 @@ class ViewFactory implements ViewFactoryInterface
         $this->mergers = $mergers;
     }
 
-    public function create(ContentDimensionCollectionInterface $contentDimensionCollection): ContentViewInterface
+    public function create(DimensionContentCollectionInterface $dimensionContentCollection): ContentViewInterface
     {
-        if (!$contentDimensionCollection->count()) {
-            throw new \RuntimeException('Expected at least one contentDimension given.');
+        if (!$dimensionContentCollection->count()) {
+            throw new \RuntimeException('Expected at least one dimensionContent given.');
         }
 
-        /** @var ContentDimensionInterface[] $contentDimensionCollectionArray */
-        $contentDimensionCollectionArray = iterator_to_array($contentDimensionCollection);
-        $lastKey = \count($contentDimensionCollectionArray) - 1;
+        /** @var DimensionContentInterface[] $dimensionContentCollectionArray */
+        $dimensionContentCollectionArray = iterator_to_array($dimensionContentCollection);
+        $lastKey = \count($dimensionContentCollectionArray) - 1;
 
-        $contentView = $contentDimensionCollectionArray[$lastKey]->createViewInstance();
+        $contentView = $dimensionContentCollectionArray[$lastKey]->createViewInstance();
 
-        foreach ($contentDimensionCollection as $contentDimension) {
+        foreach ($dimensionContentCollection as $dimensionContent) {
             /** @var MergerInterface $merger */
             foreach ($this->mergers as $merger) {
-                $merger->merge($contentView, $contentDimension);
+                $merger->merge($contentView, $dimensionContent);
             }
         }
 

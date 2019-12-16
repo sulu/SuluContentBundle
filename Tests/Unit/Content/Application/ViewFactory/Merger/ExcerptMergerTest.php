@@ -18,8 +18,8 @@ use Prophecy\Argument;
 use Sulu\Bundle\CategoryBundle\Entity\CategoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ViewFactory\Merger\ExcerptMerger;
 use Sulu\Bundle\ContentBundle\Content\Application\ViewFactory\Merger\MergerInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 use Sulu\Bundle\TagBundle\Tag\TagInterface;
 
@@ -34,26 +34,26 @@ class ExcerptMergerTest extends TestCase
     {
         $merger = $this->getExcerptMergerInstance();
 
-        $contentDimension = $this->prophesize(ContentDimensionInterface::class);
+        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
 
         $contentView = $this->prophesize(ContentViewInterface::class);
         $contentView->willImplement(ExcerptInterface::class);
         $contentView->setExcerptTitle(Argument::any())->shouldNotBeCalled();
 
-        $merger->merge($contentView->reveal(), $contentDimension->reveal());
+        $merger->merge($contentView->reveal(), $dimensionContent->reveal());
     }
 
     public function testMergeViewNotImplementExcerptInterface(): void
     {
         $merger = $this->getExcerptMergerInstance();
 
-        $contentDimension = $this->prophesize(ContentDimensionInterface::class);
-        $contentDimension->willImplement(ExcerptInterface::class);
-        $contentDimension->getExcerptTitle(Argument::any())->shouldNotBeCalled();
+        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent->willImplement(ExcerptInterface::class);
+        $dimensionContent->getExcerptTitle(Argument::any())->shouldNotBeCalled();
 
         $contentView = $this->prophesize(ContentViewInterface::class);
 
-        $merger->merge($contentView->reveal(), $contentDimension->reveal());
+        $merger->merge($contentView->reveal(), $dimensionContent->reveal());
     }
 
     public function testMergeSet(): void
@@ -70,15 +70,15 @@ class ExcerptMergerTest extends TestCase
         $category2 = $this->prophesize(CategoryInterface::class);
         $category2->getId()->willReturn(4);
 
-        $contentDimension = $this->prophesize(ContentDimensionInterface::class);
-        $contentDimension->willImplement(ExcerptInterface::class);
-        $contentDimension->getExcerptTitle()->willReturn('Excerpt Title')->shouldBeCalled();
-        $contentDimension->getExcerptDescription()->willReturn('Excerpt Description')->shouldBeCalled();
-        $contentDimension->getExcerptMore()->willReturn('Excerpt More')->shouldBeCalled();
-        $contentDimension->getExcerptTags()->willReturn([$tag1->reveal(), $tag2->reveal()])->shouldBeCalled();
-        $contentDimension->getExcerptCategories()->willReturn([$category1->reveal(), $category2->reveal()])->shouldBeCalled();
-        $contentDimension->getExcerptImage()->willReturn(['id' => 8])->shouldBeCalled();
-        $contentDimension->getExcerptIcon()->willReturn(['id' => 9])->shouldBeCalled();
+        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent->willImplement(ExcerptInterface::class);
+        $dimensionContent->getExcerptTitle()->willReturn('Excerpt Title')->shouldBeCalled();
+        $dimensionContent->getExcerptDescription()->willReturn('Excerpt Description')->shouldBeCalled();
+        $dimensionContent->getExcerptMore()->willReturn('Excerpt More')->shouldBeCalled();
+        $dimensionContent->getExcerptTags()->willReturn([$tag1->reveal(), $tag2->reveal()])->shouldBeCalled();
+        $dimensionContent->getExcerptCategories()->willReturn([$category1->reveal(), $category2->reveal()])->shouldBeCalled();
+        $dimensionContent->getExcerptImage()->willReturn(['id' => 8])->shouldBeCalled();
+        $dimensionContent->getExcerptIcon()->willReturn(['id' => 9])->shouldBeCalled();
 
         $contentView = $this->prophesize(ContentViewInterface::class);
         $contentView->willImplement(ExcerptInterface::class);
@@ -98,22 +98,22 @@ class ExcerptMergerTest extends TestCase
         $contentView->setExcerptImage(['id' => 8])->shouldBeCalled();
         $contentView->setExcerptIcon(['id' => 9])->shouldBeCalled();
 
-        $merger->merge($contentView->reveal(), $contentDimension->reveal());
+        $merger->merge($contentView->reveal(), $dimensionContent->reveal());
     }
 
     public function testMergeNotSet(): void
     {
         $merger = $this->getExcerptMergerInstance();
 
-        $contentDimension = $this->prophesize(ContentDimensionInterface::class);
-        $contentDimension->willImplement(ExcerptInterface::class);
-        $contentDimension->getExcerptTitle()->willReturn(null)->shouldBeCalled();
-        $contentDimension->getExcerptDescription()->willReturn(null)->shouldBeCalled();
-        $contentDimension->getExcerptMore()->willReturn(null)->shouldBeCalled();
-        $contentDimension->getExcerptTags()->willReturn([])->shouldBeCalled();
-        $contentDimension->getExcerptCategories()->willReturn([])->shouldBeCalled();
-        $contentDimension->getExcerptImage()->willReturn(null)->shouldBeCalled();
-        $contentDimension->getExcerptIcon()->willReturn(null)->shouldBeCalled();
+        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent->willImplement(ExcerptInterface::class);
+        $dimensionContent->getExcerptTitle()->willReturn(null)->shouldBeCalled();
+        $dimensionContent->getExcerptDescription()->willReturn(null)->shouldBeCalled();
+        $dimensionContent->getExcerptMore()->willReturn(null)->shouldBeCalled();
+        $dimensionContent->getExcerptTags()->willReturn([])->shouldBeCalled();
+        $dimensionContent->getExcerptCategories()->willReturn([])->shouldBeCalled();
+        $dimensionContent->getExcerptImage()->willReturn(null)->shouldBeCalled();
+        $dimensionContent->getExcerptIcon()->willReturn(null)->shouldBeCalled();
 
         $contentView = $this->prophesize(ContentViewInterface::class);
         $contentView->willImplement(ExcerptInterface::class);
@@ -125,6 +125,6 @@ class ExcerptMergerTest extends TestCase
         $contentView->setExcerptImage(Argument::any())->shouldNotBeCalled();
         $contentView->setExcerptIcon(Argument::any())->shouldNotBeCalled();
 
-        $merger->merge($contentView->reveal(), $contentDimension->reveal());
+        $merger->merge($contentView->reveal(), $dimensionContent->reveal());
     }
 }

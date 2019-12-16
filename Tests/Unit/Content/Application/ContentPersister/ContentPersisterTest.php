@@ -16,28 +16,28 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentPersis
 use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersister;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersisterInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ContentDimensionCollectionFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\DimensionCollectionFactoryInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Factory\DimensionContentCollectionFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ViewFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\AbstractContentRichEntity;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionCollection;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollection;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollection;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 
 class ContentPersisterTest extends TestCase
 {
     protected function createContentPersisterInstance(
         DimensionCollectionFactoryInterface $dimensionCollectionFactory,
-        ContentDimensionCollectionFactoryInterface $contentDimensionCollectionFactory,
+        DimensionContentCollectionFactoryInterface $dimensionContentCollectionFactory,
         ViewFactoryInterface $viewFactory
     ): ContentPersisterInterface {
         return new ContentPersister(
             $dimensionCollectionFactory,
-            $contentDimensionCollectionFactory,
+            $dimensionContentCollectionFactory,
             $viewFactory
         );
     }
@@ -50,7 +50,7 @@ class ContentPersisterTest extends TestCase
                 return 'example';
             }
 
-            public function createDimension(DimensionInterface $dimension): ContentDimensionInterface
+            public function createDimensionContent(DimensionInterface $dimension): DimensionContentInterface
             {
                 throw new \RuntimeException('Should not be called in a unit test.');
             }
@@ -79,27 +79,27 @@ class ContentPersisterTest extends TestCase
         $dimensionCollectionFactory = $this->prophesize(DimensionCollectionFactoryInterface::class);
         $dimensionCollectionFactory->create($attributes)->willReturn($dimensionCollection)->shouldBeCalled();
 
-        $contentDimension1 = $this->prophesize(ContentDimensionInterface::class);
-        $contentDimension1->getDimension()->willReturn($dimension1);
-        $contentDimension2 = $this->prophesize(ContentDimensionInterface::class);
-        $contentDimension2->getDimension()->willReturn($dimension2);
-        $contentDimensionCollection = new ContentDimensionCollection([
-            $contentDimension1->reveal(),
-            $contentDimension2->reveal(),
+        $dimensionContent1 = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent1->getDimension()->willReturn($dimension1);
+        $dimensionContent2 = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent2->getDimension()->willReturn($dimension2);
+        $dimensionContentCollection = new DimensionContentCollection([
+            $dimensionContent1->reveal(),
+            $dimensionContent2->reveal(),
         ], $dimensionCollection);
 
-        $contentDimensionCollectionFactory = $this->prophesize(ContentDimensionCollectionFactoryInterface::class);
-        $contentDimensionCollectionFactory->create($contentRichEntity, $dimensionCollection, $data)
-            ->willReturn($contentDimensionCollection)
+        $dimensionContentCollectionFactory = $this->prophesize(DimensionContentCollectionFactoryInterface::class);
+        $dimensionContentCollectionFactory->create($contentRichEntity, $dimensionCollection, $data)
+            ->willReturn($dimensionContentCollection)
             ->shouldBeCalled();
 
         $contentView = $this->prophesize(ContentViewInterface::class);
         $viewFactory = $this->prophesize(ViewFactoryInterface::class);
-        $viewFactory->create($contentDimensionCollection)->willReturn($contentView->reveal())->shouldBeCalled();
+        $viewFactory->create($dimensionContentCollection)->willReturn($contentView->reveal())->shouldBeCalled();
 
         $createContentMessageHandler = $this->createContentPersisterInstance(
             $dimensionCollectionFactory->reveal(),
-            $contentDimensionCollectionFactory->reveal(),
+            $dimensionContentCollectionFactory->reveal(),
             $viewFactory->reveal()
         );
 

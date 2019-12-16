@@ -20,9 +20,9 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentLoader\ContentLoaderInt
 use Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersisterInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\ApiViewResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ViewFactoryInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionCollectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
 
 class ContentCopierTest extends TestCase
 {
@@ -85,12 +85,12 @@ class ContentCopierTest extends TestCase
         );
     }
 
-    public function testCopyFromContentDimensionCollection(): void
+    public function testCopyFromDimensionContentCollection(): void
     {
         $sourceContentView = $this->prophesize(ContentViewInterface::class);
         $targetContentView = $this->prophesize(ContentViewInterface::class);
 
-        $sourceContentDimensionCollection = $this->prophesize(ContentDimensionCollectionInterface::class);
+        $sourceContentDimensionCollection = $this->prophesize(DimensionContentCollectionInterface::class);
         $targetContentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
         $targetDimensionAttributes = ['locale' => 'de'];
 
@@ -120,7 +120,7 @@ class ContentCopierTest extends TestCase
 
         $this->assertSame(
             $targetContentView->reveal(),
-            $contentCopier->copyFromContentDimensionCollection(
+            $contentCopier->copyFromDimensionContentCollection(
                 $sourceContentDimensionCollection->reveal(),
                 $targetContentRichEntity->reveal(),
                 $targetDimensionAttributes

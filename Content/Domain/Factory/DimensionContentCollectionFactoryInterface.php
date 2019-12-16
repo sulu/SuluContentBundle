@@ -11,16 +11,20 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Content\Domain\Repository;
+namespace Sulu\Bundle\ContentBundle\Content\Domain\Factory;
 
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionCollectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollectionInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
 
-interface ContentDimensionRepositoryInterface
+interface DimensionContentCollectionFactoryInterface
 {
-    public function load(
+    /**
+     * @param array<string, mixed> $data
+     */
+    public function create(
         ContentRichEntityInterface $contentRichEntity,
-        DimensionCollectionInterface $dimensionCollection
-    ): ContentDimensionCollectionInterface;
+        DimensionCollectionInterface $dimensionCollection,
+        array $data
+    ): DimensionContentCollectionInterface;
 }

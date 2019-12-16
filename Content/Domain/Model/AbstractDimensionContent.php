@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Domain\Model;
 
-abstract class AbstractContentDimension implements ContentDimensionInterface
+abstract class AbstractDimensionContent implements DimensionContentInterface
 {
-    use ContentDimensionTrait;
+    use DimensionContentTrait;
 }

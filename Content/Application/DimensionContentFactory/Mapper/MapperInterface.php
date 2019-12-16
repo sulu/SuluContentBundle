@@ -11,7 +11,7 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Content\Application\ContentDimensionFactory\Mapper;
+namespace Sulu\Bundle\ContentBundle\Content\Application\DimensionContentFactory\Mapper;
 
 interface MapperInterface
 {
@@ -20,7 +20,7 @@ interface MapperInterface
      */
     public function map(
         array $data,
-        object $contentDimension,
-        ?object $localizedContentDimension = null
+        object $dimensionContent,
+        ?object $localizedDimensionContent = null
     ): void;
 }
