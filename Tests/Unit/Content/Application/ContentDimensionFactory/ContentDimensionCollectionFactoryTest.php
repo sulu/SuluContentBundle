@@ -19,7 +19,7 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentDimensionFactory\Conten
 use Sulu\Bundle\ContentBundle\Content\Application\ContentDimensionFactory\Mapper\MapperInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionCollection;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollection;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
@@ -60,7 +60,7 @@ class ContentDimensionCollectionFactoryTest extends TestCase
         $contentDimension2 = $this->prophesize(ContentDimensionInterface::class);
         $contentDimension2->getDimension()->willReturn($dimension2);
 
-        $content = $this->prophesize(ContentInterface::class);
+        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
 
         $attributes = [
             'locale' => 'de',
@@ -86,7 +86,7 @@ class ContentDimensionCollectionFactoryTest extends TestCase
             []
         );
         $contentDimensionCollection = $contentDimensionCollectionFactoryInstance->create(
-            $content->reveal(),
+            $contentRichEntity->reveal(),
             $dimensionCollection,
             $data
         );
@@ -110,7 +110,7 @@ class ContentDimensionCollectionFactoryTest extends TestCase
         $contentDimension2 = $this->prophesize(ContentDimensionInterface::class);
         $contentDimension2->getDimension()->willReturn($dimension2);
 
-        $content = $this->prophesize(ContentInterface::class);
+        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
 
         $attributes = [
             'locale' => 'de',
@@ -137,7 +137,7 @@ class ContentDimensionCollectionFactoryTest extends TestCase
             []
         );
         $contentDimensionCollectionFactoryInstance->create(
-            $content->reveal(),
+            $contentRichEntity->reveal(),
             $dimensionCollection,
             $data
         );
@@ -153,9 +153,9 @@ class ContentDimensionCollectionFactoryTest extends TestCase
         $contentDimension2 = $this->prophesize(ContentDimensionInterface::class);
         $contentDimension2->getDimension()->willReturn($dimension2);
 
-        $content = $this->prophesize(ContentInterface::class);
-        $content->createDimension($dimension2)->shouldBeCalled()->willReturn($contentDimension2->reveal());
-        $content->addDimension($contentDimension2->reveal())->shouldBeCalled();
+        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
+        $contentRichEntity->createDimension($dimension2)->shouldBeCalled()->willReturn($contentDimension2->reveal());
+        $contentRichEntity->addDimension($contentDimension2->reveal())->shouldBeCalled();
 
         $attributes = [
             'locale' => 'de',
@@ -183,7 +183,7 @@ class ContentDimensionCollectionFactoryTest extends TestCase
         );
 
         $contentDimensionCollection = $contentDimensionCollectionFactoryInstance->create(
-            $content->reveal(),
+            $contentRichEntity->reveal(),
             $dimensionCollection,
             $data
         );
@@ -206,7 +206,7 @@ class ContentDimensionCollectionFactoryTest extends TestCase
         $contentDimension2 = $this->prophesize(ContentDimensionInterface::class);
         $contentDimension2->getDimension()->willReturn($dimension2);
 
-        $content = $this->prophesize(ContentInterface::class);
+        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
 
         $attributes = [
             'locale' => 'de',
@@ -241,7 +241,7 @@ class ContentDimensionCollectionFactoryTest extends TestCase
         );
 
         $contentDimensionCollection = $contentDimensionCollectionFactoryInstance->create(
-            $content->reveal(),
+            $contentRichEntity->reveal(),
             $dimensionCollection,
             $data
         );

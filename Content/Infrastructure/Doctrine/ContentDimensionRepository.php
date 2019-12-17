@@ -17,7 +17,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionCollection;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionCollectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Repository\ContentDimensionRepositoryInterface;
 
@@ -34,10 +34,10 @@ class ContentDimensionRepository implements ContentDimensionRepositoryInterface
     }
 
     public function load(
-        ContentInterface $content,
+        ContentRichEntityInterface $contentRichEntity,
         DimensionCollectionInterface $dimensionCollection
     ): ContentDimensionCollectionInterface {
-        $classMetadata = $this->entityManager->getClassMetadata(\get_class($content));
+        $classMetadata = $this->entityManager->getClassMetadata(\get_class($contentRichEntity));
         $associationMapping = $classMetadata->getAssociationMapping('dimensions');
         $contentDimensionClass = $associationMapping['targetEntity'];
 
@@ -48,7 +48,7 @@ class ContentDimensionRepository implements ContentDimensionRepositoryInterface
             ->innerJoin('contentDimension.dimension', 'dimension')
             ->innerJoin('contentDimension.' . $associationMapping['mappedBy'], 'content')
             ->where('content.id = :id')
-            ->setParameter('id', $content->getId());
+            ->setParameter('id', $contentRichEntity->getId());
 
         $dimensionIds = $dimensionCollection->getDimensionIds();
 

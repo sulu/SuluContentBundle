@@ -17,7 +17,7 @@ use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\ApiViewResolverIn
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ContentDimensionCollectionFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\DimensionCollectionFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ViewFactoryInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
 
 class ContentPersister implements ContentPersisterInterface
@@ -52,11 +52,11 @@ class ContentPersister implements ContentPersisterInterface
         $this->viewFactory = $viewFactory;
     }
 
-    public function persist(ContentInterface $content, array $data, array $dimensionAttributes): ContentViewInterface
+    public function persist(ContentRichEntityInterface $contentRichEntity, array $data, array $dimensionAttributes): ContentViewInterface
     {
         $dimensionCollection = $this->dimensionCollectionFactory->create($dimensionAttributes);
         $contentDimensionCollection = $this->contentDimensionCollectionFactory->create(
-            $content,
+            $contentRichEntity,
             $dimensionCollection,
             $data
         );

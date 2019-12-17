@@ -23,7 +23,7 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ViewFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionCollection;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollection;
@@ -59,7 +59,7 @@ class ContentWorkflowTest extends TestCase
             $viewFactory->reveal()
         );
 
-        $content = $this->prophesize(ContentInterface::class);
+        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
         $dimensionAttributes = ['locale' => 'de', 'stage' => 'draft'];
         $transitionName = 'request_for_review';
 
@@ -88,12 +88,12 @@ class ContentWorkflowTest extends TestCase
             $contentDimension2->reveal(),
         ], $dimensionCollection);
 
-        $contentDimensionRepository->load($content->reveal(), $dimensionCollection)
+        $contentDimensionRepository->load($contentRichEntity->reveal(), $dimensionCollection)
             ->willReturn($contentDimensionCollection)
             ->shouldBeCalled();
 
         $contentWorkflow->apply(
-            $content->reveal(),
+            $contentRichEntity->reveal(),
             $dimensionAttributes,
             $transitionName
         );
@@ -113,7 +113,7 @@ class ContentWorkflowTest extends TestCase
             $viewFactory->reveal()
         );
 
-        $content = $this->prophesize(ContentInterface::class);
+        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
         $dimensionAttributes = ['locale' => 'de', 'stage' => 'draft'];
         $transitionName = 'request_for_review';
 
@@ -133,12 +133,12 @@ class ContentWorkflowTest extends TestCase
             $contentDimension1->reveal(),
         ], $dimensionCollection);
 
-        $contentDimensionRepository->load($content->reveal(), $dimensionCollection)
+        $contentDimensionRepository->load($contentRichEntity->reveal(), $dimensionCollection)
             ->willReturn($contentDimensionCollection)
             ->shouldBeCalled();
 
         $contentWorkflow->apply(
-            $content->reveal(),
+            $contentRichEntity->reveal(),
             $dimensionAttributes,
             $transitionName
         );
@@ -158,7 +158,7 @@ class ContentWorkflowTest extends TestCase
             $viewFactory->reveal()
         );
 
-        $content = $this->prophesize(ContentInterface::class);
+        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
         $dimensionAttributes = ['locale' => 'de', 'stage' => 'draft'];
         $transitionName = 'request_for_review';
 
@@ -169,7 +169,7 @@ class ContentWorkflowTest extends TestCase
             ->shouldBeCalled();
 
         $contentWorkflow->apply(
-            $content->reveal(),
+            $contentRichEntity->reveal(),
             $dimensionAttributes,
             $transitionName
         );
@@ -192,7 +192,7 @@ class ContentWorkflowTest extends TestCase
             $viewFactory->reveal()
         );
 
-        $content = $this->prophesize(ContentInterface::class);
+        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
         $dimensionAttributes = ['locale' => 'de', 'stage' => 'draft'];
 
         $dimension1 = new Dimension('123-456', []);
@@ -224,12 +224,12 @@ class ContentWorkflowTest extends TestCase
             $contentDimension2->reveal(),
         ], $dimensionCollection);
 
-        $contentDimensionRepository->load($content->reveal(), $dimensionCollection)
+        $contentDimensionRepository->load($contentRichEntity->reveal(), $dimensionCollection)
             ->willReturn($contentDimensionCollection)
             ->shouldBeCalled();
 
         $contentWorkflow->apply(
-            $content->reveal(),
+            $contentRichEntity->reveal(),
             $dimensionAttributes,
             'not-exist-transition'
         );
@@ -257,7 +257,7 @@ class ContentWorkflowTest extends TestCase
             $viewFactory->reveal()
         );
 
-        $content = $this->prophesize(ContentInterface::class);
+        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
         $dimensionAttributes = ['locale' => 'de', 'stage' => 'draft'];
 
         $dimension1 = new Dimension('123-456', []);
@@ -294,7 +294,7 @@ class ContentWorkflowTest extends TestCase
             $contentDimension2->reveal(),
         ], $dimensionCollection);
 
-        $contentDimensionRepository->load($content->reveal(), $dimensionCollection)
+        $contentDimensionRepository->load($contentRichEntity->reveal(), $dimensionCollection)
             ->willReturn($contentDimensionCollection)
             ->shouldBeCalled();
 
@@ -307,7 +307,7 @@ class ContentWorkflowTest extends TestCase
         $this->assertSame(
             $isTransitionAllowed ? $contentView->reveal() : null,
             $contentWorkflow->apply(
-                $content->reveal(),
+                $contentRichEntity->reveal(),
                 $dimensionAttributes,
                 $transitionName
             )

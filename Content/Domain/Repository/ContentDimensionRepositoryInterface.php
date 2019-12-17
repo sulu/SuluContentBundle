@@ -14,13 +14,13 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Content\Domain\Repository;
 
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionCollectionInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollectionInterface;
 
 interface ContentDimensionRepositoryInterface
 {
     public function load(
-        ContentInterface $content,
+        ContentRichEntityInterface $contentRichEntity,
         DimensionCollectionInterface $dimensionCollection
     ): ContentDimensionCollectionInterface;
 }

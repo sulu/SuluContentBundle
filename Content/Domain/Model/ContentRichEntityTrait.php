@@ -16,7 +16,7 @@ namespace Sulu\Bundle\ContentBundle\Content\Domain\Model;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
-trait ContentTrait
+trait ContentRichEntityTrait
 {
     /**
      * @var ContentDimensionInterface[]|ArrayCollection

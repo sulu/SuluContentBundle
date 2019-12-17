@@ -15,7 +15,7 @@ namespace Sulu\Bundle\ContentBundle\Content\Domain\Model;
 
 use Doctrine\Common\Collections\Collection;
 
-interface ContentInterface
+interface ContentRichEntityInterface
 {
     public static function getResourceKey(): string;
 

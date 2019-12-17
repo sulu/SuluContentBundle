@@ -16,7 +16,7 @@ namespace Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\Subscrib
 use Sulu\Bundle\ContentBundle\Content\Application\ContentCopier\ContentCopierInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionCollectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Workflow\Event\TransitionEvent;
@@ -45,7 +45,7 @@ class ContentPublishSubscriber implements EventSubscriberInterface
 
         $contentDimensionCollection = $context['contentDimensionCollection'] ?? null;
         $dimensionAttributes = $context['dimensionAttributes'] ?? null;
-        $content = $context['contentRichEntity'] ?? null;
+        $contentRichEntity = $context['contentRichEntity'] ?? null;
 
         if (!$dimensionAttributes) {
             throw new \RuntimeException('No "dimensionAttributes" given.');
@@ -55,7 +55,7 @@ class ContentPublishSubscriber implements EventSubscriberInterface
             throw new \RuntimeException('No "contentDimensionCollection" given.');
         }
 
-        if (!$content instanceof ContentInterface) {
+        if (!$contentRichEntity instanceof ContentRichEntityInterface) {
             throw new \RuntimeException('No "contentRichEntity" given.');
         }
 
@@ -63,7 +63,7 @@ class ContentPublishSubscriber implements EventSubscriberInterface
 
         $this->contentCopier->copyFromContentDimensionCollection(
             $contentDimensionCollection,
-            $content,
+            $contentRichEntity,
             $dimensionAttributes
         );
     }
