@@ -7,7 +7,7 @@
             <generator strategy="AUTO"/>
         </id>
 
-        <one-to-many field="dimensions" target-entity="Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleDimension" mapped-by="example">
+        <one-to-many field="dimensionContents" target-entity="Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleDimension" mapped-by="example">
             <cascade>
                 <cascade-persist/>
             </cascade>

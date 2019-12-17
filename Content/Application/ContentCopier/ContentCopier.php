@@ -17,9 +17,9 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentLoader\ContentLoaderInt
 use Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersisterInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\ApiViewResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ViewFactoryInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionCollectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
 
 class ContentCopier implements ContentCopierInterface
 {
@@ -66,12 +66,12 @@ class ContentCopier implements ContentCopierInterface
         return $this->copyFromContentView($sourceContentView, $targetContentRichEntity, $targetDimensionAttributes);
     }
 
-    public function copyFromContentDimensionCollection(
-        ContentDimensionCollectionInterface $contentDimensionCollection,
+    public function copyFromDimensionContentCollection(
+        DimensionContentCollectionInterface $dimensionContentCollection,
         ContentRichEntityInterface $targetContentRichEntity,
         array $targetDimensionAttributes
     ): ContentViewInterface {
-        $sourceContentView = $this->viewFactory->create($contentDimensionCollection);
+        $sourceContentView = $this->viewFactory->create($dimensionContentCollection);
 
         return $this->copyFromContentView($sourceContentView, $targetContentRichEntity, $targetDimensionAttributes);
     }

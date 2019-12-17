@@ -17,7 +17,7 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ViewFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Repository\ContentDimensionRepositoryInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionContentRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionRepositoryInterface;
 
 class ContentLoader implements ContentLoaderInterface
@@ -28,9 +28,9 @@ class ContentLoader implements ContentLoaderInterface
     private $dimensionRepository;
 
     /**
-     * @var ContentDimensionRepositoryInterface
+     * @var DimensionContentRepositoryInterface
      */
-    private $contentDimensionRepository;
+    private $dimensionContentRepository;
 
     /**
      * @var ViewFactoryInterface
@@ -39,11 +39,11 @@ class ContentLoader implements ContentLoaderInterface
 
     public function __construct(
         DimensionRepositoryInterface $dimensionRepository,
-        ContentDimensionRepositoryInterface $contentDimensionRepository,
+        DimensionContentRepositoryInterface $dimensionContentRepository,
         ViewFactoryInterface $viewFactory
     ) {
         $this->dimensionRepository = $dimensionRepository;
-        $this->contentDimensionRepository = $contentDimensionRepository;
+        $this->dimensionContentRepository = $dimensionContentRepository;
         $this->viewFactory = $viewFactory;
     }
 
@@ -55,12 +55,12 @@ class ContentLoader implements ContentLoaderInterface
             throw new ContentNotFoundException($contentRichEntity, $dimensionAttributes);
         }
 
-        $contentDimensionCollection = $this->contentDimensionRepository->load($contentRichEntity, $dimensionCollection);
+        $dimensionContentCollection = $this->dimensionContentRepository->load($contentRichEntity, $dimensionCollection);
 
-        if (0 === \count($contentDimensionCollection)) {
+        if (0 === \count($dimensionContentCollection)) {
             throw new ContentNotFoundException($contentRichEntity, $dimensionAttributes);
         }
 
-        return $this->viewFactory->create($contentDimensionCollection);
+        return $this->viewFactory->create($dimensionContentCollection);
     }
 }

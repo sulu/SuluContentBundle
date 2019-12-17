@@ -11,7 +11,7 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Content\Application\ContentDimensionFactory\Mapper;
+namespace Sulu\Bundle\ContentBundle\Content\Application\DimensionContentFactory\Mapper;
 
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\RoutableInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
@@ -50,14 +50,14 @@ class RouteMapper implements MapperInterface
 
     public function map(
         array $data,
-        object $contentDimension,
-        ?object $localizedContentDimension = null
+        object $dimensionContent,
+        ?object $localizedDimensionContent = null
     ): void {
-        if (!$localizedContentDimension || !$localizedContentDimension instanceof RoutableInterface) {
+        if (!$localizedDimensionContent || !$localizedDimensionContent instanceof RoutableInterface) {
             return;
         }
 
-        if (!$localizedContentDimension instanceof TemplateInterface) {
+        if (!$localizedDimensionContent instanceof TemplateInterface) {
             throw new \RuntimeException('ContentDimension needs to extend the TemplateInterface');
         }
 
@@ -66,7 +66,7 @@ class RouteMapper implements MapperInterface
         }
 
         $template = $data['template'];
-        $type = $localizedContentDimension->getTemplateType();
+        $type = $localizedDimensionContent->getTemplateType();
 
         $metadata = $this->factory->getStructureMetadata($type, $template);
         if (!$metadata) {
@@ -78,13 +78,13 @@ class RouteMapper implements MapperInterface
             return;
         }
 
-        if (!$localizedContentDimension->getContentId()) {
+        if (!$localizedDimensionContent->getContentId()) {
             // FIXME the code only works if the content-dimension is flushed once and has a valid id
 
             return;
         }
 
-        $locale = $localizedContentDimension->getLocale();
+        $locale = $localizedDimensionContent->getLocale();
         if (!$locale) {
             return;
         }
@@ -92,7 +92,7 @@ class RouteMapper implements MapperInterface
         /** @var string $name */
         $name = $property->getName();
 
-        $currentRoutePath = $localizedContentDimension->getTemplateData()[$name] ?? null;
+        $currentRoutePath = $localizedDimensionContent->getTemplateData()[$name] ?? null;
         if (!\array_key_exists($name, $data) && null !== $currentRoutePath) {
             return;
         }
@@ -101,7 +101,7 @@ class RouteMapper implements MapperInterface
         if (!$routePath) {
             // FIXME this should be handled directly in the form - see pages as an example
             $routePath = $this->routeGenerator->generate(
-                $localizedContentDimension,
+                $localizedDimensionContent,
                 ['route_schema' => '/{object.getTitle()}']
             );
 
@@ -109,17 +109,17 @@ class RouteMapper implements MapperInterface
                 return;
             }
 
-            $localizedContentDimension->setTemplateData(
+            $localizedDimensionContent->setTemplateData(
                 array_merge(
-                    $localizedContentDimension->getTemplateData(),
+                    $localizedDimensionContent->getTemplateData(),
                     [$name => $routePath]
                 )
             );
         }
 
         $this->routeManager->createOrUpdateByAttributes(
-            $localizedContentDimension->getContentClass(),
-            (string) $localizedContentDimension->getContentId(),
+            $localizedDimensionContent->getContentClass(),
+            (string) $localizedDimensionContent->getContentId(),
             $locale,
             $routePath
         );

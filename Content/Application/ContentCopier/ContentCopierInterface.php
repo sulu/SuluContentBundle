@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentCopier;
 
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionCollectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
 
 interface ContentCopierInterface
 {
@@ -33,8 +33,8 @@ interface ContentCopierInterface
     /**
      * @param mixed[] $targetDimensionAttributes
      */
-    public function copyFromContentDimensionCollection(
-        ContentDimensionCollectionInterface $contentDimensionCollection,
+    public function copyFromDimensionContentCollection(
+        DimensionContentCollectionInterface $dimensionContentCollection,
         ContentRichEntityInterface $targetContentRichEntity,
         array $targetDimensionAttributes
     ): ContentViewInterface;

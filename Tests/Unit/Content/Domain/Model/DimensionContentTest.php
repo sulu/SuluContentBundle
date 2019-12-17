@@ -14,20 +14,20 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Domain\Model;
 
 use PHPUnit\Framework\TestCase;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\AbstractContentDimension;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\AbstractContentView;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\AbstractDimensionContent;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 
-class ContentDimensionTest extends TestCase
+class DimensionContentTest extends TestCase
 {
-    protected function getContentDimensionInstance(): ContentDimensionInterface
+    protected function getDimensionContentInstance(): DimensionContentInterface
     {
         $dimension = new Dimension('123-456');
 
-        return new class($dimension) extends AbstractContentDimension {
+        return new class($dimension) extends AbstractDimensionContent {
             protected $id = 1;
 
             public function __construct(DimensionInterface $dimension)
@@ -49,13 +49,13 @@ class ContentDimensionTest extends TestCase
 
     public function testGetId(): void
     {
-        $model = $this->getContentDimensionInstance();
+        $model = $this->getDimensionContentInstance();
         $this->assertSame(1, $model->getId());
     }
 
     public function testGetDimension(): void
     {
-        $model = $this->getContentDimensionInstance();
+        $model = $this->getDimensionContentInstance();
         $this->assertSame('123-456', $model->getDimension()->getId());
     }
 }

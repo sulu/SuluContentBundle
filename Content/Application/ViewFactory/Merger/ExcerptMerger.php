@@ -17,43 +17,43 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 
 class ExcerptMerger implements MergerInterface
 {
-    public function merge(object $contentView, object $contentDimension): void
+    public function merge(object $contentView, object $dimensionContent): void
     {
         if (!$contentView instanceof ExcerptInterface) {
             return;
         }
 
-        if (!$contentDimension instanceof ExcerptInterface) {
+        if (!$dimensionContent instanceof ExcerptInterface) {
             return;
         }
 
-        if ($excerptTitle = $contentDimension->getExcerptTitle()) {
+        if ($excerptTitle = $dimensionContent->getExcerptTitle()) {
             $contentView->setExcerptTitle($excerptTitle);
         }
 
-        if ($excerptDescription = $contentDimension->getExcerptDescription()) {
+        if ($excerptDescription = $dimensionContent->getExcerptDescription()) {
             $contentView->setExcerptDescription($excerptDescription);
         }
 
-        if ($excerptMore = $contentDimension->getExcerptMore()) {
+        if ($excerptMore = $dimensionContent->getExcerptMore()) {
             $contentView->setExcerptMore($excerptMore);
         }
 
-        if ($excerptIcon = $contentDimension->getExcerptIcon()) {
+        if ($excerptIcon = $dimensionContent->getExcerptIcon()) {
             $contentView->setExcerptIcon($excerptIcon);
         }
 
-        if ($excerptImage = $contentDimension->getExcerptImage()) {
+        if ($excerptImage = $dimensionContent->getExcerptImage()) {
             $contentView->setExcerptImage($excerptImage);
         }
 
-        if ($excerptTags = $contentDimension->getExcerptTags()) {
+        if ($excerptTags = $dimensionContent->getExcerptTags()) {
             if (!empty($excerptTags)) {
                 $contentView->setExcerptTags($excerptTags);
             }
         }
 
-        if ($excerptCategories = $contentDimension->getExcerptCategories()) {
+        if ($excerptCategories = $dimensionContent->getExcerptCategories()) {
             if (!empty($excerptCategories)) {
                 $contentView->setExcerptCategories($excerptCategories);
             }

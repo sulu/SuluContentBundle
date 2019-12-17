@@ -14,9 +14,9 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\Subscriber;
 
 use Sulu\Bundle\ContentBundle\Content\Application\ContentCopier\ContentCopierInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionCollectionInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Workflow\Event\TransitionEvent;
@@ -35,15 +35,15 @@ class ContentPublishSubscriber implements EventSubscriberInterface
 
     public function onPublish(TransitionEvent $transitionEvent): void
     {
-        $contentDimension = $transitionEvent->getSubject();
+        $dimensionContent = $transitionEvent->getSubject();
 
-        if (!$contentDimension instanceof ContentDimensionInterface) {
+        if (!$dimensionContent instanceof DimensionContentInterface) {
             return;
         }
 
         $context = $transitionEvent->getContext();
 
-        $contentDimensionCollection = $context['contentDimensionCollection'] ?? null;
+        $dimensionContentCollection = $context['dimensionContentCollection'] ?? null;
         $dimensionAttributes = $context['dimensionAttributes'] ?? null;
         $contentRichEntity = $context['contentRichEntity'] ?? null;
 
@@ -51,8 +51,8 @@ class ContentPublishSubscriber implements EventSubscriberInterface
             throw new \RuntimeException('No "dimensionAttributes" given.');
         }
 
-        if (!$contentDimensionCollection instanceof ContentDimensionCollectionInterface) {
-            throw new \RuntimeException('No "contentDimensionCollection" given.');
+        if (!$dimensionContentCollection instanceof DimensionContentCollectionInterface) {
+            throw new \RuntimeException('No "dimensionContentCollection" given.');
         }
 
         if (!$contentRichEntity instanceof ContentRichEntityInterface) {
@@ -61,8 +61,8 @@ class ContentPublishSubscriber implements EventSubscriberInterface
 
         $dimensionAttributes['stage'] = DimensionInterface::STAGE_LIVE;
 
-        $this->contentCopier->copyFromContentDimensionCollection(
-            $contentDimensionCollection,
+        $this->contentCopier->copyFromDimensionContentCollection(
+            $dimensionContentCollection,
             $contentRichEntity,
             $dimensionAttributes
         );

@@ -17,41 +17,41 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
 
 class SeoMerger implements MergerInterface
 {
-    public function merge(object $contentView, object $contentDimension): void
+    public function merge(object $contentView, object $dimensionContent): void
     {
         if (!$contentView instanceof SeoInterface) {
             return;
         }
 
-        if (!$contentDimension instanceof SeoInterface) {
+        if (!$dimensionContent instanceof SeoInterface) {
             return;
         }
 
-        if ($seoTitle = $contentDimension->getSeoTitle()) {
+        if ($seoTitle = $dimensionContent->getSeoTitle()) {
             $contentView->setSeoTitle($seoTitle);
         }
 
-        if ($seoDescription = $contentDimension->getSeoDescription()) {
+        if ($seoDescription = $dimensionContent->getSeoDescription()) {
             $contentView->setSeoDescription($seoDescription);
         }
 
-        if ($seoKeywords = $contentDimension->getSeoKeywords()) {
+        if ($seoKeywords = $dimensionContent->getSeoKeywords()) {
             $contentView->setSeoKeywords($seoKeywords);
         }
 
-        if ($seoCanonicalUrl = $contentDimension->getSeoCanonicalUrl()) {
+        if ($seoCanonicalUrl = $dimensionContent->getSeoCanonicalUrl()) {
             $contentView->setSeoCanonicalUrl($seoCanonicalUrl);
         }
 
-        if ($seoNoIndex = $contentDimension->getSeoNoIndex()) {
+        if ($seoNoIndex = $dimensionContent->getSeoNoIndex()) {
             $contentView->setSeoNoIndex($seoNoIndex);
         }
 
-        if ($seoNoFollow = $contentDimension->getSeoNoFollow()) {
+        if ($seoNoFollow = $dimensionContent->getSeoNoFollow()) {
             $contentView->setSeoNoFollow($seoNoFollow);
         }
 
-        if ($seoHideInSitemap = $contentDimension->getSeoHideInSitemap()) {
+        if ($seoHideInSitemap = $dimensionContent->getSeoHideInSitemap()) {
             $contentView->setSeoHideInSitemap($seoHideInSitemap);
         }
     }

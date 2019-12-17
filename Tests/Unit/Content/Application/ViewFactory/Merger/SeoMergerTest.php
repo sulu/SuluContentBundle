@@ -17,8 +17,8 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Sulu\Bundle\ContentBundle\Content\Application\ViewFactory\Merger\MergerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ViewFactory\Merger\SeoMerger;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
 
 class SeoMergerTest extends TestCase
@@ -32,41 +32,41 @@ class SeoMergerTest extends TestCase
     {
         $merger = $this->getSeoMergerInstance();
 
-        $contentDimension = $this->prophesize(ContentDimensionInterface::class);
+        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
 
         $contentView = $this->prophesize(ContentViewInterface::class);
         $contentView->willImplement(SeoInterface::class);
         $contentView->setSeoTitle(Argument::any())->shouldNotBeCalled();
 
-        $merger->merge($contentView->reveal(), $contentDimension->reveal());
+        $merger->merge($contentView->reveal(), $dimensionContent->reveal());
     }
 
     public function testMergeViewNotImplementSeoInterface(): void
     {
         $merger = $this->getSeoMergerInstance();
 
-        $contentDimension = $this->prophesize(ContentDimensionInterface::class);
-        $contentDimension->willImplement(SeoInterface::class);
-        $contentDimension->getSeoTitle(Argument::any())->shouldNotBeCalled();
+        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent->willImplement(SeoInterface::class);
+        $dimensionContent->getSeoTitle(Argument::any())->shouldNotBeCalled();
 
         $contentView = $this->prophesize(ContentViewInterface::class);
 
-        $merger->merge($contentView->reveal(), $contentDimension->reveal());
+        $merger->merge($contentView->reveal(), $dimensionContent->reveal());
     }
 
     public function testMergeSet(): void
     {
         $merger = $this->getSeoMergerInstance();
 
-        $contentDimension = $this->prophesize(ContentDimensionInterface::class);
-        $contentDimension->willImplement(SeoInterface::class);
-        $contentDimension->getSeoTitle()->willReturn('Seo Title')->shouldBeCalled();
-        $contentDimension->getSeoDescription()->willReturn('Seo Description')->shouldBeCalled();
-        $contentDimension->getSeoKeywords()->willReturn('Seo Keyword 1, Seo Keyword 2')->shouldBeCalled();
-        $contentDimension->getSeoCanonicalUrl()->willReturn('https://canonical.localhost/')->shouldBeCalled();
-        $contentDimension->getSeoNoFollow()->willReturn(true)->shouldBeCalled();
-        $contentDimension->getSeoNoIndex()->willReturn(true)->shouldBeCalled();
-        $contentDimension->getSeoHideInSitemap()->willReturn(true)->shouldBeCalled();
+        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent->willImplement(SeoInterface::class);
+        $dimensionContent->getSeoTitle()->willReturn('Seo Title')->shouldBeCalled();
+        $dimensionContent->getSeoDescription()->willReturn('Seo Description')->shouldBeCalled();
+        $dimensionContent->getSeoKeywords()->willReturn('Seo Keyword 1, Seo Keyword 2')->shouldBeCalled();
+        $dimensionContent->getSeoCanonicalUrl()->willReturn('https://canonical.localhost/')->shouldBeCalled();
+        $dimensionContent->getSeoNoFollow()->willReturn(true)->shouldBeCalled();
+        $dimensionContent->getSeoNoIndex()->willReturn(true)->shouldBeCalled();
+        $dimensionContent->getSeoHideInSitemap()->willReturn(true)->shouldBeCalled();
 
         $contentView = $this->prophesize(ContentViewInterface::class);
         $contentView->willImplement(SeoInterface::class);
@@ -78,22 +78,22 @@ class SeoMergerTest extends TestCase
         $contentView->setSeoNoIndex(true)->shouldBeCalled();
         $contentView->setSeoHideInSitemap(true)->shouldBeCalled();
 
-        $merger->merge($contentView->reveal(), $contentDimension->reveal());
+        $merger->merge($contentView->reveal(), $dimensionContent->reveal());
     }
 
     public function testMergeNotSet(): void
     {
         $seoMerger = $this->getSeoMergerInstance();
 
-        $contentDimension = $this->prophesize(ContentDimensionInterface::class);
-        $contentDimension->willImplement(SeoInterface::class);
-        $contentDimension->getSeoTitle()->willReturn(null)->shouldBeCalled();
-        $contentDimension->getSeoDescription()->willReturn(null)->shouldBeCalled();
-        $contentDimension->getSeoKeywords()->willReturn(null)->shouldBeCalled();
-        $contentDimension->getSeoCanonicalUrl()->willReturn(null)->shouldBeCalled();
-        $contentDimension->getSeoNoFollow()->willReturn(false)->shouldBeCalled();
-        $contentDimension->getSeoNoIndex()->willReturn(false)->shouldBeCalled();
-        $contentDimension->getSeoHideInSitemap()->willReturn(false)->shouldBeCalled();
+        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent->willImplement(SeoInterface::class);
+        $dimensionContent->getSeoTitle()->willReturn(null)->shouldBeCalled();
+        $dimensionContent->getSeoDescription()->willReturn(null)->shouldBeCalled();
+        $dimensionContent->getSeoKeywords()->willReturn(null)->shouldBeCalled();
+        $dimensionContent->getSeoCanonicalUrl()->willReturn(null)->shouldBeCalled();
+        $dimensionContent->getSeoNoFollow()->willReturn(false)->shouldBeCalled();
+        $dimensionContent->getSeoNoIndex()->willReturn(false)->shouldBeCalled();
+        $dimensionContent->getSeoHideInSitemap()->willReturn(false)->shouldBeCalled();
 
         $contentView = $this->prophesize(ContentViewInterface::class);
         $contentView->willImplement(SeoInterface::class);
@@ -105,6 +105,6 @@ class SeoMergerTest extends TestCase
         $contentView->setSeoNoIndex(false)->shouldNotBeCalled();
         $contentView->setSeoHideInSitemap(false)->shouldNotBeCalled();
 
-        $seoMerger->merge($contentView->reveal(), $contentDimension->reveal());
+        $seoMerger->merge($contentView->reveal(), $dimensionContent->reveal());
     }
 }

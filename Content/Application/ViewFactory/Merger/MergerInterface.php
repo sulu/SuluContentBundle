@@ -15,5 +15,5 @@ namespace Sulu\Bundle\ContentBundle\Content\Application\ViewFactory\Merger;
 
 interface MergerInterface
 {
-    public function merge(object $contentView, object $contentDimension): void;
+    public function merge(object $contentView, object $dimensionContent): void;
 }

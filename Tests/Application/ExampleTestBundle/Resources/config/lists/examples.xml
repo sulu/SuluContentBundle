@@ -2,12 +2,12 @@
 <list xmlns="http://schemas.sulu.io/list-builder/list">
     <key>examples</key>
 
-    <joins name="contentDimension" ref="dimension">
+    <joins name="dimensionContent" ref="dimension">
         <join>
-            <entity-name>contentDimension</entity-name>
-            <field-name>Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example.dimensions</field-name>
+            <entity-name>dimensionContent</entity-name>
+            <field-name>Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example.dimensionContents</field-name>
             <method>LEFT</method>
-            <condition>contentDimension.dimension = %sulu.model.dimension.class%.no</condition>
+            <condition>dimensionContent.dimension = %sulu.model.dimension.class%.no</condition>
         </join>
     </joins>
 
@@ -33,9 +33,9 @@
 
         <property name="title" visibility="yes" translation="sulu_admin.title">
             <field-name>title</field-name>
-            <entity-name>contentDimension</entity-name>
+            <entity-name>dimensionContent</entity-name>
 
-            <joins ref="contentDimension"/>
+            <joins ref="dimensionContent"/>
         </property>
     </properties>
 </list>

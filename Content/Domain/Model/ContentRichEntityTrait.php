@@ -19,38 +19,38 @@ use Doctrine\Common\Collections\Collection;
 trait ContentRichEntityTrait
 {
     /**
-     * @var ContentDimensionInterface[]|ArrayCollection
+     * @var DimensionContentInterface[]|ArrayCollection
      */
-    protected $dimensions;
+    protected $dimensionContents;
 
     /**
-     * @return Collection<ContentDimensionInterface>
+     * @return Collection<DimensionContentInterface>
      */
-    public function getDimensions(): Collection
+    public function getDimensionContents(): Collection
     {
-        $this->initializeDimensions();
+        $this->initializeDimensionContents();
 
-        return $this->dimensions;
+        return $this->dimensionContents;
     }
 
-    public function addDimension(ContentDimensionInterface $contentDimension): void
+    public function addDimensionContent(DimensionContentInterface $dimensionContent): void
     {
-        $this->initializeDimensions();
+        $this->initializeDimensionContents();
 
-        $this->dimensions->add($contentDimension);
+        $this->dimensionContents->add($dimensionContent);
     }
 
-    public function removeDimension(ContentDimensionInterface $contentDimension): void
+    public function removeDimensionContent(DimensionContentInterface $dimensionContent): void
     {
-        $this->initializeDimensions();
+        $this->initializeDimensionContents();
 
-        $this->dimensions->removeElement($contentDimension);
+        $this->dimensionContents->removeElement($dimensionContent);
     }
 
-    private function initializeDimensions(): void
+    private function initializeDimensionContents(): void
     {
-        if (null === $this->dimensions) {
-            $this->dimensions = new ArrayCollection();
+        if (null === $this->dimensionContents) {
+            $this->dimensionContents = new ArrayCollection();
         }
     }
 }

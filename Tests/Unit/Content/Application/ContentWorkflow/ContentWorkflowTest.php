@@ -21,26 +21,26 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentInvalidTransitionE
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotExistTransitionException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ViewFactoryInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionCollection;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollection;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollection;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Repository\ContentDimensionRepositoryInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionContentRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionRepositoryInterface;
 
 class ContentWorkflowTest extends TestCase
 {
     protected function createContentWorkflowInstance(
         DimensionRepositoryInterface $dimensionRepository,
-        ContentDimensionRepositoryInterface $contentDimensionRepository,
+        DimensionContentRepositoryInterface $dimensionContentRepository,
         ViewFactoryInterface $viewFactory
     ): ContentWorkflowInterface {
         return new ContentWorkflow(
             $dimensionRepository,
-            $contentDimensionRepository,
+            $dimensionContentRepository,
             $viewFactory
         );
     }
@@ -50,12 +50,12 @@ class ContentWorkflowTest extends TestCase
         $this->expectException(\RuntimeException::class);
 
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
-        $contentDimensionRepository = $this->prophesize(ContentDimensionRepositoryInterface::class);
+        $dimensionContentRepository = $this->prophesize(DimensionContentRepositoryInterface::class);
         $viewFactory = $this->prophesize(ViewFactoryInterface::class);
 
         $contentWorkflow = $this->createContentWorkflowInstance(
             $dimensionRepository->reveal(),
-            $contentDimensionRepository->reveal(),
+            $dimensionContentRepository->reveal(),
             $viewFactory->reveal()
         );
 
@@ -72,24 +72,24 @@ class ContentWorkflowTest extends TestCase
             ->willReturn($dimensionCollection)
             ->shouldBeCalled();
 
-        $contentDimension1 = $this->prophesize(ContentDimensionInterface::class);
-        $contentDimension1->getDimension()->willReturn($dimension1);
-        $contentDimension2 = $this->prophesize(ContentDimensionInterface::class);
-        $contentDimension2->getDimension()->willReturn($dimension2);
+        $dimensionContent1 = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent1->getDimension()->willReturn($dimension1);
+        $dimensionContent2 = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent2->getDimension()->willReturn($dimension2);
 
         $this->expectExceptionMessage(sprintf(
             'Expected "%s" but "%s" given.',
             WorkflowInterface::class,
-            \get_class($contentDimension2->reveal()))
+            \get_class($dimensionContent2->reveal()))
         );
 
-        $contentDimensionCollection = new ContentDimensionCollection([
-            $contentDimension1->reveal(),
-            $contentDimension2->reveal(),
+        $dimensionContentCollection = new DimensionContentCollection([
+            $dimensionContent1->reveal(),
+            $dimensionContent2->reveal(),
         ], $dimensionCollection);
 
-        $contentDimensionRepository->load($contentRichEntity->reveal(), $dimensionCollection)
-            ->willReturn($contentDimensionCollection)
+        $dimensionContentRepository->load($contentRichEntity->reveal(), $dimensionCollection)
+            ->willReturn($dimensionContentCollection)
             ->shouldBeCalled();
 
         $contentWorkflow->apply(
@@ -99,17 +99,17 @@ class ContentWorkflowTest extends TestCase
         );
     }
 
-    public function testTransitionNoLocalizedContentDimension(): void
+    public function testTransitionNoLocalizedDimensionContent(): void
     {
         $this->expectException(ContentNotFoundException::class);
 
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
-        $contentDimensionRepository = $this->prophesize(ContentDimensionRepositoryInterface::class);
+        $dimensionContentRepository = $this->prophesize(DimensionContentRepositoryInterface::class);
         $viewFactory = $this->prophesize(ViewFactoryInterface::class);
 
         $contentWorkflow = $this->createContentWorkflowInstance(
             $dimensionRepository->reveal(),
-            $contentDimensionRepository->reveal(),
+            $dimensionContentRepository->reveal(),
             $viewFactory->reveal()
         );
 
@@ -126,15 +126,15 @@ class ContentWorkflowTest extends TestCase
             ->willReturn($dimensionCollection)
             ->shouldBeCalled();
 
-        $contentDimension1 = $this->prophesize(ContentDimensionInterface::class);
-        $contentDimension1->getDimension()->willReturn($dimension1);
+        $dimensionContent1 = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent1->getDimension()->willReturn($dimension1);
 
-        $contentDimensionCollection = new ContentDimensionCollection([
-            $contentDimension1->reveal(),
+        $dimensionContentCollection = new DimensionContentCollection([
+            $dimensionContent1->reveal(),
         ], $dimensionCollection);
 
-        $contentDimensionRepository->load($contentRichEntity->reveal(), $dimensionCollection)
-            ->willReturn($contentDimensionCollection)
+        $dimensionContentRepository->load($contentRichEntity->reveal(), $dimensionCollection)
+            ->willReturn($dimensionContentCollection)
             ->shouldBeCalled();
 
         $contentWorkflow->apply(
@@ -149,12 +149,12 @@ class ContentWorkflowTest extends TestCase
         $this->expectException(ContentNotFoundException::class);
 
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
-        $contentDimensionRepository = $this->prophesize(ContentDimensionRepositoryInterface::class);
+        $dimensionContentRepository = $this->prophesize(DimensionContentRepositoryInterface::class);
         $viewFactory = $this->prophesize(ViewFactoryInterface::class);
 
         $contentWorkflow = $this->createContentWorkflowInstance(
             $dimensionRepository->reveal(),
-            $contentDimensionRepository->reveal(),
+            $dimensionContentRepository->reveal(),
             $viewFactory->reveal()
         );
 
@@ -183,12 +183,12 @@ class ContentWorkflowTest extends TestCase
         );
 
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
-        $contentDimensionRepository = $this->prophesize(ContentDimensionRepositoryInterface::class);
+        $dimensionContentRepository = $this->prophesize(DimensionContentRepositoryInterface::class);
         $viewFactory = $this->prophesize(ViewFactoryInterface::class);
 
         $contentWorkflow = $this->createContentWorkflowInstance(
             $dimensionRepository->reveal(),
-            $contentDimensionRepository->reveal(),
+            $dimensionContentRepository->reveal(),
             $viewFactory->reveal()
         );
 
@@ -204,28 +204,28 @@ class ContentWorkflowTest extends TestCase
             ->willReturn($dimensionCollection)
             ->shouldBeCalled();
 
-        $contentDimension1 = $this->prophesize(ContentDimensionInterface::class);
-        $contentDimension1->willImplement(WorkflowInterface::class);
-        $contentDimension1->getDimension()->willReturn($dimension1);
-        $contentDimension2 = $this->prophesize(ContentDimensionInterface::class);
-        $contentDimension2->willImplement(WorkflowInterface::class);
-        $contentDimension2->getDimension()->willReturn($dimension2);
+        $dimensionContent1 = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent1->willImplement(WorkflowInterface::class);
+        $dimensionContent1->getDimension()->willReturn($dimension1);
+        $dimensionContent2 = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent2->willImplement(WorkflowInterface::class);
+        $dimensionContent2->getDimension()->willReturn($dimension2);
 
-        $contentDimension2->getWorkflowPlace()
+        $dimensionContent2->getWorkflowPlace()
             ->willReturn('unpublished')
             ->shouldBeCalled();
 
-        $contentDimension2->getWorkflowName()
+        $dimensionContent2->getWorkflowName()
             ->willReturn('content_workflow')
             ->shouldBeCalled();
 
-        $contentDimensionCollection = new ContentDimensionCollection([
-            $contentDimension1->reveal(),
-            $contentDimension2->reveal(),
+        $dimensionContentCollection = new DimensionContentCollection([
+            $dimensionContent1->reveal(),
+            $dimensionContent2->reveal(),
         ], $dimensionCollection);
 
-        $contentDimensionRepository->load($contentRichEntity->reveal(), $dimensionCollection)
-            ->willReturn($contentDimensionCollection)
+        $dimensionContentRepository->load($contentRichEntity->reveal(), $dimensionCollection)
+            ->willReturn($dimensionContentCollection)
             ->shouldBeCalled();
 
         $contentWorkflow->apply(
@@ -248,12 +248,12 @@ class ContentWorkflowTest extends TestCase
         }
 
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
-        $contentDimensionRepository = $this->prophesize(ContentDimensionRepositoryInterface::class);
+        $dimensionContentRepository = $this->prophesize(DimensionContentRepositoryInterface::class);
         $viewFactory = $this->prophesize(ViewFactoryInterface::class);
 
         $contentWorkflow = $this->createContentWorkflowInstance(
             $dimensionRepository->reveal(),
-            $contentDimensionRepository->reveal(),
+            $dimensionContentRepository->reveal(),
             $viewFactory->reveal()
         );
 
@@ -269,38 +269,38 @@ class ContentWorkflowTest extends TestCase
             ->willReturn($dimensionCollection)
             ->shouldBeCalled();
 
-        $contentDimension1 = $this->prophesize(ContentDimensionInterface::class);
-        $contentDimension1->willImplement(WorkflowInterface::class);
-        $contentDimension1->getDimension()->willReturn($dimension1);
-        $contentDimension2 = $this->prophesize(ContentDimensionInterface::class);
-        $contentDimension2->willImplement(WorkflowInterface::class);
-        $contentDimension2->getDimension()->willReturn($dimension2);
+        $dimensionContent1 = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent1->willImplement(WorkflowInterface::class);
+        $dimensionContent1->getDimension()->willReturn($dimension1);
+        $dimensionContent2 = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent2->willImplement(WorkflowInterface::class);
+        $dimensionContent2->getDimension()->willReturn($dimension2);
 
-        $contentDimension2->getWorkflowPlace()
+        $dimensionContent2->getWorkflowPlace()
             ->willReturn($currentPlace)
             ->shouldBeCalled();
 
-        $contentDimension2->getWorkflowName()
+        $dimensionContent2->getWorkflowName()
             ->willReturn('content_workflow')
             ->shouldBeCalled();
 
         if ($isTransitionAllowed) {
-            $contentDimension2->setWorkflowPlace(Argument::any(), Argument::any())
+            $dimensionContent2->setWorkflowPlace(Argument::any(), Argument::any())
                 ->shouldBeCalled();
         }
 
-        $contentDimensionCollection = new ContentDimensionCollection([
-            $contentDimension1->reveal(),
-            $contentDimension2->reveal(),
+        $dimensionContentCollection = new DimensionContentCollection([
+            $dimensionContent1->reveal(),
+            $dimensionContent2->reveal(),
         ], $dimensionCollection);
 
-        $contentDimensionRepository->load($contentRichEntity->reveal(), $dimensionCollection)
-            ->willReturn($contentDimensionCollection)
+        $dimensionContentRepository->load($contentRichEntity->reveal(), $dimensionCollection)
+            ->willReturn($dimensionContentCollection)
             ->shouldBeCalled();
 
         $contentView = $this->prophesize(ContentViewInterface::class);
 
-        $viewFactory->create($contentDimensionCollection)
+        $viewFactory->create($dimensionContentCollection)
             ->willReturn($contentView)
             ->shouldBeCalledTimes($isTransitionAllowed ? 1 : 0);
 

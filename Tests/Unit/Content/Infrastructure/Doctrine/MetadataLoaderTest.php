@@ -22,8 +22,8 @@ use Doctrine\ORM\Mapping\UnderscoreNamingStrategy;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Sulu\Bundle\CategoryBundle\Entity\CategoryInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
@@ -63,7 +63,7 @@ class MetadataLoaderTest extends TestCase
         $reflectionClass = $this->prophesize(\ReflectionClass::class);
 
         $reflectionClass->implementsInterface(ContentViewInterface::class)->willReturn(\in_array(ContentViewInterface::class, $interfaces, true));
-        $reflectionClass->implementsInterface(ContentDimensionInterface::class)->willReturn(\in_array(ContentDimensionInterface::class, $interfaces, true));
+        $reflectionClass->implementsInterface(DimensionContentInterface::class)->willReturn(\in_array(DimensionContentInterface::class, $interfaces, true));
         $reflectionClass->implementsInterface(SeoInterface::class)->willReturn(\in_array(SeoInterface::class, $interfaces, true));
         $reflectionClass->implementsInterface(ExcerptInterface::class)->willReturn(\in_array(ExcerptInterface::class, $interfaces, true));
         $reflectionClass->implementsInterface(TemplateInterface::class)->willReturn(\in_array(TemplateInterface::class, $interfaces, true));
@@ -132,7 +132,7 @@ class MetadataLoaderTest extends TestCase
     {
         yield [
             [
-                ContentDimensionInterface::class,
+                DimensionContentInterface::class,
             ],
             [],
             [],
@@ -143,7 +143,7 @@ class MetadataLoaderTest extends TestCase
 
         yield [
             [
-                ContentDimensionInterface::class,
+                DimensionContentInterface::class,
             ],
             [],
             [],

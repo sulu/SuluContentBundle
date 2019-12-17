@@ -17,10 +17,10 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentCopier\ContentCopierInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\Subscriber\ContentPublishSubscriber;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionCollectionInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 use Symfony\Component\Workflow\Event\TransitionEvent;
 use Symfony\Component\Workflow\Marking;
@@ -43,33 +43,33 @@ class ContentPublishSubscriberTest extends TestCase
         ], $contentPublishSubscriber::getSubscribedEvents());
     }
 
-    public function testOnPublishNoContentDimensionInterface(): void
+    public function testOnPublishNoDimensionContentInterface(): void
     {
-        $contentDimension = $this->prophesize(WorkflowInterface::class);
+        $dimensionContent = $this->prophesize(WorkflowInterface::class);
         $event = new TransitionEvent(
-            $contentDimension->reveal(),
+            $dimensionContent->reveal(),
             new Marking()
         );
 
         $contentCopier = $this->prophesize(ContentCopierInterface::class);
-        $contentCopier->copyFromContentDimensionCollection(Argument::any(), Argument::any(), Argument::any())
+        $contentCopier->copyFromDimensionContentCollection(Argument::any(), Argument::any(), Argument::any())
             ->shouldNotBeCalled();
         $contentPublishSubscriber = $this->createContentPublisherSubscriberInstance($contentCopier->reveal());
 
         $contentPublishSubscriber->onPublish($event);
     }
 
-    public function testOnPublishNoContentDimensionCollection(): void
+    public function testOnPublishNoDimensionContentCollection(): void
     {
         $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('No "contentDimensionCollection" given.');
+        $this->expectExceptionMessage('No "dimensionContentCollection" given.');
 
-        $contentDimension = $this->prophesize(ContentDimensionInterface::class);
+        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
         $dimensionAttributes = ['locale' => 'en', 'stage' => 'draft'];
 
         $event = new TransitionEvent(
-            $contentDimension->reveal(),
+            $dimensionContent->reveal(),
             new Marking()
         );
         $event->setContext([
@@ -78,7 +78,7 @@ class ContentPublishSubscriberTest extends TestCase
         ]);
 
         $contentCopier = $this->prophesize(ContentCopierInterface::class);
-        $contentCopier->copyFromContentDimensionCollection(Argument::any(), Argument::any(), Argument::any())
+        $contentCopier->copyFromDimensionContentCollection(Argument::any(), Argument::any(), Argument::any())
             ->shouldNotBeCalled();
 
         $contentPublishSubscriber = $this->createContentPublisherSubscriberInstance($contentCopier->reveal());
@@ -91,21 +91,21 @@ class ContentPublishSubscriberTest extends TestCase
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('No "contentRichEntity" given.');
 
-        $contentDimension = $this->prophesize(ContentDimensionInterface::class);
-        $contentDimensionCollection = $this->prophesize(ContentDimensionCollectionInterface::class);
+        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContentCollection = $this->prophesize(DimensionContentCollectionInterface::class);
         $dimensionAttributes = ['locale' => 'en', 'stage' => 'draft'];
 
         $event = new TransitionEvent(
-            $contentDimension->reveal(),
+            $dimensionContent->reveal(),
             new Marking()
         );
         $event->setContext([
             'dimensionAttributes' => $dimensionAttributes,
-            'contentDimensionCollection' => $contentDimensionCollection->reveal(),
+            'dimensionContentCollection' => $dimensionContentCollection->reveal(),
         ]);
 
         $contentCopier = $this->prophesize(ContentCopierInterface::class);
-        $contentCopier->copyFromContentDimensionCollection(Argument::any(), Argument::any(), Argument::any())
+        $contentCopier->copyFromDimensionContentCollection(Argument::any(), Argument::any(), Argument::any())
             ->shouldNotBeCalled();
 
         $contentPublishSubscriber = $this->createContentPublisherSubscriberInstance($contentCopier->reveal());
@@ -118,21 +118,21 @@ class ContentPublishSubscriberTest extends TestCase
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('No "dimensionAttributes" given.');
 
-        $contentDimension = $this->prophesize(ContentDimensionInterface::class);
-        $contentDimensionCollection = $this->prophesize(ContentDimensionCollectionInterface::class);
+        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContentCollection = $this->prophesize(DimensionContentCollectionInterface::class);
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
 
         $event = new TransitionEvent(
-            $contentDimension->reveal(),
+            $dimensionContent->reveal(),
             new Marking()
         );
         $event->setContext([
-            'contentDimensionCollection' => $contentDimensionCollection->reveal(),
+            'dimensionContentCollection' => $dimensionContentCollection->reveal(),
             'contentRichEntity' => $contentRichEntity->reveal(),
         ]);
 
         $contentCopier = $this->prophesize(ContentCopierInterface::class);
-        $contentCopier->copyFromContentDimensionCollection(Argument::any(), Argument::any(), Argument::any())
+        $contentCopier->copyFromDimensionContentCollection(Argument::any(), Argument::any(), Argument::any())
             ->shouldNotBeCalled();
 
         $contentPublishSubscriber = $this->createContentPublisherSubscriberInstance($contentCopier->reveal());
@@ -142,17 +142,17 @@ class ContentPublishSubscriberTest extends TestCase
 
     public function testOnPublish(): void
     {
-        $contentDimension = $this->prophesize(ContentDimensionInterface::class);
-        $contentDimensionCollection = $this->prophesize(ContentDimensionCollectionInterface::class);
+        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContentCollection = $this->prophesize(DimensionContentCollectionInterface::class);
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
         $dimensionAttributes = ['locale' => 'en', 'stage' => 'draft'];
 
         $event = new TransitionEvent(
-            $contentDimension->reveal(),
+            $dimensionContent->reveal(),
             new Marking()
         );
         $event->setContext([
-            'contentDimensionCollection' => $contentDimensionCollection->reveal(),
+            'dimensionContentCollection' => $dimensionContentCollection->reveal(),
             'dimensionAttributes' => $dimensionAttributes,
             'contentRichEntity' => $contentRichEntity->reveal(),
         ]);
@@ -161,8 +161,8 @@ class ContentPublishSubscriberTest extends TestCase
         $sourceDimensionAttributes = $dimensionAttributes;
         $sourceDimensionAttributes['stage'] = 'live';
         $copiedContentView = $this->prophesize(ContentViewInterface::class);
-        $contentCopier->copyFromContentDimensionCollection(
-            $contentDimensionCollection->reveal(),
+        $contentCopier->copyFromDimensionContentCollection(
+            $dimensionContentCollection->reveal(),
             $contentRichEntity->reveal(),
             $sourceDimensionAttributes
         )

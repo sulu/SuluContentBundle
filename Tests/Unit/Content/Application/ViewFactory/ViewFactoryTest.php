@@ -17,10 +17,10 @@ use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\ContentBundle\Content\Application\ViewFactory\Merger\MergerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ViewFactory\ViewFactory;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ViewFactoryInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionCollection;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentDimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollection;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollection;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 
 class ViewFactoryTest extends TestCase
 {
@@ -34,21 +34,21 @@ class ViewFactoryTest extends TestCase
         $this->expectException(\RuntimeException::class);
 
         $viewFactory = $this->getViewFactoryInstance();
-        $viewFactory->create(new ContentDimensionCollection([], new DimensionCollection([], [])));
+        $viewFactory->create(new DimensionContentCollection([], new DimensionCollection([], [])));
     }
 
     public function testCreate(): void
     {
-        $contentViewDimension1 = $this->prophesize(ContentDimensionInterface::class);
-        $contentViewDimension2 = $this->prophesize(ContentDimensionInterface::class);
-        $contentViewDimension3 = $this->prophesize(ContentDimensionInterface::class);
+        $contentViewDimension1 = $this->prophesize(DimensionContentInterface::class);
+        $contentViewDimension2 = $this->prophesize(DimensionContentInterface::class);
+        $contentViewDimension3 = $this->prophesize(DimensionContentInterface::class);
 
         $contentView = $this->prophesize(ContentViewInterface::class);
 
         $contentViewDimension3->createViewInstance()->willReturn($contentView->reveal())->shouldBeCalled();
 
         $viewFactory = $this->getViewFactoryInstance();
-        $viewFactory->create(new ContentDimensionCollection([
+        $viewFactory->create(new DimensionContentCollection([
             $contentViewDimension1->reveal(),
             $contentViewDimension2->reveal(),
             $contentViewDimension3->reveal(),
@@ -57,9 +57,9 @@ class ViewFactoryTest extends TestCase
 
     public function testCreateMergers(): void
     {
-        $contentViewDimension1 = $this->prophesize(ContentDimensionInterface::class);
-        $contentViewDimension2 = $this->prophesize(ContentDimensionInterface::class);
-        $contentViewDimension3 = $this->prophesize(ContentDimensionInterface::class);
+        $contentViewDimension1 = $this->prophesize(DimensionContentInterface::class);
+        $contentViewDimension2 = $this->prophesize(DimensionContentInterface::class);
+        $contentViewDimension3 = $this->prophesize(DimensionContentInterface::class);
 
         $contentView = $this->prophesize(ContentViewInterface::class);
 
@@ -86,7 +86,7 @@ class ViewFactoryTest extends TestCase
             $merger3->reveal(),
         ]);
 
-        $viewFactory->create(new ContentDimensionCollection([
+        $viewFactory->create(new DimensionContentCollection([
             $contentViewDimension1->reveal(),
             $contentViewDimension2->reveal(),
             $contentViewDimension3->reveal(),

@@ -13,9 +13,8 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentPersister;
 
-use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\ApiViewResolverInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ContentDimensionCollectionFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\DimensionCollectionFactoryInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Factory\DimensionContentCollectionFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ViewFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
@@ -28,39 +27,34 @@ class ContentPersister implements ContentPersisterInterface
     private $dimensionCollectionFactory;
 
     /**
-     * @var ContentDimensionCollectionFactoryInterface
+     * @var DimensionContentCollectionFactoryInterface
      */
-    private $contentDimensionCollectionFactory;
+    private $dimensionContentCollectionFactory;
 
     /**
      * @var ViewFactoryInterface
      */
     private $viewFactory;
 
-    /**
-     * @var ApiViewResolverInterface
-     */
-    private $viewResolver;
-
     public function __construct(
         DimensionCollectionFactoryInterface $dimensionCollectionFactory,
-        ContentDimensionCollectionFactoryInterface $contentDimensionCollectionFactory,
+        DimensionContentCollectionFactoryInterface $dimensionContentCollectionFactory,
         ViewFactoryInterface $viewFactory
     ) {
         $this->dimensionCollectionFactory = $dimensionCollectionFactory;
-        $this->contentDimensionCollectionFactory = $contentDimensionCollectionFactory;
+        $this->dimensionContentCollectionFactory = $dimensionContentCollectionFactory;
         $this->viewFactory = $viewFactory;
     }
 
     public function persist(ContentRichEntityInterface $contentRichEntity, array $data, array $dimensionAttributes): ContentViewInterface
     {
         $dimensionCollection = $this->dimensionCollectionFactory->create($dimensionAttributes);
-        $contentDimensionCollection = $this->contentDimensionCollectionFactory->create(
+        $dimensionContentCollection = $this->dimensionContentCollectionFactory->create(
             $contentRichEntity,
             $dimensionCollection,
             $data
         );
 
-        return $this->viewFactory->create($contentDimensionCollection);
+        return $this->viewFactory->create($dimensionContentCollection);
     }
 }
