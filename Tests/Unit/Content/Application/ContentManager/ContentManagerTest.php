@@ -11,12 +11,12 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentFacade;
+namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentManager;
 
 use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentCopier\ContentCopierInterface;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentFacade\ContentFacade;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentFacade\ContentFacadeInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentManager\ContentManager;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentManager\ContentManagerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersisterInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionNormalizer\ContentProjectionNormalizerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolverInterface;
@@ -24,16 +24,16 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\ContentWorkflo
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 
-class ContentFacadeTest extends TestCase
+class ContentManagerTest extends TestCase
 {
-    protected function createContentFacadeInstance(
+    protected function createContentManagerInstance(
         ContentResolverInterface $contentResolver,
         ContentPersisterInterface $contentPersister,
         ContentProjectionNormalizerInterface $contentProjectionNormalizer,
         ContentCopierInterface $contentCopier,
         ContentWorkflowInterface $contentWorkflow
-    ): ContentFacadeInterface {
-        return new ContentFacade($contentResolver, $contentPersister, $contentProjectionNormalizer, $contentCopier, $contentWorkflow);
+    ): ContentManagerInterface {
+        return new ContentManager($contentResolver, $contentPersister, $contentProjectionNormalizer, $contentCopier, $contentWorkflow);
     }
 
     public function testLoad(): void
@@ -48,7 +48,7 @@ class ContentFacadeTest extends TestCase
         $contentCopier = $this->prophesize(ContentCopierInterface::class);
         $contentWorkflow = $this->prophesize(ContentWorkflowInterface::class);
 
-        $contentFacade = $this->createContentFacadeInstance(
+        $contentManager = $this->createContentManagerInstance(
             $contentResolver->reveal(),
             $contentPersister->reveal(),
             $contentProjectionNormalizer->reveal(),
@@ -62,7 +62,7 @@ class ContentFacadeTest extends TestCase
 
         $this->assertSame(
             $contentProjection->reveal(),
-            $contentFacade->resolve($contentRichEntity->reveal(), $dimensionAttributes)
+            $contentManager->resolve($contentRichEntity->reveal(), $dimensionAttributes)
         );
     }
 
@@ -79,7 +79,7 @@ class ContentFacadeTest extends TestCase
         $contentCopier = $this->prophesize(ContentCopierInterface::class);
         $contentWorkflow = $this->prophesize(ContentWorkflowInterface::class);
 
-        $contentFacade = $this->createContentFacadeInstance(
+        $contentManager = $this->createContentManagerInstance(
             $contentResolver->reveal(),
             $contentPersister->reveal(),
             $contentProjectionNormalizer->reveal(),
@@ -93,7 +93,7 @@ class ContentFacadeTest extends TestCase
 
         $this->assertSame(
             $contentProjection->reveal(),
-            $contentFacade->persist($contentRichEntity->reveal(), $data, $dimensionAttributes)
+            $contentManager->persist($contentRichEntity->reveal(), $data, $dimensionAttributes)
         );
     }
 
@@ -107,7 +107,7 @@ class ContentFacadeTest extends TestCase
         $contentCopier = $this->prophesize(ContentCopierInterface::class);
         $contentWorkflow = $this->prophesize(ContentWorkflowInterface::class);
 
-        $contentFacade = $this->createContentFacadeInstance(
+        $contentManager = $this->createContentManagerInstance(
             $contentResolver->reveal(),
             $contentPersister->reveal(),
             $contentProjectionNormalizer->reveal(),
@@ -121,7 +121,7 @@ class ContentFacadeTest extends TestCase
 
         $this->assertSame(
             ['resolved' => 'data'],
-            $contentFacade->normalize($contentProjection->reveal())
+            $contentManager->normalize($contentProjection->reveal())
         );
     }
 
@@ -140,7 +140,7 @@ class ContentFacadeTest extends TestCase
         $contentCopier = $this->prophesize(ContentCopierInterface::class);
         $contentWorkflow = $this->prophesize(ContentWorkflowInterface::class);
 
-        $contentFacade = $this->createContentFacadeInstance(
+        $contentManager = $this->createContentManagerInstance(
             $contentResolver->reveal(),
             $contentPersister->reveal(),
             $contentProjectionNormalizer->reveal(),
@@ -159,7 +159,7 @@ class ContentFacadeTest extends TestCase
 
         $this->assertSame(
             $contentProjection->reveal(),
-            $contentFacade->copy(
+            $contentManager->copy(
                 $sourceContentRichEntity->reveal(),
                 $sourceDimensionAttributes,
                 $targetContentRichEntity->reveal(),
@@ -182,7 +182,7 @@ class ContentFacadeTest extends TestCase
         $contentCopier = $this->prophesize(ContentCopierInterface::class);
         $contentWorkflow = $this->prophesize(ContentWorkflowInterface::class);
 
-        $contentFacade = $this->createContentFacadeInstance(
+        $contentManager = $this->createContentManagerInstance(
             $contentResolver->reveal(),
             $contentPersister->reveal(),
             $contentProjectionNormalizer->reveal(),
@@ -200,7 +200,7 @@ class ContentFacadeTest extends TestCase
 
         $this->assertSame(
             $contentProjection->reveal(),
-            $contentFacade->applyTransition(
+            $contentManager->applyTransition(
                 $contentRichEntity->reveal(),
                 $dimensionAttributes,
                 $transitionName

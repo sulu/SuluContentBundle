@@ -16,7 +16,7 @@ namespace Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Controll
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\ViewHandlerInterface;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentFacade\ContentFacadeInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentManager\ContentManagerInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
@@ -50,9 +50,9 @@ class ExampleController extends AbstractRestController implements ClassResourceI
     private $restHelper;
 
     /**
-     * @var ContentFacadeInterface
+     * @var ContentManagerInterface
      */
-    private $contentFacade;
+    private $contentManager;
 
     /**
      * @var EntityManagerInterface
@@ -65,13 +65,13 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         FieldDescriptorFactoryInterface $fieldDescriptorFactory,
         DoctrineListBuilderFactoryInterface $listBuilderFactory,
         RestHelperInterface $restHelper,
-        ContentFacadeInterface $contentFacade,
+        ContentManagerInterface $contentManager,
         EntityManagerInterface $entityManager
     ) {
         $this->fieldDescriptorFactory = $fieldDescriptorFactory;
         $this->listBuilderFactory = $listBuilderFactory;
         $this->restHelper = $restHelper;
-        $this->contentFacade = $contentFacade;
+        $this->contentManager = $contentManager;
         $this->entityManager = $entityManager;
 
         parent::__construct($viewHandler, $tokenStorage);
@@ -113,7 +113,7 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         }
 
         $dimensionAttributes = $this->getDimensionAttributes($request);
-        $contentProjection = $this->contentFacade->resolve($example, $dimensionAttributes);
+        $contentProjection = $this->contentManager->resolve($example, $dimensionAttributes);
 
         return $this->handleView($this->view($this->resolve($example, $contentProjection)));
     }
@@ -128,13 +128,13 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         $data = $this->getData($request);
         $dimensionAttributes = $this->getDimensionAttributes($request); // ["locale" => "en", "stage" => "draft"]
 
-        $contentProjection = $this->contentFacade->persist($example, $data, $dimensionAttributes);
+        $contentProjection = $this->contentManager->persist($example, $data, $dimensionAttributes);
 
         $this->entityManager->persist($example);
         $this->entityManager->flush();
 
         if ('publish' === $request->query->get('action')) {
-            $contentProjection = $this->contentFacade->applyTransition(
+            $contentProjection = $this->contentManager->applyTransition(
                 $example,
                 $dimensionAttributes,
                 WorkflowInterface::WORKFLOW_TRANSITION_PUBLISH
@@ -161,12 +161,12 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         $data = $this->getData($request);
         $dimensionAttributes = $this->getDimensionAttributes($request); // ["locale" => "en", "stage" => "draft"]
 
-        $contentProjection = $this->contentFacade->persist($example, $data, $dimensionAttributes);
+        $contentProjection = $this->contentManager->persist($example, $data, $dimensionAttributes);
 
         $this->entityManager->flush();
 
         if ('publish' === $request->query->get('action')) {
-            $contentProjection = $this->contentFacade->applyTransition(
+            $contentProjection = $this->contentManager->applyTransition(
                 $example,
                 $dimensionAttributes,
                 WorkflowInterface::WORKFLOW_TRANSITION_PUBLISH
@@ -220,7 +220,7 @@ class ExampleController extends AbstractRestController implements ClassResourceI
      */
     protected function resolve(Example $example, ContentProjectionInterface $contentProjection): array
     {
-        $resolvedData = $this->contentFacade->normalize($contentProjection);
+        $resolvedData = $this->contentManager->normalize($contentProjection);
 
         // If used autoincrement ids the id need to be set here on
         // the resolvedData else on create no id will be returned
