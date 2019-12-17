@@ -78,11 +78,11 @@ class ContentCopier implements ContentCopierInterface
 
     public function copyFromContentProjection(
         ContentProjectionInterface $sourceContentProjection,
-        ContentRichEntityInterface $targetContentRichENtity,
+        ContentRichEntityInterface $targetContentRichEntity,
         array $targetDimensionAttributes
     ): ContentProjectionInterface {
         $data = $this->contentProjectionNormalizer->normalize($sourceContentProjection);
 
-        return $this->contentPersister->persist($targetContentRichENtity, $data, $targetDimensionAttributes);
+        return $this->contentPersister->persist($targetContentRichEntity, $data, $targetDimensionAttributes);
     }
 }

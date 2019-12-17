@@ -44,7 +44,7 @@ interface ContentCopierInterface
      */
     public function copyFromContentProjection(
         ContentProjectionInterface $sourceContentProjection,
-        ContentRichEntityInterface $targetContentRichENtity,
+        ContentRichEntityInterface $targetContentRichEntity,
         array $targetDimensionAttributes
     ): ContentProjectionInterface;
 }

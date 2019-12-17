@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionNormalizer;
 
-use Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionNormalizer\Helper\NormalizerHelperInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionNormalizer\Enhancer\NormalizeEnhancerInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
@@ -23,9 +23,9 @@ use Symfony\Component\Serializer\Serializer;
 class ContentProjectionNormalizer implements ContentProjectionNormalizerInterface
 {
     /**
-     * @var iterable<NormalizerHelperInterface>
+     * @var iterable<NormalizeEnhancerInterface>
      */
-    private $helpers;
+    private $enhancers;
 
     /**
      * @var NormalizerInterface
@@ -33,13 +33,13 @@ class ContentProjectionNormalizer implements ContentProjectionNormalizerInterfac
     private $serializer;
 
     /**
-     * @param iterable<NormalizerHelperInterface> $helpers
+     * @param iterable<NormalizeEnhancerInterface> $enhancers
      */
     public function __construct(
-        iterable $helpers,
+        iterable $enhancers,
         ?NormalizerInterface $serializer = null
     ) {
-        $this->helpers = $helpers;
+        $this->enhancers = $enhancers;
         $this->serializer = $serializer ?: $this->createSerializer();
     }
 
@@ -47,29 +47,29 @@ class ContentProjectionNormalizer implements ContentProjectionNormalizerInterfac
     {
         $ignoreAttributes = ['id'];
 
-        foreach ($this->helpers as $resolver) {
+        foreach ($this->enhancers as $enhancer) {
             $ignoreAttributes = array_merge(
                 $ignoreAttributes,
-                $resolver->getIgnoredAttributes($contentProjection)
+                $enhancer->getIgnoredAttributes($contentProjection)
             );
         }
 
-        /** @var mixed[] $viewData */
-        $viewData = $this->serializer->normalize($contentProjection, null, [
+        /** @var mixed[] $normalizedData */
+        $normalizedData = $this->serializer->normalize($contentProjection, null, [
             'ignored_attributes' => $ignoreAttributes,
         ]);
 
         // The view should not be represented by its own id but the id of the content entity
-        $viewData['id'] = $viewData['contentId'];
-        unset($viewData['contentId']);
+        $normalizedData['id'] = $normalizedData['contentId'];
+        unset($normalizedData['contentId']);
 
-        foreach ($this->helpers as $helper) {
-            $viewData = $helper->normalize($contentProjection, $viewData);
+        foreach ($this->enhancers as $enhancer) {
+            $normalizedData = $enhancer->enhance($contentProjection, $normalizedData);
         }
 
-        ksort($viewData);
+        ksort($normalizedData);
 
-        return $viewData;
+        return $normalizedData;
     }
 
     private function createSerializer(): NormalizerInterface

@@ -11,16 +11,16 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionNormalizer\Helper;
+namespace Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionNormalizer\Enhancer;
 
-interface NormalizerHelperInterface
+interface NormalizeEnhancerInterface
 {
     /**
-     * @param mixed[] $viewData
+     * @param mixed[] $normalizeData
      *
      * @return mixed[]
      */
-    public function normalize(object $object, array $viewData): array;
+    public function enhance(object $object, array $normalizeData): array;
 
     /**
      * @return string[]

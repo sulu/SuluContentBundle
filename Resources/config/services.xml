@@ -83,7 +83,7 @@
 
         <!-- ContentProjectionNormalizer -->
         <service id="sulu_content.content_projection_normalizer" class="Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionNormalizer\ContentProjectionNormalizer">
-            <argument type="tagged" tag="sulu_content.content_projection_normalizer_helper"/>
+            <argument type="tagged" tag="sulu_content.normalize_enhancer"/>
         </service>
 
         <service id="Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionNormalizer\ContentProjectionNormalizerInterface" alias="sulu_content.content_projection_normalizer"/>
