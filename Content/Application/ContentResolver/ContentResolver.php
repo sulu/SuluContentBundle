@@ -11,7 +11,7 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Content\Application\ContentLoader;
+namespace Sulu\Bundle\ContentBundle\Content\Application\ContentResolver;
 
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ContentProjectionFactoryInterface;
@@ -20,7 +20,7 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionContentRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionRepositoryInterface;
 
-class ContentLoader implements ContentLoaderInterface
+class ContentResolver implements ContentResolverInterface
 {
     /**
      * @var DimensionRepositoryInterface
@@ -47,7 +47,7 @@ class ContentLoader implements ContentLoaderInterface
         $this->viewFactory = $viewFactory;
     }
 
-    public function load(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes): ContentProjectionInterface
+    public function resolve(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes): ContentProjectionInterface
     {
         $dimensionCollection = $this->dimensionRepository->findByAttributes($dimensionAttributes);
 

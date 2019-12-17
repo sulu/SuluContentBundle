@@ -11,11 +11,11 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentLoader;
+namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentResolver;
 
 use PHPUnit\Framework\TestCase;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentLoader\ContentLoader;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentLoader\ContentLoaderInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolver;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ContentProjectionFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
@@ -28,14 +28,14 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionContentRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionRepositoryInterface;
 
-class ContentLoaderTest extends TestCase
+class ContentResolverTest extends TestCase
 {
-    protected function createContentLoaderInstance(
+    protected function createContentResolverInstance(
         DimensionRepositoryInterface $dimensionRepository,
         DimensionContentRepositoryInterface $dimensionContentRepository,
         ContentProjectionFactoryInterface $viewFactory
-    ): ContentLoaderInterface {
-        return new ContentLoader(
+    ): ContentResolverInterface {
+        return new ContentResolver(
             $dimensionRepository,
             $dimensionContentRepository,
             $viewFactory
@@ -78,13 +78,13 @@ class ContentLoaderTest extends TestCase
         $viewFactory = $this->prophesize(ContentProjectionFactoryInterface::class);
         $viewFactory->create($dimensionContentCollection)->willReturn($contentProjection->reveal())->shouldBeCalled();
 
-        $createContentMessageHandler = $this->createContentLoaderInstance(
+        $contentResolver = $this->createContentResolverInstance(
             $dimensionRepository->reveal(),
             $dimensionContentRepository->reveal(),
             $viewFactory->reveal()
         );
 
-        $this->assertSame($contentProjection->reveal(), $createContentMessageHandler->load($contentRichEntity->reveal(), $attributes));
+        $this->assertSame($contentProjection->reveal(), $contentResolver->resolve($contentRichEntity->reveal(), $attributes));
     }
 
     public function testLoadDimensionNotFound(): void
@@ -106,13 +106,13 @@ class ContentLoaderTest extends TestCase
         $contentProjection = $this->prophesize(ContentProjectionInterface::class);
         $viewFactory = $this->prophesize(ContentProjectionFactoryInterface::class);
 
-        $createContentMessageHandler = $this->createContentLoaderInstance(
+        $contentResolver = $this->createContentResolverInstance(
             $dimensionRepository->reveal(),
             $dimensionContentRepository->reveal(),
             $viewFactory->reveal()
         );
 
-        $this->assertSame($contentProjection->reveal(), $createContentMessageHandler->load($contentRichEntity->reveal(), $attributes));
+        $this->assertSame($contentProjection->reveal(), $contentResolver->resolve($contentRichEntity->reveal(), $attributes));
     }
 
     public function testLoadNotFound(): void
@@ -148,12 +148,12 @@ class ContentLoaderTest extends TestCase
         $viewFactory = $this->prophesize(ContentProjectionFactoryInterface::class);
         $viewFactory->create($dimensionContentCollection)->willReturn($contentProjection->reveal())->shouldNotBeCalled();
 
-        $createContentMessageHandler = $this->createContentLoaderInstance(
+        $contentResolver = $this->createContentResolverInstance(
             $dimensionRepository->reveal(),
             $dimensionContentRepository->reveal(),
             $viewFactory->reveal()
         );
 
-        $this->assertSame($contentProjection->reveal(), $createContentMessageHandler->load($contentRichEntity->reveal(), $attributes));
+        $this->assertSame($contentProjection->reveal(), $contentResolver->resolve($contentRichEntity->reveal(), $attributes));
     }
 }

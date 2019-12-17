@@ -21,7 +21,7 @@ interface ContentFacadeInterface
     /**
      * @param mixed[] $dimensionAttributes
      */
-    public function load(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes): ContentProjectionInterface;
+    public function resolve(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes): ContentProjectionInterface;
 
     /**
      * @param mixed[] $data

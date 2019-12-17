@@ -18,9 +18,9 @@ use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
 use Sulu\Bundle\AdminBundle\DependencyInjection\SuluAdminExtension;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentCopier\ContentCopierInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentFacade\ContentFacadeInterface;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentLoader\ContentLoaderInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersisterInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionNormalizer\ContentProjectionNormalizerInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\ContentWorkflowInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ContentProjectionFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\DimensionContentCollectionFactoryInterface;
@@ -57,7 +57,7 @@ class SuluContentExtensionTest extends AbstractExtensionTestCase
 
         // Main services aliases
         $this->assertContainerBuilderHasAlias(ContentFacadeInterface::class, 'sulu_content.content_facade');
-        $this->assertContainerBuilderHasAlias(ContentLoaderInterface::class, 'sulu_content.content_loader');
+        $this->assertContainerBuilderHasAlias(ContentResolverInterface::class, 'sulu_content.content_resolver');
         $this->assertContainerBuilderHasAlias(ContentPersisterInterface::class, 'sulu_content.content_persister');
         $this->assertContainerBuilderHasAlias(ContentProjectionNormalizerInterface::class, 'sulu_content.content_projection_normalizer');
         $this->assertContainerBuilderHasAlias(ContentCopierInterface::class, 'sulu_content.content_copier');

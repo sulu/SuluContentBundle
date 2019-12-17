@@ -17,9 +17,9 @@ use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentCopier\ContentCopierInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentFacade\ContentFacade;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentFacade\ContentFacadeInterface;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentLoader\ContentLoaderInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersisterInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionNormalizer\ContentProjectionNormalizerInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\ContentWorkflowInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
@@ -27,13 +27,13 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 class ContentFacadeTest extends TestCase
 {
     protected function createContentFacadeInstance(
-        ContentLoaderInterface $contentLoader,
+        ContentResolverInterface $contentResolver,
         ContentPersisterInterface $contentPersister,
         ContentProjectionNormalizerInterface $contentProjectionNormalizer,
         ContentCopierInterface $contentCopier,
         ContentWorkflowInterface $contentWorkflow
     ): ContentFacadeInterface {
-        return new ContentFacade($contentLoader, $contentPersister, $contentProjectionNormalizer, $contentCopier, $contentWorkflow);
+        return new ContentFacade($contentResolver, $contentPersister, $contentProjectionNormalizer, $contentCopier, $contentWorkflow);
     }
 
     public function testLoad(): void
@@ -42,27 +42,27 @@ class ContentFacadeTest extends TestCase
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
         $dimensionAttributes = ['locale' => 'de', 'stage' => 'draft'];
 
-        $contentLoader = $this->prophesize(ContentLoaderInterface::class);
+        $contentResolver = $this->prophesize(ContentResolverInterface::class);
         $contentPersister = $this->prophesize(ContentPersisterInterface::class);
         $contentProjectionNormalizer = $this->prophesize(ContentProjectionNormalizerInterface::class);
         $contentCopier = $this->prophesize(ContentCopierInterface::class);
         $contentWorkflow = $this->prophesize(ContentWorkflowInterface::class);
 
         $contentFacade = $this->createContentFacadeInstance(
-            $contentLoader->reveal(),
+            $contentResolver->reveal(),
             $contentPersister->reveal(),
             $contentProjectionNormalizer->reveal(),
             $contentCopier->reveal(),
             $contentWorkflow->reveal()
         );
 
-        $contentLoader->load($contentRichEntity->reveal(), $dimensionAttributes)
+        $contentResolver->resolve($contentRichEntity->reveal(), $dimensionAttributes)
             ->willReturn($contentProjection->reveal())
             ->shouldBeCalled();
 
         $this->assertSame(
             $contentProjection->reveal(),
-            $contentFacade->load($contentRichEntity->reveal(), $dimensionAttributes)
+            $contentFacade->resolve($contentRichEntity->reveal(), $dimensionAttributes)
         );
     }
 
@@ -73,14 +73,14 @@ class ContentFacadeTest extends TestCase
         $data = ['data' => 'value'];
         $dimensionAttributes = ['locale' => 'de', 'stage' => 'draft'];
 
-        $contentLoader = $this->prophesize(ContentLoaderInterface::class);
+        $contentResolver = $this->prophesize(ContentResolverInterface::class);
         $contentPersister = $this->prophesize(ContentPersisterInterface::class);
         $contentProjectionNormalizer = $this->prophesize(ContentProjectionNormalizerInterface::class);
         $contentCopier = $this->prophesize(ContentCopierInterface::class);
         $contentWorkflow = $this->prophesize(ContentWorkflowInterface::class);
 
         $contentFacade = $this->createContentFacadeInstance(
-            $contentLoader->reveal(),
+            $contentResolver->reveal(),
             $contentPersister->reveal(),
             $contentProjectionNormalizer->reveal(),
             $contentCopier->reveal(),
@@ -101,14 +101,14 @@ class ContentFacadeTest extends TestCase
     {
         $contentProjection = $this->prophesize(ContentProjectionInterface::class);
 
-        $contentLoader = $this->prophesize(ContentLoaderInterface::class);
+        $contentResolver = $this->prophesize(ContentResolverInterface::class);
         $contentPersister = $this->prophesize(ContentPersisterInterface::class);
         $contentProjectionNormalizer = $this->prophesize(ContentProjectionNormalizerInterface::class);
         $contentCopier = $this->prophesize(ContentCopierInterface::class);
         $contentWorkflow = $this->prophesize(ContentWorkflowInterface::class);
 
         $contentFacade = $this->createContentFacadeInstance(
-            $contentLoader->reveal(),
+            $contentResolver->reveal(),
             $contentPersister->reveal(),
             $contentProjectionNormalizer->reveal(),
             $contentCopier->reveal(),
@@ -134,14 +134,14 @@ class ContentFacadeTest extends TestCase
         $targetContentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
         $targetDimensionAttributes = ['locale' => 'de'];
 
-        $contentLoader = $this->prophesize(ContentLoaderInterface::class);
+        $contentResolver = $this->prophesize(ContentResolverInterface::class);
         $contentPersister = $this->prophesize(ContentPersisterInterface::class);
         $contentProjectionNormalizer = $this->prophesize(ContentProjectionNormalizerInterface::class);
         $contentCopier = $this->prophesize(ContentCopierInterface::class);
         $contentWorkflow = $this->prophesize(ContentWorkflowInterface::class);
 
         $contentFacade = $this->createContentFacadeInstance(
-            $contentLoader->reveal(),
+            $contentResolver->reveal(),
             $contentPersister->reveal(),
             $contentProjectionNormalizer->reveal(),
             $contentCopier->reveal(),
@@ -176,14 +176,14 @@ class ContentFacadeTest extends TestCase
         $dimensionAttributes = ['locale' => 'en'];
         $transitionName = 'review';
 
-        $contentLoader = $this->prophesize(ContentLoaderInterface::class);
+        $contentResolver = $this->prophesize(ContentResolverInterface::class);
         $contentPersister = $this->prophesize(ContentPersisterInterface::class);
         $contentProjectionNormalizer = $this->prophesize(ContentProjectionNormalizerInterface::class);
         $contentCopier = $this->prophesize(ContentCopierInterface::class);
         $contentWorkflow = $this->prophesize(ContentWorkflowInterface::class);
 
         $contentFacade = $this->createContentFacadeInstance(
-            $contentLoader->reveal(),
+            $contentResolver->reveal(),
             $contentPersister->reveal(),
             $contentProjectionNormalizer->reveal(),
             $contentCopier->reveal(),

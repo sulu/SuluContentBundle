@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentCopier;
 
-use Sulu\Bundle\ContentBundle\Content\Application\ContentLoader\ContentLoaderInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersisterInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionNormalizer\ContentProjectionNormalizerInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ContentProjectionFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
@@ -24,9 +24,9 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInt
 class ContentCopier implements ContentCopierInterface
 {
     /**
-     * @var ContentLoaderInterface
+     * @var ContentResolverInterface
      */
-    private $contentLoader;
+    private $contentResolver;
 
     /**
      * @var ContentProjectionFactoryInterface
@@ -44,12 +44,12 @@ class ContentCopier implements ContentCopierInterface
     private $contentProjectionNormalizer;
 
     public function __construct(
-        ContentLoaderInterface $contentLoader,
+        ContentResolverInterface $contentResolver,
         ContentProjectionFactoryInterface $viewFactory,
         ContentPersisterInterface $contentPersister,
         ContentProjectionNormalizerInterface $contentProjectionNormalizer
     ) {
-        $this->contentLoader = $contentLoader;
+        $this->contentResolver = $contentResolver;
         $this->viewFactory = $viewFactory;
         $this->contentPersister = $contentPersister;
         $this->contentProjectionNormalizer = $contentProjectionNormalizer;
@@ -61,7 +61,7 @@ class ContentCopier implements ContentCopierInterface
         ContentRichEntityInterface $targetContentRichEntity,
         array $targetDimensionAttributes
     ): ContentProjectionInterface {
-        $sourceContentProjection = $this->contentLoader->load($sourceContentRichEntity, $sourceDimensionAttributes);
+        $sourceContentProjection = $this->contentResolver->resolve($sourceContentRichEntity, $sourceDimensionAttributes);
 
         return $this->copyFromContentProjection($sourceContentProjection, $targetContentRichEntity, $targetDimensionAttributes);
     }
