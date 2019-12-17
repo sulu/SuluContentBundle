@@ -44,7 +44,7 @@ class ContentProjectionFactory implements ContentProjectionFactoryInterface
         $dimensionContentCollectionArray = iterator_to_array($dimensionContentCollection);
         $lastKey = \count($dimensionContentCollectionArray) - 1;
 
-        $contentProjection = $dimensionContentCollectionArray[$lastKey]->createViewInstance();
+        $contentProjection = $dimensionContentCollectionArray[$lastKey]->createProjectionInstance();
 
         foreach ($dimensionContentCollection as $dimensionContent) {
             /** @var MergerInterface $merger */

@@ -30,7 +30,7 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Doctrine\MetadataLoader;
-use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleDimension;
+use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleDimensionContent;
 use Sulu\Bundle\TagBundle\Tag\TagInterface;
 
 class MetadataLoaderTest extends TestCase
@@ -77,7 +77,7 @@ class MetadataLoaderTest extends TestCase
         $classMetadata->getReflectionClass()->willReturn($reflectionClass->reveal());
         $classMetadata->getTableName()->willReturn('test_example');
         $classMetadata->getIdentifierColumnNames()->willReturn(['id']);
-        $classMetadata->getName()->willReturn(ExampleDimension::class);
+        $classMetadata->getName()->willReturn(ExampleDimensionContent::class);
 
         foreach ($fields as $field => $exist) {
             $classMetadata->hasField($field)->willReturn($exist);

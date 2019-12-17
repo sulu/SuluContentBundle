@@ -19,7 +19,7 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionContentRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
-use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleDimension;
+use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleDimensionContent;
 use Sulu\Bundle\ContentBundle\Tests\Functional\BaseTestCase;
 
 class DimensionContentRepositoryTest extends BaseTestCase
@@ -151,9 +151,9 @@ class DimensionContentRepositoryTest extends BaseTestCase
         return $example;
     }
 
-    private function createContentDimension(Example $example, DimensionInterface $dimension): ExampleDimension
+    private function createContentDimension(Example $example, DimensionInterface $dimension): ExampleDimensionContent
     {
-        $exampleDimension = new ExampleDimension($example, $dimension);
+        $exampleDimension = new ExampleDimensionContent($example, $dimension);
         $this->getEntityManager()->persist($exampleDimension);
 
         return $exampleDimension;

@@ -27,7 +27,7 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateTrait;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowTrait;
 
-class ExampleDimension extends AbstractDimensionContent implements ExcerptInterface, SeoInterface, TemplateInterface, RoutableInterface, WorkflowInterface
+class ExampleDimensionContent extends AbstractDimensionContent implements ExcerptInterface, SeoInterface, TemplateInterface, RoutableInterface, WorkflowInterface
 {
     use ExcerptTrait;
     use SeoTrait;
@@ -84,7 +84,7 @@ class ExampleDimension extends AbstractDimensionContent implements ExcerptInterf
         $this->parentSetTemplateData($templateData);
     }
 
-    public function createViewInstance(): ContentProjectionInterface
+    public function createProjectionInstance(): ContentProjectionInterface
     {
         $contentProjection = new ExampleView($this->getExample(), $this->dimension);
         $contentProjection->setTitle($this->getTitle());

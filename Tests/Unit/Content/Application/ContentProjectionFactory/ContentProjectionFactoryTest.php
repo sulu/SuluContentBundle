@@ -45,7 +45,7 @@ class ContentProjectionFactoryTest extends TestCase
 
         $contentProjection = $this->prophesize(ContentProjectionInterface::class);
 
-        $contentProjectionDimension3->createViewInstance()->willReturn($contentProjection->reveal())->shouldBeCalled();
+        $contentProjectionDimension3->createProjectionInstance()->willReturn($contentProjection->reveal())->shouldBeCalled();
 
         $viewFactory = $this->getViewFactoryInstance();
         $viewFactory->create(new DimensionContentCollection([
@@ -78,7 +78,7 @@ class ContentProjectionFactoryTest extends TestCase
         $merger3->merge($contentProjection, $contentProjectionDimension2)->shouldBeCalled();
         $merger3->merge($contentProjection, $contentProjectionDimension3)->shouldBeCalled();
 
-        $contentProjectionDimension3->createViewInstance()->willReturn($contentProjection->reveal())->shouldBeCalled();
+        $contentProjectionDimension3->createProjectionInstance()->willReturn($contentProjection->reveal())->shouldBeCalled();
 
         $viewFactory = $this->getViewFactoryInstance([
             $merger1->reveal(),

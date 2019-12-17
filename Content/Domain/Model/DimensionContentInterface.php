@@ -22,5 +22,5 @@ interface DimensionContentInterface
 
     public function getDimension(): DimensionInterface;
 
-    public function createViewInstance(): ContentProjectionInterface;
+    public function createProjectionInstance(): ContentProjectionInterface;
 }
