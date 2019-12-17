@@ -15,8 +15,8 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\DimensionCont
 
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Sulu\Bundle\ContentBundle\Content\Application\DimensionContentFactory\DataMapper\DataMapperInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\DimensionContentFactory\DimensionContentCollectionFactory;
-use Sulu\Bundle\ContentBundle\Content\Application\DimensionContentFactory\Mapper\MapperInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollection;
@@ -31,7 +31,7 @@ class DimensionContentCollectionFactoryTest extends TestCase
      * @param mixed[] $dimensionAttributes
      * @param DimensionInterface[] $existDimensions
      * @param DimensionContentInterface[] $existDimensionContents
-     * @param MapperInterface[] $mappers
+     * @param DataMapperInterface[] $mappers
      */
     protected function createDimensionContentCollectionFactoryInstance(
         array $dimensionAttributes,
@@ -219,9 +219,9 @@ class DimensionContentCollectionFactoryTest extends TestCase
 
         $dimensionCollection = new DimensionCollection($attributes, [$dimension1, $dimension2]);
 
-        $mapper1 = $this->prophesize(MapperInterface::class);
+        $mapper1 = $this->prophesize(DataMapperInterface::class);
         $mapper1->map($data, $dimensionContent1->reveal(), $dimensionContent2->reveal())->shouldBeCalled();
-        $mapper2 = $this->prophesize(MapperInterface::class);
+        $mapper2 = $this->prophesize(DataMapperInterface::class);
         $mapper2->map($data, $dimensionContent1->reveal(), $dimensionContent2->reveal())->shouldBeCalled();
 
         $dimensionContentCollectionFactoryInstance = $this->createDimensionContentCollectionFactoryInstance(

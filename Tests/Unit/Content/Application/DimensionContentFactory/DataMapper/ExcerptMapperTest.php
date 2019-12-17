@@ -11,10 +11,10 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\DimensionContentFactory\Mapper;
+namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\DimensionContentFactory\DataMapper;
 
 use PHPUnit\Framework\TestCase;
-use Sulu\Bundle\ContentBundle\Content\Application\DimensionContentFactory\Mapper\ExcerptMapper;
+use Sulu\Bundle\ContentBundle\Content\Application\DimensionContentFactory\DataMapper\ExcerptDataMapper;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\CategoryFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\TagFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
@@ -23,11 +23,11 @@ use Sulu\Bundle\TagBundle\Tag\TagInterface;
 
 class ExcerptMapperTest extends TestCase
 {
-    protected function createExcerptMapperInstance(
+    protected function createExcerptDataMapperInstance(
         TagFactoryInterface $tagFactory,
         CategoryFactoryInterface $categoryFactory
-    ): ExcerptMapper {
-        return new ExcerptMapper($tagFactory, $categoryFactory);
+    ): ExcerptDataMapper {
+        return new ExcerptDataMapper($tagFactory, $categoryFactory);
     }
 
     public function testMapNoExcerpt(): void
@@ -48,7 +48,7 @@ class ExcerptMapperTest extends TestCase
         $tagFactory = $this->prophesize(TagFactoryInterface::class);
         $categoryFactory = $this->prophesize(CategoryFactoryInterface::class);
 
-        $excerptMapper = $this->createExcerptMapperInstance($tagFactory->reveal(), $categoryFactory->reveal());
+        $excerptMapper = $this->createExcerptDataMapperInstance($tagFactory->reveal(), $categoryFactory->reveal());
         $excerptMapper->map($data, $dimensionContent->reveal(), $localizedDimensionContent->reveal());
         $this->assertTrue(true); // Avoid risky test as this is an early return test
     }
@@ -75,7 +75,7 @@ class ExcerptMapperTest extends TestCase
         $tagFactory = $this->prophesize(TagFactoryInterface::class);
         $categoryFactory = $this->prophesize(CategoryFactoryInterface::class);
 
-        $excerptMapper = $this->createExcerptMapperInstance($tagFactory->reveal(), $categoryFactory->reveal());
+        $excerptMapper = $this->createExcerptDataMapperInstance($tagFactory->reveal(), $categoryFactory->reveal());
 
         $excerptMapper->map($data, $dimensionContent->reveal(), $localizedDimensionContent->reveal());
     }
@@ -113,7 +113,7 @@ class ExcerptMapperTest extends TestCase
         $dimensionContent->setExcerptTags([$tag1->reveal(), $tag2->reveal()])->shouldBeCalled();
         $dimensionContent->setExcerptCategories([$category1->reveal(), $category2->reveal()])->shouldBeCalled();
 
-        $excerptMapper = $this->createExcerptMapperInstance($tagFactory->reveal(), $categoryFactory->reveal());
+        $excerptMapper = $this->createExcerptDataMapperInstance($tagFactory->reveal(), $categoryFactory->reveal());
 
         $excerptMapper->map($data, $dimensionContent->reveal());
     }
@@ -154,7 +154,7 @@ class ExcerptMapperTest extends TestCase
         $localizedDimensionContent->setExcerptTags([$tag1->reveal(), $tag2->reveal()])->shouldBeCalled();
         $localizedDimensionContent->setExcerptCategories([$category1->reveal(), $category2->reveal()])->shouldBeCalled();
 
-        $excerptMapper = $this->createExcerptMapperInstance($tagFactory->reveal(), $categoryFactory->reveal());
+        $excerptMapper = $this->createExcerptDataMapperInstance($tagFactory->reveal(), $categoryFactory->reveal());
 
         $excerptMapper->map($data, $dimensionContent->reveal(), $localizedDimensionContent->reveal());
     }

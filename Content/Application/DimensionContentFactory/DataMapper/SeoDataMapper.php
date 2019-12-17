@@ -11,32 +11,32 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Content\Application\DimensionContentFactory\Mapper;
+namespace Sulu\Bundle\ContentBundle\Content\Application\DimensionContentFactory\DataMapper;
 
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
 
-class SeoMapper implements MapperInterface
+class SeoDataMapper implements DataMapperInterface
 {
     public function map(
         array $data,
-        object $dimensionContent,
-        ?object $localizedDimensionContent = null
+        object $unlocalizedObject,
+        ?object $localizedObject = null
     ): void {
-        if (!$dimensionContent instanceof SeoInterface) {
+        if (!$unlocalizedObject instanceof SeoInterface) {
             return;
         }
 
-        if ($localizedDimensionContent) {
-            if (!$localizedDimensionContent instanceof SeoInterface) {
-                throw new \RuntimeException(sprintf('Expected "$localizedDimensionContent" from type "%s" but "%s" given.', SeoInterface::class, \get_class($localizedDimensionContent)));
+        if ($localizedObject) {
+            if (!$localizedObject instanceof SeoInterface) {
+                throw new \RuntimeException(sprintf('Expected "$localizedDimensionContent" from type "%s" but "%s" given.', SeoInterface::class, \get_class($localizedObject)));
             }
 
-            $this->setSeoData($localizedDimensionContent, $data);
+            $this->setSeoData($localizedObject, $data);
 
             return;
         }
 
-        $this->setSeoData($dimensionContent, $data);
+        $this->setSeoData($unlocalizedObject, $data);
     }
 
     /**

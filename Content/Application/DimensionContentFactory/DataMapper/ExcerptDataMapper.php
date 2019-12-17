@@ -11,13 +11,13 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Content\Application\DimensionContentFactory\Mapper;
+namespace Sulu\Bundle\ContentBundle\Content\Application\DimensionContentFactory\DataMapper;
 
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\CategoryFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\TagFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 
-class ExcerptMapper implements MapperInterface
+class ExcerptDataMapper implements DataMapperInterface
 {
     /**
      * @var TagFactoryInterface
@@ -37,24 +37,24 @@ class ExcerptMapper implements MapperInterface
 
     public function map(
         array $data,
-        object $dimensionContent,
-        ?object $localizedDimensionContent = null
+        object $unlocalizedObject,
+        ?object $localizedObject = null
     ): void {
-        if (!$dimensionContent instanceof ExcerptInterface) {
+        if (!$unlocalizedObject instanceof ExcerptInterface) {
             return;
         }
 
-        if ($localizedDimensionContent) {
-            if (!$localizedDimensionContent instanceof ExcerptInterface) {
-                throw new \RuntimeException(sprintf('Expected "$localizedDimensionContent" from type "%s" but "%s" given.', ExcerptInterface::class, \get_class($localizedDimensionContent)));
+        if ($localizedObject) {
+            if (!$localizedObject instanceof ExcerptInterface) {
+                throw new \RuntimeException(sprintf('Expected "$localizedDimensionContent" from type "%s" but "%s" given.', ExcerptInterface::class, \get_class($localizedObject)));
             }
 
-            $this->setExcerptData($localizedDimensionContent, $data);
+            $this->setExcerptData($localizedObject, $data);
 
             return;
         }
 
-        $this->setExcerptData($dimensionContent, $data);
+        $this->setExcerptData($unlocalizedObject, $data);
     }
 
     /**

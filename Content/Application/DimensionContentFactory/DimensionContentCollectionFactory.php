@@ -15,7 +15,7 @@ namespace Sulu\Bundle\ContentBundle\Content\Application\DimensionContentFactory;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Sulu\Bundle\ContentBundle\Content\Application\DimensionContentFactory\Mapper\MapperInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\DimensionContentFactory\DataMapper\DataMapperInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\DimensionContentCollectionFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollectionInterface;
@@ -33,12 +33,12 @@ class DimensionContentCollectionFactory implements DimensionContentCollectionFac
     private $dimensionContentRepository;
 
     /**
-     * @var iterable<MapperInterface>
+     * @var iterable<DataMapperInterface>
      */
     private $mappers;
 
     /**
-     * @param iterable<MapperInterface> $mappers
+     * @param iterable<DataMapperInterface> $mappers
      */
     public function __construct(DimensionContentRepositoryInterface $dimensionContentRepository, iterable $mappers)
     {

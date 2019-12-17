@@ -11,10 +11,10 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\DimensionContentFactory\Mapper;
+namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\DimensionContentFactory\DataMapper;
 
 use PHPUnit\Framework\TestCase;
-use Sulu\Bundle\ContentBundle\Content\Application\DimensionContentFactory\Mapper\TemplateMapper;
+use Sulu\Bundle\ContentBundle\Content\Application\DimensionContentFactory\DataMapper\TemplateDataMapper;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
@@ -23,10 +23,10 @@ use Sulu\Component\Content\Metadata\StructureMetadata;
 
 class TemplateMapperTest extends TestCase
 {
-    protected function createTemplateMapperInstance(
+    protected function createTemplateDataMapperInstance(
         StructureMetadataFactoryInterface $structureMetadataFactory
-    ): TemplateMapper {
-        return new TemplateMapper($structureMetadataFactory);
+    ): TemplateDataMapper {
+        return new TemplateDataMapper($structureMetadataFactory);
     }
 
     public function testMapNoTemplateInstance(): void
@@ -42,7 +42,7 @@ class TemplateMapperTest extends TestCase
         $dimensionContent = $this->prophesize(DimensionContentInterface::class);
         $localizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
 
-        $templateMapper = $this->createTemplateMapperInstance($structureMetadataFactory->reveal());
+        $templateMapper = $this->createTemplateDataMapperInstance($structureMetadataFactory->reveal());
         $templateMapper->map($data, $dimensionContent->reveal(), $localizedDimensionContent->reveal());
         $this->assertTrue(true); // Avoid risky test as this is an early return test
     }
@@ -60,7 +60,7 @@ class TemplateMapperTest extends TestCase
 
         $localizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
 
-        $templateMapper = $this->createTemplateMapperInstance($structureMetadataFactory->reveal());
+        $templateMapper = $this->createTemplateDataMapperInstance($structureMetadataFactory->reveal());
 
         $templateMapper->map($data, $dimensionContent->reveal(), $localizedDimensionContent->reveal());
     }
@@ -93,7 +93,7 @@ class TemplateMapperTest extends TestCase
         $dimensionContent->willImplement(TemplateInterface::class);
         $dimensionContent->getTemplateType()->willReturn('example')->shouldBeCalled();
 
-        $templateMapper = $this->createTemplateMapperInstance($structureMetadataFactory->reveal());
+        $templateMapper = $this->createTemplateDataMapperInstance($structureMetadataFactory->reveal());
 
         $templateMapper->map($data, $dimensionContent->reveal(), $localizedDimensionContent->reveal());
     }
@@ -119,7 +119,7 @@ class TemplateMapperTest extends TestCase
 
         $localizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
 
-        $templateMapper = $this->createTemplateMapperInstance($structureMetadataFactory->reveal());
+        $templateMapper = $this->createTemplateDataMapperInstance($structureMetadataFactory->reveal());
 
         $templateMapper->map($data, $dimensionContent->reveal(), $localizedDimensionContent->reveal());
     }
@@ -153,7 +153,7 @@ class TemplateMapperTest extends TestCase
             'template-key'
         )->willReturn($structureMetadata->reveal())->shouldBeCalled();
 
-        $templateMapper = $this->createTemplateMapperInstance($structureMetadataFactory->reveal());
+        $templateMapper = $this->createTemplateDataMapperInstance($structureMetadataFactory->reveal());
 
         $templateMapper->map($data, $dimensionContent->reveal());
     }
@@ -196,7 +196,7 @@ class TemplateMapperTest extends TestCase
             'template-key'
         )->willReturn($structureMetadata->reveal())->shouldBeCalled();
 
-        $templateMapper = $this->createTemplateMapperInstance($structureMetadataFactory->reveal());
+        $templateMapper = $this->createTemplateDataMapperInstance($structureMetadataFactory->reveal());
 
         $templateMapper->map($data, $dimensionContent->reveal(), $localizedDimensionContent->reveal());
     }
@@ -239,7 +239,7 @@ class TemplateMapperTest extends TestCase
             'template-key'
         )->willReturn($structureMetadata->reveal())->shouldBeCalled();
 
-        $templateMapper = $this->createTemplateMapperInstance($structureMetadataFactory->reveal());
+        $templateMapper = $this->createTemplateDataMapperInstance($structureMetadataFactory->reveal());
 
         $templateMapper->map($data, $dimensionContent->reveal(), $localizedDimensionContent->reveal());
     }
