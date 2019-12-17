@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Domain\Model;
 
-abstract class AbstractContentView implements ContentViewInterface
+abstract class AbstractContentProjection implements ContentProjectionInterface
 {
-    use ContentViewTrait;
+    use ContentProjectionTrait;
 }

@@ -17,8 +17,8 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentCopier\ContentCopierInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\Subscriber\ContentPublishSubscriber;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
@@ -160,13 +160,13 @@ class ContentPublishSubscriberTest extends TestCase
         $contentCopier = $this->prophesize(ContentCopierInterface::class);
         $sourceDimensionAttributes = $dimensionAttributes;
         $sourceDimensionAttributes['stage'] = 'live';
-        $copiedContentView = $this->prophesize(ContentViewInterface::class);
+        $copiedContentProjection = $this->prophesize(ContentProjectionInterface::class);
         $contentCopier->copyFromDimensionContentCollection(
             $dimensionContentCollection->reveal(),
             $contentRichEntity->reveal(),
             $sourceDimensionAttributes
         )
-            ->willReturn($copiedContentView->reveal())
+            ->willReturn($copiedContentProjection->reveal())
             ->shouldBeCalled();
 
         $contentPublishSubscriber = $this->createContentPublisherSubscriberInstance($contentCopier->reveal());

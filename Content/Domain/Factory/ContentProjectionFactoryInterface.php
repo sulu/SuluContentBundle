@@ -13,10 +13,10 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Domain\Factory;
 
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
 
-interface ViewFactoryInterface
+interface ContentProjectionFactoryInterface
 {
-    public function create(DimensionContentCollectionInterface $dimensionContentCollection): ContentViewInterface;
+    public function create(DimensionContentCollectionInterface $dimensionContentCollection): ContentProjectionInterface;
 }

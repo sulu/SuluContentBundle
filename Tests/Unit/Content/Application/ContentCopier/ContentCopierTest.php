@@ -19,16 +19,16 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentCopier\ContentCopierInt
 use Sulu\Bundle\ContentBundle\Content\Application\ContentLoader\ContentLoaderInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersisterInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\ApiViewResolverInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ViewFactoryInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ContentProjectionFactoryInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
 
 class ContentCopierTest extends TestCase
 {
     protected function createContentCopierInstance(
         ContentLoaderInterface $contentLoader,
-        ViewFactoryInterface $viewFactory,
+        ContentProjectionFactoryInterface $viewFactory,
         ContentPersisterInterface $contentPersister,
         ApiViewResolverInterface $contentResolver
     ): ContentCopierInterface {
@@ -42,8 +42,8 @@ class ContentCopierTest extends TestCase
 
     public function testCopy(): void
     {
-        $sourceContentView = $this->prophesize(ContentViewInterface::class);
-        $targetContentView = $this->prophesize(ContentViewInterface::class);
+        $sourceContentProjection = $this->prophesize(ContentProjectionInterface::class);
+        $targetContentProjection = $this->prophesize(ContentProjectionInterface::class);
 
         $sourceContentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
         $sourceDimensionAttributes = ['locale' => 'en'];
@@ -51,31 +51,31 @@ class ContentCopierTest extends TestCase
         $targetDimensionAttributes = ['locale' => 'de'];
 
         $contentLoader = $this->prophesize(ContentLoaderInterface::class);
-        $contentViewFactory = $this->prophesize(ViewFactoryInterface::class);
+        $contentProjectionFactory = $this->prophesize(ContentProjectionFactoryInterface::class);
         $contentPersister = $this->prophesize(ContentPersisterInterface::class);
         $contentResolver = $this->prophesize(ApiViewResolverInterface::class);
 
         $contentLoader->load($sourceContentRichEntity->reveal(), $sourceDimensionAttributes)
-            ->willReturn($sourceContentView->reveal())
+            ->willReturn($sourceContentProjection->reveal())
             ->shouldBeCalled();
 
-        $contentResolver->resolve($sourceContentView->reveal())
+        $contentResolver->resolve($sourceContentProjection->reveal())
             ->willReturn(['resolved' => 'data'])
             ->shouldBeCalled();
 
         $contentPersister->persist($targetContentRichEntity, ['resolved' => 'data'], $targetDimensionAttributes)
-            ->willReturn($targetContentView->reveal())
+            ->willReturn($targetContentProjection->reveal())
             ->shouldBeCalled();
 
         $contentCopier = $this->createContentCopierInstance(
             $contentLoader->reveal(),
-            $contentViewFactory->reveal(),
+            $contentProjectionFactory->reveal(),
             $contentPersister->reveal(),
             $contentResolver->reveal()
         );
 
         $this->assertSame(
-            $targetContentView->reveal(),
+            $targetContentProjection->reveal(),
             $contentCopier->copy(
                 $sourceContentRichEntity->reveal(),
                 $sourceDimensionAttributes,
@@ -87,39 +87,39 @@ class ContentCopierTest extends TestCase
 
     public function testCopyFromDimensionContentCollection(): void
     {
-        $sourceContentView = $this->prophesize(ContentViewInterface::class);
-        $targetContentView = $this->prophesize(ContentViewInterface::class);
+        $sourceContentProjection = $this->prophesize(ContentProjectionInterface::class);
+        $targetContentProjection = $this->prophesize(ContentProjectionInterface::class);
 
         $sourceContentDimensionCollection = $this->prophesize(DimensionContentCollectionInterface::class);
         $targetContentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
         $targetDimensionAttributes = ['locale' => 'de'];
 
         $contentLoader = $this->prophesize(ContentLoaderInterface::class);
-        $contentViewFactory = $this->prophesize(ViewFactoryInterface::class);
+        $contentProjectionFactory = $this->prophesize(ContentProjectionFactoryInterface::class);
         $contentPersister = $this->prophesize(ContentPersisterInterface::class);
         $contentResolver = $this->prophesize(ApiViewResolverInterface::class);
 
-        $contentViewFactory->create($sourceContentDimensionCollection->reveal())
-            ->willReturn($sourceContentView->reveal())
+        $contentProjectionFactory->create($sourceContentDimensionCollection->reveal())
+            ->willReturn($sourceContentProjection->reveal())
             ->shouldBeCalled();
 
-        $contentResolver->resolve($sourceContentView->reveal())
+        $contentResolver->resolve($sourceContentProjection->reveal())
             ->willReturn(['resolved' => 'data'])
             ->shouldBeCalled();
 
         $contentPersister->persist($targetContentRichEntity, ['resolved' => 'data'], $targetDimensionAttributes)
-            ->willReturn($targetContentView->reveal())
+            ->willReturn($targetContentProjection->reveal())
             ->shouldBeCalled();
 
         $contentCopier = $this->createContentCopierInstance(
             $contentLoader->reveal(),
-            $contentViewFactory->reveal(),
+            $contentProjectionFactory->reveal(),
             $contentPersister->reveal(),
             $contentResolver->reveal()
         );
 
         $this->assertSame(
-            $targetContentView->reveal(),
+            $targetContentProjection->reveal(),
             $contentCopier->copyFromDimensionContentCollection(
                 $sourceContentDimensionCollection->reveal(),
                 $targetContentRichEntity->reveal(),
@@ -128,38 +128,38 @@ class ContentCopierTest extends TestCase
         );
     }
 
-    public function testCopyFromContentView(): void
+    public function testCopyFromContentProjection(): void
     {
-        $sourceContentView = $this->prophesize(ContentViewInterface::class);
-        $targetContentView = $this->prophesize(ContentViewInterface::class);
+        $sourceContentProjection = $this->prophesize(ContentProjectionInterface::class);
+        $targetContentProjection = $this->prophesize(ContentProjectionInterface::class);
 
         $targetContentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
         $targetDimensionAttributes = ['locale' => 'de'];
 
         $contentLoader = $this->prophesize(ContentLoaderInterface::class);
-        $contentViewFactory = $this->prophesize(ViewFactoryInterface::class);
+        $contentProjectionFactory = $this->prophesize(ContentProjectionFactoryInterface::class);
         $contentPersister = $this->prophesize(ContentPersisterInterface::class);
         $contentResolver = $this->prophesize(ApiViewResolverInterface::class);
 
-        $contentResolver->resolve($sourceContentView->reveal())
+        $contentResolver->resolve($sourceContentProjection->reveal())
             ->willReturn(['resolved' => 'data'])
             ->shouldBeCalled();
 
         $contentPersister->persist($targetContentRichEntity, ['resolved' => 'data'], $targetDimensionAttributes)
-            ->willReturn($targetContentView->reveal())
+            ->willReturn($targetContentProjection->reveal())
             ->shouldBeCalled();
 
         $contentCopier = $this->createContentCopierInstance(
             $contentLoader->reveal(),
-            $contentViewFactory->reveal(),
+            $contentProjectionFactory->reveal(),
             $contentPersister->reveal(),
             $contentResolver->reveal()
         );
 
         $this->assertSame(
-            $targetContentView->reveal(),
-            $contentCopier->copyFromContentView(
-                $sourceContentView->reveal(),
+            $targetContentProjection->reveal(),
+            $contentCopier->copyFromContentProjection(
+                $sourceContentProjection->reveal(),
                 $targetContentRichEntity->reveal(),
                 $targetDimensionAttributes
             )

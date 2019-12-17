@@ -17,9 +17,9 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 
 class TemplateResolver implements ResolverInterface
 {
-    public function resolve(object $contentView, array $viewData): array
+    public function resolve(object $contentProjection, array $viewData): array
     {
-        if (!$contentView instanceof TemplateInterface) {
+        if (!$contentProjection instanceof TemplateInterface) {
             return $viewData;
         }
 
@@ -32,7 +32,7 @@ class TemplateResolver implements ResolverInterface
         return $viewData;
     }
 
-    public function getIgnoredAttributes(object $contentView): array
+    public function getIgnoredAttributes(object $contentProjection): array
     {
         return [
             'templateType',

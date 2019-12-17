@@ -14,14 +14,14 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Domain\Model;
 
 use PHPUnit\Framework\TestCase;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\AbstractContentView;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\AbstractContentProjection;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 
-class ContentViewTest extends TestCase
+class ContentProjectionTest extends TestCase
 {
-    protected function getContentViewInstance(): ContentViewInterface
+    protected function getContentProjectionInstance(): ContentProjectionInterface
     {
-        return new class() extends AbstractContentView {
+        return new class() extends AbstractContentProjection {
             protected $id = 1;
             protected $dimensionId = '123-456';
 
@@ -34,19 +34,19 @@ class ContentViewTest extends TestCase
 
     public function testGetId(): void
     {
-        $model = $this->getContentViewInstance();
+        $model = $this->getContentProjectionInstance();
         $this->assertSame(1, $model->getId());
     }
 
     public function testGetDimensionId(): void
     {
-        $model = $this->getContentViewInstance();
+        $model = $this->getContentProjectionInstance();
         $this->assertSame('123-456', $model->getDimensionId());
     }
 
     public function testGetContentId(): void
     {
-        $model = $this->getContentViewInstance();
+        $model = $this->getContentProjectionInstance();
         $this->assertSame(5, $model->getContentId());
     }
 }

@@ -20,7 +20,7 @@ use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\ApiViewResolverIn
 use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\Resolver\ExcerptResolver;
 use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\Resolver\TemplateResolver;
 use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\Resolver\WorkflowResolver;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\AbstractContentView;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\AbstractContentProjection;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptTrait;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
@@ -44,7 +44,7 @@ class ApiViewResolverTest extends TestCase
 
     public function testResolveSimple(): void
     {
-        $contentView = new class() extends AbstractContentView {
+        $contentProjection = new class() extends AbstractContentProjection {
             protected $id = 2;
             protected $dimensionId = '123-456';
 
@@ -58,12 +58,12 @@ class ApiViewResolverTest extends TestCase
         $this->assertSame([
             'dimensionId' => '123-456',
             'id' => 5,
-        ], $apiViewResolver->resolve($contentView));
+        ], $apiViewResolver->resolve($contentProjection));
     }
 
     public function testResolveFull(): void
     {
-        $contentView = new class() extends AbstractContentView implements ExcerptInterface, SeoInterface, TemplateInterface, WorkflowInterface {
+        $contentProjection = new class() extends AbstractContentProjection implements ExcerptInterface, SeoInterface, TemplateInterface, WorkflowInterface {
             use ExcerptTrait;
             use SeoTrait;
             use TemplateTrait;
@@ -95,24 +95,24 @@ class ApiViewResolverTest extends TestCase
         $category2 = $this->prophesize(CategoryInterface::class);
         $category2->getId()->willReturn(4);
 
-        $contentView->setSeoTitle('Seo Title');
-        $contentView->setSeoDescription('Seo Description');
-        $contentView->setSeoKeywords('Seo Keyword 1, Seo Keyword 2');
-        $contentView->setSeoCanonicalUrl('https://caninical.localhost/');
-        $contentView->setSeoNoIndex(true);
-        $contentView->setSeoNoFollow(true);
-        $contentView->setSeoHideInSitemap(true);
+        $contentProjection->setSeoTitle('Seo Title');
+        $contentProjection->setSeoDescription('Seo Description');
+        $contentProjection->setSeoKeywords('Seo Keyword 1, Seo Keyword 2');
+        $contentProjection->setSeoCanonicalUrl('https://caninical.localhost/');
+        $contentProjection->setSeoNoIndex(true);
+        $contentProjection->setSeoNoFollow(true);
+        $contentProjection->setSeoHideInSitemap(true);
 
-        $contentView->setExcerptTitle('Excerpt Title');
-        $contentView->setExcerptDescription('Excerpt Description');
-        $contentView->setExcerptMore('Excerpt More');
-        $contentView->setExcerptImage(['id' => 8]);
-        $contentView->setExcerptIcon(['id' => 9]);
-        $contentView->setExcerptTags([$tag1->reveal(), $tag2->reveal()]);
-        $contentView->setExcerptCategories([$category1->reveal(), $category2->reveal()]);
+        $contentProjection->setExcerptTitle('Excerpt Title');
+        $contentProjection->setExcerptDescription('Excerpt Description');
+        $contentProjection->setExcerptMore('Excerpt More');
+        $contentProjection->setExcerptImage(['id' => 8]);
+        $contentProjection->setExcerptIcon(['id' => 9]);
+        $contentProjection->setExcerptTags([$tag1->reveal(), $tag2->reveal()]);
+        $contentProjection->setExcerptCategories([$category1->reveal(), $category2->reveal()]);
 
-        $contentView->setTemplateKey('template-key');
-        $contentView->setTemplateData(['someTemplate' => 'data']);
+        $contentProjection->setTemplateKey('template-key');
+        $contentProjection->setTemplateData(['someTemplate' => 'data']);
 
         $apiViewResolver = $this->createApiViewResolverInstance();
 
@@ -145,6 +145,6 @@ class ApiViewResolverTest extends TestCase
             'template' => 'template-key',
             'workflowName' => 'content_workflow',
             'workflowPlace' => 'unpublished',
-        ], $apiViewResolver->resolve($contentView));
+        ], $apiViewResolver->resolve($contentProjection));
     }
 }

@@ -13,11 +13,11 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentPersister;
 
+use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ContentProjectionFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\DimensionCollectionFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\DimensionContentCollectionFactoryInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ViewFactoryInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentViewInterface;
 
 class ContentPersister implements ContentPersisterInterface
 {
@@ -32,21 +32,21 @@ class ContentPersister implements ContentPersisterInterface
     private $dimensionContentCollectionFactory;
 
     /**
-     * @var ViewFactoryInterface
+     * @var ContentProjectionFactoryInterface
      */
     private $viewFactory;
 
     public function __construct(
         DimensionCollectionFactoryInterface $dimensionCollectionFactory,
         DimensionContentCollectionFactoryInterface $dimensionContentCollectionFactory,
-        ViewFactoryInterface $viewFactory
+        ContentProjectionFactoryInterface $viewFactory
     ) {
         $this->dimensionCollectionFactory = $dimensionCollectionFactory;
         $this->dimensionContentCollectionFactory = $dimensionContentCollectionFactory;
         $this->viewFactory = $viewFactory;
     }
 
-    public function persist(ContentRichEntityInterface $contentRichEntity, array $data, array $dimensionAttributes): ContentViewInterface
+    public function persist(ContentRichEntityInterface $contentRichEntity, array $data, array $dimensionAttributes): ContentProjectionInterface
     {
         $dimensionCollection = $this->dimensionCollectionFactory->create($dimensionAttributes);
         $dimensionContentCollection = $this->dimensionContentCollectionFactory->create(
