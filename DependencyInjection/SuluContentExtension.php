@@ -69,7 +69,7 @@ class SuluContentExtension extends Extension implements PrependExtensionInterfac
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('mapper.xml');
         $loader->load('merger.xml');
-        $loader->load('resolver.xml');
+        $loader->load('normalize-enhancer.xml');
         $loader->load('services.xml');
     }
 }

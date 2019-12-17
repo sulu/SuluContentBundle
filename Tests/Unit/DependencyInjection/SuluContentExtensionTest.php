@@ -20,8 +20,8 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentCopier\ContentCopierInt
 use Sulu\Bundle\ContentBundle\Content\Application\ContentFacade\ContentFacadeInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentLoader\ContentLoaderInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersisterInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionNormalizer\ContentProjectionNormalizerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\ContentWorkflowInterface;
-use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\ApiViewResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ContentProjectionFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\DimensionContentCollectionFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
@@ -59,7 +59,7 @@ class SuluContentExtensionTest extends AbstractExtensionTestCase
         $this->assertContainerBuilderHasAlias(ContentFacadeInterface::class, 'sulu_content.content_facade');
         $this->assertContainerBuilderHasAlias(ContentLoaderInterface::class, 'sulu_content.content_loader');
         $this->assertContainerBuilderHasAlias(ContentPersisterInterface::class, 'sulu_content.content_persister');
-        $this->assertContainerBuilderHasAlias(ApiViewResolverInterface::class, 'sulu_content.api_view_resolver');
+        $this->assertContainerBuilderHasAlias(ContentProjectionNormalizerInterface::class, 'sulu_content.content_projection_normalizer');
         $this->assertContainerBuilderHasAlias(ContentCopierInterface::class, 'sulu_content.content_copier');
         $this->assertContainerBuilderHasAlias(ContentWorkflowInterface::class, 'sulu_content.content_workflow');
 

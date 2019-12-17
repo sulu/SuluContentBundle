@@ -16,8 +16,8 @@ namespace Sulu\Bundle\ContentBundle\Content\Application\ContentFacade;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentCopier\ContentCopierInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentLoader\ContentLoaderInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersisterInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionNormalizer\ContentProjectionNormalizerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\ContentWorkflowInterface;
-use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\ApiViewResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 
@@ -34,9 +34,9 @@ class ContentFacade implements ContentFacadeInterface
     private $contentPersister;
 
     /**
-     * @var ApiViewResolverInterface
+     * @var ContentProjectionNormalizerInterface
      */
-    private $contentResolver;
+    private $contentProjectionNormalizer;
 
     /**
      * @var ContentCopierInterface
@@ -51,13 +51,13 @@ class ContentFacade implements ContentFacadeInterface
     public function __construct(
         ContentLoaderInterface $contentLoader,
         ContentPersisterInterface $contentPersister,
-        ApiViewResolverInterface $contentResolver,
+        ContentProjectionNormalizerInterface $contentProjectionNormalizer,
         ContentCopierInterface $contentCopier,
         ContentWorkflowInterface $contentWorkflow
     ) {
         $this->contentLoader = $contentLoader;
         $this->contentPersister = $contentPersister;
-        $this->contentResolver = $contentResolver;
+        $this->contentProjectionNormalizer = $contentProjectionNormalizer;
         $this->contentCopier = $contentCopier;
         $this->contentWorkflow = $contentWorkflow;
     }
@@ -72,9 +72,9 @@ class ContentFacade implements ContentFacadeInterface
         return $this->contentPersister->persist($contentRichEntity, $data, $dimensionAttributes);
     }
 
-    public function resolve(ContentProjectionInterface $contentProjection): array
+    public function normalize(ContentProjectionInterface $contentProjection): array
     {
-        return $this->contentResolver->resolve($contentProjection);
+        return $this->contentProjectionNormalizer->normalize($contentProjection);
     }
 
     public function copy(

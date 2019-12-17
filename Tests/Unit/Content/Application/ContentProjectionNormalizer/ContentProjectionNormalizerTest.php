@@ -11,15 +11,15 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ViewResolver;
+namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentProjectionNormalizer;
 
 use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\CategoryBundle\Entity\CategoryInterface;
-use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\ApiViewResolver;
-use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\ApiViewResolverInterface;
-use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\Resolver\ExcerptResolver;
-use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\Resolver\TemplateResolver;
-use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\Resolver\WorkflowResolver;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionNormalizer\ContentProjectionNormalizer;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionNormalizer\ContentProjectionNormalizerInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionNormalizer\Enhancer\ExcerptNormalizeEnhancer;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionNormalizer\Enhancer\TemplateNormalizeEnhancer;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionNormalizer\Enhancer\WorkflowNormalizeEnhancer;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\AbstractContentProjection;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptTrait;
@@ -31,14 +31,14 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowTrait;
 use Sulu\Bundle\TagBundle\Tag\TagInterface;
 
-class ApiViewResolverTest extends TestCase
+class ContentProjectionNormalizerTest extends TestCase
 {
-    protected function createApiViewResolverInstance(): ApiViewResolverInterface
+    protected function createContentProjectionNormalizerInstance(): ContentProjectionNormalizerInterface
     {
-        return new ApiViewResolver([
-            new ExcerptResolver(),
-            new TemplateResolver(),
-            new WorkflowResolver(),
+        return new ContentProjectionNormalizer([
+            new ExcerptNormalizeEnhancer(),
+            new TemplateNormalizeEnhancer(),
+            new WorkflowNormalizeEnhancer(),
         ]);
     }
 
@@ -54,11 +54,11 @@ class ApiViewResolverTest extends TestCase
             }
         };
 
-        $apiViewResolver = $this->createApiViewResolverInstance();
+        $apiViewResolver = $this->createContentProjectionNormalizerInstance();
         $this->assertSame([
             'dimensionId' => '123-456',
             'id' => 5,
-        ], $apiViewResolver->resolve($contentProjection));
+        ], $apiViewResolver->normalize($contentProjection));
     }
 
     public function testResolveFull(): void
@@ -114,7 +114,7 @@ class ApiViewResolverTest extends TestCase
         $contentProjection->setTemplateKey('template-key');
         $contentProjection->setTemplateData(['someTemplate' => 'data']);
 
-        $apiViewResolver = $this->createApiViewResolverInstance();
+        $apiViewResolver = $this->createContentProjectionNormalizerInstance();
 
         $this->assertSame([
             'dimensionId' => '123-456',
@@ -145,6 +145,6 @@ class ApiViewResolverTest extends TestCase
             'template' => 'template-key',
             'workflowName' => 'content_workflow',
             'workflowPlace' => 'unpublished',
-        ], $apiViewResolver->resolve($contentProjection));
+        ], $apiViewResolver->normalize($contentProjection));
     }
 }

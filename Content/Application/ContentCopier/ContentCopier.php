@@ -15,7 +15,7 @@ namespace Sulu\Bundle\ContentBundle\Content\Application\ContentCopier;
 
 use Sulu\Bundle\ContentBundle\Content\Application\ContentLoader\ContentLoaderInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersisterInterface;
-use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\ApiViewResolverInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionNormalizer\ContentProjectionNormalizerInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ContentProjectionFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
@@ -39,20 +39,20 @@ class ContentCopier implements ContentCopierInterface
     private $contentPersister;
 
     /**
-     * @var ApiViewResolverInterface
+     * @var ContentProjectionNormalizerInterface
      */
-    private $contentResolver;
+    private $contentProjectionNormalizer;
 
     public function __construct(
         ContentLoaderInterface $contentLoader,
         ContentProjectionFactoryInterface $viewFactory,
         ContentPersisterInterface $contentPersister,
-        ApiViewResolverInterface $contentResolver
+        ContentProjectionNormalizerInterface $contentProjectionNormalizer
     ) {
         $this->contentLoader = $contentLoader;
         $this->viewFactory = $viewFactory;
         $this->contentPersister = $contentPersister;
-        $this->contentResolver = $contentResolver;
+        $this->contentProjectionNormalizer = $contentProjectionNormalizer;
     }
 
     public function copy(
@@ -78,11 +78,11 @@ class ContentCopier implements ContentCopierInterface
 
     public function copyFromContentProjection(
         ContentProjectionInterface $sourceContentProjection,
-        ContentRichEntityInterface $targetContentRichENtity,
+        ContentRichEntityInterface $targetContentRichEntity,
         array $targetDimensionAttributes
     ): ContentProjectionInterface {
-        $data = $this->contentResolver->resolve($sourceContentProjection);
+        $data = $this->contentProjectionNormalizer->normalize($sourceContentProjection);
 
-        return $this->contentPersister->persist($targetContentRichENtity, $data, $targetDimensionAttributes);
+        return $this->contentPersister->persist($targetContentRichEntity, $data, $targetDimensionAttributes);
     }
 }

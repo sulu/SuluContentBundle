@@ -81,19 +81,19 @@
 
         <service id="Sulu\Bundle\ContentBundle\Content\Application\ContentLoader\ContentLoaderInterface" alias="sulu_content.content_loader"/>
 
-        <!-- ApiViewResolver -->
-        <service id="sulu_content.api_view_resolver" class="Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\ApiViewResolver">
-            <argument type="tagged" tag="sulu_content.api_resolver"/>
+        <!-- ContentProjectionNormalizer -->
+        <service id="sulu_content.content_projection_normalizer" class="Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionNormalizer\ContentProjectionNormalizer">
+            <argument type="tagged" tag="sulu_content.normalize_enhancer"/>
         </service>
 
-        <service id="Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\ApiViewResolverInterface" alias="sulu_content.api_view_resolver"/>
+        <service id="Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionNormalizer\ContentProjectionNormalizerInterface" alias="sulu_content.content_projection_normalizer"/>
 
         <!-- Content Copier -->
         <service id="sulu_content.content_copier" class="Sulu\Bundle\ContentBundle\Content\Application\ContentCopier\ContentCopier">
             <argument type="service" id="sulu_content.content_loader"/>
             <argument type="service" id="sulu_content.content_projection_factory"/>
             <argument type="service" id="sulu_content.content_persister"/>
-            <argument type="service" id="sulu_content.api_view_resolver"/>
+            <argument type="service" id="sulu_content.content_projection_normalizer"/>
         </service>
 
         <service id="Sulu\Bundle\ContentBundle\Content\Application\ContentCopier\ContentCopierInterface" alias="sulu_content.content_copier"/>
@@ -120,7 +120,7 @@
         <service id="sulu_content.content_facade" class="Sulu\Bundle\ContentBundle\Content\Application\ContentFacade\ContentFacade">
             <argument type="service" id="sulu_content.content_loader"/>
             <argument type="service" id="sulu_content.content_persister"/>
-            <argument type="service" id="sulu_content.api_view_resolver"/>
+            <argument type="service" id="sulu_content.content_projection_normalizer"/>
             <argument type="service" id="sulu_content.content_copier"/>
             <argument type="service" id="sulu_content.content_workflow"/>
         </service>

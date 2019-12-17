@@ -18,7 +18,7 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentCopier\ContentCopier;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentCopier\ContentCopierInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentLoader\ContentLoaderInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersisterInterface;
-use Sulu\Bundle\ContentBundle\Content\Application\ViewResolver\ApiViewResolverInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionNormalizer\ContentProjectionNormalizerInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ContentProjectionFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
@@ -30,13 +30,13 @@ class ContentCopierTest extends TestCase
         ContentLoaderInterface $contentLoader,
         ContentProjectionFactoryInterface $viewFactory,
         ContentPersisterInterface $contentPersister,
-        ApiViewResolverInterface $contentResolver
+        ContentProjectionNormalizerInterface $contentProjectionNormalizer
     ): ContentCopierInterface {
         return new ContentCopier(
             $contentLoader,
             $viewFactory,
             $contentPersister,
-            $contentResolver
+            $contentProjectionNormalizer
         );
     }
 
@@ -53,13 +53,13 @@ class ContentCopierTest extends TestCase
         $contentLoader = $this->prophesize(ContentLoaderInterface::class);
         $contentProjectionFactory = $this->prophesize(ContentProjectionFactoryInterface::class);
         $contentPersister = $this->prophesize(ContentPersisterInterface::class);
-        $contentResolver = $this->prophesize(ApiViewResolverInterface::class);
+        $contentProjectionNormalizer = $this->prophesize(ContentProjectionNormalizerInterface::class);
 
         $contentLoader->load($sourceContentRichEntity->reveal(), $sourceDimensionAttributes)
             ->willReturn($sourceContentProjection->reveal())
             ->shouldBeCalled();
 
-        $contentResolver->resolve($sourceContentProjection->reveal())
+        $contentProjectionNormalizer->normalize($sourceContentProjection->reveal())
             ->willReturn(['resolved' => 'data'])
             ->shouldBeCalled();
 
@@ -71,7 +71,7 @@ class ContentCopierTest extends TestCase
             $contentLoader->reveal(),
             $contentProjectionFactory->reveal(),
             $contentPersister->reveal(),
-            $contentResolver->reveal()
+            $contentProjectionNormalizer->reveal()
         );
 
         $this->assertSame(
@@ -97,13 +97,13 @@ class ContentCopierTest extends TestCase
         $contentLoader = $this->prophesize(ContentLoaderInterface::class);
         $contentProjectionFactory = $this->prophesize(ContentProjectionFactoryInterface::class);
         $contentPersister = $this->prophesize(ContentPersisterInterface::class);
-        $contentResolver = $this->prophesize(ApiViewResolverInterface::class);
+        $contentProjectionNormalizer = $this->prophesize(ContentProjectionNormalizerInterface::class);
 
         $contentProjectionFactory->create($sourceContentDimensionCollection->reveal())
             ->willReturn($sourceContentProjection->reveal())
             ->shouldBeCalled();
 
-        $contentResolver->resolve($sourceContentProjection->reveal())
+        $contentProjectionNormalizer->normalize($sourceContentProjection->reveal())
             ->willReturn(['resolved' => 'data'])
             ->shouldBeCalled();
 
@@ -115,7 +115,7 @@ class ContentCopierTest extends TestCase
             $contentLoader->reveal(),
             $contentProjectionFactory->reveal(),
             $contentPersister->reveal(),
-            $contentResolver->reveal()
+            $contentProjectionNormalizer->reveal()
         );
 
         $this->assertSame(
@@ -139,9 +139,9 @@ class ContentCopierTest extends TestCase
         $contentLoader = $this->prophesize(ContentLoaderInterface::class);
         $contentProjectionFactory = $this->prophesize(ContentProjectionFactoryInterface::class);
         $contentPersister = $this->prophesize(ContentPersisterInterface::class);
-        $contentResolver = $this->prophesize(ApiViewResolverInterface::class);
+        $contentProjectionNormalizer = $this->prophesize(ContentProjectionNormalizerInterface::class);
 
-        $contentResolver->resolve($sourceContentProjection->reveal())
+        $contentProjectionNormalizer->normalize($sourceContentProjection->reveal())
             ->willReturn(['resolved' => 'data'])
             ->shouldBeCalled();
 
@@ -153,7 +153,7 @@ class ContentCopierTest extends TestCase
             $contentLoader->reveal(),
             $contentProjectionFactory->reveal(),
             $contentPersister->reveal(),
-            $contentResolver->reveal()
+            $contentProjectionNormalizer->reveal()
         );
 
         $this->assertSame(
