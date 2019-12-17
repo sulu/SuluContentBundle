@@ -20,7 +20,7 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 class Example extends AbstractContentRichEntity
 {
     const RESOURCE_KEY = 'examples';
-    const TYPE_KEY = 'example';
+    const TEMPLATE_TYPE = 'example';
 
     /**
      * @var mixed

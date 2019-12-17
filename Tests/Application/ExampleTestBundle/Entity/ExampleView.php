@@ -64,6 +64,6 @@ class ExampleView extends AbstractContentProjection implements SeoInterface, Exc
 
     public function getTemplateType(): string
     {
-        return Example::TYPE_KEY;
+        return Example::TEMPLATE_TYPE;
     }
 }

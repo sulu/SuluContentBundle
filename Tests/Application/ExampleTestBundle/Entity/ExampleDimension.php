@@ -94,7 +94,7 @@ class ExampleDimension extends AbstractDimensionContent implements ExcerptInterf
 
     public function getTemplateType(): string
     {
-        return Example::TYPE_KEY;
+        return Example::TEMPLATE_TYPE;
     }
 
     public function getContentClass(): string

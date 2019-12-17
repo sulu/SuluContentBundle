@@ -31,13 +31,13 @@ class ExampleTestExtension extends Extension implements PrependExtensionInterfac
                     'content' => [
                         'structure' => [
                             'paths' => [
-                                Example::TYPE_KEY => [
+                                Example::TEMPLATE_TYPE => [
                                     'path' => '%kernel.project_dir%/config/templates/examples',
                                     'type' => 'example',
                                 ],
                             ],
                             'default_type' => [
-                                Example::TYPE_KEY => 'default', // TODO should not be hardcoded
+                                Example::TEMPLATE_TYPE => 'default', // TODO should not be hardcoded
                             ],
                         ],
                     ],
