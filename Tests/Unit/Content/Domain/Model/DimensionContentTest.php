@@ -35,7 +35,7 @@ class DimensionContentTest extends TestCase
                 $this->dimension = $dimension;
             }
 
-            public function createViewInstance(): ContentProjectionInterface
+            public function createProjectionInstance(): ContentProjectionInterface
             {
                 return new class() extends AbstractContentProjection {
                     public function getContentId()

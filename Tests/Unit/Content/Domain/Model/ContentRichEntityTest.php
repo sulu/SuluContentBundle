@@ -61,7 +61,7 @@ class ContentRichEntityTest extends TestCase
                 $this->id = $id;
             }
 
-            public function createViewInstance(): ContentProjectionInterface
+            public function createProjectionInstance(): ContentProjectionInterface
             {
                 return new class() extends AbstractContentProjection {
                     public function getContentId()

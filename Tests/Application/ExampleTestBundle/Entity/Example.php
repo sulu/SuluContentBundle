@@ -42,6 +42,6 @@ class Example extends AbstractContentRichEntity
 
     public function createDimensionContent(DimensionInterface $dimension): DimensionContentInterface
     {
-        return new ExampleDimension($this, $dimension);
+        return new ExampleDimensionContent($this, $dimension);
     }
 }

@@ -2,8 +2,8 @@
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                   xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
-    <entity name="Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleDimension"
-            table="test_example_dimensions">
+    <entity name="Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleDimensionContent"
+            table="test_example_dimension_contents">
         <id name="id" type="integer" column="id">
             <generator strategy="AUTO"/>
         </id>
