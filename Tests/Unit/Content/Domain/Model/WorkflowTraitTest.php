@@ -65,6 +65,18 @@ class WorkflowTraitTest extends TestCase
         $this->assertSame(date('Y-m-d H:i:s'), $published->format('Y-m-d H:i:s'));
     }
 
+    public function testSetWorkflowPlacePublishedExistingPublishedDate(): void
+    {
+        $date = new \DateTimeImmutable('2019-01-01');
+
+        $workflow = $this->getWorkflowInstance();
+        $workflow->setWorkflowPublished($date);
+
+        $workflow->setWorkflowPlace(WorkflowInterface::WORKFLOW_PLACE_PUBLISHED);
+        $this->assertSame('published', $workflow->getWorkflowPlace());
+        $this->assertSame($date, $workflow->getWorkflowPublished());
+    }
+
     public function testSetWorkflowPlaceReviewDraft(): void
     {
         $workflow = $this->getWorkflowInstance();

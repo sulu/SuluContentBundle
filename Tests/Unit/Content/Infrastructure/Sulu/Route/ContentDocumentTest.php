@@ -57,8 +57,10 @@ class ContentDocumentTest extends TestCase
         $content->getExcerptTitle()->willReturn('Excerpt Title');
         $content->getExcerptDescription()->willReturn('Excerpt Description');
         $content->getExcerptMore()->willReturn('Excerpt More');
-        $content->getExcerptCategoryIds()->willReturn([]);
-        $content->getExcerptTags()->willReturn([]);
+        $content->getExcerptCategoryIds()->willReturn([4, 5, 6]);
+        $content->getExcerptTagNames()->willReturn(['tag1', 'tag2', 'tag3']);
+        $content->getExcerptImage()->willReturn(['id' => 42]);
+        $content->getExcerptIcon()->willReturn(['id' => 43]);
 
         $document = $this->createContentDocument($content->reveal());
 
@@ -77,8 +79,11 @@ class ContentDocumentTest extends TestCase
                     'title' => 'Excerpt Title',
                     'description' => 'Excerpt Description',
                     'more' => 'Excerpt More',
-                    'categories' => [],
-                    'tags' => [],
+                    'categories' => [4, 5, 6],
+                    'tags' => ['tag1', 'tag2', 'tag3'],
+                    'images' => ['ids' => [42]],
+                    'icon' => ['ids' => [43]],
+                    'audience_targeting_groups' => [],
                 ],
             ],
             $document->getExtensionsData()

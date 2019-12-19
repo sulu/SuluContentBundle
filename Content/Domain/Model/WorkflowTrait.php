@@ -34,7 +34,7 @@ trait WorkflowTrait
     {
         $this->workflowPlace = $workflowPlace;
 
-        if (WorkflowInterface::WORKFLOW_PLACE_PUBLISHED === $workflowPlace) {
+        if (WorkflowInterface::WORKFLOW_PLACE_PUBLISHED === $workflowPlace && !$this->workflowPublished) {
             $this->setWorkflowPublished(new \DateTimeImmutable());
         }
     }

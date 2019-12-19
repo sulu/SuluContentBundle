@@ -340,7 +340,7 @@ class ContentWorkflowTest extends TestCase
             'published' => [
                 'request_for_review' => false,
                 'reject' => false,
-                'publish' => false,
+                'publish' => true,
                 'unpublish' => true,
                 'create_draft' => true,
                 'remove_draft' => false,

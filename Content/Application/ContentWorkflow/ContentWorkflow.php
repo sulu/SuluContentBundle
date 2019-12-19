@@ -172,6 +172,11 @@ class ContentWorkflow implements ContentWorkflowInterface
             // Transfer to publish
             ->addTransition(new Transition(
                 WorkflowInterface::WORKFLOW_TRANSITION_PUBLISH,
+                WorkflowInterface::WORKFLOW_PLACE_PUBLISHED,
+                WorkflowInterface::WORKFLOW_PLACE_PUBLISHED
+            ))
+            ->addTransition(new Transition(
+                WorkflowInterface::WORKFLOW_TRANSITION_PUBLISH,
                 WorkflowInterface::WORKFLOW_PLACE_UNPUBLISHED,
                 WorkflowInterface::WORKFLOW_PLACE_PUBLISHED
             ))

@@ -61,12 +61,26 @@ class ContentDocument implements ExtensionBehavior
 
         $excerpt = [];
         if ($this->content instanceof ExcerptInterface) {
+            $image = $this->content->getExcerptImage();
+            $icon = $this->content->getExcerptIcon();
+
             $excerpt = [
                 'title' => $this->content->getExcerptTitle(),
                 'description' => $this->content->getExcerptDescription(),
                 'more' => $this->content->getExcerptMore(),
                 'categories' => $this->content->getExcerptCategoryIds(),
-                'tags' => $this->content->getExcerptTags(),
+                'tags' => $this->content->getExcerptTagNames(),
+                'images' => [
+                    'ids' => $image ? [
+                        $image['id'],
+                    ] : [],
+                ],
+                'icon' => [
+                    'ids' => $icon ? [
+                        $icon['id'],
+                    ] : [],
+                ],
+                'audience_targeting_groups' => [],
             ];
         }
 
