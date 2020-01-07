@@ -71,5 +71,13 @@
 
             <tag name="jms_serializer.event_subscriber"/>
         </service>
+
+        <!-- resolver -->
+        <service id="Sulu\Bundle\ContentBundle\Resolver\ContentViewResolver">
+            <argument type="service" id="sulu.content.structure_manager"/>
+            <argument type="service" id="sulu.content.type_manager"/>
+        </service>
+        <service id="Sulu\Bundle\ContentBundle\Resolver\ContentViewResolverInterface"
+                 alias="Sulu\Bundle\ContentBundle\Resolver\ContentViewResolver"/>
     </services>
 </container>
