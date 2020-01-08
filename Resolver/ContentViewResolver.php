@@ -49,6 +49,7 @@ class ContentViewResolver implements ContentViewResolverInterface
 
         return [
             'id' => $contentView->getResourceId(),
+            'template' => $contentView->getType(),
             'content' => $this->resolveContent($structure, $data),
             'view' => $this->resolveView($structure, $data),
         ];

@@ -78,6 +78,7 @@
             <argument type="service" id="sulu.content.type_manager"/>
         </service>
         <service id="Sulu\Bundle\ContentBundle\Resolver\ContentViewResolverInterface"
-                 alias="Sulu\Bundle\ContentBundle\Resolver\ContentViewResolver"/>
+                 alias="Sulu\Bundle\ContentBundle\Resolver\ContentViewResolver"
+                 public="true"/>
     </services>
 </container>

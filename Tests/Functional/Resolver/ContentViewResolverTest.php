@@ -11,17 +11,17 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Tests\Functional\EventSubscriber;
+namespace Sulu\Bundle\ContentBundle\Tests\Functional\Resolver;
 
-use JMS\Serializer\SerializationContext;
 use Sulu\Bundle\ContentBundle\Model\Content\ContentView;
+use Sulu\Bundle\ContentBundle\Resolver\ContentViewResolverInterface;
 use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
 
-class ContentViewSerializationSubscriberTest extends SuluTestCase
+class ContentViewResolverTest extends SuluTestCase
 {
     const RESOURCE_KEY = 'test_resource_contents';
 
-    public function testSerialize(): void
+    public function testResolve(): void
     {
         $contentView = new ContentView(
             self::RESOURCE_KEY,
@@ -31,24 +31,26 @@ class ContentViewSerializationSubscriberTest extends SuluTestCase
             ['title' => 'Sulu', 'article' => '<p>Sulu is awesome</p>']
         );
 
-        $result = self::getContainer()->get('jms_serializer')->serialize(
-            $contentView,
-            'json',
-            SerializationContext::create()->setSerializeNull(true)
-        );
+        $result = self::getContainer()->get(ContentViewResolverInterface::class)->resolve($contentView);
 
         $this->assertSame(
             [
                 'id' => '123-123-123',
                 'template' => 'default',
-                'title' => 'Sulu',
-                'article' => '<p>Sulu is awesome</p>',
+                'content' => [
+                    'title' => 'Sulu',
+                    'article' => '<p>Sulu is awesome</p>',
+                ],
+                'view' => [
+                    'title' => [],
+                    'article' => [],
+                ],
             ],
-            json_decode($result, true)
+            $result
         );
     }
 
-    public function testSerializeMissingField(): void
+    public function testResolveMissingField(): void
     {
         $contentView = new ContentView(
             self::RESOURCE_KEY,
@@ -58,20 +60,23 @@ class ContentViewSerializationSubscriberTest extends SuluTestCase
             ['title' => 'Sulu']
         );
 
-        $result = self::getContainer()->get('jms_serializer')->serialize(
-            $contentView,
-            'json',
-            SerializationContext::create()->setSerializeNull(true)
-        );
+        self::bootKernel();
+        $result = self::getContainer()->get(ContentViewResolverInterface::class)->resolve($contentView);
 
         $this->assertSame(
             [
                 'id' => '123-123-123',
                 'template' => 'default',
-                'title' => 'Sulu',
-                'article' => null,
+                'content' => [
+                    'title' => 'Sulu',
+                    'article' => null,
+                ],
+                'view' => [
+                    'title' => [],
+                    'article' => [],
+                ],
             ],
-            json_decode($result, true)
+            $result
         );
     }
 }
