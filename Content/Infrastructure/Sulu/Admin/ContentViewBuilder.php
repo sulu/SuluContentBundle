@@ -35,31 +35,36 @@ class ContentViewBuilder implements ContentViewBuilderInterface
         string $resourceKey,
         string $typeKey,
         string $editParentView,
-        ?string $addParentView = null
+        ?string $addParentView = null,
+        ?ToolbarAction $saveToolbarAction = null
     ): void {
         // TODO check which interfaces the resource dimension implements and only add this tabs
+        if (null === $saveToolbarAction) {
+            $saveToolbarAction = new ToolbarAction('sulu_admin.save_with_publishing');
+        }
 
         // Add views
         if (null !== $addParentView) {
             $viewCollection->add(
-                $this->buildTemplate($typeKey, $resourceKey, $addParentView)
+                $this->buildTemplate($typeKey, $resourceKey, $addParentView, $saveToolbarAction)
                     ->setEditView($editParentView)
             );
         }
 
         // Edit views
-        $viewCollection->add($this->buildTemplate($typeKey, $resourceKey, $editParentView));
-        $viewCollection->add($this->buildSeo($resourceKey, $editParentView));
-        $viewCollection->add($this->buildExcerpt($resourceKey, $editParentView));
+        $viewCollection->add($this->buildTemplate($typeKey, $resourceKey, $editParentView, $saveToolbarAction));
+        $viewCollection->add($this->buildSeo($resourceKey, $editParentView, $saveToolbarAction));
+        $viewCollection->add($this->buildExcerpt($resourceKey, $editParentView, $saveToolbarAction));
     }
 
     protected function buildTemplate(
         string $typeKey,
         string $resourceKey,
-        string $parentView
+        string $parentView,
+        ToolbarAction $saveToolbarAction
     ): FormViewBuilderInterface {
         $formToolbarActionsWithType = [
-            new ToolbarAction('sulu_admin.save_with_publishing'),
+            $saveToolbarAction,
             new ToolbarAction('sulu_admin.type'),
             new ToolbarAction('sulu_admin.delete'),
         ];
@@ -80,10 +85,11 @@ class ContentViewBuilder implements ContentViewBuilderInterface
 
     protected function buildSeo(
         string $resourceKey,
-        string $parentView
+        string $parentView,
+        ToolbarAction $saveToolbarAction
     ): FormViewBuilderInterface {
         $formToolbarActionsWithoutType = [
-            new ToolbarAction('sulu_admin.save_with_publishing'),
+            $saveToolbarAction,
         ];
 
         $formViewBuilder = $this->viewBuilderFactory
@@ -103,10 +109,11 @@ class ContentViewBuilder implements ContentViewBuilderInterface
 
     protected function buildExcerpt(
         string $resourceKey,
-        string $parentView
+        string $parentView,
+        ToolbarAction $saveToolbarAction
     ): FormViewBuilderInterface {
         $formToolbarActionsWithoutType = [
-            new ToolbarAction('sulu_admin.save_with_publishing'),
+            $saveToolbarAction,
         ];
 
         $formViewBuilder = $this->viewBuilderFactory

@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Admin;
 
+use Sulu\Bundle\AdminBundle\Admin\View\ToolbarAction;
 use Sulu\Bundle\AdminBundle\Admin\View\ViewCollection;
 
 interface ContentViewBuilderInterface
@@ -22,6 +23,7 @@ interface ContentViewBuilderInterface
         string $resourceKey,
         string $typeKey,
         string $editParentView,
-        string $addParentView = null
+        string $addParentView = null,
+        ?ToolbarAction $saveToolbarAction = null
     ): void;
 }
