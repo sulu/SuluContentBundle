@@ -40,7 +40,13 @@ class ContentViewBuilder implements ContentViewBuilderInterface
     ): void {
         // TODO check which interfaces the resource dimension implements and only add this tabs
         if (null === $saveToolbarAction) {
-            $saveToolbarAction = new ToolbarAction('sulu_admin.save_with_publishing');
+            $saveToolbarAction = new ToolbarAction(
+                'sulu_admin.save_with_publishing',
+                [
+                    'publish_display_condition' => '(!_permissions || _permissions.live)',
+                    'save_display_condition' => '(!_permissions || _permissions.edit)',
+                ]
+            );
         }
 
         // Add views
@@ -65,8 +71,18 @@ class ContentViewBuilder implements ContentViewBuilderInterface
     ): FormViewBuilderInterface {
         $formToolbarActionsWithType = [
             $saveToolbarAction,
-            new ToolbarAction('sulu_admin.type'),
-            new ToolbarAction('sulu_admin.delete'),
+            new ToolbarAction(
+                'sulu_admin.type',
+                [
+                    'display_condition' => '(!_permissions || _permissions.edit)',
+                ]
+            ),
+            new ToolbarAction(
+                'sulu_admin.delete',
+                [
+                    'display_condition' => '(!_permissions || _permissions.delete) && url != "/"',
+                ]
+            ),
         ];
 
         $formViewBuilder = $this->viewBuilderFactory
