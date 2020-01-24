@@ -74,7 +74,7 @@ class ContentViewBuilder implements ContentViewBuilderInterface
             new ToolbarAction(
                 'sulu_admin.type',
                 [
-                    'display_condition' => '(!_permissions || _permissions.edit)',
+                    'disable_condition' => '(_permissions && !_permissions.edit)',
                 ]
             ),
             new ToolbarAction(
