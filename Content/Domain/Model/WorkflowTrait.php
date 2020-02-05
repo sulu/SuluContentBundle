@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Domain\Model;
 
+use Webmozart\Assert\Assert;
+
 trait WorkflowTrait
 {
     /**
@@ -52,5 +54,39 @@ trait WorkflowTrait
     public function getWorkflowName(): string
     {
         return WorkflowInterface::WORKFLOW_DEFAULT_NAME;
+    }
+
+    /**
+     * @param mixed[] $data
+     *
+     * @return mixed[]
+     */
+    public function setWorkflowData(array $data): array
+    {
+        $workflowPlace = 'workflowPlace';
+
+        if (array_key_exists($workflowPlace, $data)) {
+            $value = $data[$workflowPlace];
+
+            Assert::string($value);
+
+            $this->setWorkflowPlace($value);
+
+            unset($data[$workflowPlace]);
+        }
+
+        $workflowPublished = 'workflowPublished';
+
+        if (array_key_exists($workflowPublished, $data)) {
+            $workflowPublished = $data[$workflowPublished];
+
+            Assert::nullOrIsInstanceOf($workflowPublished, \DateTimeImmutable::class);
+
+            $this->setWorkflowPublished($value);
+
+            unset($data[$workflowPublished]);
+        }
+
+        return $data;
     }
 }

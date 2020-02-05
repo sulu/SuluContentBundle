@@ -57,13 +57,17 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
     }
 
     /**
-     * @param TemplateInterface|null $object
+     * @param ContentProjectionInterface|null $object
      */
     public function getByEntity($entityClass, $id, $locale, $object = null)
     {
         $entity = $object ?: $this->loadEntity($entityClass, $id, $locale);
         if (!$entity) {
             return [];
+        }
+
+        if (!$entity instanceof TemplateInterface) {
+            throw new \RuntimeException(sprintf('Expected to get "%s" from ContentResolver but "%s" given.', TemplateInterface::class, \get_class($entity)));
         }
 
         $metadata = $this->structureMetadataFactory->getStructureMetadata(
@@ -106,7 +110,8 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
 
     public function supports($entityClass)
     {
-        return is_a($entityClass, ContentRichEntityInterface::class, true);
+        return is_a($entityClass, ContentRichEntityInterface::class, true)
+            || is_a($entityClass, ContentProjectionInterface::class, true);
     }
 
     protected function loadEntity(string $entityClass, string $id, string $locale): ?TemplateInterface

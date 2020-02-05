@@ -54,4 +54,11 @@ interface WorkflowInterface
     public function setWorkflowPublished(?\DateTimeImmutable $workflowPublished): void;
 
     public function getWorkflowName(): string;
+
+    /**
+     * @param mixed[] $data
+     *
+     * @return mixed[]
+     */
+    public function setWorkflowData(array $data): array;
 }
