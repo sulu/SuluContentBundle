@@ -9,6 +9,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NoResultException;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
+use Sulu\Bundle\ContentBundle\Content\Domain\Factory\CategoryFactoryInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Factory\TagFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
@@ -43,6 +45,16 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
     private $contentResolver;
 
     /**
+     * @var TagFactoryInterface
+     */
+    private $tagFactory;
+
+    /**
+     * @var CategoryFactoryInterface
+     */
+    private $categoryFactory;
+
+    /**
      * @var string
      */
     private $entityClass;
@@ -52,12 +64,16 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
         StructureMetadataFactoryInterface $structureMetadataFactory,
         LegacyPropertyFactory $propertyFactory,
         ContentResolverInterface $contentResolver,
+        TagFactoryInterface $tagFactory,
+        CategoryFactoryInterface $categoryFactory,
         string $entityClass
     ) {
         $this->entityManager = $entityManager;
         $this->structureMetadataFactory = $structureMetadataFactory;
         $this->propertyFactory = $propertyFactory;
         $this->contentResolver = $contentResolver;
+        $this->tagFactory = $tagFactory;
+        $this->categoryFactory = $categoryFactory;
         $this->entityClass = $entityClass;
     }
 
@@ -100,20 +116,49 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
     public function setValues($object, $locale, array $data)
     {
         if ($object instanceof SeoInterface) {
+            $data = $this->mapSeoData($data);
             $data = $object->setSeoData($data);
         }
 
         if ($object instanceof ExcerptInterface) {
+            $data = $this->mapExcerptData($data);
             $data = $object->setExcerptData($data);
         }
 
-        if ($object instanceof WorkflowInterface) {
-            $data = $object->setWorkflowData($data);
-        }
-
         if ($object instanceof TemplateInterface) {
+            $data = $this->mapTemplateData($data);
             $object->setTemplateData($data);
         }
+    }
+
+    /**
+     * @param mixed[] $data
+     * @return mixed[]
+     */
+    protected function mapSeoData(array $data): array
+    {
+        return $data;
+    }
+
+    /**
+     * @param mixed[] $data
+     * @return mixed[]
+     */
+    protected function mapExcerptData(array $data)
+    {
+        $data['excerptTags'] = $this->tagFactory->create($data['excerptTags']);
+        $data['excerptCategories'] = $this->categoryFactory->create($data['excerptCategories']);
+
+        return $data;
+    }
+
+    /**
+     * @param mixed[] $data
+     * @return mixed[]
+     */
+    protected function mapTemplateData(array $data)
+    {
+        return $data;
     }
 
     /**
