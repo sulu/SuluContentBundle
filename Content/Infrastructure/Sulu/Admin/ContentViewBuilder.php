@@ -68,17 +68,17 @@ class ContentViewBuilder implements ContentViewBuilderInterface
             );
         }
 
-        $preview = $this->objectProviderPool->hasObjectProvider($resourceKey);
+        $previewEnabled = $this->objectProviderPool->hasObjectProvider($resourceKey);
 
         // Edit views
         $viewCollection->add(
-            $this->buildTemplate($typeKey, $resourceKey, $editParentView, $saveToolbarAction, $preview)
+            $this->buildTemplate($typeKey, $resourceKey, $editParentView, $saveToolbarAction, $previewEnabled)
         );
         $viewCollection->add(
-            $this->buildSeo($resourceKey, $editParentView, $saveToolbarAction, $preview)
+            $this->buildSeo($resourceKey, $editParentView, $saveToolbarAction, $previewEnabled)
         );
         $viewCollection->add(
-            $this->buildExcerpt($resourceKey, $editParentView, $saveToolbarAction, $preview)
+            $this->buildExcerpt($resourceKey, $editParentView, $saveToolbarAction, $previewEnabled)
         );
     }
 
@@ -87,14 +87,14 @@ class ContentViewBuilder implements ContentViewBuilderInterface
         string $resourceKey,
         string $parentView,
         ToolbarAction $saveToolbarAction,
-        bool $preview
+        bool $previewEnabled
     ): ViewBuilderInterface {
         $formToolbarActionsWithType = [
             $saveToolbarAction,
             new ToolbarAction(
                 'sulu_admin.type',
                 [
-                    'disable_condition' => '(_permissions && !_permissions.edit)',
+                    'disabled_condition' => '(_permissions && !_permissions.edit)',
                 ]
             ),
             new ToolbarAction(
@@ -105,7 +105,7 @@ class ContentViewBuilder implements ContentViewBuilderInterface
             ),
         ];
 
-        $formViewBuilder = $this->createFormViewBuilder($parentView . '.content', '/content', $preview);
+        $formViewBuilder = $this->createFormViewBuilder($parentView . '.content', '/content', $previewEnabled);
 
         $formViewBuilder
             ->setResourceKey($resourceKey)
@@ -122,13 +122,13 @@ class ContentViewBuilder implements ContentViewBuilderInterface
         string $resourceKey,
         string $parentView,
         ToolbarAction $saveToolbarAction,
-        bool $preview
+        bool $previewEnabled
     ): ViewBuilderInterface {
         $formToolbarActionsWithoutType = [
             $saveToolbarAction,
         ];
 
-        $formViewBuilder = $this->createFormViewBuilder($parentView . '.seo', '/seo', $preview);
+        $formViewBuilder = $this->createFormViewBuilder($parentView . '.seo', '/seo', $previewEnabled);
 
         $formViewBuilder
             ->setResourceKey($resourceKey)
@@ -146,13 +146,13 @@ class ContentViewBuilder implements ContentViewBuilderInterface
         string $resourceKey,
         string $parentView,
         ToolbarAction $saveToolbarAction,
-        bool $preview
+        bool $previewEnabled
     ): ViewBuilderInterface {
         $formToolbarActionsWithoutType = [
             $saveToolbarAction,
         ];
 
-        $formViewBuilder = $this->createFormViewBuilder($parentView . '.excerpt', '/excerpt', $preview);
+        $formViewBuilder = $this->createFormViewBuilder($parentView . '.excerpt', '/excerpt', $previewEnabled);
 
         $formViewBuilder
             ->setResourceKey($resourceKey)
@@ -169,9 +169,9 @@ class ContentViewBuilder implements ContentViewBuilderInterface
     /**
      * @return PreviewFormViewBuilderInterface|FormViewBuilderInterface
      */
-    protected function createFormViewBuilder(string $name, string $path, bool $preview)
+    protected function createFormViewBuilder(string $name, string $path, bool $previewEnabled)
     {
-        if ($preview) {
+        if ($previewEnabled) {
             $formViewBuilder = $this->viewBuilderFactory->createPreviewFormViewBuilder($name, $path);
         } else {
             $formViewBuilder = $this->viewBuilderFactory->createFormViewBuilder($name, $path);
