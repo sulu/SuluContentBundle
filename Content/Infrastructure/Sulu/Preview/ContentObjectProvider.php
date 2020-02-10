@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Preview;
 
-use App\Event\Domain\Model\EventProjection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NoResultException;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolverInterface;
@@ -20,6 +19,7 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Bundle\PreviewBundle\Preview\Object\PreviewObjectProviderInterface;
 use Sulu\Component\Content\Compat\Structure\LegacyPropertyFactory;
 use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
+use Webmozart\Assert\Assert;
 
 class ContentObjectProvider implements PreviewObjectProviderInterface
 {
@@ -115,49 +115,194 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
     public function setValues($object, $locale, array $data)
     {
         if ($object instanceof SeoInterface) {
-            $data = $this->mapSeoData($data);
-            $data = $object->setSeoData($data);
+            $this->setSeoData($object, $data);
         }
 
         if ($object instanceof ExcerptInterface) {
-            $data = $this->mapExcerptData($data);
-            $data = $object->setExcerptData($data);
+            $this->setExcerptData($object, $data);
         }
 
         if ($object instanceof TemplateInterface) {
-            $data = $this->mapTemplateData($data);
-            $object->setTemplateData($data);
+            $this->setTemplateData($object, $data);
         }
     }
 
     /**
      * @param mixed[] $data
-     * @return mixed[]
      */
-    protected function mapSeoData(array $data): array
+    private function setSeoData(SeoInterface $object, array &$data): array
     {
-        return $data;
+        $seoTitle = 'seoTitle';
+        if (array_key_exists($seoTitle, $data)) {
+            $value = $data[$seoTitle];
+
+            Assert::nullOrString($value);
+
+            $object->setSeoTitle($value);
+
+            unset($data[$seoTitle]);
+        }
+
+        $seoDescription = 'seoDescription';
+        if (array_key_exists($seoDescription, $data)) {
+            $seoDescription = $data[$seoDescription];
+
+            Assert::nullOrString($seoDescription);
+
+            $object->setSeoDescription($value);
+
+            unset($data[$seoDescription]);
+        }
+
+        $seoKeywords = 'seoKeywords';
+        if (array_key_exists($seoKeywords, $data)) {
+            $value = $data[$seoKeywords];
+
+            Assert::nullOrString($value);
+
+            $object->setSeoKeywords($value);
+
+            unset($data[$seoKeywords]);
+        }
+
+        $seoCanonicalUrl = 'seoCanonicalUrl';
+        if (array_key_exists($seoCanonicalUrl, $data)) {
+            $value = $data[$seoCanonicalUrl];
+
+            Assert::nullOrString($value);
+
+            $object->setSeoCanonicalUrl($value);
+
+            unset($data[$seoCanonicalUrl]);
+        }
+
+        $seoNoIndex = 'seoNoIndex';
+        if (array_key_exists($seoNoIndex, $data)) {
+            $value = $data[$seoNoIndex];
+
+            Assert::boolean($value);
+
+            $object->setSeoNoIndex($value);
+
+            unset($data[$seoNoIndex]);
+        }
+
+        $seoNoFollow = 'seoNoFollow';
+        if (array_key_exists($seoNoFollow, $data)) {
+            $value = $data[$seoNoFollow];
+
+            Assert::boolean($value);
+
+            $object->setSeoNoFollow($value);
+
+            unset($data[$seoNoFollow]);
+        }
+
+        $seoHideInSitemap = 'seoHideInSitemap';
+        if (array_key_exists($seoHideInSitemap, $data)) {
+            $value = $data[$seoHideInSitemap];
+
+            Assert::boolean($value);
+
+            $object->setSeoHideInSitemap($value);
+
+            unset($data[$seoHideInSitemap]);
+        }
     }
 
     /**
      * @param mixed[] $data
-     * @return mixed[]
      */
-    protected function mapExcerptData(array $data)
+    private function setExcerptData(ExcerptInterface $object, array &$data)
     {
-        $data['excerptTags'] = $this->tagFactory->create($data['excerptTags']);
-        $data['excerptCategories'] = $this->categoryFactory->create($data['excerptCategories']);
+        $excerptTitle = 'excerptTitle';
+        if (array_key_exists($excerptTitle, $data)) {
+            $value = $data[$excerptTitle];
 
-        return $data;
+            Assert::nullOrString($value);
+
+            $object->setExcerptTitle($value);
+
+            unset($data[$excerptTitle]);
+        }
+
+        $excerptDescription = 'excerptDescription';
+        if (array_key_exists($excerptDescription, $data)) {
+            $excerptDescription = $data[$excerptDescription];
+
+            Assert::nullOrString($excerptDescription);
+
+            $object->setExcerptDescription($value);
+
+            unset($data[$excerptDescription]);
+        }
+
+        $excerptMore = 'excerptMore';
+        if (array_key_exists($excerptMore, $data)) {
+            $value = $data[$excerptMore];
+
+            Assert::nullOrString($value);
+
+            $object->setExcerptMore($value);
+
+            unset($data[$excerptMore]);
+        }
+
+        $excerptCategories = 'excerptCategories';
+        if (array_key_exists($excerptCategories, $data)) {
+            $value = $data[$excerptCategories];
+
+            Assert::isArray($value);
+
+            $categories = $this->categoryFactory->create($value);
+
+            $object->setExcerptCategories($categories);
+
+            unset($data[$excerptCategories]);
+        }
+
+        $excerptTags = 'excerptTags';
+        if (array_key_exists($excerptTags, $data)) {
+            $value = $data[$excerptTags];
+
+            Assert::isArray($value);
+
+            $tags = $this->tagFactory->create($value);
+
+            $object->setExcerptTags($tags);
+
+            unset($data[$excerptTags]);
+        }
+
+        $excerptImage = 'excerptImage';
+        if (array_key_exists($excerptImage, $data)) {
+            $value = $data[$excerptImage];
+
+            Assert::nullOrIsArray($value);
+
+            $object->setExcerptImage($value);
+
+            unset($data[$excerptImage]);
+        }
+
+        $excerptIcon = 'excerptIcon';
+        if (array_key_exists($excerptIcon, $data)) {
+            $value = $data[$excerptIcon];
+
+            Assert::nullOrIsArray($value);
+
+            $object->setExcerptIcon($value);
+
+            unset($data[$excerptIcon]);
+        }
     }
 
     /**
      * @param mixed[] $data
-     * @return mixed[]
      */
-    protected function mapTemplateData(array $data)
+    private function setTemplateData(TemplateInterface $object, array &$data)
     {
-        return $data;
+        $object->setTemplateData($data);
     }
 
     /**

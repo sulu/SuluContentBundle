@@ -79,11 +79,4 @@ interface ExcerptInterface
      * @param mixed[]|null $excerptIcon
      */
     public function setExcerptIcon(?array $excerptIcon): void;
-
-    /**
-     * @param mixed[] $data
-     *
-     * @return mixed[]
-     */
-    public function setExcerptData(array $data): array;
 }
