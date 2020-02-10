@@ -19,7 +19,7 @@ use Sulu\Bundle\AdminBundle\Admin\View\ToolbarAction;
 use Sulu\Bundle\AdminBundle\Admin\View\ViewBuilderFactoryInterface;
 use Sulu\Bundle\AdminBundle\Admin\View\ViewBuilderInterface;
 use Sulu\Bundle\AdminBundle\Admin\View\ViewCollection;
-use Sulu\Bundle\PreviewBundle\Preview\Object\PreviewObjectProviderPoolInterface;
+use Sulu\Bundle\PreviewBundle\Preview\Object\PreviewObjectProviderRegistryInterface;
 
 class ContentViewBuilder implements ContentViewBuilderInterface
 {
@@ -29,16 +29,16 @@ class ContentViewBuilder implements ContentViewBuilderInterface
     private $viewBuilderFactory;
 
     /**
-     * @var PreviewObjectProviderPoolInterface
+     * @var PreviewObjectProviderRegistryInterface
      */
-    private $objectProviderPool;
+    private $objectProviderRegistry;
 
     public function __construct(
         ViewBuilderFactoryInterface $viewBuilderFactory,
-        PreviewObjectProviderPoolInterface $objectProviderPool
+        PreviewObjectProviderRegistryInterface $objectProviderRegistry
     ) {
         $this->viewBuilderFactory = $viewBuilderFactory;
-        $this->objectProviderPool = $objectProviderPool;
+        $this->objectProviderRegistry = $objectProviderRegistry;
     }
 
     public function build(
@@ -68,7 +68,7 @@ class ContentViewBuilder implements ContentViewBuilderInterface
             );
         }
 
-        $previewEnabled = $this->objectProviderPool->hasObjectProvider($resourceKey);
+        $previewEnabled = $this->objectProviderRegistry->hasPreviewObjectProvider($resourceKey);
 
         // Edit views
         $viewCollection->add(
