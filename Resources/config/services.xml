@@ -10,7 +10,7 @@
 
         <service id="sulu_content.content_view_builder" class="Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Admin\ContentViewBuilder">
             <argument type="service" id="sulu_admin.view_builder_factory"/>
-            <argument type="service" id="sulu_preview.object_provider_registry"/>
+            <argument type="service" id="sulu_preview.preview_object_provider_registry"/>
         </service>
 
         <service id="Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Admin\ContentViewBuilderInterface" alias="sulu_content.content_view_builder"/>
