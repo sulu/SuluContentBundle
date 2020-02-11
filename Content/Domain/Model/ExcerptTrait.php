@@ -16,7 +16,6 @@ namespace Sulu\Bundle\ContentBundle\Content\Domain\Model;
 use Doctrine\Common\Collections\ArrayCollection;
 use Sulu\Bundle\CategoryBundle\Entity\CategoryInterface;
 use Sulu\Bundle\TagBundle\Tag\TagInterface;
-use Webmozart\Assert\Assert;
 
 trait ExcerptTrait
 {

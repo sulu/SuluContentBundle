@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of Sulu.
+ *
+ * (c) Sulu GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Preview;
 
 use Doctrine\ORM\EntityManagerInterface;
@@ -133,7 +142,7 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
     private function setSeoData(SeoInterface $object, array &$data): array
     {
         $seoTitle = 'seoTitle';
-        if (array_key_exists($seoTitle, $data)) {
+        if (\array_key_exists($seoTitle, $data)) {
             $value = $data[$seoTitle];
 
             Assert::nullOrString($value);
@@ -144,7 +153,7 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
         }
 
         $seoDescription = 'seoDescription';
-        if (array_key_exists($seoDescription, $data)) {
+        if (\array_key_exists($seoDescription, $data)) {
             $seoDescription = $data[$seoDescription];
 
             Assert::nullOrString($seoDescription);
@@ -155,7 +164,7 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
         }
 
         $seoKeywords = 'seoKeywords';
-        if (array_key_exists($seoKeywords, $data)) {
+        if (\array_key_exists($seoKeywords, $data)) {
             $value = $data[$seoKeywords];
 
             Assert::nullOrString($value);
@@ -166,7 +175,7 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
         }
 
         $seoCanonicalUrl = 'seoCanonicalUrl';
-        if (array_key_exists($seoCanonicalUrl, $data)) {
+        if (\array_key_exists($seoCanonicalUrl, $data)) {
             $value = $data[$seoCanonicalUrl];
 
             Assert::nullOrString($value);
@@ -177,7 +186,7 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
         }
 
         $seoNoIndex = 'seoNoIndex';
-        if (array_key_exists($seoNoIndex, $data)) {
+        if (\array_key_exists($seoNoIndex, $data)) {
             $value = $data[$seoNoIndex];
 
             Assert::boolean($value);
@@ -188,7 +197,7 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
         }
 
         $seoNoFollow = 'seoNoFollow';
-        if (array_key_exists($seoNoFollow, $data)) {
+        if (\array_key_exists($seoNoFollow, $data)) {
             $value = $data[$seoNoFollow];
 
             Assert::boolean($value);
@@ -199,7 +208,7 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
         }
 
         $seoHideInSitemap = 'seoHideInSitemap';
-        if (array_key_exists($seoHideInSitemap, $data)) {
+        if (\array_key_exists($seoHideInSitemap, $data)) {
             $value = $data[$seoHideInSitemap];
 
             Assert::boolean($value);
@@ -216,7 +225,7 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
     private function setExcerptData(ExcerptInterface $object, array &$data)
     {
         $excerptTitle = 'excerptTitle';
-        if (array_key_exists($excerptTitle, $data)) {
+        if (\array_key_exists($excerptTitle, $data)) {
             $value = $data[$excerptTitle];
 
             Assert::nullOrString($value);
@@ -227,7 +236,7 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
         }
 
         $excerptDescription = 'excerptDescription';
-        if (array_key_exists($excerptDescription, $data)) {
+        if (\array_key_exists($excerptDescription, $data)) {
             $excerptDescription = $data[$excerptDescription];
 
             Assert::nullOrString($excerptDescription);
@@ -238,7 +247,7 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
         }
 
         $excerptMore = 'excerptMore';
-        if (array_key_exists($excerptMore, $data)) {
+        if (\array_key_exists($excerptMore, $data)) {
             $value = $data[$excerptMore];
 
             Assert::nullOrString($value);
@@ -249,7 +258,7 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
         }
 
         $excerptCategories = 'excerptCategories';
-        if (array_key_exists($excerptCategories, $data)) {
+        if (\array_key_exists($excerptCategories, $data)) {
             $value = $data[$excerptCategories];
 
             Assert::isArray($value);
@@ -262,7 +271,7 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
         }
 
         $excerptTags = 'excerptTags';
-        if (array_key_exists($excerptTags, $data)) {
+        if (\array_key_exists($excerptTags, $data)) {
             $value = $data[$excerptTags];
 
             Assert::isArray($value);
@@ -275,7 +284,7 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
         }
 
         $excerptImage = 'excerptImage';
-        if (array_key_exists($excerptImage, $data)) {
+        if (\array_key_exists($excerptImage, $data)) {
             $value = $data[$excerptImage];
 
             Assert::nullOrIsArray($value);
@@ -286,7 +295,7 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
         }
 
         $excerptIcon = 'excerptIcon';
-        if (array_key_exists($excerptIcon, $data)) {
+        if (\array_key_exists($excerptIcon, $data)) {
             $value = $data[$excerptIcon];
 
             Assert::nullOrIsArray($value);
@@ -313,7 +322,7 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
     public function setContext($object, $locale, array $context)
     {
         if ($object instanceof TemplateInterface) {
-            if (array_key_exists('template', $context)) {
+            if (\array_key_exists('template', $context)) {
                 $object->setTemplateKey($context['template']);
             }
         }
