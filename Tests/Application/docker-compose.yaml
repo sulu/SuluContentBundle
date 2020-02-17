@@ -8,4 +8,4 @@ services:
         volumes:
             - ./var/data/mysql:/var/lib/mysql
         ports:
-            - 3306:3306
+            - ${DOCKER_MYSQL_PORT:-3306}:3306
