@@ -82,6 +82,9 @@ class ContentViewBuilder implements ContentViewBuilderInterface
         );
     }
 
+    /**
+     * @return PreviewFormViewBuilderInterface|FormViewBuilderInterface
+     */
     protected function buildTemplate(
         string $typeKey,
         string $resourceKey,
@@ -118,6 +121,9 @@ class ContentViewBuilder implements ContentViewBuilderInterface
         return $formViewBuilder;
     }
 
+    /**
+     * @return PreviewFormViewBuilderInterface|FormViewBuilderInterface
+     */
     protected function buildSeo(
         string $resourceKey,
         string $parentView,
@@ -142,6 +148,9 @@ class ContentViewBuilder implements ContentViewBuilderInterface
         return $formViewBuilder;
     }
 
+    /**
+     * @return PreviewFormViewBuilderInterface|FormViewBuilderInterface
+     */
     protected function buildExcerpt(
         string $resourceKey,
         string $parentView,
@@ -169,7 +178,7 @@ class ContentViewBuilder implements ContentViewBuilderInterface
     /**
      * @return PreviewFormViewBuilderInterface|FormViewBuilderInterface
      */
-    protected function createFormViewBuilder(string $name, string $path, bool $previewEnabled)
+    protected function createFormViewBuilder(string $name, string $path, bool $previewEnabled): ViewBuilderInterface
     {
         if ($previewEnabled) {
             $formViewBuilder = $this->viewBuilderFactory->createPreviewFormViewBuilder($name, $path);

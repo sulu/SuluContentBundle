@@ -19,12 +19,13 @@ use Sulu\Bundle\AdminBundle\Admin\View\ViewBuilderFactory;
 use Sulu\Bundle\AdminBundle\Admin\View\ViewCollection;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Admin\ContentViewBuilder;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Admin\ContentViewBuilderInterface;
+use Sulu\Bundle\PreviewBundle\Preview\Object\PreviewObjectProviderRegistry;
 
 class ContentViewBuilderTest extends TestCase
 {
     protected function getContentViewBuilder(): ContentViewBuilderInterface
     {
-        return new ContentViewBuilder(new ViewBuilderFactory());
+        return new ContentViewBuilder(new ViewBuilderFactory(), new PreviewObjectProviderRegistry([]));
     }
 
     public function testBuild(): void

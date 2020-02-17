@@ -139,7 +139,7 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
     /**
      * @param mixed[] $data
      */
-    private function setSeoData(SeoInterface $object, array &$data): array
+    private function setSeoData(SeoInterface $object, array &$data): void
     {
         $seoTitle = 'seoTitle';
         if (\array_key_exists($seoTitle, $data)) {
@@ -154,9 +154,9 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
 
         $seoDescription = 'seoDescription';
         if (\array_key_exists($seoDescription, $data)) {
-            $seoDescription = $data[$seoDescription];
+            $value = $data[$seoDescription];
 
-            Assert::nullOrString($seoDescription);
+            Assert::nullOrString($value);
 
             $object->setSeoDescription($value);
 
@@ -222,7 +222,7 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
     /**
      * @param mixed[] $data
      */
-    private function setExcerptData(ExcerptInterface $object, array &$data)
+    private function setExcerptData(ExcerptInterface $object, array &$data): void
     {
         $excerptTitle = 'excerptTitle';
         if (\array_key_exists($excerptTitle, $data)) {
@@ -237,9 +237,9 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
 
         $excerptDescription = 'excerptDescription';
         if (\array_key_exists($excerptDescription, $data)) {
-            $excerptDescription = $data[$excerptDescription];
+            $value = $data[$excerptDescription];
 
-            Assert::nullOrString($excerptDescription);
+            Assert::nullOrString($value);
 
             $object->setExcerptDescription($value);
 
@@ -309,7 +309,7 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
     /**
      * @param mixed[] $data
      */
-    private function setTemplateData(TemplateInterface $object, array &$data)
+    private function setTemplateData(TemplateInterface $object, array &$data): void
     {
         $object->setTemplateData($data);
     }
