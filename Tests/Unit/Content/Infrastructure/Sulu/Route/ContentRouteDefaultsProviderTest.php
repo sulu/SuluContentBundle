@@ -317,6 +317,37 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $contentRouteDefaultsProvider->getByEntity(Example::class, '123-123-123', 'en');
     }
 
+    public function testGetByEntityReturnNoneTemplateFromPreview(): void
+    {
+        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage(sprintf(
+            'Expected to get "%s" from ContentResolver but "%s" given.',
+            TemplateInterface::class,
+            \get_class($contentRichEntity->reveal())
+        ));
+
+        $entityManager = $this->prophesize(EntityManagerInterface::class);
+        $contentResolver = $this->prophesize(ContentResolverInterface::class);
+        $structureMetadataFactory = $this->prophesize(StructureMetadataFactoryInterface::class);
+        $propertyFactory = $this->prophesize(LegacyPropertyFactory::class);
+
+        $contentRouteDefaultsProvider = $this->getContentRouteDefaultsProvider(
+            $entityManager->reveal(),
+            $contentResolver->reveal(),
+            $structureMetadataFactory->reveal(),
+            $propertyFactory->reveal()
+        );
+
+        /**
+         * @var ContentProjectionInterface
+         */
+        $entity = $contentRichEntity->reveal();
+
+        $contentRouteDefaultsProvider->getByEntity(Example::class, '123-123-123', 'en', $entity);
+    }
+
     public function testIsPublishedNotExists(): void
     {
         $entityManager = $this->prophesize(EntityManagerInterface::class);

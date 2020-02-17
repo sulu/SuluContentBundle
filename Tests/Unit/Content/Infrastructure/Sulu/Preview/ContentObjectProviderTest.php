@@ -15,11 +15,13 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Infrastructure\Sulu\Previ
 
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\QueryBuilder;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Sulu\Bundle\CategoryBundle\Entity\Category;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolverInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\CategoryFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\TagFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
@@ -87,7 +89,7 @@ class ContentObjectProviderTest extends TestCase
             return func_get_arg(\func_num_args() - 2);
         })->shouldBeCalledTimes(1);
 
-        $queryBuilder->setParameter(Argument::type('string'), Argument::type('string'))->will(function () {
+        $queryBuilder->setParameter(Argument::type('string'), Argument::any())->will(function () {
             return func_get_arg(\func_num_args() - 2);
         })->shouldBeCalledTimes(1);
 
@@ -111,6 +113,55 @@ class ContentObjectProviderTest extends TestCase
         $this->assertSame($projection->reveal(), $result);
     }
 
+    public function testGetNonExistingObject(int $id = 1, string $locale = 'de'): void
+    {
+        $this->entityManager->createQueryBuilder()->willThrow(NoResultException::class)->shouldBeCalledTimes(1);
+
+        $result = $this->contentObjectProvider->getObject($id, $locale);
+
+        $this->assertNull($result);
+    }
+
+    public function testGetObjectWithNonExistingProjection(int $id = 1, string $locale = 'de'): void
+    {
+        $queryBuilder = $this->prophesize(QueryBuilder::class);
+
+        $this->entityManager->createQueryBuilder()->willReturn($queryBuilder->reveal())->shouldBeCalledTimes(1);
+
+        $queryBuilder->select(Argument::type('string'))->will(function () {
+            return func_get_arg(\func_num_args() - 2);
+        })->shouldBeCalledTimes(1);
+
+        $queryBuilder->from(Argument::type('string'), Argument::type('string'))->will(function () {
+            return func_get_arg(\func_num_args() - 2);
+        })->shouldBeCalledTimes(1);
+
+        $queryBuilder->where(Argument::type('string'))->will(function () {
+            return func_get_arg(\func_num_args() - 2);
+        })->shouldBeCalledTimes(1);
+
+        $queryBuilder->setParameter(Argument::type('string'), Argument::any())->will(function () {
+            return func_get_arg(\func_num_args() - 2);
+        })->shouldBeCalledTimes(1);
+
+        $query = $this->prophesize(AbstractQuery::class);
+
+        $queryBuilder->getQuery()->willReturn($query->reveal())->shouldBeCalledTimes(1);
+
+        $entity = $this->prophesize(ContentRichEntityInterface::class);
+
+        $query->getSingleResult()->willReturn($entity->reveal())->shouldBeCalledTimes(1);
+
+        $this->contentResolver->resolve(
+            $entity->reveal(),
+            Argument::type('array')
+        )->willThrow(ContentNotFoundException::class)->shouldBeCalledTimes(1);
+
+        $result = $this->contentObjectProvider->getObject($id, $locale);
+
+        $this->assertNull($result);
+    }
+
     public function testGetId(int $id = 1): void
     {
         $projection = $this->prophesize(ContentProjectionInterface::class);
@@ -130,28 +181,38 @@ class ContentObjectProviderTest extends TestCase
         array $data = [
             'title' => 'Title',
             'seoTitle' => 'Seo Title',
+            'seoDescription' => 'Seo Description',
+            'seoKeywords' => 'Seo Keywords',
+            'seoCanonicalUrl' => 'Seo Canonical Url',
+            'seoNoIndex' => true,
+            'seoNoFollow' => false,
+            'seoHideInSitemap' => true,
             'excerptTitle' => 'Excerpt Title',
+            'excerptDescription' => 'Excerpt Description',
+            'excerptMore' => 'Excerpt More',
             'excerptTags' => ['foo', 'bar'],
             'excerptCategories' => [1, 2],
+            'excerptImage' => ['id' => 3],
+            'excerptIcon' => ['id' => 4],
         ]
     ): void {
-        $this->tagFactory->create(Argument::type('array'))->will(function (array $tags) {
-            return array_map(function ($name) {
-                $tag = new Tag();
-                $tag->setName($name);
+        $tags = array_map(function (string $name) {
+            $tag = new Tag();
+            $tag->setName($name);
 
-                return $tag;
-            }, $tags);
-        });
+            return $tag;
+        }, $data['excerptTags']);
 
-        $this->categoryFactory->create(Argument::type('array'))->will(function (array $categories) {
-            return array_map(function ($id) {
-                $category = new Category();
-                $category->setId($id);
+        $this->tagFactory->create($data['excerptTags'])->willReturn($tags);
 
-                return $category;
-            }, $categories);
-        });
+        $categories = array_map(function (int $id) {
+            $category = new Category();
+            $category->setId($id);
+
+            return $category;
+        }, $data['excerptCategories']);
+
+        $this->categoryFactory->create($data['excerptCategories'])->willReturn($categories);
 
         $projection = (new class() implements ContentProjectionInterface, TemplateInterface, SeoInterface, ExcerptInterface {
             use ContentProjectionTrait;
@@ -173,11 +234,25 @@ class ContentObjectProviderTest extends TestCase
         $newData = $data;
         $this->contentObjectProvider->setValues($projection, $locale, $newData);
 
-        $this->assertSame('Title', $projection->getTemplateData()['title']);
-        $this->assertSame('Seo Title', $projection->getSeoTitle());
-        $this->assertSame('Excerpt Title', $projection->getExcerptTitle());
+        $this->assertSame($data['title'], $projection->getTemplateData()['title']);
+
+        $this->assertSame($data['seoTitle'], $projection->getSeoTitle());
+        $this->assertSame($data['seoDescription'], $projection->getSeoDescription());
+        $this->assertSame($data['seoKeywords'], $projection->getSeoKeywords());
+        $this->assertSame($data['seoCanonicalUrl'], $projection->getSeoCanonicalUrl());
+        $this->assertSame($data['seoNoFollow'], $projection->getSeoNoFollow());
+        $this->assertSame($data['seoNoIndex'], $projection->getSeoNoIndex());
+        $this->assertSame($data['seoHideInSitemap'], $projection->getSeoHideInSitemap());
+
+        $this->assertSame($data['excerptTitle'], $projection->getExcerptTitle());
+        $this->assertSame($data['excerptDescription'], $projection->getExcerptDescription());
+        $this->assertSame($data['excerptMore'], $projection->getExcerptMore());
         $this->assertSame($data['excerptTags'], $projection->getExcerptTagNames());
+        $this->assertSame($tags, $projection->getExcerptTags());
         $this->assertSame($data['excerptCategories'], $projection->getExcerptCategoryIds());
+        $this->assertSame($categories, $projection->getExcerptCategories());
+        $this->assertSame($data['excerptImage'], $projection->getExcerptImage());
+        $this->assertSame($data['excerptIcon'], $projection->getExcerptIcon());
     }
 
     /**
@@ -208,6 +283,7 @@ class ContentObjectProviderTest extends TestCase
     public function testSerialize(): void
     {
         $object = new \stdClass();
+        $object->foo = 'bar';
         $serializedObject = serialize($object);
 
         $result = $this->contentObjectProvider->serialize($object);
@@ -218,10 +294,11 @@ class ContentObjectProviderTest extends TestCase
     public function testDeserialize(): void
     {
         $object = new \stdClass();
+        $object->foo = 'bar';
         $serializedObject = serialize($object);
 
         $deserializedObject = $this->contentObjectProvider->deserialize($serializedObject, \get_class($object));
 
-        $this->assertSame($deserializedObject, $object);
+        $this->assertSame($deserializedObject->foo, $object->foo);
     }
 }
