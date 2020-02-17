@@ -14,9 +14,12 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Admin;
 
 use Sulu\Bundle\AdminBundle\Admin\View\FormViewBuilderInterface;
+use Sulu\Bundle\AdminBundle\Admin\View\PreviewFormViewBuilderInterface;
 use Sulu\Bundle\AdminBundle\Admin\View\ToolbarAction;
 use Sulu\Bundle\AdminBundle\Admin\View\ViewBuilderFactoryInterface;
+use Sulu\Bundle\AdminBundle\Admin\View\ViewBuilderInterface;
 use Sulu\Bundle\AdminBundle\Admin\View\ViewCollection;
+use Sulu\Bundle\PreviewBundle\Preview\Object\PreviewObjectProviderRegistryInterface;
 
 class ContentViewBuilder implements ContentViewBuilderInterface
 {
@@ -25,9 +28,17 @@ class ContentViewBuilder implements ContentViewBuilderInterface
      */
     private $viewBuilderFactory;
 
-    public function __construct(ViewBuilderFactoryInterface $viewBuilderFactory)
-    {
+    /**
+     * @var PreviewObjectProviderRegistryInterface
+     */
+    private $objectProviderRegistry;
+
+    public function __construct(
+        ViewBuilderFactoryInterface $viewBuilderFactory,
+        PreviewObjectProviderRegistryInterface $objectProviderRegistry
+    ) {
         $this->viewBuilderFactory = $viewBuilderFactory;
+        $this->objectProviderRegistry = $objectProviderRegistry;
     }
 
     public function build(
@@ -52,23 +63,35 @@ class ContentViewBuilder implements ContentViewBuilderInterface
         // Add views
         if (null !== $addParentView) {
             $viewCollection->add(
-                $this->buildTemplate($typeKey, $resourceKey, $addParentView, $saveToolbarAction)
+                $this->buildTemplate($typeKey, $resourceKey, $addParentView, $saveToolbarAction, false)
                     ->setEditView($editParentView)
             );
         }
 
+        $previewEnabled = $this->objectProviderRegistry->hasPreviewObjectProvider($resourceKey);
+
         // Edit views
-        $viewCollection->add($this->buildTemplate($typeKey, $resourceKey, $editParentView, $saveToolbarAction));
-        $viewCollection->add($this->buildSeo($resourceKey, $editParentView, $saveToolbarAction));
-        $viewCollection->add($this->buildExcerpt($resourceKey, $editParentView, $saveToolbarAction));
+        $viewCollection->add(
+            $this->buildTemplate($typeKey, $resourceKey, $editParentView, $saveToolbarAction, $previewEnabled)
+        );
+        $viewCollection->add(
+            $this->buildSeo($resourceKey, $editParentView, $saveToolbarAction, $previewEnabled)
+        );
+        $viewCollection->add(
+            $this->buildExcerpt($resourceKey, $editParentView, $saveToolbarAction, $previewEnabled)
+        );
     }
 
+    /**
+     * @return PreviewFormViewBuilderInterface|FormViewBuilderInterface
+     */
     protected function buildTemplate(
         string $typeKey,
         string $resourceKey,
         string $parentView,
-        ToolbarAction $saveToolbarAction
-    ): FormViewBuilderInterface {
+        ToolbarAction $saveToolbarAction,
+        bool $previewEnabled
+    ): ViewBuilderInterface {
         $formToolbarActionsWithType = [
             $saveToolbarAction,
             new ToolbarAction(
@@ -85,8 +108,7 @@ class ContentViewBuilder implements ContentViewBuilderInterface
             ),
         ];
 
-        $formViewBuilder = $this->viewBuilderFactory
-            ->createFormViewBuilder($parentView . '.content', '/content');
+        $formViewBuilder = $this->createFormViewBuilder($parentView . '.content', '/content', $previewEnabled);
 
         $formViewBuilder
             ->setResourceKey($resourceKey)
@@ -99,17 +121,20 @@ class ContentViewBuilder implements ContentViewBuilderInterface
         return $formViewBuilder;
     }
 
+    /**
+     * @return PreviewFormViewBuilderInterface|FormViewBuilderInterface
+     */
     protected function buildSeo(
         string $resourceKey,
         string $parentView,
-        ToolbarAction $saveToolbarAction
-    ): FormViewBuilderInterface {
+        ToolbarAction $saveToolbarAction,
+        bool $previewEnabled
+    ): ViewBuilderInterface {
         $formToolbarActionsWithoutType = [
             $saveToolbarAction,
         ];
 
-        $formViewBuilder = $this->viewBuilderFactory
-            ->createFormViewBuilder($parentView . '.seo', '/seo');
+        $formViewBuilder = $this->createFormViewBuilder($parentView . '.seo', '/seo', $previewEnabled);
 
         $formViewBuilder
             ->setResourceKey($resourceKey)
@@ -123,17 +148,20 @@ class ContentViewBuilder implements ContentViewBuilderInterface
         return $formViewBuilder;
     }
 
+    /**
+     * @return PreviewFormViewBuilderInterface|FormViewBuilderInterface
+     */
     protected function buildExcerpt(
         string $resourceKey,
         string $parentView,
-        ToolbarAction $saveToolbarAction
-    ): FormViewBuilderInterface {
+        ToolbarAction $saveToolbarAction,
+        bool $previewEnabled
+    ): ViewBuilderInterface {
         $formToolbarActionsWithoutType = [
             $saveToolbarAction,
         ];
 
-        $formViewBuilder = $this->viewBuilderFactory
-            ->createFormViewBuilder($parentView . '.excerpt', '/excerpt');
+        $formViewBuilder = $this->createFormViewBuilder($parentView . '.excerpt', '/excerpt', $previewEnabled);
 
         $formViewBuilder
             ->setResourceKey($resourceKey)
@@ -143,6 +171,20 @@ class ContentViewBuilder implements ContentViewBuilderInterface
             ->addToolbarActions($formToolbarActionsWithoutType)
             ->setTabOrder(40)
             ->setParent($parentView);
+
+        return $formViewBuilder;
+    }
+
+    /**
+     * @return PreviewFormViewBuilderInterface|FormViewBuilderInterface
+     */
+    protected function createFormViewBuilder(string $name, string $path, bool $previewEnabled): ViewBuilderInterface
+    {
+        if ($previewEnabled) {
+            $formViewBuilder = $this->viewBuilderFactory->createPreviewFormViewBuilder($name, $path);
+        } else {
+            $formViewBuilder = $this->viewBuilderFactory->createFormViewBuilder($name, $path);
+        }
 
         return $formViewBuilder;
     }
