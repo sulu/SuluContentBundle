@@ -71,7 +71,6 @@ class ContentUnpublishSubscriber implements EventSubscriberInterface
 
         $liveDimensionAttributes = array_merge($dimensionAttributes, ['stage' => DimensionInterface::STAGE_LIVE]);
 
-        // find all dimensions that contain all attributes, but no dimension that is less specific
         $dimensionCollection = $this->dimensionRepository->findByAttributes($liveDimensionAttributes);
         if (0 === \count($dimensionCollection)) {
             throw new ContentNotFoundException($contentRichEntity, $liveDimensionAttributes);
