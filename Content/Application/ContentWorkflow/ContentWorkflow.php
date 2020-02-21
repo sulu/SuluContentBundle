@@ -85,6 +85,14 @@ class ContentWorkflow implements ContentWorkflowInterface
         array $dimensionAttributes,
         string $transitionName
     ): ContentProjectionInterface {
+        /**
+         * Transition should always be applied to the STAGE_DRAFT content-dimension of the given $dimensionAttributes.
+         * This ensures that the STAGE_DRAFT content-dimension is the single source of truth for the current
+         * 'workflowPlace'. The registered WorkflowSubscribers are free to load and modify other content-dimensions.
+         *
+         * TODO: maybe throw an exception here if the $dimensionAttributes contain another stage than 'STAGE_DRAFT'
+         */
+
         $dimensionCollection = $this->dimensionRepository->findByAttributes($dimensionAttributes);
 
         if (0 === \count($dimensionCollection)) {
