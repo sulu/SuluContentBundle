@@ -27,12 +27,16 @@ use Sulu\Component\Content\Metadata\StructureMetadata;
 
 class RouteMapperTest extends TestCase
 {
+    /**
+     * @param array<string, string> $structureDefaultTypes
+     */
     protected function createRouteDataMapperInstance(
         StructureMetadataFactoryInterface $factory,
         RouteGeneratorInterface $routeGenerator,
-        RouteManagerInterface $routeManager
+        RouteManagerInterface $routeManager,
+        array $structureDefaultTypes = []
     ): RouteDataMapper {
-        return new RouteDataMapper($factory, $routeGenerator, $routeManager);
+        return new RouteDataMapper($factory, $routeGenerator, $routeManager, $structureDefaultTypes);
     }
 
     public function testMapNoRoutable(): void
@@ -117,6 +121,7 @@ class RouteMapperTest extends TestCase
         $localizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
         $localizedDimensionContent->willImplement(RoutableInterface::class);
         $localizedDimensionContent->willImplement(TemplateInterface::class);
+        $localizedDimensionContent->getTemplateType()->willReturn('example');
 
         $factory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $routeGenerator = $this->prophesize(RouteGeneratorInterface::class);
@@ -511,6 +516,56 @@ class RouteMapperTest extends TestCase
             $factory->reveal(),
             $routeGenerator->reveal(),
             $routeManager->reveal()
+        );
+
+        $mapper->map($data, $dimensionContent->reveal(), $localizedDimensionContent->reveal());
+    }
+
+    public function testMapNoTemplateWithDefaultTemplate(): void
+    {
+        $data = [
+            'url' => '/test',
+        ];
+
+        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $localizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $localizedDimensionContent->willImplement(RoutableInterface::class);
+        $localizedDimensionContent->willImplement(TemplateInterface::class);
+
+        $factory = $this->prophesize(StructureMetadataFactoryInterface::class);
+        $routeGenerator = $this->prophesize(RouteGeneratorInterface::class);
+        $routeManager = $this->prophesize(RouteManagerInterface::class);
+
+        $metadata = $this->prophesize(StructureMetadata::class);
+        $property = $this->prophesize(PropertyMetadata::class);
+        $property->getType()->willReturn('route');
+        $property->getName()->willReturn('url');
+
+        $metadata->getProperties()->WillReturn([$property->reveal()]);
+
+        $localizedDimensionContent->getTemplateType()->willReturn('example');
+        $localizedDimensionContent->getTemplateData()->willReturn([]);
+        $factory->getStructureMetadata('example', 'default')->willReturn($metadata->reveal())->shouldBeCalled();
+
+        $localizedDimensionContent->getContentId()->willReturn('123-123-123');
+        $localizedDimensionContent->getContentClass()->willReturn('App\Entity\Example');
+        $localizedDimensionContent->getLocale()->willReturn('en');
+
+        $routeGenerator->generate($localizedDimensionContent, ['schema' => '/{object.getTitle()}'])
+            ->shouldNotBeCalled();
+
+        $routeManager->createOrUpdateByAttributes(
+            'App\Entity\Example',
+            '123-123-123',
+            'en',
+            '/test'
+        )->shouldBeCalled();
+
+        $mapper = $this->createRouteDataMapperInstance(
+            $factory->reveal(),
+            $routeGenerator->reveal(),
+            $routeManager->reveal(),
+            ['example' => 'default']
         );
 
         $mapper->map($data, $dimensionContent->reveal(), $localizedDimensionContent->reveal());

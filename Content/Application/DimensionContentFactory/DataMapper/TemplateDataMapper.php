@@ -23,9 +23,18 @@ class TemplateDataMapper implements DataMapperInterface
      */
     private $factory;
 
-    public function __construct(StructureMetadataFactoryInterface $factory)
+    /**
+     * @var array<string, string>
+     */
+    private $structureDefaultTypes;
+
+    /**
+     * @param array<string, string> $structureDefaultTypes
+     */
+    public function __construct(StructureMetadataFactoryInterface $factory, array $structureDefaultTypes)
     {
         $this->factory = $factory;
+        $this->structureDefaultTypes = $structureDefaultTypes;
     }
 
     public function map(
@@ -37,15 +46,22 @@ class TemplateDataMapper implements DataMapperInterface
             return;
         }
 
-        if (!isset($data['template'])) {
+        $type = $unlocalizedObject->getTemplateType();
+
+        /** @var string|null $template */
+        $template = $data['template'] ?? null;
+
+        if (null === $template) {
+            $template = $this->structureDefaultTypes[$type] ?? null;
+        }
+
+        if (null === $template) {
             throw new \RuntimeException('Expected "template" to be set in the data array.');
         }
 
-        $template = $data['template'];
-
         list($unlocalizedData, $localizedData) = $this->getTemplateData(
             $data,
-            $unlocalizedObject->getTemplateType(),
+            $type,
             $template
         );
 

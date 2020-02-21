@@ -38,14 +38,24 @@ class RouteDataMapper implements DataMapperInterface
      */
     private $routeManager;
 
+    /**
+     * @var array<string, string>
+     */
+    private $structureDefaultTypes;
+
+    /**
+     * @param array<string, string> $structureDefaultTypes
+     */
     public function __construct(
         StructureMetadataFactoryInterface $factory,
         RouteGeneratorInterface $routeGenerator,
-        RouteManagerInterface $routeManager
+        RouteManagerInterface $routeManager,
+        array $structureDefaultTypes
     ) {
         $this->factory = $factory;
         $this->routeGenerator = $routeGenerator;
         $this->routeManager = $routeManager;
+        $this->structureDefaultTypes = $structureDefaultTypes;
     }
 
     public function map(
@@ -61,12 +71,18 @@ class RouteDataMapper implements DataMapperInterface
             throw new \RuntimeException('LocalizedObject needs to extend the TemplateInterface');
         }
 
-        if (!isset($data['template'])) {
-            throw new \RuntimeException('Expected "template" to be set in the data array.');
+        $type = $localizedObject->getTemplateType();
+
+        /** @var string|null $template */
+        $template = $data['template'] ?? null;
+
+        if (null === $template) {
+            $template = $this->structureDefaultTypes[$type] ?? null;
         }
 
-        $template = $data['template'];
-        $type = $localizedObject->getTemplateType();
+        if (null === $template) {
+            throw new \RuntimeException('Expected "template" to be set in the data array.');
+        }
 
         $metadata = $this->factory->getStructureMetadata($type, $template);
         if (!$metadata) {
