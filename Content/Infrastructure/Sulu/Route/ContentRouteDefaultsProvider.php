@@ -102,7 +102,7 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
                 return false;
             }
 
-            return DimensionInterface::STAGE_LIVE === $dimension->getStage();
+            return DimensionInterface::STAGE_LIVE === $dimension->getStage() && $locale === $dimension->getLocale();
         }
 
         return null !== $entity;
