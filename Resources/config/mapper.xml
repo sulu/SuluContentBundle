@@ -6,6 +6,7 @@
         <!-- DataMapper -->
         <service id="sulu_content.template_mapper" class="Sulu\Bundle\ContentBundle\Content\Application\DimensionContentFactory\DataMapper\TemplateDataMapper">
             <argument type="service" id="sulu_page.structure.factory"/>
+            <argument>%sulu.content.structure.default_types%</argument>
 
             <tag name="sulu_content.data_mapper"/>
         </service>
@@ -25,6 +26,7 @@
             <argument type="service" id="sulu_page.structure.factory"/>
             <argument type="service" id="sulu_route.generator.route_generator"/>
             <argument type="service" id="sulu_route.manager.route_manager"/>
+            <argument>%sulu.content.structure.default_types%</argument>
 
             <tag name="sulu_content.data_mapper"/>
         </service>
