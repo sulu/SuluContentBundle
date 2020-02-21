@@ -121,6 +121,7 @@ class RouteMapperTest extends TestCase
         $localizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
         $localizedDimensionContent->willImplement(RoutableInterface::class);
         $localizedDimensionContent->willImplement(TemplateInterface::class);
+        $localizedDimensionContent->getTemplateType()->willReturn('example');
 
         $factory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $routeGenerator = $this->prophesize(RouteGeneratorInterface::class);

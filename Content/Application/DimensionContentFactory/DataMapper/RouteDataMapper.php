@@ -43,6 +43,9 @@ class RouteDataMapper implements DataMapperInterface
      */
     private $structureDefaultTypes;
 
+    /**
+     * @param array<string, string> $structureDefaultTypes
+     */
     public function __construct(
         StructureMetadataFactoryInterface $factory,
         RouteGeneratorInterface $routeGenerator,

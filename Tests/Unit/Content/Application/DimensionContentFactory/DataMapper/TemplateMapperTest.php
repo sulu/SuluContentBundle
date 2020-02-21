@@ -23,6 +23,9 @@ use Sulu\Component\Content\Metadata\StructureMetadata;
 
 class TemplateMapperTest extends TestCase
 {
+    /**
+     * @param array<string, string> $structureDefaultTypes
+     */
     protected function createTemplateDataMapperInstance(
         StructureMetadataFactoryInterface $structureMetadataFactory,
         array $structureDefaultTypes = []
@@ -58,6 +61,7 @@ class TemplateMapperTest extends TestCase
 
         $dimensionContent = $this->prophesize(DimensionContentInterface::class);
         $dimensionContent->willImplement(TemplateInterface::class);
+        $dimensionContent->getTemplateType()->willReturn('example');
 
         $localizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
 
