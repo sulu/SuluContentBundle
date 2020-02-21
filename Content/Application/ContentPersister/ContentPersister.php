@@ -48,7 +48,7 @@ class ContentPersister implements ContentPersisterInterface
 
     public function persist(ContentRichEntityInterface $contentRichEntity, array $data, array $dimensionAttributes): ContentProjectionInterface
     {
-        /**
+        /*
          * Data should always be persisted to the STAGE_DRAFT content-dimension of the given $dimensionAttributes.
          * Modifying data of other content-dimensions (eg. STAGE_LIVE) should only be possible by applying transitions
          * of the ContentWorkflow.
