@@ -52,8 +52,8 @@ class ContentPublishSubscriberTest extends TestCase
         );
 
         $contentCopier = $this->prophesize(ContentCopierInterface::class);
-        $contentCopier->copyFromDimensionContentCollection(Argument::any(), Argument::any(), Argument::any())
-            ->shouldNotBeCalled();
+        $contentCopier->copyFromDimensionContentCollection(Argument::cetera())->shouldNotBeCalled();
+
         $contentPublishSubscriber = $this->createContentPublisherSubscriberInstance($contentCopier->reveal());
 
         $contentPublishSubscriber->onPublish($event);

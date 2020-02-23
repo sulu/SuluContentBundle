@@ -112,7 +112,37 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $this->assertTrue($contentRouteDefaultsProvider->isPublished(Example::class, '123-123-123', 'en'));
     }
 
-    public function testIsPublishedNoDimension(): void
+    public function testIsPublishedEntityNotFound(): void
+    {
+        $entityManager = $this->prophesize(EntityManagerInterface::class);
+        $contentResolver = $this->prophesize(ContentResolverInterface::class);
+        $structureMetadataFactory = $this->prophesize(StructureMetadataFactoryInterface::class);
+        $propertyFactory = $this->prophesize(LegacyPropertyFactory::class);
+
+        $contentRouteDefaultsProvider = $this->getContentRouteDefaultsProvider(
+            $entityManager->reveal(),
+            $contentResolver->reveal(),
+            $structureMetadataFactory->reveal(),
+            $propertyFactory->reveal()
+        );
+
+        $queryBuilder = $this->prophesize(QueryBuilder::class);
+        $query = $this->prophesize(AbstractQuery::class);
+
+        $entityManager->createQueryBuilder()->willReturn($queryBuilder->reveal());
+        $queryBuilder->select('entity')->willReturn($queryBuilder->reveal());
+        $queryBuilder->from(Example::class, 'entity')->willReturn($queryBuilder->reveal());
+        $queryBuilder->where('entity.id = :id')->willReturn($queryBuilder->reveal());
+        $queryBuilder->setParameter('id', '123-123-123')->willReturn($queryBuilder->reveal());
+        $queryBuilder->getQuery()->willReturn($query);
+        $query->getSingleResult()->willThrow(new NoResultException());
+
+        $contentResolver->resolve(Argument::cetera())->shouldNotBeCalled();
+
+        $this->assertFalse($contentRouteDefaultsProvider->isPublished(Example::class, '123-123-123', 'en'));
+    }
+
+    public function testIsPublishedContentNotFound(): void
     {
         $entityManager = $this->prophesize(EntityManagerInterface::class);
         $contentResolver = $this->prophesize(ContentResolverInterface::class);
@@ -127,8 +157,6 @@ class ContentRouteDefaultsProviderTest extends TestCase
         );
 
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
-        $contentProjection = $this->prophesize(TemplateInterface::class);
-        $contentProjection->willImplement(ContentProjectionInterface::class);
 
         $queryBuilder = $this->prophesize(QueryBuilder::class);
         $query = $this->prophesize(AbstractQuery::class);
@@ -149,7 +177,7 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $this->assertFalse($contentRouteDefaultsProvider->isPublished(Example::class, '123-123-123', 'en'));
     }
 
-    public function testIsPublishedWithDimension(): void
+    public function testIsPublishedWithLocalizedDimension(): void
     {
         $entityManager = $this->prophesize(EntityManagerInterface::class);
         $contentResolver = $this->prophesize(ContentResolverInterface::class);
@@ -191,7 +219,48 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $this->assertTrue($contentRouteDefaultsProvider->isPublished(Example::class, '123-123-123', 'en'));
     }
 
-    public function testIsNotPublishedWithMissingDimension(): void
+    public function testIsPublishedWithUnlocalizedDimension(): void
+    {
+        $entityManager = $this->prophesize(EntityManagerInterface::class);
+        $contentResolver = $this->prophesize(ContentResolverInterface::class);
+        $structureMetadataFactory = $this->prophesize(StructureMetadataFactoryInterface::class);
+        $propertyFactory = $this->prophesize(LegacyPropertyFactory::class);
+
+        $contentRouteDefaultsProvider = $this->getContentRouteDefaultsProvider(
+            $entityManager->reveal(),
+            $contentResolver->reveal(),
+            $structureMetadataFactory->reveal(),
+            $propertyFactory->reveal()
+        );
+        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
+        $contentProjection = $this->prophesize(TemplateInterface::class);
+        $contentProjection->willImplement(ContentProjectionInterface::class);
+        $contentProjection->getDimensionId()->willReturn('123-456');
+
+        $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
+        $dimensionRepository->findOneBy(['id' => '123-456'])->willReturn(new Dimension('123-456', [
+            'stage' => 'live',
+        ]));
+
+        $entityManager->getRepository(DimensionInterface::class)->willReturn($dimensionRepository->reveal());
+        $queryBuilder = $this->prophesize(QueryBuilder::class);
+        $query = $this->prophesize(AbstractQuery::class);
+        $entityManager->createQueryBuilder()->willReturn($queryBuilder->reveal());
+        $queryBuilder->select('entity')->willReturn($queryBuilder->reveal());
+        $queryBuilder->from(Example::class, 'entity')->willReturn($queryBuilder->reveal());
+        $queryBuilder->where('entity.id = :id')->willReturn($queryBuilder->reveal());
+        $queryBuilder->setParameter('id', '123-123-123')->willReturn($queryBuilder->reveal());
+        $queryBuilder->getQuery()->willReturn($query);
+        $query->getSingleResult()->willReturn($contentRichEntity->reveal());
+
+        $contentResolver->resolve($contentRichEntity->reveal(), ['locale' => 'en', 'stage' => 'live'])
+            ->willReturn($contentProjection->reveal())
+            ->shouldBeCalled();
+
+        $this->assertFalse($contentRouteDefaultsProvider->isPublished(Example::class, '123-123-123', 'en'));
+    }
+
+    public function testIsPublishedDimensionNotFound(): void
     {
         $entityManager = $this->prophesize(EntityManagerInterface::class);
         $contentResolver = $this->prophesize(ContentResolverInterface::class);
@@ -212,48 +281,6 @@ class ContentRouteDefaultsProviderTest extends TestCase
 
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
         $dimensionRepository->findOneBy(['id' => '123-456'])->willReturn(null);
-
-        $entityManager->getRepository(DimensionInterface::class)->willReturn($dimensionRepository->reveal());
-        $queryBuilder = $this->prophesize(QueryBuilder::class);
-        $query = $this->prophesize(AbstractQuery::class);
-        $entityManager->createQueryBuilder()->willReturn($queryBuilder->reveal());
-        $queryBuilder->select('entity')->willReturn($queryBuilder->reveal());
-        $queryBuilder->from(Example::class, 'entity')->willReturn($queryBuilder->reveal());
-        $queryBuilder->where('entity.id = :id')->willReturn($queryBuilder->reveal());
-        $queryBuilder->setParameter('id', '123-123-123')->willReturn($queryBuilder->reveal());
-        $queryBuilder->getQuery()->willReturn($query);
-        $query->getSingleResult()->willReturn($contentRichEntity->reveal());
-
-        $contentResolver->resolve($contentRichEntity->reveal(), ['locale' => 'en', 'stage' => 'live'])
-            ->willReturn($contentProjection->reveal())
-            ->shouldBeCalled();
-
-        $this->assertFalse($contentRouteDefaultsProvider->isPublished(Example::class, '123-123-123', 'en'));
-    }
-
-    public function testIsNotPublishedWithDimension(): void
-    {
-        $entityManager = $this->prophesize(EntityManagerInterface::class);
-        $contentResolver = $this->prophesize(ContentResolverInterface::class);
-        $structureMetadataFactory = $this->prophesize(StructureMetadataFactoryInterface::class);
-        $propertyFactory = $this->prophesize(LegacyPropertyFactory::class);
-
-        $contentRouteDefaultsProvider = $this->getContentRouteDefaultsProvider(
-            $entityManager->reveal(),
-            $contentResolver->reveal(),
-            $structureMetadataFactory->reveal(),
-            $propertyFactory->reveal()
-        );
-
-        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
-        $contentProjection = $this->prophesize(TemplateInterface::class);
-        $contentProjection->willImplement(ContentProjectionInterface::class);
-        $contentProjection->getDimensionId()->willReturn('123-456');
-        $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
-        $dimensionRepository->findOneBy(['id' => '123-456'])->willReturn(new Dimension('123-456', [
-            'locale' => 'en',
-            'stage' => 'draft',
-        ]));
 
         $entityManager->getRepository(DimensionInterface::class)->willReturn($dimensionRepository->reveal());
         $queryBuilder = $this->prophesize(QueryBuilder::class);
@@ -346,71 +373,6 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $entity = $contentRichEntity->reveal();
 
         $contentRouteDefaultsProvider->getByEntity(Example::class, '123-123-123', 'en', $entity);
-    }
-
-    public function testIsPublishedNotExists(): void
-    {
-        $entityManager = $this->prophesize(EntityManagerInterface::class);
-        $contentResolver = $this->prophesize(ContentResolverInterface::class);
-        $structureMetadataFactory = $this->prophesize(StructureMetadataFactoryInterface::class);
-        $propertyFactory = $this->prophesize(LegacyPropertyFactory::class);
-
-        $contentRouteDefaultsProvider = $this->getContentRouteDefaultsProvider(
-            $entityManager->reveal(),
-            $contentResolver->reveal(),
-            $structureMetadataFactory->reveal(),
-            $propertyFactory->reveal()
-        );
-
-        $queryBuilder = $this->prophesize(QueryBuilder::class);
-        $query = $this->prophesize(AbstractQuery::class);
-
-        $entityManager->createQueryBuilder()->willReturn($queryBuilder->reveal());
-        $queryBuilder->select('entity')->willReturn($queryBuilder->reveal());
-        $queryBuilder->from(Example::class, 'entity')->willReturn($queryBuilder->reveal());
-        $queryBuilder->where('entity.id = :id')->willReturn($queryBuilder->reveal());
-        $queryBuilder->setParameter('id', '123-123-123')->willReturn($queryBuilder->reveal());
-        $queryBuilder->getQuery()->willReturn($query);
-        $query->getSingleResult()->willThrow(new NoResultException());
-
-        $contentResolver->resolve(Argument::cetera())->shouldNotBeCalled();
-
-        $this->assertFalse($contentRouteDefaultsProvider->isPublished(Example::class, '123-123-123', 'en'));
-    }
-
-    public function testIsNotPublished(): void
-    {
-        $entityManager = $this->prophesize(EntityManagerInterface::class);
-        $contentResolver = $this->prophesize(ContentResolverInterface::class);
-        $structureMetadataFactory = $this->prophesize(StructureMetadataFactoryInterface::class);
-        $propertyFactory = $this->prophesize(LegacyPropertyFactory::class);
-
-        $contentRouteDefaultsProvider = $this->getContentRouteDefaultsProvider(
-            $entityManager->reveal(),
-            $contentResolver->reveal(),
-            $structureMetadataFactory->reveal(),
-            $propertyFactory->reveal()
-        );
-
-        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
-
-        $queryBuilder = $this->prophesize(QueryBuilder::class);
-        $query = $this->prophesize(AbstractQuery::class);
-
-        $entityManager->createQueryBuilder()->willReturn($queryBuilder->reveal());
-        $queryBuilder->select('entity')->willReturn($queryBuilder->reveal());
-        $queryBuilder->from(Example::class, 'entity')->willReturn($queryBuilder->reveal());
-        $queryBuilder->where('entity.id = :id')->willReturn($queryBuilder->reveal());
-        $queryBuilder->setParameter('id', '123-123-123')->willReturn($queryBuilder->reveal());
-        $queryBuilder->getQuery()->willReturn($query);
-        $query->getSingleResult()->willReturn($contentRichEntity->reveal());
-
-        $contentResolver->resolve($contentRichEntity->reveal(), ['locale' => 'en', 'stage' => 'live'])
-            ->will(function ($arguments) {
-                throw new ContentNotFoundException($arguments[0], $arguments[1]);
-            });
-
-        $this->assertFalse($contentRouteDefaultsProvider->isPublished(Example::class, '123-123-123', 'en'));
     }
 
     public function testGetByEntity(): void

@@ -37,6 +37,10 @@ trait WorkflowTrait
         if (WorkflowInterface::WORKFLOW_PLACE_PUBLISHED === $workflowPlace && !$this->workflowPublished) {
             $this->setWorkflowPublished(new \DateTimeImmutable());
         }
+
+        if (WorkflowInterface::WORKFLOW_PLACE_UNPUBLISHED === $workflowPlace && $this->workflowPublished) {
+            $this->setWorkflowPublished(null);
+        }
     }
 
     public function getWorkflowPublished(): ?\DateTimeImmutable

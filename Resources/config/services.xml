@@ -110,9 +110,22 @@
 
         <service id="Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\ContentWorkflowInterface" alias="sulu_content.content_workflow" />
 
-        <!-- Content Publish Subscriber -->
         <service id="sulu_content.content_publish_subscriber" class="Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\Subscriber\ContentPublishSubscriber">
             <argument type="service" id="sulu_content.content_copier"/>
+
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="sulu_content.content_remove_draft_subscriber" class="Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\Subscriber\ContentRemoveDraftSubscriber">
+            <argument type="service" id="sulu_content.content_copier"/>
+
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="sulu_content.content_unpublish_subscriber" class="Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\Subscriber\ContentUnpublishSubscriber">
+            <argument type="service" id="sulu.repository.dimension"/>
+            <argument type="service" id="sulu_content.dimension_content_repository"/>
+            <argument type="service" id="doctrine.orm.entity_manager"/>
 
             <tag name="kernel.event_subscriber"/>
         </service>

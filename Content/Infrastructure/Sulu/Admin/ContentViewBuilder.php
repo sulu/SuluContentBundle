@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Admin;
 
+use Sulu\Bundle\AdminBundle\Admin\View\DropdownToolbarAction;
 use Sulu\Bundle\AdminBundle\Admin\View\FormViewBuilderInterface;
 use Sulu\Bundle\AdminBundle\Admin\View\PreviewFormViewBuilderInterface;
 use Sulu\Bundle\AdminBundle\Admin\View\ToolbarAction;
@@ -54,8 +55,8 @@ class ContentViewBuilder implements ContentViewBuilderInterface
             $saveToolbarAction = new ToolbarAction(
                 'sulu_admin.save_with_publishing',
                 [
-                    'publish_display_condition' => '(!_permissions || _permissions.live)',
-                    'save_display_condition' => '(!_permissions || _permissions.edit)',
+                    'publish_visible_condition' => '(!_permissions || _permissions.live)',
+                    'save_visible_condition' => '(!_permissions || _permissions.edit)',
                 ]
             );
         }
@@ -103,7 +104,25 @@ class ContentViewBuilder implements ContentViewBuilderInterface
             new ToolbarAction(
                 'sulu_admin.delete',
                 [
-                    'display_condition' => '(!_permissions || _permissions.delete) && url != "/"',
+                    'visible_condition' => '(!_permissions || _permissions.delete) && url != "/"',
+                ]
+            ),
+            new DropdownToolbarAction(
+                'sulu_admin.edit',
+                'su-pen',
+                [
+                    new ToolbarAction(
+                        'sulu_admin.delete_draft',
+                        [
+                            'visible_condition' => '(!_permissions || _permissions.live)',
+                        ]
+                    ),
+                    new ToolbarAction(
+                        'sulu_admin.set_unpublished',
+                        [
+                            'visible_condition' => '(!_permissions || _permissions.live)',
+                        ]
+                    ),
                 ]
             ),
         ];
