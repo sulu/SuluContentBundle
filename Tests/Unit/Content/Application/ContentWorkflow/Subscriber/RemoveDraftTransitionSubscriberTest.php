@@ -16,19 +16,19 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentWorkfl
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentCopier\ContentCopierInterface;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\Subscriber\ContentRemoveDraftSubscriber;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\Subscriber\RemoveDraftTransitionSubscriber;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 use Symfony\Component\Workflow\Event\TransitionEvent;
 use Symfony\Component\Workflow\Marking;
 
-class ContentRemoveDraftSubscriberTest extends TestCase
+class RemoveDraftTransitionSubscriberTest extends TestCase
 {
     public function createContentRemoveDraftSubscriberInstance(
         ContentCopierInterface $contentCopier
-    ): ContentRemoveDraftSubscriber {
-        return new ContentRemoveDraftSubscriber($contentCopier);
+    ): RemoveDraftTransitionSubscriber {
+        return new RemoveDraftTransitionSubscriber($contentCopier);
     }
 
     public function testGetSubscribedEvents(): void
