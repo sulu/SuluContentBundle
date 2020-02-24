@@ -57,7 +57,7 @@ class DimensionContentRepository implements DimensionContentRepositoryInterface
         /** @var DimensionContentInterface[] $dimensionContents */
         $dimensionContents = [];
 
-        // Sort correctly ContentDimensions by given dimensionIds to merge them later correctly
+        // Sort DimensionContents to reflect order of $dimensionCollection to merge them in the correct order later
         /** @var DimensionContentInterface $dimensionContent */
         foreach ($queryBuilder->getQuery()->getResult() as $dimensionContent) {
             $position = array_search($dimensionContent->getDimension()->getId(), $dimensionIds, true);

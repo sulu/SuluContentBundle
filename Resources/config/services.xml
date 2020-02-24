@@ -34,7 +34,7 @@
         </service>
 
         <!-- DimensionCollection Factory -->
-        <service id="sulu_content.dimension_collection_factory" class="Sulu\Bundle\ContentBundle\Content\Domain\Factory\DimensionCollectionFactory">
+        <service id="sulu_content.dimension_collection_factory" class="Sulu\Bundle\ContentBundle\Content\Application\DimensionCollectionFactory\DimensionCollectionFactory">
             <argument type="service" id="sulu.repository.dimension"/>
         </service>
 
