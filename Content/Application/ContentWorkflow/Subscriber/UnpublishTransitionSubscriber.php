@@ -24,7 +24,7 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionRepositoryInter
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Workflow\Event\TransitionEvent;
 
-class ContentUnpublishSubscriber implements EventSubscriberInterface
+class UnpublishTransitionSubscriber implements EventSubscriberInterface
 {
     /**
      * @var DimensionRepositoryInterface

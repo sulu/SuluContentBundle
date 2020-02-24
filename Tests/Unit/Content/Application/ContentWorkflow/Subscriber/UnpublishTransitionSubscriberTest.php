@@ -16,7 +16,7 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentWorkfl
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\Subscriber\ContentUnpublishSubscriber;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\Subscriber\UnpublishTransitionSubscriber;
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollectionInterface;
@@ -28,14 +28,14 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionRepositoryInter
 use Symfony\Component\Workflow\Event\TransitionEvent;
 use Symfony\Component\Workflow\Marking;
 
-class ContentUnpublishSubscriberTest extends TestCase
+class UnpublishTransitionSubscriberTest extends TestCase
 {
     public function createContentUnpublishSubscriberInstance(
         DimensionRepositoryInterface $dimensionRepository,
         DimensionContentRepositoryInterface $dimensionContentRepository,
         EntityManagerInterface $entityManager
-    ): ContentUnpublishSubscriber {
-        return new ContentUnpublishSubscriber($dimensionRepository, $dimensionContentRepository, $entityManager);
+    ): UnpublishTransitionSubscriber {
+        return new UnpublishTransitionSubscriber($dimensionRepository, $dimensionContentRepository, $entityManager);
     }
 
     public function testGetSubscribedEvents(): void

@@ -15,13 +15,13 @@ namespace Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\Subscrib
 
 use Sulu\Bundle\ContentBundle\Content\Application\ContentCopier\ContentCopierInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Workflow\Event\TransitionEvent;
 
-class ContentRemoveDraftSubscriber implements EventSubscriberInterface
+class PublishTransitionSubscriber implements EventSubscriberInterface
 {
     /**
      * @var ContentCopierInterface
@@ -33,41 +33,45 @@ class ContentRemoveDraftSubscriber implements EventSubscriberInterface
         $this->contentCopier = $contentCopier;
     }
 
-    public function onRemoveDraft(TransitionEvent $transitionEvent): void
+    public function onPublish(TransitionEvent $transitionEvent): void
     {
-        if (!$transitionEvent->getSubject() instanceof DimensionContentInterface) {
+        $dimensionContent = $transitionEvent->getSubject();
+
+        if (!$dimensionContent instanceof DimensionContentInterface) {
             return;
         }
 
         $context = $transitionEvent->getContext();
 
+        $dimensionContentCollection = $context['dimensionContentCollection'] ?? null;
         $dimensionAttributes = $context['dimensionAttributes'] ?? null;
-        if (!$dimensionAttributes) {
-            throw new \RuntimeException('Transition context must contain "dimensionAttributes".');
-        }
-
         $contentRichEntity = $context['contentRichEntity'] ?? null;
-        if (!$contentRichEntity instanceof ContentRichEntityInterface) {
-            throw new \RuntimeException('Transition context must contain "contentRichEntity".');
+
+        if (!$dimensionAttributes) {
+            throw new \RuntimeException('No "dimensionAttributes" given.');
         }
 
-        $draftDimensionAttributes = array_merge($dimensionAttributes, ['stage' => DimensionInterface::STAGE_DRAFT]);
-        $liveDimensionAttributes = array_merge($dimensionAttributes, ['stage' => DimensionInterface::STAGE_LIVE]);
+        if (!$dimensionContentCollection instanceof DimensionContentCollectionInterface) {
+            throw new \RuntimeException('No "dimensionContentCollection" given.');
+        }
 
-        $this->contentCopier->copy(
+        if (!$contentRichEntity instanceof ContentRichEntityInterface) {
+            throw new \RuntimeException('No "contentRichEntity" given.');
+        }
+
+        $dimensionAttributes['stage'] = DimensionInterface::STAGE_LIVE;
+
+        $this->contentCopier->copyFromDimensionContentCollection(
+            $dimensionContentCollection,
             $contentRichEntity,
-            $liveDimensionAttributes,
-            $contentRichEntity,
-            $draftDimensionAttributes
+            $dimensionAttributes
         );
     }
 
     public static function getSubscribedEvents(): array
     {
-        $eventName = 'workflow.content_workflow.transition.' . WorkflowInterface::WORKFLOW_TRANSITION_REMOVE_DRAFT;
-
         return [
-            $eventName => 'onRemoveDraft',
+            'workflow.content_workflow.transition.publish' => 'onPublish',
         ];
     }
 }

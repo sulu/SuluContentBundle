@@ -16,7 +16,7 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentWorkfl
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentCopier\ContentCopierInterface;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\Subscriber\ContentPublishSubscriber;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\Subscriber\PublishTransitionSubscriber;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
@@ -25,12 +25,12 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 use Symfony\Component\Workflow\Event\TransitionEvent;
 use Symfony\Component\Workflow\Marking;
 
-class ContentPublishSubscriberTest extends TestCase
+class PublishTransitionSubscriberTest extends TestCase
 {
     public function createContentPublisherSubscriberInstance(
         ContentCopierInterface $contentCopier
-    ): ContentPublishSubscriber {
-        return new ContentPublishSubscriber($contentCopier);
+    ): PublishTransitionSubscriber {
+        return new PublishTransitionSubscriber($contentCopier);
     }
 
     public function testGetSubscribedEvents(): void
