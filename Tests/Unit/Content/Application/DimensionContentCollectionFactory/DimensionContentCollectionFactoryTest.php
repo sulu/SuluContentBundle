@@ -11,12 +11,12 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\DimensionContentFactory;
+namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\DimensionContentCollectionFactory;
 
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
-use Sulu\Bundle\ContentBundle\Content\Application\DimensionContentFactory\DataMapper\DataMapperInterface;
-use Sulu\Bundle\ContentBundle\Content\Application\DimensionContentFactory\DimensionContentCollectionFactory;
+use Sulu\Bundle\ContentBundle\Content\Application\DimensionContentCollectionFactory\DataMapper\DataMapperInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\DimensionContentCollectionFactory\DimensionContentCollectionFactory;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollection;

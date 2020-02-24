@@ -11,17 +11,17 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Domain\Factory;
+namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\DimensionCollectionFactory;
 
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
-use Sulu\Bundle\ContentBundle\Content\Domain\Factory\DimensionCollectionFactory;
+use Sulu\Bundle\ContentBundle\Content\Application\DimensionCollectionFactory\DimensionCollectionFactory;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\DimensionCollectionFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollection;
 use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionRepositoryInterface;
 
-class DimensionFactoryTest extends TestCase
+class DimensionCollectionFactoryTest extends TestCase
 {
     protected function getDimensionFactoryInstance(
         DimensionRepositoryInterface $dimensionRepository
