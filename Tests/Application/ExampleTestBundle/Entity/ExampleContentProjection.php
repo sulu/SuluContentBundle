@@ -24,7 +24,7 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateTrait;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowTrait;
 
-class ExampleView extends AbstractContentProjection implements SeoInterface, ExcerptInterface, TemplateInterface, WorkflowInterface
+class ExampleContentProjection extends AbstractContentProjection implements SeoInterface, ExcerptInterface, TemplateInterface, WorkflowInterface
 {
     use SeoTrait;
     use ExcerptTrait;
