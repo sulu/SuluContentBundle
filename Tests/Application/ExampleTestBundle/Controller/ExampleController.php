@@ -22,6 +22,8 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleContentProjection;
 use Sulu\Component\Rest\AbstractRestController;
+use FOS\RestBundle\Controller\Annotations as Rest;
+use Sulu\Component\Rest\Exception\RestException;
 use Sulu\Component\Rest\ListBuilder\Doctrine\DoctrineListBuilder;
 use Sulu\Component\Rest\ListBuilder\Doctrine\DoctrineListBuilderFactoryInterface;
 use Sulu\Component\Rest\ListBuilder\Doctrine\FieldDescriptor\DoctrineFieldDescriptorInterface;
@@ -102,7 +104,7 @@ class ExampleController extends AbstractRestController implements ClassResourceI
     }
 
     /**
-     * The getAction handles first the main entity and then load the content for it based on dimensionAttributes.
+     * The getAction loads the main entity and resolves its content based on the current dimensionAttributes.
      */
     public function getAction(Request $request, int $id): Response
     {
@@ -120,7 +122,7 @@ class ExampleController extends AbstractRestController implements ClassResourceI
     }
 
     /**
-     * The postAction handles first the main entity and then save the content for it based on dimensionAttributes.
+     * The postAction creates the main entity and saves its content based on the current dimensionAttributes.
      */
     public function postAction(Request $request): Response
     {
@@ -148,7 +150,49 @@ class ExampleController extends AbstractRestController implements ClassResourceI
     }
 
     /**
-     * The putAction handles first the main entity and then save the content for it based on dimensionAttributes.
+     *  The postTriggerAction loads the main entity and applies transitions based on the given action parameter.
+     *
+     * @Rest\Post("examples/{id}")
+     */
+    public function postTriggerAction(string $id, Request $request): Response
+    {
+        /** @var Example|null $example */
+        $example = $this->entityManager->getRepository(Example::class)->findOneBy(['id' => $id]);
+
+        if (!$example) {
+            throw new NotFoundHttpException();
+        }
+
+        $dimensionAttributes = $this->getDimensionAttributes($request); // ["locale" => "en", "stage" => "draft"]
+
+        $action = $request->query->get('action');
+
+        switch ($action) {
+            case 'unpublish':
+                $contentProjection = $this->contentManager->applyTransition(
+                    $example,
+                    $dimensionAttributes,
+                    WorkflowInterface::WORKFLOW_TRANSITION_UNPUBLISH
+                );
+                $this->entityManager->flush();
+
+                return $this->handleView($this->view($this->resolve($example, $contentProjection)));
+            case 'remove-draft':
+                $contentProjection = $this->contentManager->applyTransition(
+                    $example,
+                    $dimensionAttributes,
+                    WorkflowInterface::WORKFLOW_TRANSITION_REMOVE_DRAFT
+                );
+                $this->entityManager->flush();
+
+                return $this->handleView($this->view($this->resolve($example, $contentProjection)));
+            default:
+                throw new RestException('Unrecognized action: ' . $action);
+        }
+    }
+
+    /**
+     * The putAction loads the main entity and saves its content based on the current dimensionAttributes.
      */
     public function putAction(Request $request, int $id): Response
     {
