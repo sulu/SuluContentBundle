@@ -20,6 +20,7 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentManager\ContentManagerI
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
+use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleContentProjection;
 use Sulu\Component\Rest\AbstractRestController;
 use Sulu\Component\Rest\ListBuilder\Doctrine\DoctrineListBuilder;
 use Sulu\Component\Rest\ListBuilder\Doctrine\DoctrineListBuilderFactoryInterface;
@@ -161,7 +162,15 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         $data = $this->getData($request);
         $dimensionAttributes = $this->getDimensionAttributes($request); // ["locale" => "en", "stage" => "draft"]
 
+        /** @var ExampleContentProjection $contentProjection */
         $contentProjection = $this->contentManager->persist($example, $data, $dimensionAttributes);
+        if (WorkflowInterface::WORKFLOW_PLACE_PUBLISHED === $contentProjection->getWorkflowPlace()) {
+            $contentProjection = $this->contentManager->applyTransition(
+                $example,
+                $dimensionAttributes,
+                WorkflowInterface::WORKFLOW_TRANSITION_CREATE_DRAFT
+            );
+        }
 
         $this->entityManager->flush();
 
