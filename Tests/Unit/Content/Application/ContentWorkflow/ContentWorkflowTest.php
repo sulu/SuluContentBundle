@@ -17,9 +17,9 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\ContentWorkflow;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\ContentWorkflowInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentInvalidTransitionException;
-use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotExistTransitionException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
+use Sulu\Bundle\ContentBundle\Content\Domain\Exception\UnavailableContentTransitionException;
+use Sulu\Bundle\ContentBundle\Content\Domain\Exception\UnknownContentTransitionException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ContentProjectionFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
@@ -177,7 +177,7 @@ class ContentWorkflowTest extends TestCase
 
     public function testNotExistTransition(): void
     {
-        $this->expectException(ContentNotExistTransitionException::class);
+        $this->expectException(UnknownContentTransitionException::class);
         $this->expectExceptionMessage(
             'Transition "not-exist-transition" is not defined for workflow "content_workflow".'
         );
@@ -244,7 +244,7 @@ class ContentWorkflowTest extends TestCase
         bool $isTransitionAllowed
     ): void {
         if (!$isTransitionAllowed) {
-            $this->expectException(ContentInvalidTransitionException::class);
+            $this->expectException(UnavailableContentTransitionException::class);
         }
 
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);

@@ -13,6 +13,6 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Domain\Exception;
 
-class ContentInvalidTransitionException extends \LogicException
+class UnavailableContentTransitionException extends \LogicException
 {
 }
