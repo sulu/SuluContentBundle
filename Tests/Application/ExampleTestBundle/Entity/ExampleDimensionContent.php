@@ -86,7 +86,7 @@ class ExampleDimensionContent extends AbstractDimensionContent implements Excerp
 
     public function createProjectionInstance(): ContentProjectionInterface
     {
-        $contentProjection = new ExampleView($this->getExample(), $this->dimension);
+        $contentProjection = new ExampleContentProjection($this->getExample(), $this->dimension);
         $contentProjection->setTitle($this->getTitle());
 
         return $contentProjection;
