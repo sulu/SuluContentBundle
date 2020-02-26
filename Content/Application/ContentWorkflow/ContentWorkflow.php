@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow;
 
-use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentInvalidTransitionException;
-use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotExistTransitionException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
+use Sulu\Bundle\ContentBundle\Content\Domain\Exception\UnavailableContentTransitionException;
+use Sulu\Bundle\ContentBundle\Content\Domain\Exception\UnknownContentTransitionException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ContentProjectionFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
@@ -123,9 +123,9 @@ class ContentWorkflow implements ContentWorkflowInterface
                 'dimensionAttributes' => $dimensionAttributes,
             ]);
         } catch (UndefinedTransitionException $e) {
-            throw new ContentNotExistTransitionException($e->getMessage(), $e->getCode(), $e);
+            throw new UnknownContentTransitionException($e->getMessage(), $e->getCode(), $e);
         } catch (NotEnabledTransitionException $e) {
-            throw new ContentInvalidTransitionException($e->getMessage(), $e->getCode(), $e);
+            throw new UnavailableContentTransitionException($e->getMessage(), $e->getCode(), $e);
         }
 
         return $this->viewFactory->create($dimensionContentCollection);
