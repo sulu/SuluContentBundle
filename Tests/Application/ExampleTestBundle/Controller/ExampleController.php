@@ -118,7 +118,7 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         $dimensionAttributes = $this->getDimensionAttributes($request);
         $contentProjection = $this->contentManager->resolve($example, $dimensionAttributes);
 
-        return $this->handleView($this->view($this->resolve($example, $contentProjection)));
+        return $this->handleView($this->view($this->normalize($example, $contentProjection)));
     }
 
     /**
@@ -146,7 +146,7 @@ class ExampleController extends AbstractRestController implements ClassResourceI
             $this->entityManager->flush();
         }
 
-        return $this->handleView($this->view($this->resolve($example, $contentProjection), 201));
+        return $this->handleView($this->view($this->normalize($example, $contentProjection), 201));
     }
 
     /**
@@ -176,7 +176,7 @@ class ExampleController extends AbstractRestController implements ClassResourceI
                 );
                 $this->entityManager->flush();
 
-                return $this->handleView($this->view($this->resolve($example, $contentProjection)));
+                return $this->handleView($this->view($this->normalize($example, $contentProjection)));
             case 'remove-draft':
                 $contentProjection = $this->contentManager->applyTransition(
                     $example,
@@ -185,7 +185,7 @@ class ExampleController extends AbstractRestController implements ClassResourceI
                 );
                 $this->entityManager->flush();
 
-                return $this->handleView($this->view($this->resolve($example, $contentProjection)));
+                return $this->handleView($this->view($this->normalize($example, $contentProjection)));
             default:
                 throw new RestException('Unrecognized action: ' . $action);
         }
@@ -228,7 +228,7 @@ class ExampleController extends AbstractRestController implements ClassResourceI
             $this->entityManager->flush();
         }
 
-        return $this->handleView($this->view($this->resolve($example, $contentProjection)));
+        return $this->handleView($this->view($this->normalize($example, $contentProjection)));
     }
 
     /**
@@ -271,13 +271,9 @@ class ExampleController extends AbstractRestController implements ClassResourceI
      *
      * @return mixed[]
      */
-    protected function resolve(Example $example, ContentProjectionInterface $contentProjection): array
+    protected function normalize(Example $example, ContentProjectionInterface $contentProjection): array
     {
         $resolvedData = $this->contentManager->normalize($contentProjection);
-
-        // If used autoincrement ids the id need to be set here on
-        // the resolvedData else on create no id will be returned
-        $resolvedData['id'] = $example->getId();
 
         return $resolvedData;
     }
