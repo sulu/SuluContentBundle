@@ -39,6 +39,11 @@ class ExampleDimensionContent extends AbstractDimensionContent implements Excerp
     use WorkflowTrait;
 
     /**
+     * @var int
+     */
+    protected $id;
+
+    /**
      * @var Example
      */
     protected $example;
@@ -52,6 +57,11 @@ class ExampleDimensionContent extends AbstractDimensionContent implements Excerp
     {
         $this->example = $example;
         $this->dimension = $dimension;
+    }
+
+    public function getId(): int
+    {
+        return $this->id;
     }
 
     public function getExample(): Example

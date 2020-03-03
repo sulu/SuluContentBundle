@@ -15,11 +15,6 @@ namespace Sulu\Bundle\ContentBundle\Content\Domain\Model;
 
 interface DimensionContentInterface
 {
-    /**
-     * @return mixed
-     */
-    public function getId();
-
     public function getDimension(): DimensionInterface;
 
     public function createProjectionInstance(): ContentProjectionInterface;
