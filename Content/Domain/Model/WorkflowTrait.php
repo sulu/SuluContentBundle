@@ -53,7 +53,7 @@ trait WorkflowTrait
         $this->workflowPublished = $workflowPublished;
     }
 
-    public function getWorkflowName(): string
+    public static function getWorkflowName(): string
     {
         return WorkflowInterface::WORKFLOW_DEFAULT_NAME;
     }

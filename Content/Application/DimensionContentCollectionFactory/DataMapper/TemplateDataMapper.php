@@ -46,7 +46,7 @@ class TemplateDataMapper implements DataMapperInterface
             return;
         }
 
-        $type = $unlocalizedObject->getTemplateType();
+        $type = $unlocalizedObject::getTemplateType();
 
         /** @var string|null $template */
         $template = $data['template'] ?? null;

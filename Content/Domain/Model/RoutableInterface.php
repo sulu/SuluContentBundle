@@ -18,7 +18,7 @@ namespace Sulu\Bundle\ContentBundle\Content\Domain\Model;
  */
 interface RoutableInterface
 {
-    public function getContentClass(): string;
+    public static function getContentClass(): string;
 
     /**
      * @return mixed

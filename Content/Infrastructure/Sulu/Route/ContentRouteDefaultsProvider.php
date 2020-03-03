@@ -71,7 +71,7 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
         }
 
         $metadata = $this->structureMetadataFactory->getStructureMetadata(
-            $entity->getTemplateType(),
+            $entity::getTemplateType(),
             $entity->getTemplateKey()
         );
         if (!$metadata) {

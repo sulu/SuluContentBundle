@@ -72,7 +72,7 @@ class ExampleContentProjection extends AbstractContentProjection implements SeoI
         $this->title = $title;
     }
 
-    public function getTemplateType(): string
+    public static function getTemplateType(): string
     {
         return Example::TEMPLATE_TYPE;
     }

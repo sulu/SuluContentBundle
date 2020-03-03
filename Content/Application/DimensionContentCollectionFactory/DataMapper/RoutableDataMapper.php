@@ -71,7 +71,7 @@ class RoutableDataMapper implements DataMapperInterface
             throw new \RuntimeException('LocalizedObject needs to extend the TemplateInterface');
         }
 
-        $type = $localizedObject->getTemplateType();
+        $type = $localizedObject::getTemplateType();
 
         /** @var string|null $template */
         $template = $data['template'] ?? null;
@@ -134,7 +134,7 @@ class RoutableDataMapper implements DataMapperInterface
         }
 
         $this->routeManager->createOrUpdateByAttributes(
-            $localizedObject->getContentClass(),
+            $localizedObject::getContentClass(),
             (string) $localizedObject->getContentId(),
             $locale,
             $routePath

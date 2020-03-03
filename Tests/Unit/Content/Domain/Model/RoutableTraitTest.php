@@ -35,9 +35,9 @@ class RoutableTraitTest extends TestCase
                 $this->dimension = $dimension;
             }
 
-            public function getContentClass(): string
+            public static function getContentClass(): string
             {
-                return \get_class($this);
+                return self::class;
             }
 
             public function getContentId()

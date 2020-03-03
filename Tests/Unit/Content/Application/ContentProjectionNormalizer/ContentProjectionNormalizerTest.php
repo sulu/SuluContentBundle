@@ -77,7 +77,7 @@ class ContentProjectionNormalizerTest extends TestCase
                 return 5;
             }
 
-            public function getTemplateType(): string
+            public static function getTemplateType(): string
             {
                 return 'example';
             }

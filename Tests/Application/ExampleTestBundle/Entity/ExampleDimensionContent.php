@@ -102,12 +102,12 @@ class ExampleDimensionContent extends AbstractDimensionContent implements Excerp
         return $contentProjection;
     }
 
-    public function getTemplateType(): string
+    public static function getTemplateType(): string
     {
         return Example::TEMPLATE_TYPE;
     }
 
-    public function getContentClass(): string
+    public static function getContentClass(): string
     {
         return Example::class;
     }
