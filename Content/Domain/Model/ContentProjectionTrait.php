@@ -16,19 +16,9 @@ namespace Sulu\Bundle\ContentBundle\Content\Domain\Model;
 trait ContentProjectionTrait
 {
     /**
-     * @var int
-     */
-    protected $id;
-
-    /**
      * @var string
      */
     protected $dimensionId;
-
-    public function getId(): int
-    {
-        return $this->id;
-    }
 
     public function getDimensionId(): string
     {

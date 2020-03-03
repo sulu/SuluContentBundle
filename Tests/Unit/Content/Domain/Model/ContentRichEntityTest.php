@@ -82,34 +82,6 @@ class ContentRichEntityTest extends TestCase
         return $modelDimension;
     }
 
-    protected function getInstanceView(int $id): ContentProjectionInterface
-    {
-        $modelDimension = new class() extends AbstractContentProjection implements SeoInterface, ExcerptInterface, TemplateInterface {
-            use ExcerptTrait;
-            use SeoTrait;
-            use TemplateTrait;
-
-            public function setId(int $id): void
-            {
-                $this->id = $id;
-            }
-
-            public function getContentId()
-            {
-                return 5;
-            }
-
-            public function getTemplateType(): string
-            {
-                return 'example';
-            }
-        };
-
-        $modelDimension->setId($id);
-
-        return $modelDimension;
-    }
-
     public function testGetAddRemoveDimension(): void
     {
         $model = $this->getInstance();

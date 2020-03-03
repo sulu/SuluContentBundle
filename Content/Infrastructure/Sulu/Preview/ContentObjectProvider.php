@@ -113,7 +113,7 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
      */
     public function getId($object)
     {
-        return $object->getId();
+        return $object->getContentId();
     }
 
     /**

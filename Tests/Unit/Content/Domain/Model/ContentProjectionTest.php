@@ -22,7 +22,6 @@ class ContentProjectionTest extends TestCase
     protected function getContentProjectionInstance(): ContentProjectionInterface
     {
         return new class() extends AbstractContentProjection {
-            protected $id = 1;
             protected $dimensionId = '123-456';
 
             public function getContentId()
@@ -30,12 +29,6 @@ class ContentProjectionTest extends TestCase
                 return 5;
             }
         };
-    }
-
-    public function testGetId(): void
-    {
-        $model = $this->getContentProjectionInstance();
-        $this->assertSame(1, $model->getId());
     }
 
     public function testGetDimensionId(): void
