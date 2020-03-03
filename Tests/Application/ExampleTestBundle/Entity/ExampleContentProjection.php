@@ -32,6 +32,11 @@ class ExampleContentProjection extends AbstractContentProjection implements SeoI
     use WorkflowTrait;
 
     /**
+     * @var int
+     */
+    protected $id;
+
+    /**
      * @var Example
      */
     protected $example;
@@ -45,6 +50,11 @@ class ExampleContentProjection extends AbstractContentProjection implements SeoI
     {
         $this->example = $example;
         $this->dimensionId = $dimension->getId();
+    }
+
+    public function getId(): int
+    {
+        return $this->id;
     }
 
     public function getContentId()

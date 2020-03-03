@@ -15,8 +15,6 @@ namespace Sulu\Bundle\ContentBundle\Content\Domain\Model;
 
 interface ContentProjectionInterface
 {
-    public function getId(): int;
-
     /**
      * @return mixed
      */

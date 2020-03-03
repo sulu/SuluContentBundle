@@ -166,7 +166,7 @@ class ContentObjectProviderTest extends TestCase
     {
         $projection = $this->prophesize(ContentProjectionInterface::class);
 
-        $projection->getId()->willReturn($id);
+        $projection->getContentId()->willReturn($id);
 
         $actualId = $this->contentObjectProvider->getId($projection->reveal());
 
