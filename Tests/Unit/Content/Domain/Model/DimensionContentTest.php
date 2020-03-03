@@ -28,8 +28,6 @@ class DimensionContentTest extends TestCase
         $dimension = new Dimension('123-456');
 
         return new class($dimension) extends AbstractDimensionContent {
-            protected $id = 1;
-
             public function __construct(DimensionInterface $dimension)
             {
                 $this->dimension = $dimension;
@@ -45,12 +43,6 @@ class DimensionContentTest extends TestCase
                 };
             }
         };
-    }
-
-    public function testGetId(): void
-    {
-        $model = $this->getDimensionContentInstance();
-        $this->assertSame(1, $model->getId());
     }
 
     public function testGetDimension(): void

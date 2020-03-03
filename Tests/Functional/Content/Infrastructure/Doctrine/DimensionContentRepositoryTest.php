@@ -15,7 +15,6 @@ namespace Sulu\Bundle\ContentBundle\Tests\Functional\Content\Infrastructure\Doct
 
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollection;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionContentRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
@@ -64,7 +63,7 @@ class DimensionContentRepositoryTest extends BaseTestCase
         $this->assertSame([
             $dimensionContent1->getId(),
             $dimensionContent2->getId(),
-        ], array_map(function (DimensionContentInterface $dimensionContent) {
+        ], array_map(function (ExampleDimensionContent $dimensionContent) {
             return $dimensionContent->getId();
         }, iterator_to_array($dimensionContentCollection)));
     }
@@ -94,7 +93,7 @@ class DimensionContentRepositoryTest extends BaseTestCase
 
         $this->assertSame([
             $dimensionContent1->getId(),
-        ], array_map(function (DimensionContentInterface $dimensionContent) {
+        ], array_map(function (ExampleDimensionContent $dimensionContent) {
             return $dimensionContent->getId();
         }, iterator_to_array($dimensionContentCollection)));
     }
@@ -127,7 +126,7 @@ class DimensionContentRepositoryTest extends BaseTestCase
         $this->assertSame([
             $dimensionContent1->getId(),
             $dimensionContent2->getId(), // Dimension 2 should be the last one in this case
-        ], array_map(function (DimensionContentInterface $dimensionContent) {
+        ], array_map(function (ExampleDimensionContent $dimensionContent) {
             return $dimensionContent->getId();
         }, iterator_to_array($dimensionContentCollection)));
     }

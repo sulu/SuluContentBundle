@@ -56,11 +56,6 @@ class ContentRichEntityTest extends TestCase
             use SeoTrait;
             use TemplateTrait;
 
-            public function setId(int $id): void
-            {
-                $this->id = $id;
-            }
-
             public function createProjectionInstance(): ContentProjectionInterface
             {
                 return new class() extends AbstractContentProjection {
@@ -76,8 +71,6 @@ class ContentRichEntityTest extends TestCase
                 return 'example';
             }
         };
-
-        $modelDimension->setId($id);
 
         return $modelDimension;
     }

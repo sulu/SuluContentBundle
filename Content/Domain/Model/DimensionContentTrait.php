@@ -16,19 +16,9 @@ namespace Sulu\Bundle\ContentBundle\Content\Domain\Model;
 trait DimensionContentTrait
 {
     /**
-     * @var int
-     */
-    protected $id;
-
-    /**
      * @var DimensionInterface
      */
     protected $dimension;
-
-    public function getId()
-    {
-        return $this->id;
-    }
 
     public function getDimension(): DimensionInterface
     {
