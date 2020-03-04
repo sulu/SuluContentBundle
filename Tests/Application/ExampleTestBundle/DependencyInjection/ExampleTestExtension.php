@@ -36,9 +36,6 @@ class ExampleTestExtension extends Extension implements PrependExtensionInterfac
                                     'type' => 'example',
                                 ],
                             ],
-                            'default_type' => [
-                                Example::TEMPLATE_TYPE => 'default', // TODO should not be hardcoded
-                            ],
                         ],
                     ],
                 ]
