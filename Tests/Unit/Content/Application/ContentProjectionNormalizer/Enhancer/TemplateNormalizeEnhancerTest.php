@@ -74,13 +74,16 @@ class TemplateNormalizeEnhancerTest extends TestCase
 
         $data = [
             'templateData' => [
-                'some' => 'data',
+                'existingKey' => 'template-data-value',
+                'newKey' => 'template-data-value',
             ],
             'templateKey' => 'some-key',
+            'existingKey' => 'existing-value',
         ];
 
         $expectedResult = [
-            'some' => 'data',
+            'existingKey' => 'existing-value',
+            'newKey' => 'template-data-value',
             'template' => 'some-key',
         ];
 
