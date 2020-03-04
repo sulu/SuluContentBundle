@@ -18,7 +18,7 @@ use Sulu\Bundle\ContentBundle\Content\Application\DimensionContentCollectionFact
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
 
-class SeoMapperTest extends TestCase
+class SeoDataMapperTest extends TestCase
 {
     protected function createSeoDataMapperInstance(): SeoDataMapper
     {
