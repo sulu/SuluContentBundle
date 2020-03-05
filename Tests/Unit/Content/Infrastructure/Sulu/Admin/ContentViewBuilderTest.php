@@ -19,9 +19,8 @@ use Sulu\Bundle\AdminBundle\Admin\View\FormViewBuilderInterface;
 use Sulu\Bundle\AdminBundle\Admin\View\PreviewFormViewBuilderInterface;
 use Sulu\Bundle\AdminBundle\Admin\View\ViewBuilderFactory;
 use Sulu\Bundle\AdminBundle\Admin\View\ViewCollection;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\ContentDataMapperInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolverInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Factory\CategoryFactoryInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Factory\TagFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Admin\ContentViewBuilder;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Admin\ContentViewBuilderInterface;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Preview\ContentObjectProvider;
@@ -57,8 +56,7 @@ class ContentViewBuilderTest extends TestCase
         StructureMetadataFactoryInterface $structureMetadataFactory,
         LegacyPropertyFactory $propertyFactory,
         ContentResolverInterface $contentResolver,
-        TagFactoryInterface $tagFactory,
-        CategoryFactoryInterface $categoryFactory,
+        ContentDataMapperInterface $contentDataMapper,
         string $entityClass
     ): ContentObjectProvider {
         return new ContentObjectProvider(
@@ -66,8 +64,7 @@ class ContentViewBuilderTest extends TestCase
             $structureMetadataFactory,
             $propertyFactory,
             $contentResolver,
-            $tagFactory,
-            $categoryFactory,
+            $contentDataMapper,
             $entityClass
         );
     }
@@ -116,16 +113,14 @@ class ContentViewBuilderTest extends TestCase
         $structureMetadataFactory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $propertyFactory = $this->prophesize(LegacyPropertyFactory::class);
         $contentResolver = $this->prophesize(ContentResolverInterface::class);
-        $tagFactory = $this->prophesize(TagFactoryInterface::class);
-        $categoryFactory = $this->prophesize(CategoryFactoryInterface::class);
+        $contentDataMapper = $this->prophesize(ContentDataMapperInterface::class);
 
         $contentObjectProvider = $this->getContentObjectProvider(
             $entityManager->reveal(),
             $structureMetadataFactory->reveal(),
             $propertyFactory->reveal(),
             $contentResolver->reveal(),
-            $tagFactory->reveal(),
-            $categoryFactory->reveal(),
+            $contentDataMapper->reveal(),
             Example::class
         );
 

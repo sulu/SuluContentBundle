@@ -15,16 +15,12 @@ namespace Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Preview;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NoResultException;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\DataMapper\ExcerptDataMapper;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\DataMapper\SeoDataMapper;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\DataMapper\TemplateDataMapper;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\ContentDataMapperInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Bundle\PreviewBundle\Preview\Object\PreviewObjectProviderInterface;
 use Sulu\Component\Content\Compat\Structure\LegacyPropertyFactory;
@@ -53,19 +49,9 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
     private $contentResolver;
 
     /**
-     * @var TemplateDataMapper
+     * @var ContentDataMapperInterface
      */
-    private $templateDataMapper;
-
-    /**
-     * @var SeoDataMapper
-     */
-    private $seoDataMapper;
-
-    /**
-     * @var ExcerptDataMapper
-     */
-    private $excerptDataMapper;
+    private $contentDataMapper;
 
     /**
      * @var string
@@ -77,18 +63,14 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
         StructureMetadataFactoryInterface $structureMetadataFactory,
         LegacyPropertyFactory $propertyFactory,
         ContentResolverInterface $contentResolver,
-        TemplateDataMapper $templateDataMapper,
-        SeoDataMapper $seoDataMapper,
-        ExcerptDataMapper $excerptDataMapper,
+        ContentDataMapperInterface $contentDataMapper,
         string $entityClass
     ) {
         $this->entityManager = $entityManager;
         $this->structureMetadataFactory = $structureMetadataFactory;
         $this->propertyFactory = $propertyFactory;
         $this->contentResolver = $contentResolver;
-        $this->templateDataMapper = $templateDataMapper;
-        $this->seoDataMapper = $seoDataMapper;
-        $this->excerptDataMapper = $excerptDataMapper;
+        $this->contentDataMapper = $contentDataMapper;
         $this->entityClass = $entityClass;
     }
 
@@ -130,19 +112,7 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
      */
     public function setValues($object, $locale, array $data): void
     {
-        // TODO: use ContentDataMapper service for setting data to the object
-
-        if ($object instanceof SeoInterface) {
-            $this->seoDataMapper->map($data, $object, $object);
-        }
-
-        if ($object instanceof ExcerptInterface) {
-            $this->excerptDataMapper->map($data, $object, $object);
-        }
-
-        if ($object instanceof TemplateInterface) {
-            $this->templateDataMapper->map($data, $object, $object);
-        }
+        $this->contentDataMapper->map($data, $object, $object);
     }
 
     /**

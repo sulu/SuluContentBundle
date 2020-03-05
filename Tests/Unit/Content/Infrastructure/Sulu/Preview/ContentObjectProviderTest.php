@@ -20,11 +20,9 @@ use Doctrine\ORM\QueryBuilder;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
-use Sulu\Bundle\CategoryBundle\Entity\Category;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\ContentDataMapperInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
-use Sulu\Bundle\ContentBundle\Content\Domain\Factory\CategoryFactoryInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Factory\TagFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionTrait;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
@@ -36,7 +34,6 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateTrait;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Preview\ContentObjectProvider;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
-use Sulu\Bundle\TagBundle\Entity\Tag;
 use Sulu\Component\Content\Compat\Structure\LegacyPropertyFactory;
 use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
 
@@ -53,14 +50,9 @@ class ContentObjectProviderTest extends TestCase
     private $contentResolver;
 
     /**
-     * @var ObjectProphecy|TagFactoryInterface
+     * @var ObjectProphecy|ContentDataMapperInterface
      */
-    private $tagFactory;
-
-    /**
-     * @var ObjectProphecy|CategoryFactoryInterface
-     */
-    private $categoryFactory;
+    private $contentDataMapper;
 
     /**
      * @var ContentObjectProvider
@@ -73,16 +65,15 @@ class ContentObjectProviderTest extends TestCase
         $structureMetadataFactory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $propertyFactory = $this->prophesize(LegacyPropertyFactory::class);
         $this->contentResolver = $this->prophesize(ContentResolverInterface::class);
-        $this->tagFactory = $this->prophesize(TagFactoryInterface::class);
-        $this->categoryFactory = $this->prophesize(CategoryFactoryInterface::class);
+
+        $this->contentDataMapper = $this->prophesize(ContentDataMapperInterface::class);
 
         $this->contentObjectProvider = new ContentObjectProvider(
             $this->entityManager->reveal(),
             $structureMetadataFactory->reveal(),
             $propertyFactory->reveal(),
             $this->contentResolver->reveal(),
-            $this->tagFactory->reveal(),
-            $this->categoryFactory->reveal(),
+            $this->contentDataMapper->reveal(),
             Example::class
         );
     }
@@ -201,7 +192,7 @@ class ContentObjectProviderTest extends TestCase
             'seoKeywords' => 'Seo Keywords',
             'seoCanonicalUrl' => 'Seo Canonical Url',
             'seoNoIndex' => true,
-            'seoNoFollow' => false,
+            'seoNoFollow' => true,
             'seoHideInSitemap' => true,
             'excerptTitle' => 'Excerpt Title',
             'excerptDescription' => 'Excerpt Description',
@@ -212,24 +203,6 @@ class ContentObjectProviderTest extends TestCase
             'excerptIcon' => ['id' => 4],
         ]
     ): void {
-        $tags = array_map(function (string $name) {
-            $tag = new Tag();
-            $tag->setName($name);
-
-            return $tag;
-        }, $data['excerptTags']);
-
-        $this->tagFactory->create($data['excerptTags'])->willReturn($tags);
-
-        $categories = array_map(function (int $id) {
-            $category = new Category();
-            $category->setId($id);
-
-            return $category;
-        }, $data['excerptCategories']);
-
-        $this->categoryFactory->create($data['excerptCategories'])->willReturn($categories);
-
         $projection = (new class() implements ContentProjectionInterface, TemplateInterface, SeoInterface, ExcerptInterface {
             use ContentProjectionTrait;
             use TemplateTrait;
@@ -247,28 +220,9 @@ class ContentObjectProviderTest extends TestCase
             }
         });
 
-        $newData = $data;
-        $this->contentObjectProvider->setValues($projection, $locale, $newData);
+        $this->contentObjectProvider->setValues($projection, $locale, $data);
 
-        $this->assertSame($data['title'], $projection->getTemplateData()['title']);
-
-        $this->assertSame($data['seoTitle'], $projection->getSeoTitle());
-        $this->assertSame($data['seoDescription'], $projection->getSeoDescription());
-        $this->assertSame($data['seoKeywords'], $projection->getSeoKeywords());
-        $this->assertSame($data['seoCanonicalUrl'], $projection->getSeoCanonicalUrl());
-        $this->assertSame($data['seoNoFollow'], $projection->getSeoNoFollow());
-        $this->assertSame($data['seoNoIndex'], $projection->getSeoNoIndex());
-        $this->assertSame($data['seoHideInSitemap'], $projection->getSeoHideInSitemap());
-
-        $this->assertSame($data['excerptTitle'], $projection->getExcerptTitle());
-        $this->assertSame($data['excerptDescription'], $projection->getExcerptDescription());
-        $this->assertSame($data['excerptMore'], $projection->getExcerptMore());
-        $this->assertSame($data['excerptTags'], $projection->getExcerptTagNames());
-        $this->assertSame($tags, $projection->getExcerptTags());
-        $this->assertSame($data['excerptCategories'], $projection->getExcerptCategoryIds());
-        $this->assertSame($categories, $projection->getExcerptCategories());
-        $this->assertSame($data['excerptImage'], $projection->getExcerptImage());
-        $this->assertSame($data['excerptIcon'], $projection->getExcerptIcon());
+        $this->contentDataMapper->map($data, $projection, $projection)->shouldBeCalledTimes(1);
     }
 
     /**
