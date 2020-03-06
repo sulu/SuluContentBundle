@@ -22,7 +22,7 @@
             <tag name="sulu_content.data_mapper"/>
         </service>
 
-        <service id="sulu_content.route_mapper" class="Sulu\Bundle\ContentBundle\Content\Application\DimensionContentCollectionFactory\DataMapper\RouteDataMapper">
+        <service id="sulu_content.route_mapper" class="Sulu\Bundle\ContentBundle\Content\Application\DimensionContentCollectionFactory\DataMapper\RoutableDataMapper">
             <argument type="service" id="sulu_page.structure.factory"/>
             <argument type="service" id="sulu_route.generator.route_generator"/>
             <argument type="service" id="sulu_route.manager.route_manager"/>

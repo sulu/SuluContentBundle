@@ -21,7 +21,7 @@ use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
 use Sulu\Component\Content\Metadata\PropertyMetadata;
 use Sulu\Component\Content\Metadata\StructureMetadata;
 
-class RouteDataMapper implements DataMapperInterface
+class RoutableDataMapper implements DataMapperInterface
 {
     /**
      * @var StructureMetadataFactoryInterface

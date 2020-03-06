@@ -21,7 +21,7 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 use Sulu\Bundle\TagBundle\Tag\TagInterface;
 
-class ExcerptMapperTest extends TestCase
+class ExcerptDataMapperTest extends TestCase
 {
     protected function createExcerptDataMapperInstance(
         TagFactoryInterface $tagFactory,

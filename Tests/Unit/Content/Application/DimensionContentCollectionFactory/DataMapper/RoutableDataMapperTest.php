@@ -15,7 +15,7 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\DimensionCont
 
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
-use Sulu\Bundle\ContentBundle\Content\Application\DimensionContentCollectionFactory\DataMapper\RouteDataMapper;
+use Sulu\Bundle\ContentBundle\Content\Application\DimensionContentCollectionFactory\DataMapper\RoutableDataMapper;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\RoutableInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
@@ -25,7 +25,7 @@ use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
 use Sulu\Component\Content\Metadata\PropertyMetadata;
 use Sulu\Component\Content\Metadata\StructureMetadata;
 
-class RouteMapperTest extends TestCase
+class RoutableDataMapperTest extends TestCase
 {
     /**
      * @param array<string, string> $structureDefaultTypes
@@ -35,8 +35,8 @@ class RouteMapperTest extends TestCase
         RouteGeneratorInterface $routeGenerator,
         RouteManagerInterface $routeManager,
         array $structureDefaultTypes = []
-    ): RouteDataMapper {
-        return new RouteDataMapper($factory, $routeGenerator, $routeManager, $structureDefaultTypes);
+    ): RoutableDataMapper {
+        return new RoutableDataMapper($factory, $routeGenerator, $routeManager, $structureDefaultTypes);
     }
 
     public function testMapNoRoutable(): void
