@@ -8,18 +8,18 @@
             <argument type="service" id="sulu_page.structure.factory"/>
             <argument>%sulu.content.structure.default_types%</argument>
 
-            <tag name="sulu_content.data_mapper"/>
+            <tag name="sulu_content.data_mapper" priority="3072"/>
         </service>
 
         <service id="sulu_content.seo_mapper" class="Sulu\Bundle\ContentBundle\Content\Application\DimensionContentCollectionFactory\DataMapper\SeoDataMapper">
-            <tag name="sulu_content.data_mapper"/>
+            <tag name="sulu_content.data_mapper" priority="2048"/>
         </service>
 
         <service id="sulu_content.excerpt_mapper" class="Sulu\Bundle\ContentBundle\Content\Application\DimensionContentCollectionFactory\DataMapper\ExcerptDataMapper">
             <argument type="service" id="sulu_content.tag_factory"/>
             <argument type="service" id="sulu_content.category_factory"/>
 
-            <tag name="sulu_content.data_mapper"/>
+            <tag name="sulu_content.data_mapper" priority="1024"/>
         </service>
 
         <service id="sulu_content.route_mapper" class="Sulu\Bundle\ContentBundle\Content\Application\DimensionContentCollectionFactory\DataMapper\RoutableDataMapper">
@@ -28,7 +28,7 @@
             <argument type="service" id="sulu_route.manager.route_manager"/>
             <argument>%sulu.content.structure.default_types%</argument>
 
-            <tag name="sulu_content.data_mapper"/>
+            <tag name="sulu_content.data_mapper" priority="-1024"/>
         </service>
     </services>
 </container>

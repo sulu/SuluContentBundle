@@ -5,19 +5,19 @@
     <services>
         <!-- Merger -->
         <service id="sulu_content.excerpt_content_projection_factory_merger" class="Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionFactory\Merger\ExcerptMerger">
-            <tag name="sulu_content.content_projection_factory_merger" />
+            <tag name="sulu_content.content_projection_factory_merger" priority="4096"/>
         </service>
 
         <service id="sulu_content.seo_content_projection_factory_merger" class="Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionFactory\Merger\SeoMerger">
-            <tag name="sulu_content.content_projection_factory_merger" />
+            <tag name="sulu_content.content_projection_factory_merger" priority="3072"/>
         </service>
 
         <service id="sulu_content.template_content_projection_factory_merger" class="Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionFactory\Merger\TemplateMerger">
-            <tag name="sulu_content.content_projection_factory_merger" />
+            <tag name="sulu_content.content_projection_factory_merger" priority="2048"/>
         </service>
 
         <service id="sulu_content.workflow_content_projection_factory_merger" class="Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionFactory\Merger\WorkflowMerger">
-            <tag name="sulu_content.content_projection_factory_merger" />
+            <tag name="sulu_content.content_projection_factory_merger" priority="1024"/>
         </service>
     </services>
 </container>

@@ -5,15 +5,15 @@
     <services>
         <!-- Enhancer -->
         <service id="sulu_content.excerpt_normalize_enhancer" class="Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Enhancer\ExcerptNormalizeEnhancer">
-            <tag name="sulu_content.normalize_enhancer"/>
+            <tag name="sulu_content.normalize_enhancer" priority="3072"/>
         </service>
 
         <service id="sulu_content.template_normalize_enhancer" class="Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Enhancer\TemplateNormalizeEnhancer">
-            <tag name="sulu_content.normalize_enhancer"/>
+            <tag name="sulu_content.normalize_enhancer" priority="2048"/>
         </service>
 
         <service id="sulu_content.workflow_normalize_enhancer" class="Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Enhancer\WorkflowNormalizeEnhancer">
-            <tag name="sulu_content.normalize_enhancer"/>
+            <tag name="sulu_content.normalize_enhancer" priority="1024"/>
         </service>
     </services>
 </container>
