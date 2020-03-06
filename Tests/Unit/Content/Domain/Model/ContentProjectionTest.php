@@ -14,15 +14,20 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Domain\Model;
 
 use PHPUnit\Framework\TestCase;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\AbstractContentProjection;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionTrait;
 
 class ContentProjectionTest extends TestCase
 {
     protected function getContentProjectionInstance(): ContentProjectionInterface
     {
-        return new class() extends AbstractContentProjection {
-            protected $dimensionId = '123-456';
+        return new class() implements ContentProjectionInterface {
+            use ContentProjectionTrait;
+
+            public function __construct()
+            {
+                $this->dimensionId = '123-456';
+            }
 
             public function getContentId()
             {

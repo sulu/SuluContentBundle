@@ -14,11 +14,11 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Domain\Model;
 
 use PHPUnit\Framework\TestCase;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\AbstractContentProjection;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\AbstractDimensionContent;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionTrait;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentTrait;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 
 class DimensionContentTest extends TestCase
@@ -27,7 +27,9 @@ class DimensionContentTest extends TestCase
     {
         $dimension = new Dimension('123-456');
 
-        return new class($dimension) extends AbstractDimensionContent {
+        return new class($dimension) implements DimensionContentInterface {
+            use DimensionContentTrait;
+
             public function __construct(DimensionInterface $dimension)
             {
                 $this->dimension = $dimension;
@@ -35,7 +37,9 @@ class DimensionContentTest extends TestCase
 
             public function createProjectionInstance(): ContentProjectionInterface
             {
-                return new class() extends AbstractContentProjection {
+                return new class() implements ContentProjectionInterface {
+                    use ContentProjectionTrait;
+
                     public function getContentId()
                     {
                         return 5;

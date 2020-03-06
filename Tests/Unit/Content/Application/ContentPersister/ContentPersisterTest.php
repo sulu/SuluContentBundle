@@ -19,9 +19,9 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersis
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ContentProjectionFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\DimensionCollectionFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\DimensionContentCollectionFactoryInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\AbstractContentRichEntity;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityTrait;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollection;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollection;
@@ -44,7 +44,9 @@ class ContentPersisterTest extends TestCase
 
     protected function createContentRichEntityInstance(): ContentRichEntityInterface
     {
-        return new class() extends AbstractContentRichEntity {
+        return new class() implements ContentRichEntityInterface {
+            use ContentRichEntityTrait;
+
             public static function getResourceKey(): string
             {
                 return 'example';
