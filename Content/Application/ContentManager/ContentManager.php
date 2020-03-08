@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentManager;
 
 use Sulu\Bundle\ContentBundle\Content\Application\ContentCopier\ContentCopierInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\ContentNormalizerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersisterInterface;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionNormalizer\ContentProjectionNormalizerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\ContentWorkflowInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
@@ -34,9 +34,9 @@ class ContentManager implements ContentManagerInterface
     private $contentPersister;
 
     /**
-     * @var ContentProjectionNormalizerInterface
+     * @var ContentNormalizerInterface
      */
-    private $contentProjectionNormalizer;
+    private $contentNormalizer;
 
     /**
      * @var ContentCopierInterface
@@ -51,13 +51,13 @@ class ContentManager implements ContentManagerInterface
     public function __construct(
         ContentResolverInterface $contentResolver,
         ContentPersisterInterface $contentPersister,
-        ContentProjectionNormalizerInterface $contentProjectionNormalizer,
+        ContentNormalizerInterface $contentNormalizer,
         ContentCopierInterface $contentCopier,
         ContentWorkflowInterface $contentWorkflow
     ) {
         $this->contentResolver = $contentResolver;
         $this->contentPersister = $contentPersister;
-        $this->contentProjectionNormalizer = $contentProjectionNormalizer;
+        $this->contentNormalizer = $contentNormalizer;
         $this->contentCopier = $contentCopier;
         $this->contentWorkflow = $contentWorkflow;
     }
@@ -74,7 +74,7 @@ class ContentManager implements ContentManagerInterface
 
     public function normalize(ContentProjectionInterface $contentProjection): array
     {
-        return $this->contentProjectionNormalizer->normalize($contentProjection);
+        return $this->contentNormalizer->normalize($contentProjection);
     }
 
     public function copy(

@@ -17,8 +17,8 @@ use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentCopier\ContentCopierInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentManager\ContentManager;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentManager\ContentManagerInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\ContentNormalizerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersisterInterface;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionNormalizer\ContentProjectionNormalizerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\ContentWorkflowInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
@@ -29,11 +29,11 @@ class ContentManagerTest extends TestCase
     protected function createContentManagerInstance(
         ContentResolverInterface $contentResolver,
         ContentPersisterInterface $contentPersister,
-        ContentProjectionNormalizerInterface $contentProjectionNormalizer,
+        ContentNormalizerInterface $contentNormalizer,
         ContentCopierInterface $contentCopier,
         ContentWorkflowInterface $contentWorkflow
     ): ContentManagerInterface {
-        return new ContentManager($contentResolver, $contentPersister, $contentProjectionNormalizer, $contentCopier, $contentWorkflow);
+        return new ContentManager($contentResolver, $contentPersister, $contentNormalizer, $contentCopier, $contentWorkflow);
     }
 
     public function testLoad(): void
@@ -44,14 +44,14 @@ class ContentManagerTest extends TestCase
 
         $contentResolver = $this->prophesize(ContentResolverInterface::class);
         $contentPersister = $this->prophesize(ContentPersisterInterface::class);
-        $contentProjectionNormalizer = $this->prophesize(ContentProjectionNormalizerInterface::class);
+        $contentNormalizer = $this->prophesize(ContentNormalizerInterface::class);
         $contentCopier = $this->prophesize(ContentCopierInterface::class);
         $contentWorkflow = $this->prophesize(ContentWorkflowInterface::class);
 
         $contentManager = $this->createContentManagerInstance(
             $contentResolver->reveal(),
             $contentPersister->reveal(),
-            $contentProjectionNormalizer->reveal(),
+            $contentNormalizer->reveal(),
             $contentCopier->reveal(),
             $contentWorkflow->reveal()
         );
@@ -75,14 +75,14 @@ class ContentManagerTest extends TestCase
 
         $contentResolver = $this->prophesize(ContentResolverInterface::class);
         $contentPersister = $this->prophesize(ContentPersisterInterface::class);
-        $contentProjectionNormalizer = $this->prophesize(ContentProjectionNormalizerInterface::class);
+        $contentNormalizer = $this->prophesize(ContentNormalizerInterface::class);
         $contentCopier = $this->prophesize(ContentCopierInterface::class);
         $contentWorkflow = $this->prophesize(ContentWorkflowInterface::class);
 
         $contentManager = $this->createContentManagerInstance(
             $contentResolver->reveal(),
             $contentPersister->reveal(),
-            $contentProjectionNormalizer->reveal(),
+            $contentNormalizer->reveal(),
             $contentCopier->reveal(),
             $contentWorkflow->reveal()
         );
@@ -103,19 +103,19 @@ class ContentManagerTest extends TestCase
 
         $contentResolver = $this->prophesize(ContentResolverInterface::class);
         $contentPersister = $this->prophesize(ContentPersisterInterface::class);
-        $contentProjectionNormalizer = $this->prophesize(ContentProjectionNormalizerInterface::class);
+        $contentNormalizer = $this->prophesize(ContentNormalizerInterface::class);
         $contentCopier = $this->prophesize(ContentCopierInterface::class);
         $contentWorkflow = $this->prophesize(ContentWorkflowInterface::class);
 
         $contentManager = $this->createContentManagerInstance(
             $contentResolver->reveal(),
             $contentPersister->reveal(),
-            $contentProjectionNormalizer->reveal(),
+            $contentNormalizer->reveal(),
             $contentCopier->reveal(),
             $contentWorkflow->reveal()
         );
 
-        $contentProjectionNormalizer->normalize($contentProjection->reveal())
+        $contentNormalizer->normalize($contentProjection->reveal())
             ->willReturn(['resolved' => 'data'])
             ->shouldBeCalled();
 
@@ -136,14 +136,14 @@ class ContentManagerTest extends TestCase
 
         $contentResolver = $this->prophesize(ContentResolverInterface::class);
         $contentPersister = $this->prophesize(ContentPersisterInterface::class);
-        $contentProjectionNormalizer = $this->prophesize(ContentProjectionNormalizerInterface::class);
+        $contentNormalizer = $this->prophesize(ContentNormalizerInterface::class);
         $contentCopier = $this->prophesize(ContentCopierInterface::class);
         $contentWorkflow = $this->prophesize(ContentWorkflowInterface::class);
 
         $contentManager = $this->createContentManagerInstance(
             $contentResolver->reveal(),
             $contentPersister->reveal(),
-            $contentProjectionNormalizer->reveal(),
+            $contentNormalizer->reveal(),
             $contentCopier->reveal(),
             $contentWorkflow->reveal()
         );
@@ -178,14 +178,14 @@ class ContentManagerTest extends TestCase
 
         $contentResolver = $this->prophesize(ContentResolverInterface::class);
         $contentPersister = $this->prophesize(ContentPersisterInterface::class);
-        $contentProjectionNormalizer = $this->prophesize(ContentProjectionNormalizerInterface::class);
+        $contentNormalizer = $this->prophesize(ContentNormalizerInterface::class);
         $contentCopier = $this->prophesize(ContentCopierInterface::class);
         $contentWorkflow = $this->prophesize(ContentWorkflowInterface::class);
 
         $contentManager = $this->createContentManagerInstance(
             $contentResolver->reveal(),
             $contentPersister->reveal(),
-            $contentProjectionNormalizer->reveal(),
+            $contentNormalizer->reveal(),
             $contentCopier->reveal(),
             $contentWorkflow->reveal()
         );
