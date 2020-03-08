@@ -14,11 +14,12 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Domain\Model;
 
 use PHPUnit\Framework\TestCase;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\AbstractContentProjection;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\AbstractContentRichEntity;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\AbstractDimensionContent;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionTrait;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityTrait;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentTrait;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptTrait;
@@ -29,9 +30,11 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateTrait;
 
 class ContentRichEntityTest extends TestCase
 {
-    protected function getInstance(): AbstractContentRichEntity
+    protected function getInstance(): ContentRichEntityInterface
     {
-        return new class() extends AbstractContentRichEntity {
+        return new class() implements ContentRichEntityInterface {
+            use ContentRichEntityTrait;
+
             public static function getResourceKey(): string
             {
                 return 'example';
@@ -51,14 +54,17 @@ class ContentRichEntityTest extends TestCase
 
     protected function getInstanceDimension(int $id): DimensionContentInterface
     {
-        $modelDimension = new class() extends AbstractDimensionContent implements SeoInterface, ExcerptInterface, TemplateInterface {
+        $modelDimension = new class() implements DimensionContentInterface, SeoInterface, ExcerptInterface, TemplateInterface {
+            use DimensionContentTrait;
             use ExcerptTrait;
             use SeoTrait;
             use TemplateTrait;
 
             public function createProjectionInstance(): ContentProjectionInterface
             {
-                return new class() extends AbstractContentProjection {
+                return new class() implements ContentProjectionInterface {
+                    use ContentProjectionTrait;
+
                     public function getContentId()
                     {
                         return 5;

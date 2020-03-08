@@ -13,12 +13,15 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity;
 
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\AbstractContentRichEntity;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityTrait;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 
-class Example extends AbstractContentRichEntity
+class Example implements ContentRichEntityInterface
 {
+    use ContentRichEntityTrait;
+
     const RESOURCE_KEY = 'examples';
     const TEMPLATE_TYPE = 'example';
 

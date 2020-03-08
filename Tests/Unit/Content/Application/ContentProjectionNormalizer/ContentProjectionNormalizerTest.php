@@ -20,7 +20,8 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionNormalizer\Co
 use Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionNormalizer\Enhancer\ExcerptNormalizeEnhancer;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionNormalizer\Enhancer\TemplateNormalizeEnhancer;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionNormalizer\Enhancer\WorkflowNormalizeEnhancer;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\AbstractContentProjection;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionTrait;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptTrait;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
@@ -44,9 +45,15 @@ class ContentProjectionNormalizerTest extends TestCase
 
     public function testResolveSimple(): void
     {
-        $contentProjection = new class() extends AbstractContentProjection {
+        $contentProjection = new class() implements ContentProjectionInterface {
+            use ContentProjectionTrait;
+
             protected $id = 2;
-            protected $dimensionId = '123-456';
+
+            public function __construct()
+            {
+                $this->dimensionId = '123-456';
+            }
 
             public function getContentId()
             {
@@ -63,14 +70,19 @@ class ContentProjectionNormalizerTest extends TestCase
 
     public function testResolveFull(): void
     {
-        $contentProjection = new class() extends AbstractContentProjection implements ExcerptInterface, SeoInterface, TemplateInterface, WorkflowInterface {
+        $contentProjection = new class() implements ContentProjectionInterface, ExcerptInterface, SeoInterface, TemplateInterface, WorkflowInterface {
+            use ContentProjectionTrait;
             use ExcerptTrait;
             use SeoTrait;
             use TemplateTrait;
             use WorkflowTrait;
 
             protected $id = 2;
-            protected $dimensionId = '123-456';
+
+            public function __construct()
+            {
+                $this->dimensionId = '123-456';
+            }
 
             public function getContentId()
             {
