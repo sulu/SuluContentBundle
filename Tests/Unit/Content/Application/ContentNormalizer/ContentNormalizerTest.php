@@ -11,15 +11,15 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentProjectionNormalizer;
+namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentNormalizer;
 
 use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\CategoryBundle\Entity\CategoryInterface;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionNormalizer\ContentProjectionNormalizer;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionNormalizer\ContentProjectionNormalizerInterface;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionNormalizer\Enhancer\ExcerptNormalizeEnhancer;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionNormalizer\Enhancer\TemplateNormalizeEnhancer;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionNormalizer\Enhancer\WorkflowNormalizeEnhancer;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\ContentNormalizer;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\ContentNormalizerInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Enhancer\ExcerptNormalizeEnhancer;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Enhancer\TemplateNormalizeEnhancer;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Enhancer\WorkflowNormalizeEnhancer;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionTrait;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
@@ -32,11 +32,11 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowTrait;
 use Sulu\Bundle\TagBundle\Tag\TagInterface;
 
-class ContentProjectionNormalizerTest extends TestCase
+class ContentNormalizerTest extends TestCase
 {
-    protected function createContentProjectionNormalizerInstance(): ContentProjectionNormalizerInterface
+    protected function createContentNormalizerInstance(): ContentNormalizerInterface
     {
-        return new ContentProjectionNormalizer([
+        return new ContentNormalizer([
             new ExcerptNormalizeEnhancer(),
             new TemplateNormalizeEnhancer(),
             new WorkflowNormalizeEnhancer(),
@@ -61,7 +61,7 @@ class ContentProjectionNormalizerTest extends TestCase
             }
         };
 
-        $apiViewResolver = $this->createContentProjectionNormalizerInstance();
+        $apiViewResolver = $this->createContentNormalizerInstance();
         $this->assertSame([
             'dimensionId' => '123-456',
             'id' => 5,
@@ -126,7 +126,7 @@ class ContentProjectionNormalizerTest extends TestCase
         $contentProjection->setTemplateKey('template-key');
         $contentProjection->setTemplateData(['someTemplate' => 'data']);
 
-        $apiViewResolver = $this->createContentProjectionNormalizerInstance();
+        $apiViewResolver = $this->createContentNormalizerInstance();
 
         $this->assertSame([
             'dimensionId' => '123-456',

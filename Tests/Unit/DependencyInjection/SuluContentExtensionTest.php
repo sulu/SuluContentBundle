@@ -18,8 +18,8 @@ use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
 use Sulu\Bundle\AdminBundle\DependencyInjection\SuluAdminExtension;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentCopier\ContentCopierInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentManager\ContentManagerInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\ContentNormalizerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersisterInterface;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionNormalizer\ContentProjectionNormalizerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\ContentWorkflowInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ContentProjectionFactoryInterface;
@@ -59,7 +59,7 @@ class SuluContentExtensionTest extends AbstractExtensionTestCase
         $this->assertContainerBuilderHasAlias(ContentManagerInterface::class, 'sulu_content.content_manager');
         $this->assertContainerBuilderHasAlias(ContentResolverInterface::class, 'sulu_content.content_resolver');
         $this->assertContainerBuilderHasAlias(ContentPersisterInterface::class, 'sulu_content.content_persister');
-        $this->assertContainerBuilderHasAlias(ContentProjectionNormalizerInterface::class, 'sulu_content.content_projection_normalizer');
+        $this->assertContainerBuilderHasAlias(ContentNormalizerInterface::class, 'sulu_content.content_normalizer');
         $this->assertContainerBuilderHasAlias(ContentCopierInterface::class, 'sulu_content.content_copier');
         $this->assertContainerBuilderHasAlias(ContentWorkflowInterface::class, 'sulu_content.content_workflow');
 

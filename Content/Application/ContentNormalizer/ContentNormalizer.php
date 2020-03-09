@@ -11,16 +11,15 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionNormalizer;
+namespace Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer;
 
-use Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionNormalizer\Enhancer\NormalizeEnhancerInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Enhancer\NormalizeEnhancerInterface;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\Serializer;
 
-class ContentProjectionNormalizer implements ContentProjectionNormalizerInterface
+class ContentNormalizer implements ContentNormalizerInterface
 {
     /**
      * @var iterable<NormalizeEnhancerInterface>
@@ -43,19 +42,19 @@ class ContentProjectionNormalizer implements ContentProjectionNormalizerInterfac
         $this->serializer = $serializer ?: $this->createSerializer();
     }
 
-    public function normalize(ContentProjectionInterface $contentProjection): array
+    public function normalize(object $object): array
     {
         $ignoreAttributes = ['id'];
 
         foreach ($this->enhancers as $enhancer) {
             $ignoreAttributes = array_merge(
                 $ignoreAttributes,
-                $enhancer->getIgnoredAttributes($contentProjection)
+                $enhancer->getIgnoredAttributes($object)
             );
         }
 
         /** @var mixed[] $normalizedData */
-        $normalizedData = $this->serializer->normalize($contentProjection, null, [
+        $normalizedData = $this->serializer->normalize($object, null, [
             'ignored_attributes' => $ignoreAttributes,
         ]);
 
@@ -64,7 +63,7 @@ class ContentProjectionNormalizer implements ContentProjectionNormalizerInterfac
         unset($normalizedData['contentId']);
 
         foreach ($this->enhancers as $enhancer) {
-            $normalizedData = $enhancer->enhance($contentProjection, $normalizedData);
+            $normalizedData = $enhancer->enhance($object, $normalizedData);
         }
 
         ksort($normalizedData);

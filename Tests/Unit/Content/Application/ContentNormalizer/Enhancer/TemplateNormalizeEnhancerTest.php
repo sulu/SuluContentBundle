@@ -11,10 +11,10 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentProjectionNormalizer\Enhancer;
+namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentNormalizer\Enhancer;
 
 use PHPUnit\Framework\TestCase;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionNormalizer\Enhancer\TemplateNormalizeEnhancer;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Enhancer\TemplateNormalizeEnhancer;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 

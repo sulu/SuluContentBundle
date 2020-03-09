@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentCopier;
 
+use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\ContentNormalizerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersisterInterface;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionNormalizer\ContentProjectionNormalizerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ContentProjectionFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
@@ -39,20 +39,20 @@ class ContentCopier implements ContentCopierInterface
     private $contentPersister;
 
     /**
-     * @var ContentProjectionNormalizerInterface
+     * @var ContentNormalizerInterface
      */
-    private $contentProjectionNormalizer;
+    private $contentNormalizer;
 
     public function __construct(
         ContentResolverInterface $contentResolver,
         ContentProjectionFactoryInterface $viewFactory,
         ContentPersisterInterface $contentPersister,
-        ContentProjectionNormalizerInterface $contentProjectionNormalizer
+        ContentNormalizerInterface $contentNormalizer
     ) {
         $this->contentResolver = $contentResolver;
         $this->viewFactory = $viewFactory;
         $this->contentPersister = $contentPersister;
-        $this->contentProjectionNormalizer = $contentProjectionNormalizer;
+        $this->contentNormalizer = $contentNormalizer;
     }
 
     public function copy(
@@ -81,7 +81,7 @@ class ContentCopier implements ContentCopierInterface
         ContentRichEntityInterface $targetContentRichEntity,
         array $targetDimensionAttributes
     ): ContentProjectionInterface {
-        $data = $this->contentProjectionNormalizer->normalize($sourceContentProjection);
+        $data = $this->contentNormalizer->normalize($sourceContentProjection);
 
         return $this->contentPersister->persist($targetContentRichEntity, $data, $targetDimensionAttributes);
     }

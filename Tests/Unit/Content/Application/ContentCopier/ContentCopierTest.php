@@ -16,8 +16,8 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentCopier
 use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentCopier\ContentCopier;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentCopier\ContentCopierInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\ContentNormalizerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersisterInterface;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionNormalizer\ContentProjectionNormalizerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ContentProjectionFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
@@ -30,13 +30,13 @@ class ContentCopierTest extends TestCase
         ContentResolverInterface $contentResolver,
         ContentProjectionFactoryInterface $viewFactory,
         ContentPersisterInterface $contentPersister,
-        ContentProjectionNormalizerInterface $contentProjectionNormalizer
+        ContentNormalizerInterface $contentNormalizer
     ): ContentCopierInterface {
         return new ContentCopier(
             $contentResolver,
             $viewFactory,
             $contentPersister,
-            $contentProjectionNormalizer
+            $contentNormalizer
         );
     }
 
@@ -53,13 +53,13 @@ class ContentCopierTest extends TestCase
         $contentResolver = $this->prophesize(ContentResolverInterface::class);
         $contentProjectionFactory = $this->prophesize(ContentProjectionFactoryInterface::class);
         $contentPersister = $this->prophesize(ContentPersisterInterface::class);
-        $contentProjectionNormalizer = $this->prophesize(ContentProjectionNormalizerInterface::class);
+        $contentNormalizer = $this->prophesize(ContentNormalizerInterface::class);
 
         $contentResolver->resolve($sourceContentRichEntity->reveal(), $sourceDimensionAttributes)
             ->willReturn($sourceContentProjection->reveal())
             ->shouldBeCalled();
 
-        $contentProjectionNormalizer->normalize($sourceContentProjection->reveal())
+        $contentNormalizer->normalize($sourceContentProjection->reveal())
             ->willReturn(['resolved' => 'data'])
             ->shouldBeCalled();
 
@@ -71,7 +71,7 @@ class ContentCopierTest extends TestCase
             $contentResolver->reveal(),
             $contentProjectionFactory->reveal(),
             $contentPersister->reveal(),
-            $contentProjectionNormalizer->reveal()
+            $contentNormalizer->reveal()
         );
 
         $this->assertSame(
@@ -97,13 +97,13 @@ class ContentCopierTest extends TestCase
         $contentResolver = $this->prophesize(ContentResolverInterface::class);
         $contentProjectionFactory = $this->prophesize(ContentProjectionFactoryInterface::class);
         $contentPersister = $this->prophesize(ContentPersisterInterface::class);
-        $contentProjectionNormalizer = $this->prophesize(ContentProjectionNormalizerInterface::class);
+        $contentNormalizer = $this->prophesize(ContentNormalizerInterface::class);
 
         $contentProjectionFactory->create($sourceContentDimensionCollection->reveal())
             ->willReturn($sourceContentProjection->reveal())
             ->shouldBeCalled();
 
-        $contentProjectionNormalizer->normalize($sourceContentProjection->reveal())
+        $contentNormalizer->normalize($sourceContentProjection->reveal())
             ->willReturn(['resolved' => 'data'])
             ->shouldBeCalled();
 
@@ -115,7 +115,7 @@ class ContentCopierTest extends TestCase
             $contentResolver->reveal(),
             $contentProjectionFactory->reveal(),
             $contentPersister->reveal(),
-            $contentProjectionNormalizer->reveal()
+            $contentNormalizer->reveal()
         );
 
         $this->assertSame(
@@ -139,9 +139,9 @@ class ContentCopierTest extends TestCase
         $contentResolver = $this->prophesize(ContentResolverInterface::class);
         $contentProjectionFactory = $this->prophesize(ContentProjectionFactoryInterface::class);
         $contentPersister = $this->prophesize(ContentPersisterInterface::class);
-        $contentProjectionNormalizer = $this->prophesize(ContentProjectionNormalizerInterface::class);
+        $contentNormalizer = $this->prophesize(ContentNormalizerInterface::class);
 
-        $contentProjectionNormalizer->normalize($sourceContentProjection->reveal())
+        $contentNormalizer->normalize($sourceContentProjection->reveal())
             ->willReturn(['resolved' => 'data'])
             ->shouldBeCalled();
 
@@ -153,7 +153,7 @@ class ContentCopierTest extends TestCase
             $contentResolver->reveal(),
             $contentProjectionFactory->reveal(),
             $contentPersister->reveal(),
-            $contentProjectionNormalizer->reveal()
+            $contentNormalizer->reveal()
         );
 
         $this->assertSame(

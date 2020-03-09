@@ -4,15 +4,15 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
         <!-- Enhancer -->
-        <service id="sulu_content.excerpt_normalize_enhancer" class="Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionNormalizer\Enhancer\ExcerptNormalizeEnhancer">
+        <service id="sulu_content.excerpt_normalize_enhancer" class="Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Enhancer\ExcerptNormalizeEnhancer">
             <tag name="sulu_content.normalize_enhancer"/>
         </service>
 
-        <service id="sulu_content.template_normalize_enhancer" class="Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionNormalizer\Enhancer\TemplateNormalizeEnhancer">
+        <service id="sulu_content.template_normalize_enhancer" class="Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Enhancer\TemplateNormalizeEnhancer">
             <tag name="sulu_content.normalize_enhancer"/>
         </service>
 
-        <service id="sulu_content.workflow_normalize_enhancer" class="Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionNormalizer\Enhancer\WorkflowNormalizeEnhancer">
+        <service id="sulu_content.workflow_normalize_enhancer" class="Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Enhancer\WorkflowNormalizeEnhancer">
             <tag name="sulu_content.normalize_enhancer"/>
         </service>
     </services>
