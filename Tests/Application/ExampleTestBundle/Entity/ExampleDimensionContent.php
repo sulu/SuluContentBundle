@@ -104,7 +104,7 @@ class ExampleDimensionContent implements DimensionContentInterface, ExcerptInter
         return $contentProjection;
     }
 
-    public function getTemplateType(): string
+    public static function getTemplateType(): string
     {
         return Example::TEMPLATE_TYPE;
     }
