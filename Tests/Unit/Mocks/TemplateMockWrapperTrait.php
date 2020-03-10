@@ -20,14 +20,9 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\Mocks;
  */
 trait TemplateMockWrapperTrait
 {
-    /**
-     * @var string
-     */
-    private static $templateType = 'mock-template-type';
-
     public static function getTemplateType(): string
     {
-        return self::$templateType;
+        return 'mock-template-type';
     }
 
     public function getTemplateKey(): ?string
