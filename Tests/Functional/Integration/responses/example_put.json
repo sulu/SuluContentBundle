@@ -24,6 +24,5 @@
     "template": "default",
     "title": "Test Example 2",
     "url": "/my-example-2",
-    "workflowName": "content_workflow",
     "workflowPlace": "unpublished"
 }

@@ -113,7 +113,7 @@ class ContentWorkflow implements ContentWorkflowInterface
 
         $workflow = $this->workflowRegistry->get(
             $localizedDimensionContent,
-            $localizedDimensionContent->getWorkflowName()
+            $localizedDimensionContent::getWorkflowName()
         );
 
         try {

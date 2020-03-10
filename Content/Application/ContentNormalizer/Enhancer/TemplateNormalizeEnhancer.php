@@ -38,8 +38,6 @@ class TemplateNormalizeEnhancer implements NormalizeEnhancerInterface
             return [];
         }
 
-        return [
-            'templateType',
-        ];
+        return [];
     }
 }

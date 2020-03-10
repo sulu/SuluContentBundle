@@ -45,6 +45,8 @@ interface WorkflowInterface
 
     const WORKFLOW_DEFAULT_NAME = 'content_workflow';
 
+    public static function getWorkflowName(): string;
+
     public function getWorkflowPlace(): string;
 
     public function setWorkflowPlace(string $workflowPlace): void;
@@ -52,6 +54,4 @@ interface WorkflowInterface
     public function getWorkflowPublished(): ?\DateTimeImmutable;
 
     public function setWorkflowPublished(?\DateTimeImmutable $workflowPublished): void;
-
-    public function getWorkflowName(): string;
 }

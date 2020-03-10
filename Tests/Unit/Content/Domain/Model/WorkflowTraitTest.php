@@ -128,6 +128,6 @@ class WorkflowTraitTest extends TestCase
     public function testGetWorkflowName(): void
     {
         $workflow = $this->getWorkflowInstance();
-        $this->assertSame('content_workflow', $workflow->getWorkflowName());
+        $this->assertSame('content_workflow', $workflow::getWorkflowName());
     }
 }

@@ -15,6 +15,7 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentWorkfl
 
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\ContentWorkflow;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\ContentWorkflowInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
@@ -30,6 +31,9 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionContentRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionRepositoryInterface;
+use Sulu\Bundle\ContentBundle\Tests\Unit\Mocks\DimensionContentMockWrapperTrait;
+use Sulu\Bundle\ContentBundle\Tests\Unit\Mocks\MockWrapper;
+use Sulu\Bundle\ContentBundle\Tests\Unit\Mocks\WorkflowMockWrapperTrait;
 
 class ContentWorkflowTest extends TestCase
 {
@@ -43,6 +47,24 @@ class ContentWorkflowTest extends TestCase
             $dimensionContentRepository,
             $viewFactory
         );
+    }
+
+    /**
+     * @return DimensionContentInterface&WorkflowInterface
+     */
+    protected function wrapWorkflowMock(ObjectProphecy $contentProjectionMock)
+    {
+        return new class($contentProjectionMock) extends MockWrapper implements
+            DimensionContentInterface,
+            WorkflowInterface {
+            use DimensionContentMockWrapperTrait;
+            use WorkflowMockWrapperTrait;
+
+            public static function getWorkflowName(): string
+            {
+                return 'content_workflow';
+            }
+        };
     }
 
     public function testTransitionNoWorkflowInterface(): void
@@ -207,6 +229,7 @@ class ContentWorkflowTest extends TestCase
         $dimensionContent1 = $this->prophesize(DimensionContentInterface::class);
         $dimensionContent1->willImplement(WorkflowInterface::class);
         $dimensionContent1->getDimension()->willReturn($dimension1);
+
         $dimensionContent2 = $this->prophesize(DimensionContentInterface::class);
         $dimensionContent2->willImplement(WorkflowInterface::class);
         $dimensionContent2->getDimension()->willReturn($dimension2);
@@ -215,13 +238,9 @@ class ContentWorkflowTest extends TestCase
             ->willReturn('unpublished')
             ->shouldBeCalled();
 
-        $dimensionContent2->getWorkflowName()
-            ->willReturn('content_workflow')
-            ->shouldBeCalled();
-
         $dimensionContentCollection = new DimensionContentCollection([
-            $dimensionContent1->reveal(),
-            $dimensionContent2->reveal(),
+            $this->wrapWorkflowMock($dimensionContent1),
+            $this->wrapWorkflowMock($dimensionContent2),
         ], $dimensionCollection);
 
         $dimensionContentRepository->load($contentRichEntity->reveal(), $dimensionCollection)
@@ -280,18 +299,14 @@ class ContentWorkflowTest extends TestCase
             ->willReturn($currentPlace)
             ->shouldBeCalled();
 
-        $dimensionContent2->getWorkflowName()
-            ->willReturn('content_workflow')
-            ->shouldBeCalled();
-
         if ($isTransitionAllowed) {
             $dimensionContent2->setWorkflowPlace(Argument::any(), Argument::any())
                 ->shouldBeCalled();
         }
 
         $dimensionContentCollection = new DimensionContentCollection([
-            $dimensionContent1->reveal(),
-            $dimensionContent2->reveal(),
+            $this->wrapWorkflowMock($dimensionContent1),
+            $this->wrapWorkflowMock($dimensionContent2),
         ], $dimensionCollection);
 
         $dimensionContentRepository->load($contentRichEntity->reveal(), $dimensionCollection)

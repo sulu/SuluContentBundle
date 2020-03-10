@@ -25,6 +25,11 @@ trait WorkflowTrait
      */
     protected $workflowPublished;
 
+    public static function getWorkflowName(): string
+    {
+        return WorkflowInterface::WORKFLOW_DEFAULT_NAME;
+    }
+
     public function getWorkflowPlace(): string
     {
         return $this->workflowPlace;
@@ -51,10 +56,5 @@ trait WorkflowTrait
     public function setWorkflowPublished(?\DateTimeImmutable $workflowPublished): void
     {
         $this->workflowPublished = $workflowPublished;
-    }
-
-    public function getWorkflowName(): string
-    {
-        return WorkflowInterface::WORKFLOW_DEFAULT_NAME;
     }
 }
