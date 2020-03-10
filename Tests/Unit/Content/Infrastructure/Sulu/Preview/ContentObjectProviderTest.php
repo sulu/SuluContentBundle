@@ -225,7 +225,7 @@ class ContentObjectProviderTest extends TestCase
                 return 1;
             }
 
-            public function getTemplateType(): string
+            public static function getTemplateType(): string
             {
                 return 'example';
             }
@@ -269,7 +269,7 @@ class ContentObjectProviderTest extends TestCase
                 return 1;
             }
 
-            public function getTemplateType(): string
+            public static function getTemplateType(): string
             {
                 return 'example';
             }

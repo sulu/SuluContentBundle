@@ -72,7 +72,7 @@ class ContentRichEntityTest extends TestCase
                 };
             }
 
-            public function getTemplateType(): string
+            public static function getTemplateType(): string
             {
                 return 'example';
             }

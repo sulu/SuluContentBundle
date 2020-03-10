@@ -74,7 +74,7 @@ class ExampleContentProjection implements ContentProjectionInterface, SeoInterfa
         $this->title = $title;
     }
 
-    public function getTemplateType(): string
+    public static function getTemplateType(): string
     {
         return Example::TEMPLATE_TYPE;
     }

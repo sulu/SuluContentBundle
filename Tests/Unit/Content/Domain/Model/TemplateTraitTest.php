@@ -24,7 +24,7 @@ class TemplateTraitTest extends TestCase
         return new class() implements TemplateInterface {
             use TemplateTrait;
 
-            public function getTemplateType(): string
+            public static function getTemplateType(): string
             {
                 return 'example';
             }
@@ -50,6 +50,6 @@ class TemplateTraitTest extends TestCase
     public function testGetTemplateType(): void
     {
         $model = $this->getTemplateInstance();
-        $this->assertSame('example', $model->getTemplateType());
+        $this->assertSame('example', $model::getTemplateType());
     }
 }
