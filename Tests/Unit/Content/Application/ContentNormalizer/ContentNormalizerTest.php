@@ -155,7 +155,6 @@ class ContentNormalizerTest extends TestCase
             'seoTitle' => 'Seo Title',
             'someTemplate' => 'data',
             'template' => 'template-key',
-            'workflowName' => 'content_workflow',
             'workflowPlace' => 'unpublished',
         ], $apiViewResolver->normalize($contentProjection));
     }
