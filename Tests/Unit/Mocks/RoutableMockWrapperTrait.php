@@ -20,9 +20,9 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\Mocks;
  */
 trait RoutableMockWrapperTrait
 {
-    public function getContentClass(): string
+    public static function getContentClass(): string
     {
-        return $this->instance->getContentClass();
+        return 'mock-content-class';
     }
 
     public function getContentId()

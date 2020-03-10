@@ -109,7 +109,7 @@ class ExampleDimensionContent implements DimensionContentInterface, ExcerptInter
         return Example::TEMPLATE_TYPE;
     }
 
-    public function getContentClass(): string
+    public static function getContentClass(): string
     {
         return Example::class;
     }

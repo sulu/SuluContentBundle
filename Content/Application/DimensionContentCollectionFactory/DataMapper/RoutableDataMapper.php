@@ -134,7 +134,7 @@ class RoutableDataMapper implements DataMapperInterface
         }
 
         $this->routeManager->createOrUpdateByAttributes(
-            $localizedObject->getContentClass(),
+            $localizedObject::getContentClass(),
             (string) $localizedObject->getContentId(),
             $locale,
             $routePath
