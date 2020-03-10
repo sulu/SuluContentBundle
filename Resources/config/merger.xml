@@ -4,20 +4,20 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
         <!-- Merger -->
-        <service id="sulu_content.excerpt_content_projection_factory_merger" class="Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionFactory\Merger\ExcerptMerger">
-            <tag name="sulu_content.content_projection_factory_merger" priority="4096"/>
-        </service>
-
-        <service id="sulu_content.seo_content_projection_factory_merger" class="Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionFactory\Merger\SeoMerger">
-            <tag name="sulu_content.content_projection_factory_merger" priority="3072"/>
-        </service>
-
         <service id="sulu_content.template_content_projection_factory_merger" class="Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionFactory\Merger\TemplateMerger">
-            <tag name="sulu_content.content_projection_factory_merger" priority="2048"/>
+            <tag name="sulu_content.content_projection_factory_merger" priority="128"/>
         </service>
 
         <service id="sulu_content.workflow_content_projection_factory_merger" class="Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionFactory\Merger\WorkflowMerger">
-            <tag name="sulu_content.content_projection_factory_merger" priority="1024"/>
+            <tag name="sulu_content.content_projection_factory_merger" priority="64"/>
+        </service>
+
+        <service id="sulu_content.excerpt_content_projection_factory_merger" class="Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionFactory\Merger\ExcerptMerger">
+            <tag name="sulu_content.content_projection_factory_merger" priority="32"/>
+        </service>
+
+        <service id="sulu_content.seo_content_projection_factory_merger" class="Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionFactory\Merger\SeoMerger">
+            <tag name="sulu_content.content_projection_factory_merger" priority="16"/>
         </service>
     </services>
 </container>
