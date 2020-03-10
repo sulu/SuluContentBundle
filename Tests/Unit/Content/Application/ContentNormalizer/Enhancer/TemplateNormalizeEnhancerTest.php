@@ -42,9 +42,7 @@ class TemplateNormalizeEnhancerTest extends TestCase
         $object = $this->prophesize(TemplateInterface::class);
 
         $this->assertSame(
-            [
-                'templateType',
-            ],
+            [],
             $enhancer->getIgnoredAttributes($object->reveal())
         );
     }

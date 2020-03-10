@@ -294,7 +294,6 @@ class RoutableDataMapperTest extends TestCase
 
         $metadata->getProperties()->WillReturn([$property->reveal()]);
 
-        $localizedDimensionContent->getContentClass()->willReturn('App\Entity\Example');
         $localizedDimensionContent->getContentId()->willReturn('123-123-123');
         $localizedDimensionContent->getTemplateData()->willReturn([]);
         $localizedDimensionContent->getLocale()->willReturn('en');
@@ -307,7 +306,7 @@ class RoutableDataMapperTest extends TestCase
             ->willReturn('/test');
 
         $routeManager->createOrUpdateByAttributes(
-            'App\Entity\Example',
+            'mock-content-class',
             '123-123-123',
             'en',
             '/test'
@@ -348,7 +347,6 @@ class RoutableDataMapperTest extends TestCase
 
         $metadata->getProperties()->WillReturn([$property->reveal()]);
 
-        $localizedDimensionContent->getContentClass()->willReturn('App\Entity\Example');
         $localizedDimensionContent->getContentId()->willReturn('123-123-123');
         $localizedDimensionContent->getTemplateData()->willReturn([]);
         $localizedDimensionContent->getLocale()->willReturn('en');
@@ -482,11 +480,8 @@ class RoutableDataMapperTest extends TestCase
         $factory->getStructureMetadata('mock-template-type', 'default')->willReturn($metadata->reveal())->shouldBeCalled();
 
         $localizedDimensionContent->getContentId()->willReturn('123-123-123');
-        $localizedDimensionContent->getContentClass()->willReturn('App\Entity\Example');
-
         $localizedDimensionContent->getTemplateData()->willReturn(['title' => 'Test', 'url' => null]);
         $localizedDimensionContent->setTemplateData(['title' => 'Test', 'url' => '/test'])->shouldBeCalled();
-
         $localizedDimensionContent->getLocale()->willReturn('en');
 
         $localizedDimensionContentMock = $this->wrapRoutableMock($localizedDimensionContent);
@@ -495,7 +490,7 @@ class RoutableDataMapperTest extends TestCase
             ->willReturn('/test');
 
         $routeManager->createOrUpdateByAttributes(
-            'App\Entity\Example',
+            'mock-content-class',
             '123-123-123',
             'en',
             '/test'
@@ -541,7 +536,6 @@ class RoutableDataMapperTest extends TestCase
         $factory->getStructureMetadata('mock-template-type', 'default')->willReturn($metadata->reveal())->shouldBeCalled();
 
         $localizedDimensionContent->getContentId()->willReturn('123-123-123');
-        $localizedDimensionContent->getContentClass()->willReturn('App\Entity\Example');
         $localizedDimensionContent->getLocale()->willReturn('en');
         $localizedDimensionContentMock = $this->wrapRoutableMock($localizedDimensionContent);
 
@@ -549,7 +543,7 @@ class RoutableDataMapperTest extends TestCase
             ->shouldNotBeCalled();
 
         $routeManager->createOrUpdateByAttributes(
-            'App\Entity\Example',
+            'mock-content-class',
             '123-123-123',
             'en',
             '/test'
@@ -594,7 +588,6 @@ class RoutableDataMapperTest extends TestCase
         $factory->getStructureMetadata('mock-template-type', 'default')->willReturn($metadata->reveal())->shouldBeCalled();
 
         $localizedDimensionContent->getContentId()->willReturn('123-123-123');
-        $localizedDimensionContent->getContentClass()->willReturn('App\Entity\Example');
         $localizedDimensionContent->getLocale()->willReturn('en');
         $localizedDimensionContentMock = $this->wrapRoutableMock($localizedDimensionContent);
 
@@ -602,7 +595,7 @@ class RoutableDataMapperTest extends TestCase
             ->shouldNotBeCalled();
 
         $routeManager->createOrUpdateByAttributes(
-            'App\Entity\Example',
+            'mock-content-class',
             '123-123-123',
             'en',
             '/test'
