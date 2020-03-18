@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionFactory;
 
-use Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionFactory\Merger\MergerInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentMerger\ContentMergerInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ContentProjectionFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
@@ -22,16 +22,13 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 class ContentProjectionFactory implements ContentProjectionFactoryInterface
 {
     /**
-     * @var iterable<MergerInterface>
+     * @var ContentMergerInterface
      */
-    private $mergers = [];
+    private $contentMerger;
 
-    /**
-     * @param iterable<MergerInterface> $mergers
-     */
-    public function __construct(iterable $mergers)
+    public function __construct(ContentMergerInterface $contentMerger)
     {
-        $this->mergers = $mergers;
+        $this->contentMerger = $contentMerger;
     }
 
     public function create(DimensionContentCollectionInterface $dimensionContentCollection): ContentProjectionInterface
@@ -47,10 +44,7 @@ class ContentProjectionFactory implements ContentProjectionFactoryInterface
         $contentProjection = $dimensionContentCollectionArray[$lastKey]->createProjectionInstance();
 
         foreach ($dimensionContentCollection as $dimensionContent) {
-            /** @var MergerInterface $merger */
-            foreach ($this->mergers as $merger) {
-                $merger->merge($contentProjection, $dimensionContent);
-            }
+            $this->contentMerger->merge($contentProjection, $dimensionContent);
         }
 
         return $contentProjection;
