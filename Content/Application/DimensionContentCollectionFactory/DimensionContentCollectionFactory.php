@@ -16,7 +16,6 @@ namespace Sulu\Bundle\ContentBundle\Content\Application\DimensionContentCollecti
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\ContentDataMapperInterface;
-use Sulu\Bundle\ContentBundle\Content\Application\DimensionContentCollectionFactory\DataMapper\DataMapperInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\DimensionContentCollectionFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollectionInterface;

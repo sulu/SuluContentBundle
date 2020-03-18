@@ -13,14 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper;
 
-use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\ContentNormalizerInterface;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersisterInterface;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolverInterface;
-use Sulu\Bundle\ContentBundle\Content\Application\DimensionContentCollectionFactory\DataMapper\DataMapperInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ContentProjectionFactoryInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\DataMapper\DataMapperInterface;
 
 class ContentDataMapper implements ContentDataMapperInterface
 {

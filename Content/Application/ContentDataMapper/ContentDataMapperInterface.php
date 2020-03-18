@@ -13,10 +13,6 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper;
 
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
-
 interface ContentDataMapperInterface
 {
     /**
