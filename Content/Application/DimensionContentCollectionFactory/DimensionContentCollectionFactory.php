@@ -15,6 +15,7 @@ namespace Sulu\Bundle\ContentBundle\Content\Application\DimensionContentCollecti
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\ContentDataMapperInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\DimensionContentCollectionFactory\DataMapper\DataMapperInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\DimensionContentCollectionFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
@@ -33,17 +34,16 @@ class DimensionContentCollectionFactory implements DimensionContentCollectionFac
     private $dimensionContentRepository;
 
     /**
-     * @var iterable<DataMapperInterface>
+     * @var ContentDataMapperInterface
      */
-    private $mappers;
+    private $contentDataMapper;
 
-    /**
-     * @param iterable<DataMapperInterface> $mappers
-     */
-    public function __construct(DimensionContentRepositoryInterface $dimensionContentRepository, iterable $mappers)
-    {
+    public function __construct(
+        DimensionContentRepositoryInterface $dimensionContentRepository,
+        ContentDataMapperInterface $contentDataMapper
+    ) {
         $this->dimensionContentRepository = $dimensionContentRepository;
-        $this->mappers = $mappers;
+        $this->contentDataMapper = $contentDataMapper;
     }
 
     public function create(
@@ -77,6 +77,8 @@ class DimensionContentCollectionFactory implements DimensionContentCollectionFac
             );
         }
 
+        $this->contentDataMapper->map($data, $unlocalizedDimensionContent, $localizedDimensionContent);
+
         // Sort correctly ContentDimensions by given dimensionIds to merge them later correctly
         $orderedContentDimensions = [];
         foreach ($dimensionCollection as $key => $dimension) {
@@ -87,10 +89,6 @@ class DimensionContentCollectionFactory implements DimensionContentCollectionFac
             if ($dimensionContent) {
                 $orderedContentDimensions[$key] = $dimensionContent;
             }
-        }
-
-        foreach ($this->mappers as $mapper) {
-            $mapper->map($data, $unlocalizedDimensionContent, $localizedDimensionContent);
         }
 
         return new DimensionContentCollection($orderedContentDimensions, $dimensionCollection);
