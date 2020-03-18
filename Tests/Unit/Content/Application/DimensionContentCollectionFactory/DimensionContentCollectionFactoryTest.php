@@ -15,7 +15,7 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\DimensionCont
 
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
-use Sulu\Bundle\ContentBundle\Content\Application\DimensionContentCollectionFactory\DataMapper\DataMapperInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\ContentDataMapperInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\DimensionContentCollectionFactory\DimensionContentCollectionFactory;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
@@ -31,13 +31,12 @@ class DimensionContentCollectionFactoryTest extends TestCase
      * @param mixed[] $dimensionAttributes
      * @param DimensionInterface[] $existDimensions
      * @param DimensionContentInterface[] $existDimensionContents
-     * @param DataMapperInterface[] $mappers
      */
     protected function createDimensionContentCollectionFactoryInstance(
         array $dimensionAttributes,
         array $existDimensions,
         array $existDimensionContents,
-        iterable $mappers
+        ContentDataMapperInterface $contentDataMapper
     ): DimensionContentCollectionFactory {
         $dimensionContentRepository = $this->prophesize(DimensionContentRepositoryInterface::class);
         $dimensionContentRepository->load(Argument::any(), Argument::any())->willReturn(
@@ -47,10 +46,10 @@ class DimensionContentCollectionFactoryTest extends TestCase
             )
         );
 
-        return new DimensionContentCollectionFactory($dimensionContentRepository->reveal(), $mappers);
+        return new DimensionContentCollectionFactory($dimensionContentRepository->reveal(), $contentDataMapper);
     }
 
-    public function testCreateWithoutMapperExistDimensionContent(): void
+    public function testCreateWithExistingDimensionContent(): void
     {
         $dimension1 = new Dimension('123-456', ['locale' => null]);
         $dimension2 = new Dimension('456-789', ['locale' => 'de']);
@@ -71,6 +70,9 @@ class DimensionContentCollectionFactoryTest extends TestCase
             'data' => 'value',
         ];
 
+        $contentDataMapper = $this->prophesize(ContentDataMapperInterface::class);
+        $contentDataMapper->map($data, $dimensionContent1->reveal(), $dimensionContent2->reveal())->shouldBeCalled();
+
         $dimensionCollection = new DimensionCollection($attributes, [$dimension1, $dimension2]);
 
         $dimensionContentCollectionFactoryInstance = $this->createDimensionContentCollectionFactoryInstance(
@@ -83,8 +85,9 @@ class DimensionContentCollectionFactoryTest extends TestCase
                 $dimensionContent1->reveal(),
                 $dimensionContent2->reveal(),
             ],
-            []
+            $contentDataMapper->reveal()
         );
+
         $dimensionContentCollection = $dimensionContentCollectionFactoryInstance->create(
             $contentRichEntity->reveal(),
             $dimensionCollection,
@@ -121,6 +124,9 @@ class DimensionContentCollectionFactoryTest extends TestCase
             'data' => 'value',
         ];
 
+        $contentDataMapper = $this->prophesize(ContentDataMapperInterface::class);
+        $contentDataMapper->map(Argument::cetera())->shouldNotBeCalled();
+
         $dimension2 = new Dimension('456-789', ['locale' => 'de']);
         $dimensionCollection = new DimensionCollection($attributes, [$dimension2]);
 
@@ -134,7 +140,7 @@ class DimensionContentCollectionFactoryTest extends TestCase
                 $dimensionContent1->reveal(),
                 $dimensionContent2->reveal(),
             ],
-            []
+            $contentDataMapper->reveal()
         );
         $dimensionContentCollectionFactoryInstance->create(
             $contentRichEntity->reveal(),
@@ -143,7 +149,7 @@ class DimensionContentCollectionFactoryTest extends TestCase
         );
     }
 
-    public function testCreateWithoutMapperNotExistDimensionContent(): void
+    public function testCreateWithoutExistingDimensionContent(): void
     {
         $dimension1 = new Dimension('123-456', ['locale' => null]);
         $dimension2 = new Dimension('456-789', ['locale' => 'de']);
@@ -166,6 +172,9 @@ class DimensionContentCollectionFactoryTest extends TestCase
             'data' => 'value',
         ];
 
+        $contentDataMapper = $this->prophesize(ContentDataMapperInterface::class);
+        $contentDataMapper->map($data, $dimensionContent1->reveal(), $dimensionContent2->reveal())->shouldBeCalled();
+
         $dimension1 = new Dimension('123-456', ['locale' => null]);
         $dimension2 = new Dimension('456-789', ['locale' => 'de']);
         $dimensionCollection = new DimensionCollection($attributes, [$dimension1, $dimension2]);
@@ -179,65 +188,7 @@ class DimensionContentCollectionFactoryTest extends TestCase
             [
                 $dimensionContent1->reveal(),
             ],
-            []
-        );
-
-        $dimensionContentCollection = $dimensionContentCollectionFactoryInstance->create(
-            $contentRichEntity->reveal(),
-            $dimensionCollection,
-            $data
-        );
-
-        $this->assertCount(2, $dimensionContentCollection);
-
-        $this->assertSame([
-            $dimensionContent1->reveal(),
-            $dimensionContent2->reveal(),
-        ], iterator_to_array($dimensionContentCollection));
-    }
-
-    public function testCreateWithMappers(): void
-    {
-        $dimension1 = new Dimension('123-456', ['locale' => null]);
-        $dimension2 = new Dimension('456-789', ['locale' => 'de']);
-
-        $dimensionContent1 = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent1->getDimension()->willReturn($dimension1);
-        $dimensionContent2 = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent2->getDimension()->willReturn($dimension2);
-
-        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
-
-        $attributes = [
-            'locale' => 'de',
-            'stage' => 'draft',
-        ];
-
-        $data = [
-            'data' => 'value',
-        ];
-
-        $dimensionCollection = new DimensionCollection($attributes, [$dimension1, $dimension2]);
-
-        $mapper1 = $this->prophesize(DataMapperInterface::class);
-        $mapper1->map($data, $dimensionContent1->reveal(), $dimensionContent2->reveal())->shouldBeCalled();
-        $mapper2 = $this->prophesize(DataMapperInterface::class);
-        $mapper2->map($data, $dimensionContent1->reveal(), $dimensionContent2->reveal())->shouldBeCalled();
-
-        $dimensionContentCollectionFactoryInstance = $this->createDimensionContentCollectionFactoryInstance(
-            $attributes,
-            [
-                $dimension1,
-                $dimension2,
-            ],
-            [
-                $dimensionContent1->reveal(),
-                $dimensionContent2->reveal(),
-            ],
-            [
-                $mapper1->reveal(),
-                $mapper2->reveal(),
-            ]
+            $contentDataMapper->reveal()
         );
 
         $dimensionContentCollection = $dimensionContentCollectionFactoryInstance->create(

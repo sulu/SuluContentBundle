@@ -23,11 +23,11 @@ class ContentDataMapper implements ContentDataMapperInterface
     private $dataMappers;
 
     /**
-     * @param iterable<DataMapperInterface> $mappers
+     * @param iterable<DataMapperInterface> $dataMappers
      */
-    public function __construct(iterable $mappers)
+    public function __construct(iterable $dataMappers)
     {
-        $this->dataMappers = $mappers;
+        $this->dataMappers = $dataMappers;
     }
 
     public function map(
