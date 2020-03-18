@@ -11,24 +11,24 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Enhancer;
+namespace Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Normalizer;
 
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 
-class ExcerptNormalizeEnhancer implements NormalizeEnhancerInterface
+class ExcerptNormalizer implements NormalizerInterface
 {
-    public function enhance(object $object, array $normalizeData): array
+    public function enhance(object $object, array $normalizedData): array
     {
         if (!$object instanceof ExcerptInterface) {
-            return $normalizeData;
+            return $normalizedData;
         }
 
-        $normalizeData['excerptTags'] = $normalizeData['excerptTagNames'];
-        unset($normalizeData['excerptTagNames']);
-        $normalizeData['excerptCategories'] = $normalizeData['excerptCategoryIds'];
-        unset($normalizeData['excerptCategoryIds']);
+        $normalizedData['excerptTags'] = $normalizedData['excerptTagNames'];
+        unset($normalizedData['excerptTagNames']);
+        $normalizedData['excerptCategories'] = $normalizedData['excerptCategoryIds'];
+        unset($normalizedData['excerptCategoryIds']);
 
-        return $normalizeData;
+        return $normalizedData;
     }
 
     public function getIgnoredAttributes(object $object): array
