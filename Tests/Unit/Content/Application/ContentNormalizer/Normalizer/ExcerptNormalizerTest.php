@@ -11,34 +11,34 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentNormalizer\Enhancer;
+namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentNormalizer\Normalizer;
 
 use PHPUnit\Framework\TestCase;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Enhancer\ExcerptNormalizeEnhancer;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Normalizer\ExcerptNormalizer;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 
-class ExcerptNormalizeEnhancerTest extends TestCase
+class ExcerptNormalizerTest extends TestCase
 {
-    protected function createExcerptNormalizeEnhancerInstance(): ExcerptNormalizeEnhancer
+    protected function createExcerptNormalizerInstance(): ExcerptNormalizer
     {
-        return new ExcerptNormalizeEnhancer();
+        return new ExcerptNormalizer();
     }
 
     public function testIgnoredAttributesNoneContentProjection(): void
     {
-        $enhancer = $this->createExcerptNormalizeEnhancerInstance();
+        $normalizer = $this->createExcerptNormalizerInstance();
         $object = $this->prophesize(ContentProjectionInterface::class);
 
         $this->assertSame(
             [],
-            $enhancer->getIgnoredAttributes($object->reveal())
+            $normalizer->getIgnoredAttributes($object->reveal())
         );
     }
 
     public function testIgnoredAttributes(): void
     {
-        $enhancer = $this->createExcerptNormalizeEnhancerInstance();
+        $normalizer = $this->createExcerptNormalizerInstance();
         $object = $this->prophesize(ExcerptInterface::class);
 
         $this->assertSame(
@@ -46,13 +46,13 @@ class ExcerptNormalizeEnhancerTest extends TestCase
                 'excerptTags',
                 'excerptCategories',
             ],
-            $enhancer->getIgnoredAttributes($object->reveal())
+            $normalizer->getIgnoredAttributes($object->reveal())
         );
     }
 
     public function testEnhanceNotSupported(): void
     {
-        $enhancer = $this->createExcerptNormalizeEnhancerInstance();
+        $normalizer = $this->createExcerptNormalizerInstance();
         $object = $this->prophesize(ContentProjectionInterface::class);
 
         $data = [
@@ -62,13 +62,13 @@ class ExcerptNormalizeEnhancerTest extends TestCase
 
         $this->assertSame(
             $data,
-            $enhancer->enhance($object->reveal(), $data)
+            $normalizer->enhance($object->reveal(), $data)
         );
     }
 
     public function testEnhance(): void
     {
-        $enhancer = $this->createExcerptNormalizeEnhancerInstance();
+        $normalizer = $this->createExcerptNormalizerInstance();
         $object = $this->prophesize(ExcerptInterface::class);
 
         $data = [
@@ -83,7 +83,7 @@ class ExcerptNormalizeEnhancerTest extends TestCase
 
         $this->assertSame(
             $expectedResult,
-            $enhancer->enhance($object->reveal(), $data)
+            $normalizer->enhance($object->reveal(), $data)
         );
     }
 }

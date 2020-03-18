@@ -11,45 +11,45 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentNormalizer\Enhancer;
+namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentNormalizer\Normalizer;
 
 use PHPUnit\Framework\TestCase;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Enhancer\WorkflowNormalizeEnhancer;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Normalizer\WorkflowNormalizer;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 
-class WorkflowNormalizeEnhancerTest extends TestCase
+class WorkflowNormalizerTest extends TestCase
 {
-    protected function createWorkflowNormalizeEnhancerInstance(): WorkflowNormalizeEnhancer
+    protected function createWorkflowNormalizerInstance(): WorkflowNormalizer
     {
-        return new WorkflowNormalizeEnhancer();
+        return new WorkflowNormalizer();
     }
 
     public function testIgnoredAttributesNoneContentProjection(): void
     {
-        $enhancer = $this->createWorkflowNormalizeEnhancerInstance();
+        $normalizer = $this->createWorkflowNormalizerInstance();
         $object = $this->prophesize(ContentProjectionInterface::class);
 
         $this->assertSame(
             [],
-            $enhancer->getIgnoredAttributes($object->reveal())
+            $normalizer->getIgnoredAttributes($object->reveal())
         );
     }
 
     public function testIgnoredAttributes(): void
     {
-        $enhancer = $this->createWorkflowNormalizeEnhancerInstance();
+        $normalizer = $this->createWorkflowNormalizerInstance();
         $object = $this->prophesize(WorkflowInterface::class);
 
         $this->assertSame(
             [],
-            $enhancer->getIgnoredAttributes($object->reveal())
+            $normalizer->getIgnoredAttributes($object->reveal())
         );
     }
 
     public function testEnhanceNotSupported(): void
     {
-        $enhancer = $this->createWorkflowNormalizeEnhancerInstance();
+        $normalizer = $this->createWorkflowNormalizerInstance();
         $object = $this->prophesize(ContentProjectionInterface::class);
 
         $data = [
@@ -60,13 +60,13 @@ class WorkflowNormalizeEnhancerTest extends TestCase
 
         $this->assertSame(
             $data,
-            $enhancer->enhance($object->reveal(), $data)
+            $normalizer->enhance($object->reveal(), $data)
         );
     }
 
     public function testEnhancePublished(): void
     {
-        $enhancer = $this->createWorkflowNormalizeEnhancerInstance();
+        $normalizer = $this->createWorkflowNormalizerInstance();
         $object = $this->prophesize(WorkflowInterface::class);
 
         $data = [
@@ -82,13 +82,13 @@ class WorkflowNormalizeEnhancerTest extends TestCase
 
         $this->assertSame(
             $expectedResult,
-            $enhancer->enhance($object->reveal(), $data)
+            $normalizer->enhance($object->reveal(), $data)
         );
     }
 
     public function testEnhanceNotPublished(): void
     {
-        $enhancer = $this->createWorkflowNormalizeEnhancerInstance();
+        $normalizer = $this->createWorkflowNormalizerInstance();
         $object = $this->prophesize(WorkflowInterface::class);
 
         $data = [
@@ -104,7 +104,7 @@ class WorkflowNormalizeEnhancerTest extends TestCase
 
         $this->assertSame(
             $expectedResult,
-            $enhancer->enhance($object->reveal(), $data)
+            $normalizer->enhance($object->reveal(), $data)
         );
     }
 }

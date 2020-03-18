@@ -11,25 +11,25 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Enhancer;
+namespace Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Normalizer;
 
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 
-class TemplateNormalizeEnhancer implements NormalizeEnhancerInterface
+class TemplateNormalizer implements NormalizerInterface
 {
-    public function enhance(object $object, array $normalizeData): array
+    public function enhance(object $object, array $normalizedData): array
     {
         if (!$object instanceof TemplateInterface) {
-            return $normalizeData;
+            return $normalizedData;
         }
 
-        $normalizeData = array_merge($normalizeData['templateData'], $normalizeData);
-        unset($normalizeData['templateData']);
+        $normalizedData = array_merge($normalizedData['templateData'], $normalizedData);
+        unset($normalizedData['templateData']);
 
-        $normalizeData['template'] = $normalizeData['templateKey'];
-        unset($normalizeData['templateKey']);
+        $normalizedData['template'] = $normalizedData['templateKey'];
+        unset($normalizedData['templateKey']);
 
-        return $normalizeData;
+        return $normalizedData;
     }
 
     public function getIgnoredAttributes(object $object): array

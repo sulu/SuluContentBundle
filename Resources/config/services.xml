@@ -84,7 +84,7 @@
 
         <!-- ContentNormalizer -->
         <service id="sulu_content.content_normalizer" class="Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\ContentNormalizer">
-            <argument type="tagged" tag="sulu_content.normalize_enhancer"/>
+            <argument type="tagged" tag="sulu_content.normalizer"/>
         </service>
 
         <service id="Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\ContentNormalizerInterface" alias="sulu_content.content_normalizer"/>

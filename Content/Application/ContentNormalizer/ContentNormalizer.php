@@ -13,57 +13,57 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer;
 
-use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Enhancer\NormalizeEnhancerInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface as SymfonyNormalizerInterface;
 use Symfony\Component\Serializer\Serializer;
 
 class ContentNormalizer implements ContentNormalizerInterface
 {
     /**
-     * @var iterable<NormalizeEnhancerInterface>
+     * @var iterable<NormalizerInterface>
      */
-    private $enhancers;
+    private $normalizers;
 
     /**
-     * @var NormalizerInterface
+     * @var SymfonyNormalizerInterface
      */
     private $serializer;
 
     /**
-     * @param iterable<NormalizeEnhancerInterface> $enhancers
+     * @param iterable<NormalizerInterface> $normalizers
      */
     public function __construct(
-        iterable $enhancers,
-        ?NormalizerInterface $serializer = null
+        iterable $normalizers,
+        ?SymfonyNormalizerInterface $serializer = null
     ) {
-        $this->enhancers = $enhancers;
+        $this->normalizers = $normalizers;
         $this->serializer = $serializer ?: $this->createSerializer();
     }
 
     public function normalize(object $object): array
     {
-        $ignoreAttributes = ['id'];
+        $ignoredAttributes = ['id'];
 
-        foreach ($this->enhancers as $enhancer) {
-            $ignoreAttributes = array_merge(
-                $ignoreAttributes,
-                $enhancer->getIgnoredAttributes($object)
+        foreach ($this->normalizers as $normalizer) {
+            $ignoredAttributes = array_merge(
+                $ignoredAttributes,
+                $normalizer->getIgnoredAttributes($object)
             );
         }
 
         /** @var mixed[] $normalizedData */
         $normalizedData = $this->serializer->normalize($object, null, [
-            'ignored_attributes' => $ignoreAttributes,
+            'ignored_attributes' => $ignoredAttributes,
         ]);
 
         // The view should not be represented by its own id but the id of the content entity
         $normalizedData['id'] = $normalizedData['contentId'];
         unset($normalizedData['contentId']);
 
-        foreach ($this->enhancers as $enhancer) {
-            $normalizedData = $enhancer->enhance($object, $normalizedData);
+        foreach ($this->normalizers as $normalizer) {
+            $normalizedData = $normalizer->enhance($object, $normalizedData);
         }
 
         ksort($normalizedData);
@@ -71,7 +71,7 @@ class ContentNormalizer implements ContentNormalizerInterface
         return $normalizedData;
     }
 
-    private function createSerializer(): NormalizerInterface
+    private function createSerializer(): SymfonyNormalizerInterface
     {
         $normalizers = [new DateTimeNormalizer(), new GetSetMethodNormalizer()];
 
