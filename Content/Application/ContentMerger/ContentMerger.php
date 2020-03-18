@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentMerger;
 
-use Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionFactory\Merger\MergerInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentMerger\Merger\MergerInterface;
 
 class ContentMerger implements ContentMergerInterface
 {

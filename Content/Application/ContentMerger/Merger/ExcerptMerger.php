@@ -11,7 +11,7 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionFactory\Merger;
+namespace Sulu\Bundle\ContentBundle\Content\Application\ContentMerger\Merger;
 
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 

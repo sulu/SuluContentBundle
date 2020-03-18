@@ -24,7 +24,7 @@
 
         <!-- ContentMerger -->
         <service id="sulu_content.content_merger" class="Sulu\Bundle\ContentBundle\Content\Application\ContentMerger\ContentMerger">
-            <argument type="tagged" tag="sulu_content.content_projection_factory_merger"/>
+            <argument type="tagged" tag="sulu_content.merger"/>
         </service>
 
         <service id="Sulu\Bundle\ContentBundle\Content\Application\ContentMerger\ContentMergerInterface" alias="sulu_content.content_merger"/>
