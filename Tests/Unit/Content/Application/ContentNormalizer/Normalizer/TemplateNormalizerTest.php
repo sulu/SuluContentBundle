@@ -11,45 +11,45 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentNormalizer\Enhancer;
+namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentNormalizer\Normalizer;
 
 use PHPUnit\Framework\TestCase;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Enhancer\TemplateNormalizeEnhancer;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Normalizer\TemplateNormalizer;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 
-class TemplateNormalizeEnhancerTest extends TestCase
+class TemplateNormalizerTest extends TestCase
 {
-    protected function createTemplateNormalizeEnhancerInstance(): TemplateNormalizeEnhancer
+    protected function createTemplateNormalizerInstance(): TemplateNormalizer
     {
-        return new TemplateNormalizeEnhancer();
+        return new TemplateNormalizer();
     }
 
     public function testIgnoredAttributesNoneContentProjection(): void
     {
-        $enhancer = $this->createTemplateNormalizeEnhancerInstance();
+        $normalizer = $this->createTemplateNormalizerInstance();
         $object = $this->prophesize(ContentProjectionInterface::class);
 
         $this->assertSame(
             [],
-            $enhancer->getIgnoredAttributes($object->reveal())
+            $normalizer->getIgnoredAttributes($object->reveal())
         );
     }
 
     public function testIgnoredAttributes(): void
     {
-        $enhancer = $this->createTemplateNormalizeEnhancerInstance();
+        $normalizer = $this->createTemplateNormalizerInstance();
         $object = $this->prophesize(TemplateInterface::class);
 
         $this->assertSame(
             [],
-            $enhancer->getIgnoredAttributes($object->reveal())
+            $normalizer->getIgnoredAttributes($object->reveal())
         );
     }
 
     public function testEnhanceNotSupported(): void
     {
-        $enhancer = $this->createTemplateNormalizeEnhancerInstance();
+        $normalizer = $this->createTemplateNormalizerInstance();
         $object = $this->prophesize(ContentProjectionInterface::class);
 
         $data = [
@@ -61,13 +61,13 @@ class TemplateNormalizeEnhancerTest extends TestCase
 
         $this->assertSame(
             $data,
-            $enhancer->enhance($object->reveal(), $data)
+            $normalizer->enhance($object->reveal(), $data)
         );
     }
 
     public function testEnhance(): void
     {
-        $enhancer = $this->createTemplateNormalizeEnhancerInstance();
+        $normalizer = $this->createTemplateNormalizerInstance();
         $object = $this->prophesize(TemplateInterface::class);
 
         $data = [
@@ -87,7 +87,7 @@ class TemplateNormalizeEnhancerTest extends TestCase
 
         $this->assertSame(
             $expectedResult,
-            $enhancer->enhance($object->reveal(), $data)
+            $normalizer->enhance($object->reveal(), $data)
         );
     }
 }

@@ -17,9 +17,9 @@ use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\CategoryBundle\Entity\CategoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\ContentNormalizer;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\ContentNormalizerInterface;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Enhancer\ExcerptNormalizeEnhancer;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Enhancer\TemplateNormalizeEnhancer;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Enhancer\WorkflowNormalizeEnhancer;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Normalizer\ExcerptNormalizer;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Normalizer\TemplateNormalizer;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Normalizer\WorkflowNormalizer;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionTrait;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
@@ -37,9 +37,9 @@ class ContentNormalizerTest extends TestCase
     protected function createContentNormalizerInstance(): ContentNormalizerInterface
     {
         return new ContentNormalizer([
-            new ExcerptNormalizeEnhancer(),
-            new TemplateNormalizeEnhancer(),
-            new WorkflowNormalizeEnhancer(),
+            new ExcerptNormalizer(),
+            new TemplateNormalizer(),
+            new WorkflowNormalizer(),
         ]);
     }
 
