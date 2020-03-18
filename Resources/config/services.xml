@@ -41,10 +41,17 @@
         <!-- Content Dimension Factory -->
         <service id="sulu_content.dimension_content_collection_factory" class="Sulu\Bundle\ContentBundle\Content\Application\DimensionContentCollectionFactory\DimensionContentCollectionFactory">
             <argument type="service" id="sulu_content.dimension_content_repository"/>
-            <argument type="tagged" tag="sulu_content.data_mapper"/>
+            <argument type="service" id="sulu_content.content_data_mapper"/>
         </service>
 
         <service id="Sulu\Bundle\ContentBundle\Content\Domain\Factory\DimensionContentCollectionFactoryInterface" alias="sulu_content.dimension_content_collection_factory"/>
+
+        <!-- Content Data Mapper -->
+        <service id="sulu_content.content_data_mapper" class="Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\ContentDataMapper">
+            <argument type="tagged" tag="sulu_content.data_mapper"/>
+        </service>
+
+        <service id="Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\ContentDataMapperInterface" alias="sulu_content.content_data_mapper"/>
 
         <!-- Content Dimension Loader -->
         <service id="sulu_content.dimension_content_repository" class="Sulu\Bundle\ContentBundle\Content\Infrastructure\Doctrine\DimensionContentRepository">

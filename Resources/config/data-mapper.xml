@@ -4,25 +4,25 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
         <!-- DataMapper -->
-        <service id="sulu_content.template_mapper" class="Sulu\Bundle\ContentBundle\Content\Application\DimensionContentCollectionFactory\DataMapper\TemplateDataMapper">
+        <service id="sulu_content.template_data_mapper" class="Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\DataMapper\TemplateDataMapper">
             <argument type="service" id="sulu_page.structure.factory"/>
             <argument>%sulu.content.structure.default_types%</argument>
 
             <tag name="sulu_content.data_mapper" priority="128"/>
         </service>
 
-        <service id="sulu_content.excerpt_mapper" class="Sulu\Bundle\ContentBundle\Content\Application\DimensionContentCollectionFactory\DataMapper\ExcerptDataMapper">
+        <service id="sulu_content.excerpt_data_mapper" class="Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\DataMapper\ExcerptDataMapper">
             <argument type="service" id="sulu_content.tag_factory"/>
             <argument type="service" id="sulu_content.category_factory"/>
 
             <tag name="sulu_content.data_mapper" priority="64"/>
         </service>
 
-        <service id="sulu_content.seo_mapper" class="Sulu\Bundle\ContentBundle\Content\Application\DimensionContentCollectionFactory\DataMapper\SeoDataMapper">
+        <service id="sulu_content.seo_data_mapper" class="Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\DataMapper\SeoDataMapper">
             <tag name="sulu_content.data_mapper" priority="32"/>
         </service>
 
-        <service id="sulu_content.route_mapper" class="Sulu\Bundle\ContentBundle\Content\Application\DimensionContentCollectionFactory\DataMapper\RoutableDataMapper">
+        <service id="sulu_content.route_data_mapper" class="Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\DataMapper\RoutableDataMapper">
             <argument type="service" id="sulu_page.structure.factory"/>
             <argument type="service" id="sulu_route.generator.route_generator"/>
             <argument type="service" id="sulu_route.manager.route_manager"/>
