@@ -11,11 +11,11 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentProjectionFactory\Merger;
+namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentMerger\Merger;
 
 use PHPUnit\Framework\TestCase;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionFactory\Merger\MergerInterface;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionFactory\Merger\WorkflowMerger;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentMerger\Merger\MergerInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentMerger\Merger\WorkflowMerger;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
