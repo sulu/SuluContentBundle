@@ -17,14 +17,13 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NoResultException;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
+use Sulu\Bundle\ContentBundle\Content\Domain\Exception\StructureMetadataNotFoundException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionRepositoryInterface;
 use Sulu\Bundle\RouteBundle\Routing\Defaults\RouteDefaultsProviderInterface;
-use Sulu\Component\Content\Compat\Structure\LegacyPropertyFactory;
-use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
 
 class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
 {
@@ -39,21 +38,18 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
     protected $contentResolver;
 
     /**
-     * @var StructureMetadataFactoryInterface
+     * @var ContentStructureBridgeFactory
      */
-    protected $structureMetadataFactory;
+    protected $contentStructureBridgeFactory;
 
-    /**
-     * @var LegacyPropertyFactory
-     */
-    private $propertyFactory;
-
-    public function __construct(EntityManagerInterface $entityManager, ContentResolverInterface $contentResolver, StructureMetadataFactoryInterface $structureMetadataFactory, LegacyPropertyFactory $propertyFactory)
-    {
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        ContentResolverInterface $contentResolver,
+        ContentStructureBridgeFactory $contentStructureBridgeFactory
+    ) {
         $this->entityManager = $entityManager;
         $this->contentResolver = $contentResolver;
-        $this->structureMetadataFactory = $structureMetadataFactory;
-        $this->propertyFactory = $propertyFactory;
+        $this->contentStructureBridgeFactory = $contentStructureBridgeFactory;
     }
 
     /**
@@ -68,6 +64,7 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
     {
         $entity = $object ?: $this->loadEntity($entityClass, $id, $locale);
         if (!$entity) {
+            // return empty array which will lead to a 404 response
             return [];
         }
 
@@ -75,21 +72,18 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
             throw new \RuntimeException(sprintf('Expected to get "%s" from ContentResolver but "%s" given.', TemplateInterface::class, \get_class($entity)));
         }
 
-        $metadata = $this->structureMetadataFactory->getStructureMetadata(
-            $entity::getTemplateType(),
-            $entity->getTemplateKey()
-        );
-        if (!$metadata) {
+        try {
+            $structureBridge = $this->contentStructureBridgeFactory->getBridge($entity, $id, $locale);
+        } catch (StructureMetadataNotFoundException $exception) {
+            // return empty array which will lead to a 404 response
             return [];
         }
 
-        $structure = new ContentStructureBridge($metadata, $this->propertyFactory, $entity, $id, $locale);
-
         return [
             'object' => $entity,
-            'view' => $metadata->getView(),
-            'structure' => $structure,
-            '_controller' => $metadata->getController(),
+            'view' => $structureBridge->getView(),
+            'structure' => $structureBridge,
+            '_controller' => $structureBridge->getController(),
         ];
     }
 
