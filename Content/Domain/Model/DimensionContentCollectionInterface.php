@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Content\Domain\Model;
 
 /**
- * @implements Traversable<DimensionContentInterface>
+ * @extends \Traversable<DimensionContentInterface>
  */
 interface DimensionContentCollectionInterface extends \Traversable, \Countable
 {

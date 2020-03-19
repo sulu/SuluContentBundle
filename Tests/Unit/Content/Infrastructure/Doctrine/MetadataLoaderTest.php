@@ -128,6 +128,9 @@ class MetadataLoaderTest extends TestCase
         );
     }
 
+    /**
+     * @return \Generator<mixed[]>
+     */
     public function dataProvider(): \Generator
     {
         yield [

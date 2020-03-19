@@ -117,11 +117,11 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
     }
 
     /**
-     * {@inheritdoc}
-     *
      * @param ContentProjectionInterface $object
+     * @param string $locale
+     * @param mixed[] $data
      */
-    public function setValues($object, $locale, array $data)
+    public function setValues($object, $locale, array $data): void
     {
         // TODO: use ContentDataMapper service for setting data to the object
 
@@ -317,9 +317,11 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
     }
 
     /**
-     * {@inheritdoc}
-     *
      * @param ContentProjectionInterface $object
+     * @param string $locale
+     * @param mixed[] $context
+     *
+     * @return ContentProjectionInterface $object
      */
     public function setContext($object, $locale, array $context)
     {

@@ -48,6 +48,9 @@ class ContentNormalizerTest extends TestCase
         $contentProjection = new class() implements ContentProjectionInterface {
             use ContentProjectionTrait;
 
+            /**
+             * @var int
+             */
             protected $id = 2;
 
             public function __construct()
@@ -77,6 +80,9 @@ class ContentNormalizerTest extends TestCase
             use TemplateTrait;
             use WorkflowTrait;
 
+            /**
+             * @var int
+             */
             protected $id = 2;
 
             public function __construct()

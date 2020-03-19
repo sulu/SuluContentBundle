@@ -54,7 +54,7 @@ class ContentStructureBridge implements StructureInterface
     protected $locale;
 
     /**
-     * @var array
+     * @var array<string|int|float, PropertyInterface>
      */
     private $loadedProperties = [];
 
@@ -145,7 +145,7 @@ class ContentStructureBridge implements StructureInterface
         return null;
     }
 
-    public function setCreated(\DateTime $created)
+    public function setCreated(\DateTime $created): void
     {
         throw $this->createReadOnlyException(__METHOD__);
     }
@@ -155,7 +155,7 @@ class ContentStructureBridge implements StructureInterface
         return null;
     }
 
-    public function setChanged(\DateTime $changed)
+    public function setChanged(\DateTime $changed): void
     {
         throw $this->createReadOnlyException(__METHOD__);
     }
@@ -240,6 +240,9 @@ class ContentStructureBridge implements StructureInterface
         return $this->getProperty($name)->getValue();
     }
 
+    /**
+     * @return string[]
+     */
     public function getPropertyNames()
     {
         return array_keys($this->structure->getChildren());
@@ -279,6 +282,8 @@ class ContentStructureBridge implements StructureInterface
     }
 
     /**
+     * @param bool $complete
+     *
      * @return mixed[]
      */
     public function toArray($complete = true): array
@@ -286,6 +291,9 @@ class ContentStructureBridge implements StructureInterface
         return [];
     }
 
+    /**
+     * @return mixed[]
+     */
     public function jsonSerialize()
     {
         return $this->toArray(true);

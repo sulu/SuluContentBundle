@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Functional\Integration;
 
 use Sulu\Bundle\ContentBundle\Tests\Functional\BaseTestCase;
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 
 /**
  * The integration test should have no impact on the coverage so we set it to coversNothing.
@@ -22,6 +23,9 @@ use Sulu\Bundle\ContentBundle\Tests\Functional\BaseTestCase;
  */
 class ExampleControllerTest extends BaseTestCase
 {
+    /**
+     * @var KernelBrowser
+     */
     protected $client;
 
     public function setUp(): void
@@ -100,7 +104,7 @@ class ExampleControllerTest extends BaseTestCase
 
         $this->assertResponseContent('example_post.json', $response, 201);
 
-        $id = json_decode($response->getContent(), true)['id'] ?? null;
+        $id = json_decode((string) $response->getContent(), true)['id'] ?? null;
 
         return $id;
     }

@@ -329,6 +329,9 @@ class ContentWorkflowTest extends TestCase
         );
     }
 
+    /**
+     * @return \Generator<mixed[]>
+     */
     public function transitionProvider(): \Generator
     {
         $places = [
