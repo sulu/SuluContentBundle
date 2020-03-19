@@ -17,45 +17,45 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 
 class ExcerptMerger implements MergerInterface
 {
-    public function merge(object $contentProjection, object $dimensionContent): void
+    public function merge(object $targetObject, object $sourceObject): void
     {
-        if (!$contentProjection instanceof ExcerptInterface) {
+        if (!$targetObject instanceof ExcerptInterface) {
             return;
         }
 
-        if (!$dimensionContent instanceof ExcerptInterface) {
+        if (!$sourceObject instanceof ExcerptInterface) {
             return;
         }
 
-        if ($excerptTitle = $dimensionContent->getExcerptTitle()) {
-            $contentProjection->setExcerptTitle($excerptTitle);
+        if ($excerptTitle = $sourceObject->getExcerptTitle()) {
+            $targetObject->setExcerptTitle($excerptTitle);
         }
 
-        if ($excerptDescription = $dimensionContent->getExcerptDescription()) {
-            $contentProjection->setExcerptDescription($excerptDescription);
+        if ($excerptDescription = $sourceObject->getExcerptDescription()) {
+            $targetObject->setExcerptDescription($excerptDescription);
         }
 
-        if ($excerptMore = $dimensionContent->getExcerptMore()) {
-            $contentProjection->setExcerptMore($excerptMore);
+        if ($excerptMore = $sourceObject->getExcerptMore()) {
+            $targetObject->setExcerptMore($excerptMore);
         }
 
-        if ($excerptIcon = $dimensionContent->getExcerptIcon()) {
-            $contentProjection->setExcerptIcon($excerptIcon);
+        if ($excerptIcon = $sourceObject->getExcerptIcon()) {
+            $targetObject->setExcerptIcon($excerptIcon);
         }
 
-        if ($excerptImage = $dimensionContent->getExcerptImage()) {
-            $contentProjection->setExcerptImage($excerptImage);
+        if ($excerptImage = $sourceObject->getExcerptImage()) {
+            $targetObject->setExcerptImage($excerptImage);
         }
 
-        if ($excerptTags = $dimensionContent->getExcerptTags()) {
+        if ($excerptTags = $sourceObject->getExcerptTags()) {
             if (!empty($excerptTags)) {
-                $contentProjection->setExcerptTags($excerptTags);
+                $targetObject->setExcerptTags($excerptTags);
             }
         }
 
-        if ($excerptCategories = $dimensionContent->getExcerptCategories()) {
+        if ($excerptCategories = $sourceObject->getExcerptCategories()) {
             if (!empty($excerptCategories)) {
-                $contentProjection->setExcerptCategories($excerptCategories);
+                $targetObject->setExcerptCategories($excerptCategories);
             }
         }
     }

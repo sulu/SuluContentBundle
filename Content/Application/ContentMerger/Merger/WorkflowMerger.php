@@ -17,22 +17,22 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 
 class WorkflowMerger implements MergerInterface
 {
-    public function merge(object $contentProjection, object $dimensionContent): void
+    public function merge(object $targetObject, object $sourceObject): void
     {
-        if (!$contentProjection instanceof WorkflowInterface) {
+        if (!$targetObject instanceof WorkflowInterface) {
             return;
         }
 
-        if (!$dimensionContent instanceof WorkflowInterface) {
+        if (!$sourceObject instanceof WorkflowInterface) {
             return;
         }
 
-        if ($workflowPlace = $dimensionContent->getWorkflowPlace()) {
-            $contentProjection->setWorkflowPlace($workflowPlace);
+        if ($workflowPlace = $sourceObject->getWorkflowPlace()) {
+            $targetObject->setWorkflowPlace($workflowPlace);
         }
 
-        if ($workflowPublished = $dimensionContent->getWorkflowPublished()) {
-            $contentProjection->setWorkflowPublished($workflowPublished);
+        if ($workflowPublished = $sourceObject->getWorkflowPublished()) {
+            $targetObject->setWorkflowPublished($workflowPublished);
         }
     }
 }
