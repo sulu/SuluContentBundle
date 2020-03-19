@@ -11,13 +11,13 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Infrastructure\Sulu\Route;
+namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Infrastructure\Sulu\Structure;
 
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
-use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Route\ContentDocument;
-use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Route\ContentStructureBridge;
+use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Structure\ContentDocument;
+use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Structure\ContentStructureBridge;
 use Sulu\Component\Content\Compat\Property;
 use Sulu\Component\Content\Compat\Structure\LegacyPropertyFactory;
 use Sulu\Component\Content\Compat\StructureInterface;

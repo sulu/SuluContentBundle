@@ -11,7 +11,7 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Content\Domain\Exception;
+namespace Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Structure;
 
 class StructureMetadataNotFoundException extends \Exception
 {
