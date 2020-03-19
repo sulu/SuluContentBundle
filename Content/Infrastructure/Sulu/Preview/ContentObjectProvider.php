@@ -123,6 +123,8 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
      */
     public function setValues($object, $locale, array $data)
     {
+        // TODO: use ContentDataMapper service for setting data to the object
+
         if ($object instanceof SeoInterface) {
             $this->setSeoData($object, $data);
         }

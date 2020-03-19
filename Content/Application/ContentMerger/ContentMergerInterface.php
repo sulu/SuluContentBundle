@@ -11,9 +11,9 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionFactory\Merger;
+namespace Sulu\Bundle\ContentBundle\Content\Application\ContentMerger;
 
-interface MergerInterface
+interface ContentMergerInterface
 {
-    public function merge(object $contentProjection, object $dimensionContent): void;
+    public function merge(object $targetObject, object $sourceObject): void;
 }

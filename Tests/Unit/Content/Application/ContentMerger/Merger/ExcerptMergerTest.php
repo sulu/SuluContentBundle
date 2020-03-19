@@ -11,13 +11,13 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentProjectionFactory\Merger;
+namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentMerger\Merger;
 
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Sulu\Bundle\CategoryBundle\Entity\CategoryInterface;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionFactory\Merger\ExcerptMerger;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionFactory\Merger\MergerInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentMerger\Merger\ExcerptMerger;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentMerger\Merger\MergerInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
