@@ -89,10 +89,10 @@ class DimensionRepository implements DimensionRepositoryInterface
 
     public function findBy(array $criteria): iterable
     {
-        /** @var DimensionInterface[] $directories */
-        $directories = $this->entityRepository->findBy($criteria);
+        /** @var DimensionInterface[] $dimensions */
+        $dimensions = $this->entityRepository->findBy($criteria);
 
-        return $directories;
+        return $dimensions;
     }
 
     /**
