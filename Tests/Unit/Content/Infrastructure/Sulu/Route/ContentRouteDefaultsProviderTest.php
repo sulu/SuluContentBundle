@@ -19,7 +19,6 @@ use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\QueryBuilder;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
-use Prophecy\Prophecy\ObjectProphecy;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
@@ -30,49 +29,31 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Route\ContentRouteDefaultsProvider;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Route\ContentStructureBridge;
+use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Route\ContentStructureBridgeFactory;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
-use Sulu\Bundle\ContentBundle\Tests\Unit\Mocks\ContentProjectionMockWrapperTrait;
-use Sulu\Bundle\ContentBundle\Tests\Unit\Mocks\MockWrapper;
-use Sulu\Bundle\ContentBundle\Tests\Unit\Mocks\TemplateMockWrapperTrait;
-use Sulu\Component\Content\Compat\Structure\LegacyPropertyFactory;
-use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
-use Sulu\Component\Content\Metadata\StructureMetadata;
 
 class ContentRouteDefaultsProviderTest extends TestCase
 {
     protected function getContentRouteDefaultsProvider(
         EntityManagerInterface $entityManager,
         ContentResolverInterface $contentResolver,
-        StructureMetadataFactoryInterface $structureMetadataFactory,
-        LegacyPropertyFactory $propertyFactory
+        ContentStructureBridgeFactory $contentStructureBridgeFactory
     ): ContentRouteDefaultsProvider {
         return new ContentRouteDefaultsProvider(
-            $entityManager, $contentResolver, $structureMetadataFactory, $propertyFactory
+            $entityManager, $contentResolver, $contentStructureBridgeFactory
         );
-    }
-
-    protected function wrapContentProjectionMock(ObjectProphecy $contentProjectionMock): ContentProjectionInterface
-    {
-        return new class($contentProjectionMock) extends MockWrapper implements
-            ContentProjectionInterface,
-            TemplateInterface {
-            use TemplateMockWrapperTrait;
-            use ContentProjectionMockWrapperTrait;
-        };
     }
 
     public function testSupports(): void
     {
         $entityManager = $this->prophesize(EntityManagerInterface::class);
         $contentResolver = $this->prophesize(ContentResolverInterface::class);
-        $structureMetadataFactory = $this->prophesize(StructureMetadataFactoryInterface::class);
-        $propertyFactory = $this->prophesize(LegacyPropertyFactory::class);
+        $contentStructureBridgeFactory = $this->prophesize(ContentStructureBridgeFactory::class);
 
         $contentRouteDefaultsProvider = $this->getContentRouteDefaultsProvider(
             $entityManager->reveal(),
             $contentResolver->reveal(),
-            $structureMetadataFactory->reveal(),
-            $propertyFactory->reveal()
+            $contentStructureBridgeFactory->reveal()
         );
 
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
@@ -85,14 +66,12 @@ class ContentRouteDefaultsProviderTest extends TestCase
     {
         $entityManager = $this->prophesize(EntityManagerInterface::class);
         $contentResolver = $this->prophesize(ContentResolverInterface::class);
-        $structureMetadataFactory = $this->prophesize(StructureMetadataFactoryInterface::class);
-        $propertyFactory = $this->prophesize(LegacyPropertyFactory::class);
+        $contentStructureBridgeFactory = $this->prophesize(ContentStructureBridgeFactory::class);
 
         $contentRouteDefaultsProvider = $this->getContentRouteDefaultsProvider(
             $entityManager->reveal(),
             $contentResolver->reveal(),
-            $structureMetadataFactory->reveal(),
-            $propertyFactory->reveal()
+            $contentStructureBridgeFactory->reveal()
         );
 
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
@@ -130,14 +109,12 @@ class ContentRouteDefaultsProviderTest extends TestCase
     {
         $entityManager = $this->prophesize(EntityManagerInterface::class);
         $contentResolver = $this->prophesize(ContentResolverInterface::class);
-        $structureMetadataFactory = $this->prophesize(StructureMetadataFactoryInterface::class);
-        $propertyFactory = $this->prophesize(LegacyPropertyFactory::class);
+        $contentStructureBridgeFactory = $this->prophesize(ContentStructureBridgeFactory::class);
 
         $contentRouteDefaultsProvider = $this->getContentRouteDefaultsProvider(
             $entityManager->reveal(),
             $contentResolver->reveal(),
-            $structureMetadataFactory->reveal(),
-            $propertyFactory->reveal()
+            $contentStructureBridgeFactory->reveal()
         );
 
         $queryBuilder = $this->prophesize(QueryBuilder::class);
@@ -160,14 +137,12 @@ class ContentRouteDefaultsProviderTest extends TestCase
     {
         $entityManager = $this->prophesize(EntityManagerInterface::class);
         $contentResolver = $this->prophesize(ContentResolverInterface::class);
-        $structureMetadataFactory = $this->prophesize(StructureMetadataFactoryInterface::class);
-        $propertyFactory = $this->prophesize(LegacyPropertyFactory::class);
+        $contentStructureBridgeFactory = $this->prophesize(ContentStructureBridgeFactory::class);
 
         $contentRouteDefaultsProvider = $this->getContentRouteDefaultsProvider(
             $entityManager->reveal(),
             $contentResolver->reveal(),
-            $structureMetadataFactory->reveal(),
-            $propertyFactory->reveal()
+            $contentStructureBridgeFactory->reveal()
         );
 
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
@@ -195,14 +170,12 @@ class ContentRouteDefaultsProviderTest extends TestCase
     {
         $entityManager = $this->prophesize(EntityManagerInterface::class);
         $contentResolver = $this->prophesize(ContentResolverInterface::class);
-        $structureMetadataFactory = $this->prophesize(StructureMetadataFactoryInterface::class);
-        $propertyFactory = $this->prophesize(LegacyPropertyFactory::class);
+        $contentStructureBridgeFactory = $this->prophesize(ContentStructureBridgeFactory::class);
 
         $contentRouteDefaultsProvider = $this->getContentRouteDefaultsProvider(
             $entityManager->reveal(),
             $contentResolver->reveal(),
-            $structureMetadataFactory->reveal(),
-            $propertyFactory->reveal()
+            $contentStructureBridgeFactory->reveal()
         );
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
         $contentProjection = $this->prophesize(TemplateInterface::class);
@@ -237,14 +210,12 @@ class ContentRouteDefaultsProviderTest extends TestCase
     {
         $entityManager = $this->prophesize(EntityManagerInterface::class);
         $contentResolver = $this->prophesize(ContentResolverInterface::class);
-        $structureMetadataFactory = $this->prophesize(StructureMetadataFactoryInterface::class);
-        $propertyFactory = $this->prophesize(LegacyPropertyFactory::class);
+        $contentStructureBridgeFactory = $this->prophesize(ContentStructureBridgeFactory::class);
 
         $contentRouteDefaultsProvider = $this->getContentRouteDefaultsProvider(
             $entityManager->reveal(),
             $contentResolver->reveal(),
-            $structureMetadataFactory->reveal(),
-            $propertyFactory->reveal()
+            $contentStructureBridgeFactory->reveal()
         );
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
         $contentProjection = $this->prophesize(TemplateInterface::class);
@@ -278,14 +249,12 @@ class ContentRouteDefaultsProviderTest extends TestCase
     {
         $entityManager = $this->prophesize(EntityManagerInterface::class);
         $contentResolver = $this->prophesize(ContentResolverInterface::class);
-        $structureMetadataFactory = $this->prophesize(StructureMetadataFactoryInterface::class);
-        $propertyFactory = $this->prophesize(LegacyPropertyFactory::class);
+        $contentStructureBridgeFactory = $this->prophesize(ContentStructureBridgeFactory::class);
 
         $contentRouteDefaultsProvider = $this->getContentRouteDefaultsProvider(
             $entityManager->reveal(),
             $contentResolver->reveal(),
-            $structureMetadataFactory->reveal(),
-            $propertyFactory->reveal()
+            $contentStructureBridgeFactory->reveal()
         );
 
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
@@ -327,14 +296,12 @@ class ContentRouteDefaultsProviderTest extends TestCase
 
         $entityManager = $this->prophesize(EntityManagerInterface::class);
         $contentResolver = $this->prophesize(ContentResolverInterface::class);
-        $structureMetadataFactory = $this->prophesize(StructureMetadataFactoryInterface::class);
-        $propertyFactory = $this->prophesize(LegacyPropertyFactory::class);
+        $contentStructureBridgeFactory = $this->prophesize(ContentStructureBridgeFactory::class);
 
         $contentRouteDefaultsProvider = $this->getContentRouteDefaultsProvider(
             $entityManager->reveal(),
             $contentResolver->reveal(),
-            $structureMetadataFactory->reveal(),
-            $propertyFactory->reveal()
+            $contentStructureBridgeFactory->reveal()
         );
 
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
@@ -371,14 +338,12 @@ class ContentRouteDefaultsProviderTest extends TestCase
 
         $entityManager = $this->prophesize(EntityManagerInterface::class);
         $contentResolver = $this->prophesize(ContentResolverInterface::class);
-        $structureMetadataFactory = $this->prophesize(StructureMetadataFactoryInterface::class);
-        $propertyFactory = $this->prophesize(LegacyPropertyFactory::class);
+        $contentStructureBridgeFactory = $this->prophesize(ContentStructureBridgeFactory::class);
 
         $contentRouteDefaultsProvider = $this->getContentRouteDefaultsProvider(
             $entityManager->reveal(),
             $contentResolver->reveal(),
-            $structureMetadataFactory->reveal(),
-            $propertyFactory->reveal()
+            $contentStructureBridgeFactory->reveal()
         );
 
         /**
@@ -393,21 +358,17 @@ class ContentRouteDefaultsProviderTest extends TestCase
     {
         $entityManager = $this->prophesize(EntityManagerInterface::class);
         $contentResolver = $this->prophesize(ContentResolverInterface::class);
-        $structureMetadataFactory = $this->prophesize(StructureMetadataFactoryInterface::class);
-        $propertyFactory = $this->prophesize(LegacyPropertyFactory::class);
+        $contentStructureBridgeFactory = $this->prophesize(ContentStructureBridgeFactory::class);
 
         $contentRouteDefaultsProvider = $this->getContentRouteDefaultsProvider(
             $entityManager->reveal(),
             $contentResolver->reveal(),
-            $structureMetadataFactory->reveal(),
-            $propertyFactory->reveal()
+            $contentStructureBridgeFactory->reveal()
         );
 
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
         $contentProjection = $this->prophesize(TemplateInterface::class);
         $contentProjection->willImplement(ContentProjectionInterface::class);
-        $contentProjection->getTemplateKey()->willReturn('default');
-        $contentProjectionWrapper = $this->wrapContentProjectionMock($contentProjection);
 
         $queryBuilder = $this->prophesize(QueryBuilder::class);
         $query = $this->prophesize(AbstractQuery::class);
@@ -421,18 +382,18 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $query->getSingleResult()->willReturn($contentRichEntity->reveal());
 
         $contentResolver->resolve($contentRichEntity->reveal(), ['locale' => 'en', 'stage' => 'live'])
-            ->willReturn($contentProjectionWrapper);
+            ->willReturn($contentProjection->reveal());
 
-        $metadata = $this->prophesize(StructureMetadata::class);
-        $metadata->getView()->willReturn('default');
-        $metadata->getController()->willReturn('App\Controller\TestController:testAction');
-
-        $structureMetadataFactory->getStructureMetadata('mock-template-type', 'default')->willReturn($metadata->reveal());
+        $contentStructureBridge = $this->prophesize(ContentStructureBridge::class);
+        $contentStructureBridge->getView()->willReturn('default');
+        $contentStructureBridge->getController()->willReturn('App\Controller\TestController:testAction');
+        $contentStructureBridgeFactory->getBridge($contentProjection->reveal(), '123-123-123', 'en')
+            ->willReturn($contentStructureBridge->reveal());
 
         $result = $contentRouteDefaultsProvider->getByEntity(Example::class, '123-123-123', 'en');
-        $this->assertSame($contentProjectionWrapper, $result['object']);
+        $this->assertSame($contentProjection->reveal(), $result['object']);
         $this->assertSame('default', $result['view']);
-        $this->assertInstanceOf(ContentStructureBridge::class, $result['structure']);
+        $this->assertSame($contentStructureBridge->reveal(), $result['structure']);
         $this->assertSame('App\Controller\TestController:testAction', $result['_controller']);
     }
 
@@ -440,14 +401,12 @@ class ContentRouteDefaultsProviderTest extends TestCase
     {
         $entityManager = $this->prophesize(EntityManagerInterface::class);
         $contentResolver = $this->prophesize(ContentResolverInterface::class);
-        $structureMetadataFactory = $this->prophesize(StructureMetadataFactoryInterface::class);
-        $propertyFactory = $this->prophesize(LegacyPropertyFactory::class);
+        $contentStructureBridgeFactory = $this->prophesize(ContentStructureBridgeFactory::class);
 
         $contentRouteDefaultsProvider = $this->getContentRouteDefaultsProvider(
             $entityManager->reveal(),
             $contentResolver->reveal(),
-            $structureMetadataFactory->reveal(),
-            $propertyFactory->reveal()
+            $contentStructureBridgeFactory->reveal()
         );
 
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
@@ -467,51 +426,6 @@ class ContentRouteDefaultsProviderTest extends TestCase
             ->will(function ($arguments) {
                 throw new ContentNotFoundException($arguments[0], $arguments[1]);
             });
-
-        $metadata = $this->prophesize(StructureMetadata::class);
-        $metadata->getView()->willReturn('default');
-        $metadata->getController()->willReturn('App\Controller\TestController:testAction');
-
-        $structureMetadataFactory->getStructureMetadata('example', 'default')->willReturn($metadata->reveal());
-
-        $this->assertEmpty($contentRouteDefaultsProvider->getByEntity(Example::class, '123-123-123', 'en'));
-    }
-
-    public function testGetByEntityNoMetadata(): void
-    {
-        $entityManager = $this->prophesize(EntityManagerInterface::class);
-        $contentResolver = $this->prophesize(ContentResolverInterface::class);
-        $structureMetadataFactory = $this->prophesize(StructureMetadataFactoryInterface::class);
-        $propertyFactory = $this->prophesize(LegacyPropertyFactory::class);
-
-        $contentRouteDefaultsProvider = $this->getContentRouteDefaultsProvider(
-            $entityManager->reveal(),
-            $contentResolver->reveal(),
-            $structureMetadataFactory->reveal(),
-            $propertyFactory->reveal()
-        );
-
-        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
-        $contentProjection = $this->prophesize(TemplateInterface::class);
-        $contentProjection->willImplement(ContentProjectionInterface::class);
-        $contentProjection->getTemplateKey()->willReturn('default');
-        $contentProjectionMock = $this->wrapContentProjectionMock($contentProjection);
-
-        $queryBuilder = $this->prophesize(QueryBuilder::class);
-        $query = $this->prophesize(AbstractQuery::class);
-
-        $entityManager->createQueryBuilder()->willReturn($queryBuilder->reveal());
-        $queryBuilder->select('entity')->willReturn($queryBuilder->reveal());
-        $queryBuilder->from(Example::class, 'entity')->willReturn($queryBuilder->reveal());
-        $queryBuilder->where('entity.id = :id')->willReturn($queryBuilder->reveal());
-        $queryBuilder->setParameter('id', '123-123-123')->willReturn($queryBuilder->reveal());
-        $queryBuilder->getQuery()->willReturn($query);
-        $query->getSingleResult()->willReturn($contentRichEntity->reveal());
-
-        $contentResolver->resolve($contentRichEntity->reveal(), ['locale' => 'en', 'stage' => 'live'])
-            ->willReturn($contentProjectionMock);
-
-        $structureMetadataFactory->getStructureMetadata('mock-template-type', 'default')->willReturn(null);
 
         $this->assertEmpty($contentRouteDefaultsProvider->getByEntity(Example::class, '123-123-123', 'en'));
     }
