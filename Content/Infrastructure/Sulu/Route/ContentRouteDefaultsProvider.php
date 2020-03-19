@@ -23,8 +23,6 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionRepositoryInterface;
 use Sulu\Bundle\RouteBundle\Routing\Defaults\RouteDefaultsProviderInterface;
-use Sulu\Component\Content\Compat\Structure\LegacyPropertyFactory;
-use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
 
 class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
 {
@@ -39,21 +37,18 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
     protected $contentResolver;
 
     /**
-     * @var StructureMetadataFactoryInterface
+     * @var ContentStructureBridgeFactory
      */
-    protected $structureMetadataFactory;
+    private $contentStructureBridgeFactory;
 
-    /**
-     * @var LegacyPropertyFactory
-     */
-    private $propertyFactory;
-
-    public function __construct(EntityManagerInterface $entityManager, ContentResolverInterface $contentResolver, StructureMetadataFactoryInterface $structureMetadataFactory, LegacyPropertyFactory $propertyFactory)
-    {
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        ContentResolverInterface $contentResolver,
+        ContentStructureBridgeFactory $contentStructureBridgeFactory
+    ) {
         $this->entityManager = $entityManager;
         $this->contentResolver = $contentResolver;
-        $this->structureMetadataFactory = $structureMetadataFactory;
-        $this->propertyFactory = $propertyFactory;
+        $this->contentStructureBridgeFactory = $contentStructureBridgeFactory;
     }
 
     /**
@@ -75,21 +70,13 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
             throw new \RuntimeException(sprintf('Expected to get "%s" from ContentResolver but "%s" given.', TemplateInterface::class, \get_class($entity)));
         }
 
-        $metadata = $this->structureMetadataFactory->getStructureMetadata(
-            $entity::getTemplateType(),
-            $entity->getTemplateKey()
-        );
-        if (!$metadata) {
-            return [];
-        }
-
-        $structure = new ContentStructureBridge($metadata, $this->propertyFactory, $entity, $id, $locale);
+        $structure = $this->contentStructureBridgeFactory->getBridge($entity, $id, $locale);
 
         return [
             'object' => $entity,
-            'view' => $metadata->getView(),
+            'view' => $structure->getView(),
             'structure' => $structure,
-            '_controller' => $metadata->getController(),
+            '_controller' => $structure->getController(),
         ];
     }
 

@@ -120,6 +120,11 @@ class ContentStructureBridge implements StructureInterface
         return $this->structure->getView();
     }
 
+    public function getController(): ?string
+    {
+        return $this->structure->getController();
+    }
+
     public function getCreator(): ?int
     {
         return null;
