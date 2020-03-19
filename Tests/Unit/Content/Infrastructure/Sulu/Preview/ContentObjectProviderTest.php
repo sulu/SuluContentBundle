@@ -19,6 +19,7 @@ use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\QueryBuilder;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 use Sulu\Bundle\CategoryBundle\Entity\Category;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
@@ -41,14 +42,29 @@ use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
 
 class ContentObjectProviderTest extends TestCase
 {
+    /**
+     * @var ObjectProphecy|EntityManagerInterface
+     */
     private $entityManager;
 
+    /**
+     * @var ObjectProphecy|ContentResolverInterface
+     */
     private $contentResolver;
 
+    /**
+     * @var ObjectProphecy|TagFactoryInterface
+     */
     private $tagFactory;
 
+    /**
+     * @var ObjectProphecy|CategoryFactoryInterface
+     */
     private $categoryFactory;
 
+    /**
+     * @var ContentObjectProvider
+     */
     private $contentObjectProvider;
 
     public function setUp(): void
@@ -108,7 +124,7 @@ class ContentObjectProviderTest extends TestCase
             Argument::type('array')
         )->willReturn($projection->reveal())->shouldBeCalledTimes(1);
 
-        $result = $this->contentObjectProvider->getObject($id, $locale);
+        $result = $this->contentObjectProvider->getObject((string) $id, $locale);
 
         $this->assertSame($projection->reveal(), $result);
     }
@@ -117,7 +133,7 @@ class ContentObjectProviderTest extends TestCase
     {
         $this->entityManager->createQueryBuilder()->willThrow(NoResultException::class)->shouldBeCalledTimes(1);
 
-        $result = $this->contentObjectProvider->getObject($id, $locale);
+        $result = $this->contentObjectProvider->getObject((string) $id, $locale);
 
         $this->assertNull($result);
     }
@@ -157,7 +173,7 @@ class ContentObjectProviderTest extends TestCase
             Argument::type('array')
         )->willThrow(ContentNotFoundException::class)->shouldBeCalledTimes(1);
 
-        $result = $this->contentObjectProvider->getObject($id, $locale);
+        $result = $this->contentObjectProvider->getObject((string) $id, $locale);
 
         $this->assertNull($result);
     }
@@ -168,9 +184,9 @@ class ContentObjectProviderTest extends TestCase
 
         $projection->getContentId()->willReturn($id);
 
-        $actualId = $this->contentObjectProvider->getId($projection->reveal());
+        $actualId = (string) $this->contentObjectProvider->getId($projection->reveal());
 
-        $this->assertSame($id, $actualId);
+        $this->assertSame((string) $id, $actualId);
     }
 
     /**
