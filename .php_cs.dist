@@ -35,6 +35,7 @@ return PhpCsFixer\Config::create()
         'strict_param' => true,
         'phpdoc_to_comment' => false,
         'header_comment' => ['header' => $header],
+        'single_line_throw' => false,
     ])
     ->setFinder(
         PhpCsFixer\Finder::create()

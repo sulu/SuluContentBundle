@@ -134,6 +134,20 @@ class ContentStructureBridgeTest extends TestCase
         $this->assertSame('pages/default', $structure->getView());
     }
 
+    public function testGetController(): void
+    {
+        $structure = $this->prophesize(StructureMetadata::class);
+
+        $structure->getController()->willReturn('Sulu\Bundle\WebsiteBundle\Controller\DefaultController::indexAction');
+
+        $structure = $this->createStructureBridge(null, $structure->reveal());
+
+        $this->assertSame(
+            'Sulu\Bundle\WebsiteBundle\Controller\DefaultController::indexAction',
+            $structure->getController()
+        );
+    }
+
     public function testGetKey(): void
     {
         $structure = $this->prophesize(StructureMetadata::class);
