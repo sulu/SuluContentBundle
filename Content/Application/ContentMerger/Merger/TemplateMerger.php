@@ -17,23 +17,23 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 
 class TemplateMerger implements MergerInterface
 {
-    public function merge(object $contentProjection, object $dimensionContent): void
+    public function merge(object $targetObject, object $sourceObject): void
     {
-        if (!$contentProjection instanceof TemplateInterface) {
+        if (!$targetObject instanceof TemplateInterface) {
             return;
         }
 
-        if (!$dimensionContent instanceof TemplateInterface) {
+        if (!$sourceObject instanceof TemplateInterface) {
             return;
         }
 
-        if ($templateKey = $dimensionContent->getTemplateKey()) {
-            $contentProjection->setTemplateKey($templateKey);
+        if ($templateKey = $sourceObject->getTemplateKey()) {
+            $targetObject->setTemplateKey($templateKey);
         }
 
-        $contentProjection->setTemplateData(array_merge(
-            $contentProjection->getTemplateData(),
-            $dimensionContent->getTemplateData()
+        $targetObject->setTemplateData(array_merge(
+            $targetObject->getTemplateData(),
+            $sourceObject->getTemplateData()
         ));
     }
 }

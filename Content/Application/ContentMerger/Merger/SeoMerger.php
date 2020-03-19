@@ -17,42 +17,42 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
 
 class SeoMerger implements MergerInterface
 {
-    public function merge(object $contentProjection, object $dimensionContent): void
+    public function merge(object $targetObject, object $sourceObject): void
     {
-        if (!$contentProjection instanceof SeoInterface) {
+        if (!$targetObject instanceof SeoInterface) {
             return;
         }
 
-        if (!$dimensionContent instanceof SeoInterface) {
+        if (!$sourceObject instanceof SeoInterface) {
             return;
         }
 
-        if ($seoTitle = $dimensionContent->getSeoTitle()) {
-            $contentProjection->setSeoTitle($seoTitle);
+        if ($seoTitle = $sourceObject->getSeoTitle()) {
+            $targetObject->setSeoTitle($seoTitle);
         }
 
-        if ($seoDescription = $dimensionContent->getSeoDescription()) {
-            $contentProjection->setSeoDescription($seoDescription);
+        if ($seoDescription = $sourceObject->getSeoDescription()) {
+            $targetObject->setSeoDescription($seoDescription);
         }
 
-        if ($seoKeywords = $dimensionContent->getSeoKeywords()) {
-            $contentProjection->setSeoKeywords($seoKeywords);
+        if ($seoKeywords = $sourceObject->getSeoKeywords()) {
+            $targetObject->setSeoKeywords($seoKeywords);
         }
 
-        if ($seoCanonicalUrl = $dimensionContent->getSeoCanonicalUrl()) {
-            $contentProjection->setSeoCanonicalUrl($seoCanonicalUrl);
+        if ($seoCanonicalUrl = $sourceObject->getSeoCanonicalUrl()) {
+            $targetObject->setSeoCanonicalUrl($seoCanonicalUrl);
         }
 
-        if ($seoNoIndex = $dimensionContent->getSeoNoIndex()) {
-            $contentProjection->setSeoNoIndex($seoNoIndex);
+        if ($seoNoIndex = $sourceObject->getSeoNoIndex()) {
+            $targetObject->setSeoNoIndex($seoNoIndex);
         }
 
-        if ($seoNoFollow = $dimensionContent->getSeoNoFollow()) {
-            $contentProjection->setSeoNoFollow($seoNoFollow);
+        if ($seoNoFollow = $sourceObject->getSeoNoFollow()) {
+            $targetObject->setSeoNoFollow($seoNoFollow);
         }
 
-        if ($seoHideInSitemap = $dimensionContent->getSeoHideInSitemap()) {
-            $contentProjection->setSeoHideInSitemap($seoHideInSitemap);
+        if ($seoHideInSitemap = $sourceObject->getSeoHideInSitemap()) {
+            $targetObject->setSeoHideInSitemap($seoHideInSitemap);
         }
     }
 }
