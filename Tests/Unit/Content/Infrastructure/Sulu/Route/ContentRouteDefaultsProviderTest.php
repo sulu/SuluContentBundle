@@ -21,6 +21,7 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
+use Sulu\Bundle\ContentBundle\Content\Domain\Exception\StructureMetadataNotFoundException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
@@ -426,6 +427,42 @@ class ContentRouteDefaultsProviderTest extends TestCase
             ->will(function ($arguments) {
                 throw new ContentNotFoundException($arguments[0], $arguments[1]);
             });
+
+        $this->assertEmpty($contentRouteDefaultsProvider->getByEntity(Example::class, '123-123-123', 'en'));
+    }
+
+    public function testGetByEntityStructureMetadataNotFound(): void
+    {
+        $entityManager = $this->prophesize(EntityManagerInterface::class);
+        $contentResolver = $this->prophesize(ContentResolverInterface::class);
+        $contentStructureBridgeFactory = $this->prophesize(ContentStructureBridgeFactory::class);
+
+        $contentRouteDefaultsProvider = $this->getContentRouteDefaultsProvider(
+            $entityManager->reveal(),
+            $contentResolver->reveal(),
+            $contentStructureBridgeFactory->reveal()
+        );
+
+        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
+        $contentProjection = $this->prophesize(TemplateInterface::class);
+        $contentProjection->willImplement(ContentProjectionInterface::class);
+
+        $queryBuilder = $this->prophesize(QueryBuilder::class);
+        $query = $this->prophesize(AbstractQuery::class);
+
+        $entityManager->createQueryBuilder()->willReturn($queryBuilder->reveal());
+        $queryBuilder->select('entity')->willReturn($queryBuilder->reveal());
+        $queryBuilder->from(Example::class, 'entity')->willReturn($queryBuilder->reveal());
+        $queryBuilder->where('entity.id = :id')->willReturn($queryBuilder->reveal());
+        $queryBuilder->setParameter('id', '123-123-123')->willReturn($queryBuilder->reveal());
+        $queryBuilder->getQuery()->willReturn($query);
+        $query->getSingleResult()->willReturn($contentRichEntity->reveal());
+
+        $contentResolver->resolve($contentRichEntity->reveal(), ['locale' => 'en', 'stage' => 'live'])
+            ->willReturn($contentProjection->reveal());
+
+        $contentStructureBridgeFactory->getBridge($contentProjection->reveal(), '123-123-123', 'en')
+            ->willThrow(StructureMetadataNotFoundException::class);
 
         $this->assertEmpty($contentRouteDefaultsProvider->getByEntity(Example::class, '123-123-123', 'en'));
     }

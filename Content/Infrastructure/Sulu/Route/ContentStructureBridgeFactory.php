@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Route;
 
+use Sulu\Bundle\ContentBundle\Content\Domain\Exception\StructureMetadataNotFoundException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Component\Content\Compat\Structure\LegacyPropertyFactory;
 use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
@@ -46,11 +47,7 @@ class ContentStructureBridgeFactory
         );
 
         if (!$structureMetadata) {
-            throw new \RuntimeException(sprintf(
-                'No structure metadata found for template type "%s" and template key "%s"',
-                $object::getTemplateType(),
-                $object->getTemplateKey()
-            ));
+            throw new StructureMetadataNotFoundException($object::getTemplateType(), $object->getTemplateKey());
         }
 
         return new ContentStructureBridge(

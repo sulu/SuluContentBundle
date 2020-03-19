@@ -17,6 +17,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NoResultException;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
+use Sulu\Bundle\ContentBundle\Content\Domain\Exception\StructureMetadataNotFoundException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
@@ -63,6 +64,7 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
     {
         $entity = $object ?: $this->loadEntity($entityClass, $id, $locale);
         if (!$entity) {
+            // return empty array which will lead to a 404 response
             return [];
         }
 
@@ -70,7 +72,12 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
             throw new \RuntimeException(sprintf('Expected to get "%s" from ContentResolver but "%s" given.', TemplateInterface::class, \get_class($entity)));
         }
 
-        $structureBridge = $this->contentStructureBridgeFactory->getBridge($entity, $id, $locale);
+        try {
+            $structureBridge = $this->contentStructureBridgeFactory->getBridge($entity, $id, $locale);
+        } catch (StructureMetadataNotFoundException $exception) {
+            // return empty array which will lead to a 404 response
+            return [];
+        }
 
         return [
             'object' => $entity,

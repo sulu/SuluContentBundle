@@ -15,6 +15,7 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Infrastructure\Sulu\Route
 
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
+use Sulu\Bundle\ContentBundle\Content\Domain\Exception\StructureMetadataNotFoundException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Route\ContentStructureBridge;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Route\ContentStructureBridgeFactory;
@@ -71,7 +72,7 @@ class ContentStructureBridgeFactoryTest extends TestCase
 
     public function testGetBridgeNoStructureMetadata(): void
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(StructureMetadataNotFoundException::class);
         $this->expectExceptionMessage(sprintf(
             'No structure metadata found for template type "%s" and template key "%s"',
             'mock-template-type',
