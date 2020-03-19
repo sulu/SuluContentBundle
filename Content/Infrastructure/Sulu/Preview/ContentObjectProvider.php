@@ -315,11 +315,12 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
     {
         $object->setTemplateData($data);
     }
-    
+
     /**
      * @param ContentProjectionInterface $object
      * @param string $locale
      * @param mixed[] $context
+     *
      * @return ContentProjectionInterface $object
      */
     public function setContext($object, $locale, array $context)

@@ -283,6 +283,7 @@ class ContentStructureBridge implements StructureInterface
 
     /**
      * @param bool $complete
+     *
      * @return mixed[]
      */
     public function toArray($complete = true): array

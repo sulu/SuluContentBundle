@@ -104,9 +104,7 @@ class ExampleControllerTest extends BaseTestCase
 
         $this->assertResponseContent('example_post.json', $response, 201);
 
-        $content = $response->getContent();
-        $this->assertIsString($content);
-        $id = json_decode($content, true)['id'] ?? null;
+        $id = json_decode((string) $response->getContent(), true)['id'] ?? null;
 
         return $id;
     }

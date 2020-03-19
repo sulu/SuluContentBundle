@@ -18,7 +18,7 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 class ContentNotFoundException extends \Exception
 {
     /**
-     * @param array<string, string|int|float|bool|null> $dimensionAttributes $dimensionAttributes
+     * @param array<string, string|int|float|bool|null> $dimensionAttributes
      */
     public function __construct(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes)
     {
