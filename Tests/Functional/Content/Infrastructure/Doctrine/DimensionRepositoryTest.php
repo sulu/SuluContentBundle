@@ -20,9 +20,24 @@ use Sulu\Bundle\ContentBundle\Tests\Functional\BaseTestCase;
 
 class DimensionRepositoryTest extends BaseTestCase
 {
+    /**
+     * @var string
+     */
     protected static $TEST_ID = '1234568-1234-1234-1234-123456789011';
+
+    /**
+     * @var string
+     */
     protected static $TEST_ID2 = '1234568-1234-1234-1234-123456789012';
+
+    /**
+     * @var string
+     */
     protected static $TEST_ID3 = '1234568-1234-1234-1234-123456789013';
+
+    /**
+     * @var string
+     */
     protected static $TEST_ID4 = '1234568-1234-1234-1234-123456789014';
 
     /**
@@ -324,6 +339,9 @@ class DimensionRepositoryTest extends BaseTestCase
         }, $dimensions));
     }
 
+    /**
+     * @return \Generator<mixed[]>
+     */
     public function saveSkipDataProvider(): \Generator
     {
         yield [

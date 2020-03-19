@@ -57,7 +57,11 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
     }
 
     /**
+     * @param string $entityClass
+     * @param string $id
+     * @param string $locale
      * @param ContentProjectionInterface|null $object
+     * @return mixed[]
      */
     public function getByEntity($entityClass, $id, $locale, $object = null)
     {

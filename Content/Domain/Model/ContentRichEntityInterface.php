@@ -25,7 +25,7 @@ interface ContentRichEntityInterface
     public function getId();
 
     /**
-     * @return Collection<DimensionContentInterface>
+     * @return Collection<int, DimensionContentInterface>
      */
     public function getDimensionContents(): Collection;
 

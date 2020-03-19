@@ -50,6 +50,9 @@ class CategoryFactoryTest extends BaseTestCase
         );
     }
 
+    /**
+     * @return \Generator<mixed[]>
+     */
     public function dataProvider(): \Generator
     {
         yield [

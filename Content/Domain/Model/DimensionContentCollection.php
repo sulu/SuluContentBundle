@@ -15,6 +15,9 @@ namespace Sulu\Bundle\ContentBundle\Content\Domain\Model;
 
 use Doctrine\Common\Collections\ArrayCollection;
 
+/**
+ * @implements \IteratorAggregate<DimensionContentInterface>
+ */
 class DimensionContentCollection implements \IteratorAggregate, DimensionContentCollectionInterface
 {
     /**
@@ -23,12 +26,12 @@ class DimensionContentCollection implements \IteratorAggregate, DimensionContent
     private $dimensionContents;
 
     /**
-     * @var DimensionContentInterface
+     * @var DimensionContentInterface|null
      */
     private $unlocalizedDimensionContent;
 
     /**
-     * @var DimensionContentInterface
+     * @var DimensionContentInterface|null
      */
     private $localizedDimensionContent;
 
@@ -77,7 +80,7 @@ class DimensionContentCollection implements \IteratorAggregate, DimensionContent
         return new \ArrayIterator($this->dimensionContents);
     }
 
-    public function count()
+    public function count(): int
     {
         return \count($this->dimensionContents);
     }

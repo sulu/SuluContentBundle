@@ -90,11 +90,18 @@ class ContentDocument implements ExtensionBehavior
         ];
     }
 
+    /**
+     * @param mixed[] $extensionData
+     */
     public function setExtensionsData($extensionData): void
     {
         throw $this->createReadOnlyException(__METHOD__);
     }
 
+    /**
+     * @param string $name
+     * @param mixed[] $data
+     */
     public function setExtension($name, $data): void
     {
         throw $this->createReadOnlyException(__METHOD__);

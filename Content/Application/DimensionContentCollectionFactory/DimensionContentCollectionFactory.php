@@ -93,6 +93,9 @@ class DimensionContentCollectionFactory implements DimensionContentCollectionFac
         return new DimensionContentCollection($orderedContentDimensions, $dimensionCollection);
     }
 
+    /**
+     * @param Collection<int, DimensionContentInterface> $dimensionContents
+     */
     private function getOrCreateContentDimension(
         ContentRichEntityInterface $contentRichEntity,
         Collection $dimensionContents,

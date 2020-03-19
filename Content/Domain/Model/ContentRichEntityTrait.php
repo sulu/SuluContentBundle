@@ -19,12 +19,12 @@ use Doctrine\Common\Collections\Collection;
 trait ContentRichEntityTrait
 {
     /**
-     * @var DimensionContentInterface[]|ArrayCollection
+     * @var ArrayCollection<int, DimensionContentInterface>
      */
     protected $dimensionContents;
 
     /**
-     * @return Collection<DimensionContentInterface>
+     * @return Collection<int, DimensionContentInterface>
      */
     public function getDimensionContents(): Collection
     {

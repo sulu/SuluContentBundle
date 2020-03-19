@@ -143,7 +143,7 @@ class ExampleAdmin extends Admin
     }
 
     /**
-     * {@inheritdoc}
+     * @return mixed[]
      */
     public function getSecurityContexts()
     {

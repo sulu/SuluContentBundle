@@ -35,12 +35,12 @@ trait ExcerptTrait
     private $excerptMore;
 
     /**
-     * @var ArrayCollection<CategoryInterface>
+     * @var ArrayCollection<int, CategoryInterface>
      */
     private $excerptCategories;
 
     /**
-     * @var ArrayCollection<TagInterface>
+     * @var ArrayCollection<int, TagInterface>
      */
     private $excerptTags;
 

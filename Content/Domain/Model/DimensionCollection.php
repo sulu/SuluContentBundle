@@ -16,6 +16,9 @@ namespace Sulu\Bundle\ContentBundle\Content\Domain\Model;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Criteria;
 
+/**
+ * @implements \IteratorAggregate<DimensionInterface>
+ */
 class DimensionCollection implements \IteratorAggregate, DimensionCollectionInterface
 {
     /**
@@ -34,17 +37,17 @@ class DimensionCollection implements \IteratorAggregate, DimensionCollectionInte
     private $unlocalizedAttributes;
 
     /**
-     * @var ArrayCollection<DimensionInterface>
+     * @var ArrayCollection<int, DimensionInterface>
      */
     private $dimensions;
 
     /**
-     * @var DimensionInterface
+     * @var DimensionInterface|null
      */
     private $localizedDimension;
 
     /**
-     * @var DimensionInterface
+     * @var DimensionInterface|null
      */
     private $unlocalizedDimension;
 

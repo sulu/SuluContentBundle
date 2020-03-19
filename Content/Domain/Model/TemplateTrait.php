@@ -24,7 +24,7 @@ trait TemplateTrait
     private $templateKey;
 
     /**
-     * @var array
+     * @var mixed[]
      */
     private $templateData = [];
 
