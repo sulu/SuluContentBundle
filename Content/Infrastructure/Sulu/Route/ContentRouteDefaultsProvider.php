@@ -39,7 +39,7 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
     /**
      * @var ContentStructureBridgeFactory
      */
-    private $contentStructureBridgeFactory;
+    protected $contentStructureBridgeFactory;
 
     public function __construct(
         EntityManagerInterface $entityManager,
@@ -70,13 +70,13 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
             throw new \RuntimeException(sprintf('Expected to get "%s" from ContentResolver but "%s" given.', TemplateInterface::class, \get_class($entity)));
         }
 
-        $structure = $this->contentStructureBridgeFactory->getBridge($entity, $id, $locale);
+        $structureBridge = $this->contentStructureBridgeFactory->getBridge($entity, $id, $locale);
 
         return [
             'object' => $entity,
-            'view' => $structure->getView(),
-            'structure' => $structure,
-            '_controller' => $structure->getController(),
+            'view' => $structureBridge->getView(),
+            'structure' => $structureBridge,
+            '_controller' => $structureBridge->getController(),
         ];
     }
 
