@@ -159,11 +159,22 @@ class MetadataLoaderTest extends TestCase
             [
                 ContentProjectionInterface::class,
             ],
+            [],
+            [],
             [
-                'dimensionId' => false,
+                'dimension' => false,
+            ],
+        ];
+
+        yield [
+            [
+                ContentProjectionInterface::class,
             ],
             [],
             [],
+            [
+                'dimension' => true,
+            ],
         ];
 
         yield [

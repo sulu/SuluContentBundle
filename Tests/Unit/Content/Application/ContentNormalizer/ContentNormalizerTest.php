@@ -69,7 +69,14 @@ class ContentNormalizerTest extends TestCase
 
         $apiViewResolver = $this->createContentNormalizerInstance();
         $this->assertSame([
-            'dimensionId' => '123-456',
+            'dimension' => [
+                'locale' => null,
+                'stage' => 'draft',
+                'attributes' => [
+                    'locale' => null,
+                    'stage' => 'draft',
+                ],
+            ],
             'id' => 5,
         ], $apiViewResolver->normalize($contentProjection));
     }
@@ -138,7 +145,14 @@ class ContentNormalizerTest extends TestCase
         $apiViewResolver = $this->createContentNormalizerInstance();
 
         $this->assertSame([
-            'dimensionId' => '123-456',
+            'dimension' => [
+                'locale' => null,
+                'stage' => 'draft',
+                'attributes' => [
+                    'locale' => null,
+                    'stage' => 'draft',
+                ],
+            ],
             'excerptCategories' => [
                 3,
                 4,
