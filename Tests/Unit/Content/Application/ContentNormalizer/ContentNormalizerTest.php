@@ -17,6 +17,7 @@ use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\CategoryBundle\Entity\CategoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\ContentNormalizer;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\ContentNormalizerInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Normalizer\ContentProjectionNormalizer;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Normalizer\ExcerptNormalizer;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Normalizer\TemplateNormalizer;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Normalizer\WorkflowNormalizer;
@@ -37,6 +38,7 @@ class ContentNormalizerTest extends TestCase
     protected function createContentNormalizerInstance(): ContentNormalizerInterface
     {
         return new ContentNormalizer([
+            new ContentProjectionNormalizer(),
             new ExcerptNormalizer(),
             new TemplateNormalizer(),
             new WorkflowNormalizer(),

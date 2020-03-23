@@ -44,7 +44,7 @@ class ContentNormalizer implements ContentNormalizerInterface
 
     public function normalize(object $object): array
     {
-        $ignoredAttributes = ['id'];
+        $ignoredAttributes = [];
 
         foreach ($this->normalizers as $normalizer) {
             $ignoredAttributes = array_merge(
@@ -57,10 +57,6 @@ class ContentNormalizer implements ContentNormalizerInterface
         $normalizedData = $this->serializer->normalize($object, null, [
             'ignored_attributes' => $ignoredAttributes,
         ]);
-
-        // The view should not be represented by its own id but the id of the content entity
-        $normalizedData['id'] = $normalizedData['contentId'];
-        unset($normalizedData['contentId']);
 
         foreach ($this->normalizers as $normalizer) {
             $normalizedData = $normalizer->enhance($object, $normalizedData);
