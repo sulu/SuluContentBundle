@@ -23,6 +23,7 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Normalizer\T
 use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Normalizer\WorkflowNormalizer;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionTrait;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptTrait;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
@@ -57,7 +58,7 @@ class ContentNormalizerTest extends TestCase
 
             public function __construct()
             {
-                $this->dimensionId = '123-456';
+                $this->dimension = new Dimension('123-456');
             }
 
             public function getContentId()
@@ -89,7 +90,7 @@ class ContentNormalizerTest extends TestCase
 
             public function __construct()
             {
-                $this->dimensionId = '123-456';
+                $this->dimension = new Dimension('123-456');
             }
 
             public function getContentId()

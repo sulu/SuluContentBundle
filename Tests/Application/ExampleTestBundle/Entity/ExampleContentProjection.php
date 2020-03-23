@@ -51,7 +51,7 @@ class ExampleContentProjection implements ContentProjectionInterface, SeoInterfa
     public function __construct(Example $example, DimensionInterface $dimension)
     {
         $this->example = $example;
-        $this->dimensionId = $dimension->getId();
+        $this->dimension = $dimension;
     }
 
     public function getId(): int
