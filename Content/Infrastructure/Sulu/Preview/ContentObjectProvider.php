@@ -116,15 +116,11 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
     }
 
     /**
-     * {@inheritdoc}
-     *
      * @param ContentProjectionInterface $object
      * @param string $locale
      * @param mixed[] $context
-     *
-     * @return ContentProjectionInterface $object
      */
-    public function setContext($object, $locale, array $context)
+    public function setContext($object, $locale, array $context): ContentProjectionInterface
     {
         if ($object instanceof TemplateInterface) {
             if (\array_key_exists('template', $context)) {

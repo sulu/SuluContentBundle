@@ -65,7 +65,6 @@ class ContentObjectProviderTest extends TestCase
         $structureMetadataFactory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $propertyFactory = $this->prophesize(LegacyPropertyFactory::class);
         $this->contentResolver = $this->prophesize(ContentResolverInterface::class);
-
         $this->contentDataMapper = $this->prophesize(ContentDataMapperInterface::class);
 
         $this->contentObjectProvider = new ContentObjectProvider(
