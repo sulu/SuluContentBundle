@@ -30,7 +30,10 @@ class ContentProjectionNormalizerTest extends TestCase
         $object = $this->prophesize(ContentProjectionInterface::class);
 
         $this->assertSame(
-            ['id'],
+            [
+                'id',
+                'dimension',
+            ],
             $normalizer->getIgnoredAttributes($object->reveal())
         );
     }
