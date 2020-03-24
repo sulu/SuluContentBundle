@@ -1,12 +1,4 @@
 {
-    "dimension": {
-        "locale": "en",
-        "stage": "draft",
-        "attributes": {
-            "locale": "en",
-            "stage": "draft"
-        }
-    },
     "excerptCategories": [],
     "excerptDescription": "Excerpt Description",
     "excerptIcon": null,
