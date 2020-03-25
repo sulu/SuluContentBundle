@@ -19,9 +19,8 @@ use Sulu\Bundle\AdminBundle\Admin\View\FormViewBuilderInterface;
 use Sulu\Bundle\AdminBundle\Admin\View\PreviewFormViewBuilderInterface;
 use Sulu\Bundle\AdminBundle\Admin\View\ViewBuilderFactory;
 use Sulu\Bundle\AdminBundle\Admin\View\ViewCollection;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\ContentDataMapperInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolverInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Factory\CategoryFactoryInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Factory\TagFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Admin\ContentViewBuilder;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Admin\ContentViewBuilderInterface;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Preview\ContentObjectProvider;
@@ -29,8 +28,6 @@ use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example
 use Sulu\Bundle\PreviewBundle\Preview\Object\PreviewObjectProviderInterface;
 use Sulu\Bundle\PreviewBundle\Preview\Object\PreviewObjectProviderRegistry;
 use Sulu\Bundle\PreviewBundle\Preview\Object\PreviewObjectProviderRegistryInterface;
-use Sulu\Component\Content\Compat\Structure\LegacyPropertyFactory;
-use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
 
 class ContentViewBuilderTest extends TestCase
 {
@@ -54,20 +51,14 @@ class ContentViewBuilderTest extends TestCase
 
     protected function getContentObjectProvider(
         EntityManagerInterface $entityManager,
-        StructureMetadataFactoryInterface $structureMetadataFactory,
-        LegacyPropertyFactory $propertyFactory,
         ContentResolverInterface $contentResolver,
-        TagFactoryInterface $tagFactory,
-        CategoryFactoryInterface $categoryFactory,
+        ContentDataMapperInterface $contentDataMapper,
         string $entityClass
     ): ContentObjectProvider {
         return new ContentObjectProvider(
             $entityManager,
-            $structureMetadataFactory,
-            $propertyFactory,
             $contentResolver,
-            $tagFactory,
-            $categoryFactory,
+            $contentDataMapper,
             $entityClass
         );
     }
@@ -113,19 +104,13 @@ class ContentViewBuilderTest extends TestCase
     public function testBuildWithPreview(): void
     {
         $entityManager = $this->prophesize(EntityManagerInterface::class);
-        $structureMetadataFactory = $this->prophesize(StructureMetadataFactoryInterface::class);
-        $propertyFactory = $this->prophesize(LegacyPropertyFactory::class);
         $contentResolver = $this->prophesize(ContentResolverInterface::class);
-        $tagFactory = $this->prophesize(TagFactoryInterface::class);
-        $categoryFactory = $this->prophesize(CategoryFactoryInterface::class);
+        $contentDataMapper = $this->prophesize(ContentDataMapperInterface::class);
 
         $contentObjectProvider = $this->getContentObjectProvider(
             $entityManager->reveal(),
-            $structureMetadataFactory->reveal(),
-            $propertyFactory->reveal(),
             $contentResolver->reveal(),
-            $tagFactory->reveal(),
-            $categoryFactory->reveal(),
+            $contentDataMapper->reveal(),
             Example::class
         );
 
