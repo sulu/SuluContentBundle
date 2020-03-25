@@ -28,8 +28,6 @@ use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example
 use Sulu\Bundle\PreviewBundle\Preview\Object\PreviewObjectProviderInterface;
 use Sulu\Bundle\PreviewBundle\Preview\Object\PreviewObjectProviderRegistry;
 use Sulu\Bundle\PreviewBundle\Preview\Object\PreviewObjectProviderRegistryInterface;
-use Sulu\Component\Content\Compat\Structure\LegacyPropertyFactory;
-use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
 
 class ContentViewBuilderTest extends TestCase
 {
@@ -53,16 +51,12 @@ class ContentViewBuilderTest extends TestCase
 
     protected function getContentObjectProvider(
         EntityManagerInterface $entityManager,
-        StructureMetadataFactoryInterface $structureMetadataFactory,
-        LegacyPropertyFactory $propertyFactory,
         ContentResolverInterface $contentResolver,
         ContentDataMapperInterface $contentDataMapper,
         string $entityClass
     ): ContentObjectProvider {
         return new ContentObjectProvider(
             $entityManager,
-            $structureMetadataFactory,
-            $propertyFactory,
             $contentResolver,
             $contentDataMapper,
             $entityClass
@@ -110,15 +104,11 @@ class ContentViewBuilderTest extends TestCase
     public function testBuildWithPreview(): void
     {
         $entityManager = $this->prophesize(EntityManagerInterface::class);
-        $structureMetadataFactory = $this->prophesize(StructureMetadataFactoryInterface::class);
-        $propertyFactory = $this->prophesize(LegacyPropertyFactory::class);
         $contentResolver = $this->prophesize(ContentResolverInterface::class);
         $contentDataMapper = $this->prophesize(ContentDataMapperInterface::class);
 
         $contentObjectProvider = $this->getContentObjectProvider(
             $entityManager->reveal(),
-            $structureMetadataFactory->reveal(),
-            $propertyFactory->reveal(),
             $contentResolver->reveal(),
             $contentDataMapper->reveal(),
             Example::class

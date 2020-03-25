@@ -2,6 +2,10 @@
 
 ## master
 
+### Changed constructor of ContentObjectProvider class
+
+The arguments of the constructor of the `ContentObjectProvider` class were changed.
+
 ### Renamed sulu_content.content_projection_factory_merger tag to sulu_content.merger
 
 The `sulu_content.content_projection_factory_merger` tag was renamed to `sulu_content.merger`.

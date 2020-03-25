@@ -23,8 +23,6 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Bundle\PreviewBundle\Preview\Object\PreviewObjectProviderInterface;
-use Sulu\Component\Content\Compat\Structure\LegacyPropertyFactory;
-use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
 
 class ContentObjectProvider implements PreviewObjectProviderInterface
 {
@@ -32,16 +30,6 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
      * @var EntityManagerInterface
      */
     private $entityManager;
-
-    /**
-     * @var StructureMetadataFactoryInterface
-     */
-    private $structureMetadataFactory;
-
-    /**
-     * @var LegacyPropertyFactory
-     */
-    private $propertyFactory;
 
     /**
      * @var ContentResolverInterface
@@ -60,15 +48,11 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
 
     public function __construct(
         EntityManagerInterface $entityManager,
-        StructureMetadataFactoryInterface $structureMetadataFactory,
-        LegacyPropertyFactory $propertyFactory,
         ContentResolverInterface $contentResolver,
         ContentDataMapperInterface $contentDataMapper,
         string $entityClass
     ) {
         $this->entityManager = $entityManager;
-        $this->structureMetadataFactory = $structureMetadataFactory;
-        $this->propertyFactory = $propertyFactory;
         $this->contentResolver = $contentResolver;
         $this->contentDataMapper = $contentDataMapper;
         $this->entityClass = $entityClass;

@@ -34,8 +34,6 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateTrait;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Preview\ContentObjectProvider;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
-use Sulu\Component\Content\Compat\Structure\LegacyPropertyFactory;
-use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
 
 class ContentObjectProviderTest extends TestCase
 {
@@ -62,15 +60,11 @@ class ContentObjectProviderTest extends TestCase
     public function setUp(): void
     {
         $this->entityManager = $this->prophesize(EntityManagerInterface::class);
-        $structureMetadataFactory = $this->prophesize(StructureMetadataFactoryInterface::class);
-        $propertyFactory = $this->prophesize(LegacyPropertyFactory::class);
         $this->contentResolver = $this->prophesize(ContentResolverInterface::class);
         $this->contentDataMapper = $this->prophesize(ContentDataMapperInterface::class);
 
         $this->contentObjectProvider = new ContentObjectProvider(
             $this->entityManager->reveal(),
-            $structureMetadataFactory->reveal(),
-            $propertyFactory->reveal(),
             $this->contentResolver->reveal(),
             $this->contentDataMapper->reveal(),
             Example::class
