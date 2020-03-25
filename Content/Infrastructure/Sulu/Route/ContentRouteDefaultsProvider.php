@@ -21,7 +21,6 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Structure\ContentStructureBridgeFactory;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Structure\StructureMetadataNotFoundException;
 use Sulu\Bundle\RouteBundle\Routing\Defaults\RouteDefaultsProviderInterface;
@@ -93,14 +92,7 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
         $entity = $this->loadEntity($entityClass, $id, $locale);
 
         if ($entity instanceof ContentProjectionInterface) {
-            $dimensionId = $entity->getDimensionId();
-            /** @var DimensionRepositoryInterface $dimensionRepository */
-            $dimensionRepository = $this->entityManager->getRepository(DimensionInterface::class);
-            $dimension = $dimensionRepository->findOneBy(['id' => $dimensionId]);
-            if (!$dimension) {
-                // Return false if dimension does not longer exists
-                return false;
-            }
+            $dimension = $entity->getDimension();
 
             return DimensionInterface::STAGE_LIVE === $dimension->getStage() && $locale === $dimension->getLocale();
         }

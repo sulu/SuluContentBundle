@@ -46,21 +46,8 @@ class MetadataLoader implements EventSubscriber
         $metadata = $event->getClassMetadata();
         $reflection = $metadata->getReflectionClass();
 
-        if ($reflection->implementsInterface(ContentProjectionInterface::class)) {
-            $this->addField($metadata, 'dimensionId', 'string', [
-                'columnName' => 'dimensionId',
-                '_custom' => [
-                    'references' => [
-                        'entity' => DimensionInterface::class,
-                        'field' => 'id',
-                        'onDelete' => 'CASCADE',
-                        'onUpdate' => 'CASCADE',
-                    ],
-                ],
-            ]);
-        }
-
-        if ($reflection->implementsInterface(DimensionContentInterface::class)) {
+        if ($reflection->implementsInterface(ContentProjectionInterface::class)
+            || $reflection->implementsInterface(DimensionContentInterface::class)) {
             $this->addManyToOne(
                 $event,
                 $metadata,

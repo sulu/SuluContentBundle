@@ -16,6 +16,7 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Domain\Model;
 use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionTrait;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
 
 class ContentProjectionTest extends TestCase
 {
@@ -26,7 +27,7 @@ class ContentProjectionTest extends TestCase
 
             public function __construct()
             {
-                $this->dimensionId = '123-456';
+                $this->dimension = new Dimension('123-456');
             }
 
             public function getContentId()
@@ -36,10 +37,10 @@ class ContentProjectionTest extends TestCase
         };
     }
 
-    public function testGetDimensionId(): void
+    public function testGetDimension(): void
     {
         $model = $this->getContentProjectionInstance();
-        $this->assertSame('123-456', $model->getDimensionId());
+        $this->assertSame('123-456', $model->getDimension()->getId());
     }
 
     public function testGetContentId(): void

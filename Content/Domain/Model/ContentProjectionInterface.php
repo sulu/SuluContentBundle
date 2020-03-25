@@ -20,5 +20,5 @@ interface ContentProjectionInterface
      */
     public function getContentId();
 
-    public function getDimensionId(): string;
+    public function getDimension(): DimensionInterface;
 }

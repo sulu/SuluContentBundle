@@ -23,7 +23,10 @@ class ContentProjectionNormalizer implements NormalizerInterface
             return [];
         }
 
-        return ['id'];
+        return [
+            'id',
+            'dimension',
+        ];
     }
 
     public function enhance(object $object, array $normalizedData): array

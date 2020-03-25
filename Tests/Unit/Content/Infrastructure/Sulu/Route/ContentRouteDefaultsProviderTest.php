@@ -24,9 +24,7 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Route\ContentRouteDefaultsProvider;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Structure\ContentStructureBridge;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Structure\ContentStructureBridgeFactory;
@@ -78,14 +76,12 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
         $contentProjection = $this->prophesize(TemplateInterface::class);
         $contentProjection->willImplement(ContentProjectionInterface::class);
-        $contentProjection->getDimensionId()->willReturn('123-456');
 
-        $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
-        $dimensionRepository->findOneBy(['id' => '123-456'])->willReturn(new Dimension('123-456', [
+        $dimension = new Dimension('123-456', [
             'locale' => 'en',
             'stage' => 'live',
-        ]));
-        $entityManager->getRepository(DimensionInterface::class)->willReturn($dimensionRepository->reveal());
+        ]);
+        $contentProjection->getDimension()->willReturn($dimension);
 
         $queryBuilder = $this->prophesize(QueryBuilder::class);
         $query = $this->prophesize(AbstractQuery::class);
@@ -181,15 +177,13 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
         $contentProjection = $this->prophesize(TemplateInterface::class);
         $contentProjection->willImplement(ContentProjectionInterface::class);
-        $contentProjection->getDimensionId()->willReturn('123-456');
 
-        $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
-        $dimensionRepository->findOneBy(['id' => '123-456'])->willReturn(new Dimension('123-456', [
+        $dimension = new Dimension('123-456', [
             'locale' => 'en',
             'stage' => 'live',
-        ]));
+        ]);
+        $contentProjection->getDimension()->willReturn($dimension);
 
-        $entityManager->getRepository(DimensionInterface::class)->willReturn($dimensionRepository->reveal());
         $queryBuilder = $this->prophesize(QueryBuilder::class);
         $query = $this->prophesize(AbstractQuery::class);
         $entityManager->createQueryBuilder()->willReturn($queryBuilder->reveal());
@@ -221,52 +215,12 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
         $contentProjection = $this->prophesize(TemplateInterface::class);
         $contentProjection->willImplement(ContentProjectionInterface::class);
-        $contentProjection->getDimensionId()->willReturn('123-456');
 
-        $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
-        $dimensionRepository->findOneBy(['id' => '123-456'])->willReturn(new Dimension('123-456', [
+        $dimension = new Dimension('123-456', [
             'stage' => 'live',
-        ]));
+        ]);
+        $contentProjection->getDimension()->willReturn($dimension);
 
-        $entityManager->getRepository(DimensionInterface::class)->willReturn($dimensionRepository->reveal());
-        $queryBuilder = $this->prophesize(QueryBuilder::class);
-        $query = $this->prophesize(AbstractQuery::class);
-        $entityManager->createQueryBuilder()->willReturn($queryBuilder->reveal());
-        $queryBuilder->select('entity')->willReturn($queryBuilder->reveal());
-        $queryBuilder->from(Example::class, 'entity')->willReturn($queryBuilder->reveal());
-        $queryBuilder->where('entity.id = :id')->willReturn($queryBuilder->reveal());
-        $queryBuilder->setParameter('id', '123-123-123')->willReturn($queryBuilder->reveal());
-        $queryBuilder->getQuery()->willReturn($query);
-        $query->getSingleResult()->willReturn($contentRichEntity->reveal());
-
-        $contentResolver->resolve($contentRichEntity->reveal(), ['locale' => 'en', 'stage' => 'live'])
-            ->willReturn($contentProjection->reveal())
-            ->shouldBeCalled();
-
-        $this->assertFalse($contentRouteDefaultsProvider->isPublished(Example::class, '123-123-123', 'en'));
-    }
-
-    public function testIsPublishedDimensionNotFound(): void
-    {
-        $entityManager = $this->prophesize(EntityManagerInterface::class);
-        $contentResolver = $this->prophesize(ContentResolverInterface::class);
-        $contentStructureBridgeFactory = $this->prophesize(ContentStructureBridgeFactory::class);
-
-        $contentRouteDefaultsProvider = $this->getContentRouteDefaultsProvider(
-            $entityManager->reveal(),
-            $contentResolver->reveal(),
-            $contentStructureBridgeFactory->reveal()
-        );
-
-        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
-        $contentProjection = $this->prophesize(TemplateInterface::class);
-        $contentProjection->willImplement(ContentProjectionInterface::class);
-        $contentProjection->getDimensionId()->willReturn('123-456');
-
-        $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
-        $dimensionRepository->findOneBy(['id' => '123-456'])->willReturn(null);
-
-        $entityManager->getRepository(DimensionInterface::class)->willReturn($dimensionRepository->reveal());
         $queryBuilder = $this->prophesize(QueryBuilder::class);
         $query = $this->prophesize(AbstractQuery::class);
         $entityManager->createQueryBuilder()->willReturn($queryBuilder->reveal());
