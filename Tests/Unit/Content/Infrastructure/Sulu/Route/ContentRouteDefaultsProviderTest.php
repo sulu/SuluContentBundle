@@ -24,9 +24,7 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Route\ContentRouteDefaultsProvider;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Structure\ContentStructureBridge;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Structure\ContentStructureBridgeFactory;
@@ -83,12 +81,7 @@ class ContentRouteDefaultsProviderTest extends TestCase
             'locale' => 'en',
             'stage' => 'live',
         ]);
-
         $contentProjection->getDimension()->willReturn($dimension);
-
-        $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
-        $dimensionRepository->findOneBy(['id' => '123-456'])->willReturn($dimension);
-        $entityManager->getRepository(DimensionInterface::class)->willReturn($dimensionRepository->reveal());
 
         $queryBuilder = $this->prophesize(QueryBuilder::class);
         $query = $this->prophesize(AbstractQuery::class);
@@ -189,13 +182,8 @@ class ContentRouteDefaultsProviderTest extends TestCase
             'locale' => 'en',
             'stage' => 'live',
         ]);
-
         $contentProjection->getDimension()->willReturn($dimension);
 
-        $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
-        $dimensionRepository->findOneBy(['id' => '123-456'])->willReturn($dimension);
-
-        $entityManager->getRepository(DimensionInterface::class)->willReturn($dimensionRepository->reveal());
         $queryBuilder = $this->prophesize(QueryBuilder::class);
         $query = $this->prophesize(AbstractQuery::class);
         $entityManager->createQueryBuilder()->willReturn($queryBuilder->reveal());
@@ -231,13 +219,8 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $dimension = new Dimension('123-456', [
             'stage' => 'live',
         ]);
-
         $contentProjection->getDimension()->willReturn($dimension);
 
-        $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
-        $dimensionRepository->findOneBy(['id' => '123-456'])->willReturn($dimension);
-
-        $entityManager->getRepository(DimensionInterface::class)->willReturn($dimensionRepository->reveal());
         $queryBuilder = $this->prophesize(QueryBuilder::class);
         $query = $this->prophesize(AbstractQuery::class);
         $entityManager->createQueryBuilder()->willReturn($queryBuilder->reveal());

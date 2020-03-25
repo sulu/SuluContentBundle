@@ -37,7 +37,7 @@ class ContentProjectionTest extends TestCase
         };
     }
 
-    public function testGetDimensionId(): void
+    public function testGetDimension(): void
     {
         $model = $this->getContentProjectionInstance();
         $this->assertSame('123-456', $model->getDimension()->getId());
