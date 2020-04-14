@@ -59,7 +59,10 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @param string $id
+     * @param string $locale
+     *
+     * @return ContentProjectionInterface|null
      */
     public function getObject($id, $locale)
     {
@@ -80,9 +83,9 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
     }
 
     /**
-     * {@inheritdoc}
-     *
      * @param ContentProjectionInterface $object
+     *
+     * @return string
      */
     public function getId($object)
     {
@@ -116,9 +119,9 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @param mixed $object
      *
-     * @param ContentProjectionInterface $object
+     * @return string
      */
     public function serialize($object)
     {
@@ -126,7 +129,10 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @param string $serializedObject
+     * @param string $objectClass
+     *
+     * @return mixed
      */
     public function deserialize($serializedObject, $objectClass)
     {
