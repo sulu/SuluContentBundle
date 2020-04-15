@@ -240,6 +240,11 @@ class ContentStructureBridge implements StructureInterface
         return null;
     }
 
+    /**
+     * @param string $name
+     *
+     * @return mixed
+     */
     public function getPropertyValue($name)
     {
         return $this->getProperty($name)->getValue();
@@ -319,6 +324,11 @@ class ContentStructureBridge implements StructureInterface
         return $properties;
     }
 
+    /**
+     * @param string $tagName
+     *
+     * @return mixed
+     */
     public function getPropertyValueByTagName($tagName)
     {
         return $this->getPropertyByTagName($tagName)->getValue();
