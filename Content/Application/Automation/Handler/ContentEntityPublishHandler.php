@@ -73,26 +73,28 @@ class ContentEntityPublishHandler implements AutomationTaskHandlerInterface
     }
 
     /**
-     * @param mixed[] $workload
-     *
-     * @return void
+     * {@inheritdoc}
      */
     public function handle($workload)
     {
-        if (\is_array($workload)) {
-            /** @var class-string $class */
-            $class = $workload['class'];
-            /** @var ContentRichEntityInterface|null $entity */
-            $entity = $this->entityManager->find($class, $workload['id']);
-
-            if (null !== $entity) {
-                $this->contentManager->applyTransition(
-                    $entity,
-                    ['locale' => $workload['locale']],
-                    WorkflowInterface::WORKFLOW_TRANSITION_PUBLISH
-                );
-                $this->entityManager->flush();
-            }
+        if (!\is_array($workload)) {
+            return;
         }
+
+        /** @var class-string $class */
+        $class = $workload['class'];
+        /** @var ContentRichEntityInterface|null $entity */
+        $entity = $this->entityManager->find($class, $workload['id']);
+
+        if (null === $entity) {
+            return;
+        }
+
+        $this->contentManager->applyTransition(
+            $entity,
+            ['locale' => $workload['locale']],
+            WorkflowInterface::WORKFLOW_TRANSITION_PUBLISH
+        );
+        $this->entityManager->flush();
     }
 }

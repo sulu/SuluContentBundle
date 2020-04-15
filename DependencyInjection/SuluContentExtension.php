@@ -67,10 +67,17 @@ class SuluContentExtension extends Extension implements PrependExtensionInterfac
         $this->configurePersistence($config['objects'], $container);
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
-        $loader->load('automation.xml');
         $loader->load('data-mapper.xml');
         $loader->load('merger.xml');
         $loader->load('normalizer.xml');
         $loader->load('services.xml');
+
+        if ($container->hasParameter('kernel.bundles')) {
+            $bundles = $container->getParameter('kernel.bundles');
+
+            if (\array_key_exists('SuluAutomationBundle', $bundles)) {
+                $loader->load('automation.xml');
+            }
+        }
     }
 }
