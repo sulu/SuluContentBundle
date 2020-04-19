@@ -42,6 +42,11 @@ trait ContentTeaserProviderTrait
             array_map(
                 function (ContentRichEntityInterface $contentRichEntity) use ($locale): ?Teaser {
                     $contentProjection = $this->resolveContentRichEntity($contentRichEntity, $locale);
+
+                    if (!$contentProjection) {
+                        return null;
+                    }
+
                     $data = $this->getContentManager()->normalize($contentProjection);
 
                     return $this->createTeaser($contentProjection, $data, $locale);

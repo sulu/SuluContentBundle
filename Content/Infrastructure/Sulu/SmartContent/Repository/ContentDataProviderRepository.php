@@ -60,6 +60,9 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
         return $this->entityManager;
     }
 
+    /**
+     * @return class-string<ContentRichEntityInterface>
+     */
     protected function getEntityClass(): string
     {
         return $this->entityClassName;
