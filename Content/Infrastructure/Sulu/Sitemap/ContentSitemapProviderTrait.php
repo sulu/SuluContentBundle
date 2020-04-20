@@ -224,15 +224,15 @@ trait ContentSitemapProviderTrait
         return SitemapProviderInterface::PAGE_SIZE;
     }
 
-    protected abstract function getEntityManager(): EntityManagerInterface;
+    abstract protected function getEntityManager(): EntityManagerInterface;
 
-    protected abstract function getWebspaceManager(): WebspaceManagerInterface;
+    abstract protected function getWebspaceManager(): WebspaceManagerInterface;
 
-    protected abstract function getKernelEnvironment(): string;
+    abstract protected function getKernelEnvironment(): string;
 
-    protected abstract function getEntityClass(): string;
+    abstract protected function getEntityClass(): string;
 
-    protected abstract function getRouteClass(): string;
+    abstract protected function getRouteClass(): string;
 
-    public abstract function getAlias(): string;
+    abstract public function getAlias(): string;
 }
