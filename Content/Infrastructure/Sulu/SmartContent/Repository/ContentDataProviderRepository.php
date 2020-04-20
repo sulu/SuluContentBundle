@@ -33,7 +33,7 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
     protected $entityManager;
 
     /**
-     * @var class-string<ContentRichEntityInterface>
+     * @var string
      */
     protected $entityClassName;
 
