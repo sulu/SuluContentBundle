@@ -34,7 +34,7 @@ class ContentSitemapProvider implements SitemapProviderInterface
     /**
      * @var string
      */
-    private $kernelEnvironment;
+    protected $kernelEnvironment;
 
     /**
      * @var string
@@ -49,7 +49,7 @@ class ContentSitemapProvider implements SitemapProviderInterface
     /**
      * @var string
      */
-    private $alias;
+    protected $alias;
 
     public function __construct(
         EntityManagerInterface $entityManager,
