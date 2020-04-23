@@ -71,7 +71,7 @@ class ContentCopier implements ContentCopierInterface
         ContentRichEntityInterface $targetContentRichEntity,
         array $targetDimensionAttributes
     ): DimensionContentInterface {
-        $sourceContentProjection = $this->contentMerger->create($dimensionContentCollection);
+        $sourceContentProjection = $this->contentMerger->mergeCollection($dimensionContentCollection);
 
         return $this->copyFromContentProjection($sourceContentProjection, $targetContentRichEntity, $targetDimensionAttributes);
     }

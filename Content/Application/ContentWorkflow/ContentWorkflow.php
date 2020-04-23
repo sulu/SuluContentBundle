@@ -128,7 +128,7 @@ class ContentWorkflow implements ContentWorkflowInterface
             throw new UnavailableContentTransitionException($e->getMessage(), $e->getCode(), $e);
         }
 
-        return $this->contentMerger->create($dimensionContentCollection);
+        return $this->contentMerger->mergeCollection($dimensionContentCollection);
     }
 
     private function getWorkflow(): SymfonyWorkflowInterface

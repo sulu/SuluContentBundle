@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Domain\Model;
 
 use PHPUnit\Framework\TestCase;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionTrait;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityTrait;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentTrait;
@@ -35,14 +35,24 @@ class DimensionContentTest extends TestCase
                 $this->dimension = $dimension;
             }
 
-            public function createProjectionInstance(): ContentProjectionInterface
+            public function getContentRichEntity(): ContentRichEntityInterface
             {
-                return new class() implements ContentProjectionInterface {
-                    use ContentProjectionTrait;
+                return new class() implements ContentRichEntityInterface {
+                    use ContentRichEntityTrait;
 
-                    public function getContentId()
+                    public static function getResourceKey(): string
                     {
-                        return 5;
+                        throw new \RuntimeException();
+                    }
+
+                    public function getId()
+                    {
+                        throw new \RuntimeException();
+                    }
+
+                    public function createDimensionContent(DimensionInterface $dimension): DimensionContentInterface
+                    {
+                        throw new \RuntimeException();
                     }
                 };
             }

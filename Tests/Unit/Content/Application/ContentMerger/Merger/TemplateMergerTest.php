@@ -17,7 +17,6 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentMerger\Merger\MergerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentMerger\Merger\TemplateMerger;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 
@@ -28,65 +27,65 @@ class TemplateMergerTest extends TestCase
         return new TemplateMerger();
     }
 
-    public function testMergeDimensionNotImplementTemplateInterface(): void
+    public function testMergeSourceNotImplementTemplateInterface(): void
     {
         $merger = $this->getTemplateMergerInstance();
 
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $source = $this->prophesize(DimensionContentInterface::class);
 
-        $contentProjection = $this->prophesize(ContentProjectionInterface::class);
-        $contentProjection->willImplement(TemplateInterface::class);
-        $contentProjection->setTemplateKey(Argument::any())->shouldNotBeCalled();
+        $target = $this->prophesize(DimensionContentInterface::class);
+        $target->willImplement(TemplateInterface::class);
+        $target->setTemplateKey(Argument::any())->shouldNotBeCalled();
 
-        $merger->merge($contentProjection->reveal(), $dimensionContent->reveal());
+        $merger->merge($target->reveal(), $source->reveal());
     }
 
-    public function testMergeViewNotImplementTemplateInterface(): void
+    public function testMergeTargetNotImplementTemplateInterface(): void
     {
         $merger = $this->getTemplateMergerInstance();
 
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent->willImplement(TemplateInterface::class);
-        $dimensionContent->getTemplateKey(Argument::any())->shouldNotBeCalled();
+        $source = $this->prophesize(DimensionContentInterface::class);
+        $source->willImplement(TemplateInterface::class);
+        $source->getTemplateKey(Argument::any())->shouldNotBeCalled();
 
-        $contentProjection = $this->prophesize(ContentProjectionInterface::class);
+        $target = $this->prophesize(DimensionContentInterface::class);
 
-        $merger->merge($contentProjection->reveal(), $dimensionContent->reveal());
+        $merger->merge($target->reveal(), $source->reveal());
     }
 
     public function testMergeSet(): void
     {
         $merger = $this->getTemplateMergerInstance();
 
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent->willImplement(TemplateInterface::class);
-        $dimensionContent->getTemplateKey()->willReturn('template-key')->shouldBeCalled();
-        $dimensionContent->getTemplateData()->willReturn(['template' => 'data'])->shouldBeCalled();
+        $source = $this->prophesize(DimensionContentInterface::class);
+        $source->willImplement(TemplateInterface::class);
+        $source->getTemplateKey()->willReturn('template-key')->shouldBeCalled();
+        $source->getTemplateData()->willReturn(['template' => 'data'])->shouldBeCalled();
 
-        $contentProjection = $this->prophesize(ContentProjectionInterface::class);
-        $contentProjection->willImplement(TemplateInterface::class);
-        $contentProjection->setTemplateKey('template-key')->shouldBeCalled();
-        $contentProjection->getTemplateData()->willReturn(['template2' => 'data2'])->shouldBeCalled();
-        $contentProjection->setTemplateData(['template' => 'data', 'template2' => 'data2'])->shouldBeCalled();
+        $target = $this->prophesize(DimensionContentInterface::class);
+        $target->willImplement(TemplateInterface::class);
+        $target->setTemplateKey('template-key')->shouldBeCalled();
+        $target->getTemplateData()->willReturn(['template2' => 'data2'])->shouldBeCalled();
+        $target->setTemplateData(['template' => 'data', 'template2' => 'data2'])->shouldBeCalled();
 
-        $merger->merge($contentProjection->reveal(), $dimensionContent->reveal());
+        $merger->merge($target->reveal(), $source->reveal());
     }
 
     public function testMergNotSet(): void
     {
         $merger = $this->getTemplateMergerInstance();
 
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent->willImplement(TemplateInterface::class);
-        $dimensionContent->getTemplateKey()->willReturn('')->shouldBeCalled();
-        $dimensionContent->getTemplateData()->willReturn([])->shouldBeCalled();
+        $source = $this->prophesize(DimensionContentInterface::class);
+        $source->willImplement(TemplateInterface::class);
+        $source->getTemplateKey()->willReturn('')->shouldBeCalled();
+        $source->getTemplateData()->willReturn([])->shouldBeCalled();
 
-        $contentProjection = $this->prophesize(ContentProjectionInterface::class);
-        $contentProjection->willImplement(TemplateInterface::class);
-        $contentProjection->setTemplateKey('')->shouldNotBeCalled();
-        $contentProjection->getTemplateData()->willReturn(['template2' => 'data2'])->shouldBeCalled();
-        $contentProjection->setTemplateData(['template2' => 'data2'])->shouldBeCalled();
+        $target = $this->prophesize(DimensionContentInterface::class);
+        $target->willImplement(TemplateInterface::class);
+        $target->setTemplateKey('')->shouldNotBeCalled();
+        $target->getTemplateData()->willReturn(['template2' => 'data2'])->shouldBeCalled();
+        $target->setTemplateData(['template2' => 'data2'])->shouldBeCalled();
 
-        $merger->merge($contentProjection->reveal(), $dimensionContent->reveal());
+        $merger->merge($target->reveal(), $source->reveal());
     }
 }

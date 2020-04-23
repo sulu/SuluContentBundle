@@ -14,11 +14,10 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentResolver;
 
 use PHPUnit\Framework\TestCase;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentMerger\ContentMergerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolver;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
-use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ContentProjectionFactoryInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollection;
@@ -33,12 +32,12 @@ class ContentResolverTest extends TestCase
     protected function createContentResolverInstance(
         DimensionRepositoryInterface $dimensionRepository,
         DimensionContentRepositoryInterface $dimensionContentRepository,
-        ContentProjectionFactoryInterface $viewFactory
+        ContentMergerInterface $contentMerger
     ): ContentResolverInterface {
         return new ContentResolver(
             $dimensionRepository,
             $dimensionContentRepository,
-            $viewFactory
+            $contentMerger
         );
     }
 
@@ -74,17 +73,17 @@ class ContentResolverTest extends TestCase
 
         $dimensionContentRepository = $this->prophesize(DimensionContentRepositoryInterface::class);
         $dimensionContentRepository->load($contentRichEntity->reveal(), $dimensionCollection)->willReturn($dimensionContentCollection);
-        $contentProjection = $this->prophesize(ContentProjectionInterface::class);
-        $viewFactory = $this->prophesize(ContentProjectionFactoryInterface::class);
-        $viewFactory->create($dimensionContentCollection)->willReturn($contentProjection->reveal())->shouldBeCalled();
+        $resolvedContent = $this->prophesize(DimensionContentInterface::class);
+        $contentMerger = $this->prophesize(ContentMergerInterface::class);
+        $contentMerger->mergeCollection($dimensionContentCollection)->willReturn($resolvedContent->reveal())->shouldBeCalled();
 
         $contentResolver = $this->createContentResolverInstance(
             $dimensionRepository->reveal(),
             $dimensionContentRepository->reveal(),
-            $viewFactory->reveal()
+            $contentMerger->reveal()
         );
 
-        $this->assertSame($contentProjection->reveal(), $contentResolver->resolve($contentRichEntity->reveal(), $attributes));
+        $this->assertSame($resolvedContent->reveal(), $contentResolver->resolve($contentRichEntity->reveal(), $attributes));
     }
 
     public function testLoadDimensionNotFound(): void
@@ -103,16 +102,16 @@ class ContentResolverTest extends TestCase
         $dimensionRepository->findByAttributes($attributes)->willReturn($dimensionCollection)->shouldBeCalled();
 
         $dimensionContentRepository = $this->prophesize(DimensionContentRepositoryInterface::class);
-        $contentProjection = $this->prophesize(ContentProjectionInterface::class);
-        $viewFactory = $this->prophesize(ContentProjectionFactoryInterface::class);
+        $resolvedContent = $this->prophesize(DimensionContentInterface::class);
+        $contentMerger = $this->prophesize(ContentMergerInterface::class);
 
         $contentResolver = $this->createContentResolverInstance(
             $dimensionRepository->reveal(),
             $dimensionContentRepository->reveal(),
-            $viewFactory->reveal()
+            $contentMerger->reveal()
         );
 
-        $this->assertSame($contentProjection->reveal(), $contentResolver->resolve($contentRichEntity->reveal(), $attributes));
+        $this->assertSame($resolvedContent->reveal(), $contentResolver->resolve($contentRichEntity->reveal(), $attributes));
     }
 
     public function testLoadNotFound(): void
@@ -144,16 +143,16 @@ class ContentResolverTest extends TestCase
 
         $dimensionContentRepository = $this->prophesize(DimensionContentRepositoryInterface::class);
         $dimensionContentRepository->load($contentRichEntity->reveal(), $dimensionCollection)->willReturn($dimensionContentCollection);
-        $contentProjection = $this->prophesize(ContentProjectionInterface::class);
-        $viewFactory = $this->prophesize(ContentProjectionFactoryInterface::class);
-        $viewFactory->create($dimensionContentCollection)->willReturn($contentProjection->reveal())->shouldNotBeCalled();
+        $resolvedContent = $this->prophesize(DimensionContentInterface::class);
+        $contentMerger = $this->prophesize(ContentMergerInterface::class);
+        $contentMerger->mergeCollection($dimensionContentCollection)->willReturn($resolvedContent->reveal())->shouldNotBeCalled();
 
         $contentResolver = $this->createContentResolverInstance(
             $dimensionRepository->reveal(),
             $dimensionContentRepository->reveal(),
-            $viewFactory->reveal()
+            $contentMerger->reveal()
         );
 
-        $this->assertSame($contentProjection->reveal(), $contentResolver->resolve($contentRichEntity->reveal(), $attributes));
+        $this->assertSame($resolvedContent->reveal(), $contentResolver->resolve($contentRichEntity->reveal(), $attributes));
     }
 }

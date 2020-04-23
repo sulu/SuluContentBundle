@@ -15,7 +15,6 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentNormal
 
 use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Normalizer\ExcerptNormalizer;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 
 class ExcerptNormalizerTest extends TestCase
@@ -25,10 +24,10 @@ class ExcerptNormalizerTest extends TestCase
         return new ExcerptNormalizer();
     }
 
-    public function testIgnoredAttributesNoneContentProjection(): void
+    public function testIgnoredAttributesNotImplementExcerptInterface(): void
     {
         $normalizer = $this->createExcerptNormalizerInstance();
-        $object = $this->prophesize(ContentProjectionInterface::class);
+        $object = $this->prophesize(\stdClass::class);
 
         $this->assertSame(
             [],
@@ -50,10 +49,10 @@ class ExcerptNormalizerTest extends TestCase
         );
     }
 
-    public function testEnhanceNotSupported(): void
+    public function testEnhanceNotImplementExcerptInterface(): void
     {
         $normalizer = $this->createExcerptNormalizerInstance();
-        $object = $this->prophesize(ContentProjectionInterface::class);
+        $object = $this->prophesize(\stdClass::class);
 
         $data = [
             'excerptTagNames' => '12345',

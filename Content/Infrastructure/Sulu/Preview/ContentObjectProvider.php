@@ -79,7 +79,7 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
             return null;
         }
 
-        return $this->loadProjection($contentRichEntity, $locale);
+        return $this->resolveContent($contentRichEntity, $locale);
     }
 
     /**
@@ -119,7 +119,7 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
     }
 
     /**
-     * @param ContentProjectionInterface $object
+     * @param DimensionContentInterface $object
      *
      * @return string
      */
@@ -151,10 +151,10 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
         return $this->getObject($id, $locale);
     }
 
-    protected function loadProjection(ContentRichEntityInterface $contentRichEntity, string $locale): ?DimensionContentInterface
+    protected function resolveContent(ContentRichEntityInterface $contentRichEntity, string $locale): ?DimensionContentInterface
     {
         try {
-            $contentProjection = $this->contentResolver->resolve(
+            $resolvedContent = $this->contentResolver->resolve(
                 $contentRichEntity,
                 [
                     'locale' => $locale,
@@ -162,7 +162,7 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
                 ]
             );
 
-            return $contentProjection;
+            return $resolvedContent;
         } catch (ContentNotFoundException $exception) {
             return null;
         }

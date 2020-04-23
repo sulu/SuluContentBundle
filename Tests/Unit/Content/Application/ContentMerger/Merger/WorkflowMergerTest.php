@@ -16,7 +16,6 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentMerger
 use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentMerger\Merger\MergerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentMerger\Merger\WorkflowMerger;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 
@@ -27,49 +26,49 @@ class WorkflowMergerTest extends TestCase
         return new WorkflowMerger();
     }
 
-    public function testMergeDimensionNotImplementWorkflowInterface(): void
+    public function testMergeSourceNotImplementWorkflowInterface(): void
     {
         $merger = $this->getWorkflowMergerInstance();
 
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $source = $this->prophesize(DimensionContentInterface::class);
 
-        $contentProjection = $this->prophesize(ContentProjectionInterface::class);
-        $contentProjection->willImplement(WorkflowInterface::class);
-        $contentProjection->getWorkflowPlace()->shouldNotBeCalled();
-        $contentProjection->getWorkflowPublished()->shouldNotBeCalled();
+        $target = $this->prophesize(DimensionContentInterface::class);
+        $target->willImplement(WorkflowInterface::class);
+        $target->getWorkflowPlace()->shouldNotBeCalled();
+        $target->getWorkflowPublished()->shouldNotBeCalled();
 
-        $merger->merge($contentProjection->reveal(), $dimensionContent->reveal());
+        $merger->merge($target->reveal(), $source->reveal());
     }
 
-    public function testMergeViewNotImplementWorkflowInterface(): void
+    public function testMergeTargetNotImplementWorkflowInterface(): void
     {
         $merger = $this->getWorkflowMergerInstance();
 
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent->willImplement(WorkflowInterface::class);
-        $dimensionContent->getWorkflowPlace()->shouldNotBeCalled();
-        $dimensionContent->getWorkflowPublished()->shouldNotBeCalled();
+        $source = $this->prophesize(DimensionContentInterface::class);
+        $source->willImplement(WorkflowInterface::class);
+        $source->getWorkflowPlace()->shouldNotBeCalled();
+        $source->getWorkflowPublished()->shouldNotBeCalled();
 
-        $contentProjection = $this->prophesize(ContentProjectionInterface::class);
+        $target = $this->prophesize(DimensionContentInterface::class);
 
-        $merger->merge($contentProjection->reveal(), $dimensionContent->reveal());
+        $merger->merge($target->reveal(), $source->reveal());
     }
 
     public function testMergeSet(): void
     {
         $merger = $this->getWorkflowMergerInstance();
 
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent->willImplement(WorkflowInterface::class);
+        $source = $this->prophesize(DimensionContentInterface::class);
+        $source->willImplement(WorkflowInterface::class);
         $published = new \DateTimeImmutable();
-        $dimensionContent->getWorkflowPlace()->willReturn('draft')->shouldBeCalled();
-        $dimensionContent->getWorkflowPublished()->willReturn($published)->shouldBeCalled();
+        $source->getWorkflowPlace()->willReturn('draft')->shouldBeCalled();
+        $source->getWorkflowPublished()->willReturn($published)->shouldBeCalled();
 
-        $contentProjection = $this->prophesize(ContentProjectionInterface::class);
-        $contentProjection->willImplement(WorkflowInterface::class);
-        $contentProjection->setWorkflowPlace('draft')->shouldBeCalled();
-        $contentProjection->setWorkflowPublished($published)->shouldBeCalled();
+        $target = $this->prophesize(DimensionContentInterface::class);
+        $target->willImplement(WorkflowInterface::class);
+        $target->setWorkflowPlace('draft')->shouldBeCalled();
+        $target->setWorkflowPublished($published)->shouldBeCalled();
 
-        $merger->merge($contentProjection->reveal(), $dimensionContent->reveal());
+        $merger->merge($target->reveal(), $source->reveal());
     }
 }

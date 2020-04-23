@@ -23,9 +23,8 @@ use Prophecy\Prophecy\ObjectProphecy;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\ContentDataMapperInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionTrait;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptTrait;
@@ -102,16 +101,16 @@ class ContentObjectProviderTest extends TestCase
 
         $query->getSingleResult()->willReturn($entity->reveal())->shouldBeCalledTimes(1);
 
-        $projection = $this->prophesize(ContentProjectionInterface::class);
+        $resolvedContent = $this->prophesize(DimensionContentInterface::class);
 
         $this->contentResolver->resolve(
             $entity->reveal(),
             Argument::type('array')
-        )->willReturn($projection->reveal())->shouldBeCalledTimes(1);
+        )->willReturn($resolvedContent->reveal())->shouldBeCalledTimes(1);
 
         $result = $this->contentObjectProvider->getObject((string) $id, $locale);
 
-        $this->assertSame($projection->reveal(), $result);
+        $this->assertSame($resolvedContent->reveal(), $result);
     }
 
     public function testGetNonExistingObject(int $id = 1, string $locale = 'de'): void
@@ -123,7 +122,7 @@ class ContentObjectProviderTest extends TestCase
         $this->assertNull($result);
     }
 
-    public function testGetObjectWithNonExistingProjection(int $id = 1, string $locale = 'de'): void
+    public function testGetObjectContentNotFound(int $id = 1, string $locale = 'de'): void
     {
         $queryBuilder = $this->prophesize(QueryBuilder::class);
 
@@ -165,11 +164,11 @@ class ContentObjectProviderTest extends TestCase
 
     public function testGetId(int $id = 1): void
     {
-        $projection = $this->prophesize(ContentProjectionInterface::class);
+        $resolvedContent = $this->prophesize(DimensionContentInterface::class);
 
-        $projection->getContentId()->willReturn($id);
+        $resolvedContent->getContentId()->willReturn($id);
 
-        $actualId = (string) $this->contentObjectProvider->getId($projection->reveal());
+        $actualId = (string) $this->contentObjectProvider->getId($resolvedContent->reveal());
 
         $this->assertSame((string) $id, $actualId);
     }

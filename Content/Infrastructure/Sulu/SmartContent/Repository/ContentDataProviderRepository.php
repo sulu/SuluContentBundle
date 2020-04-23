@@ -17,8 +17,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\QueryBuilder;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentManager\ContentManagerInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Component\SmartContent\Orm\DataProviderRepositoryInterface;
 
@@ -81,7 +81,7 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
      * @param string $locale
      * @param array<string, mixed> $options
      *
-     * @return ContentProjectionInterface[]
+     * @return DimensionContentInterface[]
      */
     public function findByFilters($filters, $page, $pageSize, $limit, $locale, $options = []): array
     {
@@ -102,7 +102,7 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
                         ? DimensionInterface::STAGE_DRAFT
                         : DimensionInterface::STAGE_LIVE;
 
-                    $contentProjection = $this->contentManager->resolve(
+                    $resolvedContent = $this->contentManager->resolve(
                         $contentRichEntity,
                         [
                             'locale' => $locale,
@@ -110,13 +110,13 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
                         ]
                     );
 
-                    $dimension = $contentProjection->getDimension();
+                    $dimension = $resolvedContent->getDimension();
 
                     if ($stage !== $dimension->getStage() || $locale !== $dimension->getLocale()) {
                         return null;
                     }
 
-                    return $contentProjection;
+                    return $resolvedContent;
                 },
                 $contentRichEntities
             )

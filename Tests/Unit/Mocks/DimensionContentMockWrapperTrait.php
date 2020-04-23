@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Mocks;
 
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 
 /**
@@ -28,8 +29,8 @@ trait DimensionContentMockWrapperTrait
         return $this->instance->getDimension();
     }
 
-    public function createProjectionInstance(): ContentProjectionInterface
+    public function getContentRichEntity(): ContentRichEntityInterface
     {
-        return $this->instance->createProjectionInstance();
+        return $this->instance->getContentRichEntity();
     }
 }

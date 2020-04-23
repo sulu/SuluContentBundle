@@ -16,9 +16,11 @@ namespace Sulu\Bundle\ContentBundle\Tests\Traits;
 use Doctrine\ORM\EntityManagerInterface;
 use Ferrandini\Urlizer;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentManager\ContentManagerInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleContentProjection;
+use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleDimensionContent;
 
 trait ModifyExampleTrait
 {
@@ -31,7 +33,7 @@ trait ModifyExampleTrait
         array $data = [],
         string $locale = 'en',
         string $template = 'default'
-    ): ExampleContentProjection {
+    ): ExampleDimensionContent {
         $title = $data['title'] ?? 'Test Example';
 
         $defaultData = [
@@ -50,16 +52,16 @@ trait ModifyExampleTrait
             throw new \RuntimeException(sprintf('Example with id "%s" was not found!', $id));
         }
 
-        /** @var ExampleContentProjection $contentProjection */
-        $contentProjection = static::getContentManager()->persist(
+        /** @var ExampleDimensionContent $resolvedContent */
+        $resolvedContent = static::getContentManager()->persist(
             $example,
             array_merge($defaultData, $data),
             $dimensionAttributes
         );
 
-        if (WorkflowInterface::WORKFLOW_PLACE_PUBLISHED === $contentProjection->getWorkflowPlace()) {
-            /** @var ExampleContentProjection $contentProjection */
-            $contentProjection = static::getContentManager()->applyTransition(
+        if (WorkflowInterface::WORKFLOW_PLACE_PUBLISHED === $resolvedContent->getWorkflowPlace()) {
+            /** @var ExampleDimensionContent $resolvedContent */
+            $resolvedContent = static::getContentManager()->applyTransition(
                 $example,
                 $dimensionAttributes,
                 WorkflowInterface::WORKFLOW_TRANSITION_CREATE_DRAFT
@@ -68,7 +70,7 @@ trait ModifyExampleTrait
 
         static::getEntityManager()->flush();
 
-        return $contentProjection;
+        return $resolvedContent;
     }
 
     abstract protected static function getContentManager(): ContentManagerInterface;

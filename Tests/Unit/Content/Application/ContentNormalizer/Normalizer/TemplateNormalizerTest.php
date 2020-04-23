@@ -15,7 +15,6 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentNormal
 
 use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Normalizer\TemplateNormalizer;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 
 class TemplateNormalizerTest extends TestCase
@@ -25,10 +24,10 @@ class TemplateNormalizerTest extends TestCase
         return new TemplateNormalizer();
     }
 
-    public function testIgnoredAttributesNoneContentProjection(): void
+    public function testIgnoredAttributesNotImplementTemplateInterface(): void
     {
         $normalizer = $this->createTemplateNormalizerInstance();
-        $object = $this->prophesize(ContentProjectionInterface::class);
+        $object = $this->prophesize(\stdClass::class);
 
         $this->assertSame(
             [],
@@ -47,10 +46,10 @@ class TemplateNormalizerTest extends TestCase
         );
     }
 
-    public function testEnhanceNotSupported(): void
+    public function testEnhanceNotImplementTemplateInterface(): void
     {
         $normalizer = $this->createTemplateNormalizerInstance();
-        $object = $this->prophesize(ContentProjectionInterface::class);
+        $object = $this->prophesize(\stdClass::class);
 
         $data = [
             'templateData' => [

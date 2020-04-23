@@ -16,13 +16,12 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentWorkfl
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentMerger\ContentMergerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\ContentWorkflow;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\ContentWorkflowInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\UnavailableContentTransitionException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\UnknownContentTransitionException;
-use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ContentProjectionFactoryInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollection;
@@ -40,12 +39,12 @@ class ContentWorkflowTest extends TestCase
     protected function createContentWorkflowInstance(
         DimensionRepositoryInterface $dimensionRepository,
         DimensionContentRepositoryInterface $dimensionContentRepository,
-        ContentProjectionFactoryInterface $viewFactory
+        ContentMergerInterface $contentMerger
     ): ContentWorkflowInterface {
         return new ContentWorkflow(
             $dimensionRepository,
             $dimensionContentRepository,
-            $viewFactory
+            $contentMerger
         );
     }
 
@@ -73,12 +72,12 @@ class ContentWorkflowTest extends TestCase
 
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
         $dimensionContentRepository = $this->prophesize(DimensionContentRepositoryInterface::class);
-        $viewFactory = $this->prophesize(ContentProjectionFactoryInterface::class);
+        $contentMerger = $this->prophesize(ContentMergerInterface::class);
 
         $contentWorkflow = $this->createContentWorkflowInstance(
             $dimensionRepository->reveal(),
             $dimensionContentRepository->reveal(),
-            $viewFactory->reveal()
+            $contentMerger->reveal()
         );
 
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
@@ -127,12 +126,12 @@ class ContentWorkflowTest extends TestCase
 
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
         $dimensionContentRepository = $this->prophesize(DimensionContentRepositoryInterface::class);
-        $viewFactory = $this->prophesize(ContentProjectionFactoryInterface::class);
+        $contentMerger = $this->prophesize(ContentMergerInterface::class);
 
         $contentWorkflow = $this->createContentWorkflowInstance(
             $dimensionRepository->reveal(),
             $dimensionContentRepository->reveal(),
-            $viewFactory->reveal()
+            $contentMerger->reveal()
         );
 
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
@@ -172,12 +171,12 @@ class ContentWorkflowTest extends TestCase
 
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
         $dimensionContentRepository = $this->prophesize(DimensionContentRepositoryInterface::class);
-        $viewFactory = $this->prophesize(ContentProjectionFactoryInterface::class);
+        $contentMerger = $this->prophesize(ContentMergerInterface::class);
 
         $contentWorkflow = $this->createContentWorkflowInstance(
             $dimensionRepository->reveal(),
             $dimensionContentRepository->reveal(),
-            $viewFactory->reveal()
+            $contentMerger->reveal()
         );
 
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
@@ -206,12 +205,12 @@ class ContentWorkflowTest extends TestCase
 
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
         $dimensionContentRepository = $this->prophesize(DimensionContentRepositoryInterface::class);
-        $viewFactory = $this->prophesize(ContentProjectionFactoryInterface::class);
+        $contentMerger = $this->prophesize(ContentMergerInterface::class);
 
         $contentWorkflow = $this->createContentWorkflowInstance(
             $dimensionRepository->reveal(),
             $dimensionContentRepository->reveal(),
-            $viewFactory->reveal()
+            $contentMerger->reveal()
         );
 
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
@@ -268,12 +267,12 @@ class ContentWorkflowTest extends TestCase
 
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
         $dimensionContentRepository = $this->prophesize(DimensionContentRepositoryInterface::class);
-        $viewFactory = $this->prophesize(ContentProjectionFactoryInterface::class);
+        $contentMerger = $this->prophesize(ContentMergerInterface::class);
 
         $contentWorkflow = $this->createContentWorkflowInstance(
             $dimensionRepository->reveal(),
             $dimensionContentRepository->reveal(),
-            $viewFactory->reveal()
+            $contentMerger->reveal()
         );
 
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
@@ -313,14 +312,14 @@ class ContentWorkflowTest extends TestCase
             ->willReturn($dimensionContentCollection)
             ->shouldBeCalled();
 
-        $contentProjection = $this->prophesize(ContentProjectionInterface::class);
+        $resolvedContent = $this->prophesize(DimensionContentInterface::class);
 
-        $viewFactory->create($dimensionContentCollection)
-            ->willReturn($contentProjection)
+        $contentMerger->mergeCollection($dimensionContentCollection)
+            ->willReturn($resolvedContent)
             ->shouldBeCalledTimes($isTransitionAllowed ? 1 : 0);
 
         $this->assertSame(
-            $isTransitionAllowed ? $contentProjection->reveal() : null,
+            $isTransitionAllowed ? $resolvedContent->reveal() : null,
             $contentWorkflow->apply(
                 $contentRichEntity->reveal(),
                 $dimensionAttributes,

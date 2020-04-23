@@ -14,12 +14,11 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentPersister;
 
 use PHPUnit\Framework\TestCase;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentMerger\ContentMergerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersister;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersisterInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ContentProjectionFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\DimensionCollectionFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\DimensionContentCollectionFactoryInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityTrait;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
@@ -33,12 +32,12 @@ class ContentPersisterTest extends TestCase
     protected function createContentPersisterInstance(
         DimensionCollectionFactoryInterface $dimensionCollectionFactory,
         DimensionContentCollectionFactoryInterface $dimensionContentCollectionFactory,
-        ContentProjectionFactoryInterface $viewFactory
+        ContentMergerInterface $contentMerger
     ): ContentPersisterInterface {
         return new ContentPersister(
             $dimensionCollectionFactory,
             $dimensionContentCollectionFactory,
-            $viewFactory
+            $contentMerger
         );
     }
 
@@ -95,16 +94,16 @@ class ContentPersisterTest extends TestCase
             ->willReturn($dimensionContentCollection)
             ->shouldBeCalled();
 
-        $contentProjection = $this->prophesize(ContentProjectionInterface::class);
-        $viewFactory = $this->prophesize(ContentProjectionFactoryInterface::class);
-        $viewFactory->create($dimensionContentCollection)->willReturn($contentProjection->reveal())->shouldBeCalled();
+        $persistedContent = $this->prophesize(DimensionContentInterface::class);
+        $contentMerger = $this->prophesize(ContentMergerInterface::class);
+        $contentMerger->mergeCollection($dimensionContentCollection)->willReturn($persistedContent->reveal())->shouldBeCalled();
 
         $createContentMessageHandler = $this->createContentPersisterInstance(
             $dimensionCollectionFactory->reveal(),
             $dimensionContentCollectionFactory->reveal(),
-            $viewFactory->reveal()
+            $contentMerger->reveal()
         );
 
-        $this->assertSame($contentProjection->reveal(), $createContentMessageHandler->persist($contentRichEntity, $data, $attributes));
+        $this->assertSame($persistedContent->reveal(), $createContentMessageHandler->persist($contentRichEntity, $data, $attributes));
     }
 }

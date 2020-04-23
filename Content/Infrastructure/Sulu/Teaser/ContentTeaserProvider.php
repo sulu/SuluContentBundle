@@ -16,8 +16,8 @@ namespace Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Teaser;
 use Doctrine\ORM\EntityManagerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentManager\ContentManagerInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
@@ -79,15 +79,15 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
             array_filter(
                 array_map(
                     function (ContentRichEntityInterface $contentRichEntity) use ($locale): ?Teaser {
-                        $contentProjection = $this->resolveContentRichEntity($contentRichEntity, $locale);
+                        $resolvedContent = $this->resolveContent($contentRichEntity, $locale);
 
-                        if (!$contentProjection) {
+                        if (!$resolvedContent) {
                             return null;
                         }
 
-                        $data = $this->contentManager->normalize($contentProjection);
+                        $data = $this->contentManager->normalize($resolvedContent);
 
-                        return $this->createTeaser($contentProjection, $data, $locale);
+                        return $this->createTeaser($resolvedContent, $data, $locale);
                     },
                     $contentRichEntities
                 )
@@ -98,28 +98,28 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
     /**
      * @param mixed[] $data
      */
-    protected function createTeaser(ContentProjectionInterface $contentProjection, array $data, string $locale): ?Teaser
+    protected function createTeaser(DimensionContentInterface $resolvedContent, array $data, string $locale): ?Teaser
     {
-        $url = $this->getUrl($contentProjection, $data);
+        $url = $this->getUrl($resolvedContent, $data);
 
         if (!$url) {
             return null;
         }
 
         /** @var string $title */
-        $title = $this->getTitle($contentProjection, $data);
+        $title = $this->getTitle($resolvedContent, $data);
 
         /** @var string $description */
-        $description = $this->getDescription($contentProjection, $data);
+        $description = $this->getDescription($resolvedContent, $data);
 
         /** @var string $moreText */
-        $moreText = $this->getMoreText($contentProjection, $data);
+        $moreText = $this->getMoreText($resolvedContent, $data);
 
         /** @var int $mediaId */
-        $mediaId = $this->getMediaId($contentProjection, $data);
+        $mediaId = $this->getMediaId($resolvedContent, $data);
 
         return new Teaser(
-            $contentProjection->getContentId(),
+            $resolvedContent->getContentId(),
             $this->getResourceKey(),
             $locale,
             $title,
@@ -127,18 +127,18 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
             $moreText,
             $url,
             $mediaId,
-            $this->getAttributes($contentProjection, $data)
+            $this->getAttributes($resolvedContent, $data)
         );
     }
 
-    protected function resolveContentRichEntity(ContentRichEntityInterface $contentRichEntity, string $locale): ?ContentProjectionInterface
+    protected function resolveContent(ContentRichEntityInterface $contentRichEntity, string $locale): ?DimensionContentInterface
     {
         $stage = $this->getShowDrafts()
             ? DimensionInterface::STAGE_DRAFT
             : DimensionInterface::STAGE_LIVE;
 
         try {
-            $contentProjection = $this->contentManager->resolve($contentRichEntity, [
+            $resolvedContent = $this->contentManager->resolve($contentRichEntity, [
                 'locale' => $locale,
                 'stage' => $stage,
             ]);
@@ -146,26 +146,26 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
             return null;
         }
 
-        $dimension = $contentProjection->getDimension();
+        $dimension = $resolvedContent->getDimension();
 
         if ($stage !== $dimension->getStage() || $locale !== $dimension->getLocale()) {
             return null;
         }
 
-        return $contentProjection;
+        return $resolvedContent;
     }
 
     /**
      * @param mixed[] $data
      */
-    protected function getUrl(ContentProjectionInterface $contentProjection, array $data): ?string
+    protected function getUrl(DimensionContentInterface $resolvedContent, array $data): ?string
     {
-        if (!$contentProjection instanceof TemplateInterface) {
+        if (!$resolvedContent instanceof TemplateInterface) {
             return null;
         }
 
-        $type = $contentProjection::getTemplateType();
-        $template = $contentProjection->getTemplateKey();
+        $type = $resolvedContent::getTemplateType();
+        $template = $resolvedContent->getTemplateKey();
 
         $metadata = $this->metadataFactory->getStructureMetadata($type, $template);
 
@@ -175,7 +175,7 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
 
         foreach ($metadata->getProperties() as $property) {
             if ('route' === $property->getType()) {
-                return $contentProjection->getTemplateData()[$property->getName()] ?? null;
+                return $resolvedContent->getTemplateData()[$property->getName()] ?? null;
             }
         }
 
@@ -185,10 +185,10 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
     /**
      * @param mixed[] $data
      */
-    protected function getTitle(ContentProjectionInterface $contentProjection, array $data): ?string
+    protected function getTitle(DimensionContentInterface $resolvedContent, array $data): ?string
     {
-        if ($contentProjection instanceof ExcerptInterface) {
-            if ($excerptTitle = $contentProjection->getExcerptTitle()) {
+        if ($resolvedContent instanceof ExcerptInterface) {
+            if ($excerptTitle = $resolvedContent->getExcerptTitle()) {
                 return $excerptTitle;
             }
         }
@@ -199,10 +199,10 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
     /**
      * @param mixed[] $data
      */
-    protected function getDescription(ContentProjectionInterface $contentProjection, array $data): ?string
+    protected function getDescription(DimensionContentInterface $resolvedContent, array $data): ?string
     {
-        if ($contentProjection instanceof ExcerptInterface) {
-            if ($excerptDescription = $contentProjection->getExcerptDescription()) {
+        if ($resolvedContent instanceof ExcerptInterface) {
+            if ($excerptDescription = $resolvedContent->getExcerptDescription()) {
                 return $excerptDescription;
             }
         }
@@ -213,10 +213,10 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
     /**
      * @param mixed[] $data
      */
-    protected function getMoreText(ContentProjectionInterface $contentProjection, array $data): ?string
+    protected function getMoreText(DimensionContentInterface $resolvedContent, array $data): ?string
     {
-        if ($contentProjection instanceof ExcerptInterface) {
-            if ($excerptMore = $contentProjection->getExcerptMore()) {
+        if ($resolvedContent instanceof ExcerptInterface) {
+            if ($excerptMore = $resolvedContent->getExcerptMore()) {
                 return $excerptMore;
             }
         }
@@ -227,10 +227,10 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
     /**
      * @param mixed[] $data
      */
-    protected function getMediaId(ContentProjectionInterface $contentProjection, array $data): ?string
+    protected function getMediaId(DimensionContentInterface $resolvedContent, array $data): ?string
     {
-        if ($contentProjection instanceof ExcerptInterface) {
-            if ($excerptImage = $contentProjection->getExcerptImage()) {
+        if ($resolvedContent instanceof ExcerptInterface) {
+            if ($excerptImage = $resolvedContent->getExcerptImage()) {
                 return $excerptImage['id'] ?? null;
             }
         }
@@ -243,7 +243,7 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
      *
      * @return mixed[]
      */
-    protected function getAttributes(ContentProjectionInterface $contentProjection, array $data): array
+    protected function getAttributes(DimensionContentInterface $resolvedContent, array $data): array
     {
         return [];
     }

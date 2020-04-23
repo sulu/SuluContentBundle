@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\SmartContent\DataItem;
 
 use JMS\Serializer\Annotation as Serializer;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 use Sulu\Component\SmartContent\ArrayAccessItem;
@@ -29,9 +29,9 @@ class ContentDataItem extends ArrayAccessItem implements ItemInterface, PublishI
     /**
      * @param mixed[] $data
      */
-    public function __construct(ContentProjectionInterface $contentProjection, array $data)
+    public function __construct(DimensionContentInterface $resolvedContent, array $data)
     {
-        parent::__construct($contentProjection->getContentId(), $data, $contentProjection);
+        parent::__construct($resolvedContent->getContentId(), $data, $resolvedContent);
     }
 
     /**
@@ -63,18 +63,18 @@ class ContentDataItem extends ArrayAccessItem implements ItemInterface, PublishI
      */
     public function getPublished(): ?\DateTimeInterface
     {
-        $contentProjection = $this->getContentProjection();
-        $dimension = $contentProjection->getDimension();
+        $resolvedContent = $this->getResolvedContent();
+        $dimension = $resolvedContent->getDimension();
 
         if (null === $dimension->getLocale()) {
             return null;
         }
 
-        if (!$contentProjection instanceof WorkflowInterface) {
+        if (!$resolvedContent instanceof WorkflowInterface) {
             return null;
         }
 
-        return $contentProjection->getWorkflowPublished();
+        return $resolvedContent->getWorkflowPublished();
     }
 
     /**
@@ -82,8 +82,8 @@ class ContentDataItem extends ArrayAccessItem implements ItemInterface, PublishI
      */
     public function getPublishedState(): bool
     {
-        $contentProjection = $this->getContentProjection();
-        $dimension = $contentProjection->getDimension();
+        $resolvedContent = $this->getResolvedContent();
+        $dimension = $resolvedContent->getDimension();
 
         if (null === $dimension->getLocale()) {
             return false;
@@ -93,18 +93,18 @@ class ContentDataItem extends ArrayAccessItem implements ItemInterface, PublishI
             return true;
         }
 
-        if (!$contentProjection instanceof WorkflowInterface) {
+        if (!$resolvedContent instanceof WorkflowInterface) {
             return true;
         }
 
-        return WorkflowInterface::WORKFLOW_PLACE_PUBLISHED === $contentProjection->getWorkflowPlace();
+        return WorkflowInterface::WORKFLOW_PLACE_PUBLISHED === $resolvedContent->getWorkflowPlace();
     }
 
-    protected function getContentProjection(): ContentProjectionInterface
+    protected function getResolvedContent(): DimensionContentInterface
     {
-        /** @var ContentProjectionInterface $contentProjection */
-        $contentProjection = $this->getResource();
+        /** @var DimensionContentInterface $resolvedContent */
+        $resolvedContent = $this->getResource();
 
-        return $contentProjection;
+        return $resolvedContent;
     }
 }
