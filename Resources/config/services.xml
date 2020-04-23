@@ -19,13 +19,6 @@
 
         <service id="Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Admin\ContentViewBuilderFactoryInterface" alias="sulu_content.content_view_builder_factory"/>
 
-        <!-- ContentProjectionFactory -->
-        <service id="sulu_content.content_projection_factory" class="Sulu\Bundle\ContentBundle\Content\Application\ContentProjectionFactory\ContentProjectionFactory">
-            <argument type="service" id="sulu_content.content_merger"/>
-        </service>
-
-        <service id="Sulu\Bundle\ContentBundle\Content\Domain\Factory\ContentProjectionFactoryInterface" alias="sulu_content.content_projection_factory"/>
-
         <!-- ContentMerger -->
         <service id="sulu_content.content_merger" class="Sulu\Bundle\ContentBundle\Content\Application\ContentMerger\ContentMerger">
             <argument type="tagged" tag="sulu_content.merger"/>
@@ -90,7 +83,7 @@
         <service id="sulu_content.content_persister" class="Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersister">
             <argument type="service" id="sulu_content.dimension_collection_factory"/>
             <argument type="service" id="sulu_content.dimension_content_collection_factory"/>
-            <argument type="service" id="sulu_content.content_projection_factory"/>
+            <argument type="service" id="sulu_content.content_merger"/>
         </service>
 
         <service id="Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersisterInterface" alias="sulu_content.content_persister"/>
@@ -99,7 +92,7 @@
         <service id="sulu_content.content_resolver" class="Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolver">
             <argument type="service" id="sulu.repository.dimension"/>
             <argument type="service" id="sulu_content.dimension_content_repository"/>
-            <argument type="service" id="sulu_content.content_projection_factory"/>
+            <argument type="service" id="sulu_content.content_merger"/>
         </service>
 
         <service id="Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolverInterface" alias="sulu_content.content_resolver"/>
@@ -114,7 +107,7 @@
         <!-- Content Copier -->
         <service id="sulu_content.content_copier" class="Sulu\Bundle\ContentBundle\Content\Application\ContentCopier\ContentCopier">
             <argument type="service" id="sulu_content.content_resolver"/>
-            <argument type="service" id="sulu_content.content_projection_factory"/>
+            <argument type="service" id="sulu_content.content_merger"/>
             <argument type="service" id="sulu_content.content_persister"/>
             <argument type="service" id="sulu_content.content_normalizer"/>
         </service>
@@ -125,7 +118,7 @@
         <service id="sulu_content.content_workflow" class="Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\ContentWorkflow">
             <argument type="service" id="sulu.repository.dimension"/>
             <argument type="service" id="sulu_content.dimension_content_repository"/>
-            <argument type="service" id="sulu_content.content_projection_factory"/>
+            <argument type="service" id="sulu_content.content_merger"/>
             <argument type="service" id="workflow.registry" on-invalid="null"/>
             <argument type="service" id="event_dispatcher"/>
         </service>

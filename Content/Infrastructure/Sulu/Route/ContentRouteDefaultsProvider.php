@@ -17,8 +17,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NoResultException;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Structure\ContentStructureBridgeFactory;
@@ -56,7 +56,7 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
      * @param string $entityClass
      * @param string $id
      * @param string $locale
-     * @param ContentProjectionInterface|null $object
+     * @param DimensionContentInterface|null $object
      *
      * @return mixed[]
      */
@@ -91,7 +91,7 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
     {
         $entity = $this->loadEntity($entityClass, $id, $locale);
 
-        if ($entity instanceof ContentProjectionInterface) {
+        if ($entity instanceof DimensionContentInterface) {
             $dimension = $entity->getDimension();
 
             return DimensionInterface::STAGE_LIVE === $dimension->getStage() && $locale === $dimension->getLocale();
@@ -103,7 +103,7 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
     public function supports($entityClass)
     {
         return is_a($entityClass, ContentRichEntityInterface::class, true)
-            || is_a($entityClass, ContentProjectionInterface::class, true);
+            || is_a($entityClass, DimensionContentInterface::class, true);
     }
 
     protected function loadEntity(string $entityClass, string $id, string $locale): ?TemplateInterface

@@ -17,5 +17,5 @@ interface DimensionContentInterface
 {
     public function getDimension(): DimensionInterface;
 
-    public function createProjectionInstance(): ContentProjectionInterface;
+    public function getContentRichEntity(): ContentRichEntityInterface;
 }

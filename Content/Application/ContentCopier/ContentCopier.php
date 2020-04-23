@@ -13,13 +13,13 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentCopier;
 
+use Sulu\Bundle\ContentBundle\Content\Application\ContentMerger\ContentMergerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\ContentNormalizerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersisterInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolverInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ContentProjectionFactoryInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 
 class ContentCopier implements ContentCopierInterface
 {
@@ -29,9 +29,9 @@ class ContentCopier implements ContentCopierInterface
     private $contentResolver;
 
     /**
-     * @var ContentProjectionFactoryInterface
+     * @var ContentMergerInterface
      */
-    private $viewFactory;
+    private $contentMerger;
 
     /**
      * @var ContentPersisterInterface
@@ -45,12 +45,12 @@ class ContentCopier implements ContentCopierInterface
 
     public function __construct(
         ContentResolverInterface $contentResolver,
-        ContentProjectionFactoryInterface $viewFactory,
+        ContentMergerInterface $contentMerger,
         ContentPersisterInterface $contentPersister,
         ContentNormalizerInterface $contentNormalizer
     ) {
         $this->contentResolver = $contentResolver;
-        $this->viewFactory = $viewFactory;
+        $this->contentMerger = $contentMerger;
         $this->contentPersister = $contentPersister;
         $this->contentNormalizer = $contentNormalizer;
     }
@@ -60,7 +60,7 @@ class ContentCopier implements ContentCopierInterface
         array $sourceDimensionAttributes,
         ContentRichEntityInterface $targetContentRichEntity,
         array $targetDimensionAttributes
-    ): ContentProjectionInterface {
+    ): DimensionContentInterface {
         $sourceContentProjection = $this->contentResolver->resolve($sourceContentRichEntity, $sourceDimensionAttributes);
 
         return $this->copyFromContentProjection($sourceContentProjection, $targetContentRichEntity, $targetDimensionAttributes);
@@ -70,17 +70,17 @@ class ContentCopier implements ContentCopierInterface
         DimensionContentCollectionInterface $dimensionContentCollection,
         ContentRichEntityInterface $targetContentRichEntity,
         array $targetDimensionAttributes
-    ): ContentProjectionInterface {
-        $sourceContentProjection = $this->viewFactory->create($dimensionContentCollection);
+    ): DimensionContentInterface {
+        $sourceContentProjection = $this->contentMerger->create($dimensionContentCollection);
 
         return $this->copyFromContentProjection($sourceContentProjection, $targetContentRichEntity, $targetDimensionAttributes);
     }
 
     public function copyFromContentProjection(
-        ContentProjectionInterface $sourceContentProjection,
+        DimensionContentInterface $sourceContentProjection,
         ContentRichEntityInterface $targetContentRichEntity,
         array $targetDimensionAttributes
-    ): ContentProjectionInterface {
+    ): DimensionContentInterface {
         $data = $this->contentNormalizer->normalize($sourceContentProjection);
 
         return $this->contentPersister->persist($targetContentRichEntity, $data, $targetDimensionAttributes);

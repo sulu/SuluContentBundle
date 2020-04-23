@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentCopier;
 
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 
 interface ContentCopierInterface
 {
@@ -28,7 +28,7 @@ interface ContentCopierInterface
         array $sourceDimensionAttributes,
         ContentRichEntityInterface $targetContentRichEntity,
         array $targetDimensionAttributes
-    ): ContentProjectionInterface;
+    ): DimensionContentInterface;
 
     /**
      * @param mixed[] $targetDimensionAttributes
@@ -37,14 +37,14 @@ interface ContentCopierInterface
         DimensionContentCollectionInterface $dimensionContentCollection,
         ContentRichEntityInterface $targetContentRichEntity,
         array $targetDimensionAttributes
-    ): ContentProjectionInterface;
+    ): DimensionContentInterface;
 
     /**
      * @param mixed[] $targetDimensionAttributes
      */
     public function copyFromContentProjection(
-        ContentProjectionInterface $sourceContentProjection,
+        DimensionContentInterface $sourceContentProjection,
         ContentRichEntityInterface $targetContentRichEntity,
         array $targetDimensionAttributes
-    ): ContentProjectionInterface;
+    ): DimensionContentInterface;
 }

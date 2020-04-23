@@ -65,7 +65,6 @@ class SuluContentExtensionTest extends AbstractExtensionTestCase
 
         // Additional services aliases
         $this->assertContainerBuilderHasAlias(ContentViewBuilderFactoryInterface::class, 'sulu_content.content_view_builder_factory');
-        $this->assertContainerBuilderHasAlias(ContentProjectionFactoryInterface::class, 'sulu_content.content_projection_factory');
         $this->assertContainerBuilderHasAlias(DimensionContentCollectionFactoryInterface::class, 'sulu_content.dimension_content_collection_factory');
         $this->assertContainerBuilderHasAlias(DimensionContentRepositoryInterface::class, 'sulu_content.dimension_content_repository');
     }
