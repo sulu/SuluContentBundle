@@ -19,11 +19,38 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
+use Sulu\Bundle\PageBundle\Teaser\Provider\TeaserProviderInterface;
 use Sulu\Bundle\PageBundle\Teaser\Teaser;
 use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
-trait ContentTeaserProviderTrait
+abstract class ContentTeaserProvider implements TeaserProviderInterface
 {
+    /**
+     * @var ContentManagerInterface
+     */
+    protected $contentManager;
+
+    /**
+     * @var StructureMetadataFactoryInterface
+     */
+    protected $metadataFactory;
+
+    /**
+     * @var TranslatorInterface
+     */
+    protected $translator;
+
+    public function __construct(
+        ContentManagerInterface $contentManager,
+        StructureMetadataFactoryInterface $metadataFactory,
+        TranslatorInterface $translator
+    ) {
+        $this->contentManager = $contentManager;
+        $this->metadataFactory = $metadataFactory;
+        $this->translator = $translator;
+    }
+
     /**
      * @param mixed[] $ids
      * @param string $locale
@@ -94,7 +121,7 @@ trait ContentTeaserProviderTrait
 
     protected function resolveContentRichEntity(ContentRichEntityInterface $contentRichEntity, string $locale): ?ContentProjectionInterface
     {
-        $stage = $this->getShowUnpublished()
+        $stage = $this->getShowDrafts()
             ? DimensionInterface::STAGE_DRAFT
             : DimensionInterface::STAGE_LIVE;
 
@@ -205,9 +232,24 @@ trait ContentTeaserProviderTrait
         return [];
     }
 
-    protected function getShowUnpublished(): bool
+    protected function getShowDrafts(): bool
     {
         return false;
+    }
+
+    protected function getContentManager(): ContentManagerInterface
+    {
+        return $this->contentManager;
+    }
+
+    protected function getMetadataFactory(): StructureMetadataFactoryInterface
+    {
+        return $this->metadataFactory;
+    }
+
+    protected function getTranslator(): TranslatorInterface
+    {
+        return $this->translator;
     }
 
     /**
@@ -218,8 +260,4 @@ trait ContentTeaserProviderTrait
     abstract protected function findByIds(array $ids): array;
 
     abstract protected function getResourceKey(): string;
-
-    abstract protected function getContentManager(): ContentManagerInterface;
-
-    abstract protected function getMetadataFactory(): StructureMetadataFactoryInterface;
 }
