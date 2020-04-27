@@ -70,7 +70,7 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
         $this->showDrafts = $showDrafts;
         $this->entityClassName = $entityClassName;
 
-        $this->entityClassMetadata = $this->getEntityManager()->getClassMetadata($this->getEntityClass());
+        $this->entityClassMetadata = $this->entityManager->getClassMetadata($this->entityClassName);
     }
 
     /**
@@ -93,7 +93,7 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
 
         $contentRichEntities = $this->findEntitiesByIds($ids);
 
-        $showUnpublished = $this->getShowDrafts();
+        $showUnpublished = $this->showDrafts;
 
         return array_filter(
             array_map(
@@ -102,7 +102,7 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
                         ? DimensionInterface::STAGE_DRAFT
                         : DimensionInterface::STAGE_LIVE;
 
-                    $contentProjection = $this->getContentManager()->resolve(
+                    $contentProjection = $this->contentManager->resolve(
                         $contentRichEntity,
                         [
                             'locale' => $locale,
@@ -139,14 +139,14 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
     ): array {
         $parameters = [];
 
-        $queryBuilder = $this->createQueryBuilder($locale);
+        $queryBuilder = $this->createEntityIdsQueryBuilder($locale);
 
         if (!empty($categories = $filters['categories'] ?? [])) {
             $categoryOperator = (string) ($filters['categoryOperator'] ?? 'OR');
 
             $parameters = array_merge(
                 $parameters,
-                $this->appendCategoryRelation($queryBuilder, $categories, $categoryOperator, 'adminCategories')
+                $this->addCategoryFilter($queryBuilder, $categories, $categoryOperator, 'adminCategories')
             );
         }
 
@@ -155,7 +155,7 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
 
             $parameters = array_merge(
                 $parameters,
-                $this->appendCategoryRelation($queryBuilder, $websiteCategories, $websiteCategoryOperator, 'websiteCategories')
+                $this->addCategoryFilter($queryBuilder, $websiteCategories, $websiteCategoryOperator, 'websiteCategories')
             );
         }
 
@@ -164,7 +164,7 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
 
             $parameters = array_merge(
                 $parameters,
-                $this->appendTagRelation($queryBuilder, $tags, $tagOperator, 'adminTags')
+                $this->addTagFilter($queryBuilder, $tags, $tagOperator, 'adminTags')
             );
         }
 
@@ -173,27 +173,27 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
 
             $parameters = array_merge(
                 $parameters,
-                $this->appendTagRelation($queryBuilder, $websiteTags, $websiteTagOperator, 'websiteTags')
+                $this->addTagFilter($queryBuilder, $websiteTags, $websiteTagOperator, 'websiteTags')
             );
         }
 
         if ($targetGroupId = $filters['targetGroupId'] ?? null) {
             $parameters = array_merge(
                 $parameters,
-                $this->appendTargetGroupRelation($queryBuilder, $targetGroupId, 'targetGroupId')
+                $this->addTargetGroupFilter($queryBuilder, $targetGroupId, 'targetGroupId')
             );
         }
 
         if ($dataSource = $filters['dataSource'] ?? null) {
             $includeSubFolders = (bool) ($filters['includeSubFolders'] ?? false);
 
-            $parameters = array_merge($parameters, $this->appendDatasource($queryBuilder, (string) $dataSource, $includeSubFolders));
+            $parameters = array_merge($parameters, $this->addDatasourceFilter($queryBuilder, (string) $dataSource, $includeSubFolders, 'datasource'));
         }
 
         if ($sortColumn = $filters['sortBy'] ?? null) {
             $sortMethod = (string) ($filters['sortMethod'] ?? 'asc');
 
-            $parameters = array_merge($parameters, $this->appendSortBy($queryBuilder, (string) $sortColumn, $sortMethod));
+            $parameters = array_merge($parameters, $this->setSortBy($queryBuilder, (string) $sortColumn, $sortMethod));
         }
 
         $query = $queryBuilder->getQuery();
@@ -217,7 +217,7 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
     }
 
     /**
-     * Extension point to append relations to category relation if it is not direct linked.
+     * Extension point to change field name of category relation.
      */
     protected function getCategoryRelationFieldName(QueryBuilder $queryBuilder): string
     {
@@ -225,7 +225,7 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
     }
 
     /**
-     * Extension point to append relations to tag relation if it is not direct linked.
+     * Extension point to change field name of tag relation.
      */
     protected function getTagRelationFieldName(QueryBuilder $queryBuilder): string
     {
@@ -233,7 +233,7 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
     }
 
     /**
-     * Extension point to append relations to target group relation if it is not direct linked.
+     * Extension point to change field name of target group relation.
      */
     protected function getTargetGroupRelationFieldName(QueryBuilder $queryBuilder): string
     {
@@ -247,7 +247,7 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
      *
      * @return array<string, mixed> parameters for query
      */
-    protected function appendCategoryRelation(QueryBuilder $queryBuilder, array $categories, string $categoryOperator, string $alias): array
+    protected function addCategoryFilter(QueryBuilder $queryBuilder, array $categories, string $categoryOperator, string $alias): array
     {
         return $this->appendRelation(
             $queryBuilder,
@@ -265,7 +265,7 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
      *
      * @return array<string, mixed> parameters for query
      */
-    protected function appendTagRelation(QueryBuilder $queryBuilder, array $tags, string $tagOperator, string $alias): array
+    protected function addTagFilter(QueryBuilder $queryBuilder, array $tags, string $tagOperator, string $alias): array
     {
         return $this->appendRelation(
             $queryBuilder,
@@ -283,7 +283,7 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
      *
      * @return array<string, mixed> parameters for query
      */
-    protected function appendTargetGroupRelation(QueryBuilder $queryBuilder, $targetGroupId, string $alias): array
+    protected function addTargetGroupFilter(QueryBuilder $queryBuilder, $targetGroupId, string $alias): array
     {
         return $this->appendRelation(
             $queryBuilder,
@@ -295,21 +295,21 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
     }
 
     /**
-     * Extension point to append datasource.
+     * Extension point to filter for datasource.
      *
      * @return array<string, mixed> parameters for query
      */
-    protected function appendDatasource(QueryBuilder $queryBuilder, string $datasource, bool $includeSubFolders): array
+    protected function addDatasourceFilter(QueryBuilder $queryBuilder, string $datasource, bool $includeSubFolders, string $alias): array
     {
         return [];
     }
 
     /**
-     * Extension point to append order.
+     * Extension point to set order.
      *
      * @return array<string, mixed>
      */
-    protected function appendSortBy(
+    protected function setSortBy(
         QueryBuilder $queryBuilder,
         string $sortColumn,
         string $sortMethod
@@ -323,7 +323,7 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
         }
 
         if (!\in_array($alias, $queryBuilder->getAllAliases(), true)) {
-            $parameters = $this->appendSortByJoins($queryBuilder);
+            $parameters = $this->setSortByJoins($queryBuilder);
         }
 
         $queryBuilder
@@ -334,11 +334,11 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
     }
 
     /**
-     * Append sort by joins to query builder for "findIdsByFilters" method.
+     * Set sort by joins to query builder for "findIdsByFilters" method.
      *
      * @return array<string, mixed>
      */
-    protected function appendSortByJoins(QueryBuilder $queryBuilder): array
+    protected function setSortByJoins(QueryBuilder $queryBuilder): array
     {
         return [];
     }
@@ -402,24 +402,24 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
         return $parameter;
     }
 
-    protected function createQueryBuilder(string $locale): QueryBuilder
+    protected function createEntityIdsQueryBuilder(string $locale): QueryBuilder
     {
-        $stage = $this->getShowDrafts()
+        $stage = $this->showDrafts
             ? DimensionInterface::STAGE_DRAFT
             : DimensionInterface::STAGE_LIVE;
 
-        return $this->getEntityManager()->createQueryBuilder()
+        return $this->entityManager->createQueryBuilder()
             ->select(self::CONTENT_RICH_ENTITY_ALIAS . '.' . $this->getEntityIdentifierFieldName() . ' as id')
             ->distinct()
-            ->from($this->getEntityClass(), self::CONTENT_RICH_ENTITY_ALIAS)
+            ->from($this->entityClassName, self::CONTENT_RICH_ENTITY_ALIAS)
             ->innerJoin(self::CONTENT_RICH_ENTITY_ALIAS . '.dimensionContents', self::LOCALIZED_DIMENSION_CONTENT_ALIAS)
-            ->innerJoin(self::LOCALIZED_DIMENSION_CONTENT_ALIAS . '.dimension', '' . self::LOCALIZED_DIMENSION_ALIAS . '')
-            ->andWhere('' . self::LOCALIZED_DIMENSION_ALIAS . '.stage = (:stage)')
-            ->andWhere('' . self::LOCALIZED_DIMENSION_ALIAS . '.locale = (:locale)')
+            ->innerJoin(self::LOCALIZED_DIMENSION_CONTENT_ALIAS . '.dimension', self::LOCALIZED_DIMENSION_ALIAS)
+            ->andWhere(self::LOCALIZED_DIMENSION_ALIAS . '.stage = (:stage)')
+            ->andWhere(self::LOCALIZED_DIMENSION_ALIAS . '.locale = (:locale)')
             ->innerJoin(self::CONTENT_RICH_ENTITY_ALIAS . '.dimensionContents', self::UNLOCALIZED_DIMENSION_CONTENT_ALIAS)
-            ->innerJoin(self::UNLOCALIZED_DIMENSION_CONTENT_ALIAS . '.dimension', '' . self::UNLOCALIZED_DIMENSION_ALIAS . '')
-            ->andWhere('' . self::UNLOCALIZED_DIMENSION_ALIAS . '.stage = (:stage)')
-            ->andWhere('' . self::UNLOCALIZED_DIMENSION_ALIAS . '.locale IS NULL')
+            ->innerJoin(self::UNLOCALIZED_DIMENSION_CONTENT_ALIAS . '.dimension', self::UNLOCALIZED_DIMENSION_ALIAS)
+            ->andWhere(self::UNLOCALIZED_DIMENSION_ALIAS . '.stage = (:stage)')
+            ->andWhere(self::UNLOCALIZED_DIMENSION_ALIAS . '.locale IS NULL')
             ->setParameter('stage', $stage)
             ->setParameter('locale', $locale);
     }
@@ -433,10 +433,10 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
     {
         $entityIdentifierFieldName = $this->getEntityIdentifierFieldName();
 
-        $entities = $this->getEntityManager()->createQueryBuilder()
-            ->select('entity')
-            ->from($this->getEntityClass(), 'entity')
-            ->where('entity.' . $entityIdentifierFieldName . ' IN (:ids)')
+        $entities = $this->entityManager->createQueryBuilder()
+            ->select(self::CONTENT_RICH_ENTITY_ALIAS)
+            ->from($this->entityClassName, self::CONTENT_RICH_ENTITY_ALIAS)
+            ->where(self::CONTENT_RICH_ENTITY_ALIAS . '.' . $entityIdentifierFieldName . ' IN (:ids)')
             ->getQuery()
             ->setParameter('ids', $ids)
             ->getResult();
@@ -446,8 +446,8 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
         usort(
             $entities,
             function (ContentRichEntityInterface $a, ContentRichEntityInterface $b) use ($idPositions, $entityIdentifierFieldName) {
-                $aId = $this->getEntityClassMetadata()->getIdentifierValues($a)[$entityIdentifierFieldName];
-                $bId = $this->getEntityClassMetadata()->getIdentifierValues($b)[$entityIdentifierFieldName];
+                $aId = $this->entityClassMetadata->getIdentifierValues($a)[$entityIdentifierFieldName];
+                $bId = $this->entityClassMetadata->getIdentifierValues($b)[$entityIdentifierFieldName];
 
                 return $idPositions[$aId] - $idPositions[$bId];
             }
@@ -461,37 +461,6 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
      */
     protected function getEntityIdentifierFieldName(): string
     {
-        return $this->getEntityClassMetadata()->getSingleIdentifierFieldName();
-    }
-
-    protected function getContentManager(): ContentManagerInterface
-    {
-        return $this->contentManager;
-    }
-
-    protected function getEntityManager(): EntityManagerInterface
-    {
-        return $this->entityManager;
-    }
-
-    /**
-     * @return class-string<ContentRichEntityInterface>
-     */
-    protected function getEntityClass(): string
-    {
-        /** @var class-string<ContentRichEntityInterface> $entityClassName */
-        $entityClassName = $this->entityClassName;
-
-        return $entityClassName;
-    }
-
-    protected function getEntityClassMetadata(): ClassMetadata
-    {
-        return $this->entityClassMetadata;
-    }
-
-    protected function getShowDrafts(): bool
-    {
-        return $this->showDrafts;
+        return $this->entityClassMetadata->getSingleIdentifierFieldName();
     }
 }

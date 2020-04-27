@@ -23,6 +23,7 @@ use Sulu\Component\SmartContent\Configuration\BuilderInterface;
 use Sulu\Component\SmartContent\ItemInterface;
 use Sulu\Component\SmartContent\Orm\BaseDataProvider;
 use Sulu\Component\SmartContent\Orm\DataProviderRepositoryInterface;
+use Sulu\Component\SmartContent\ResourceItemInterface;
 
 class ContentDataProvider extends BaseDataProvider
 {
@@ -101,11 +102,11 @@ class ContentDataProvider extends BaseDataProvider
                 $contentProjectionData = $this->getContentProjectionData($contentProjection);
                 $id = $this->getIdForItem($contentProjection);
 
-                if (null !== $this->getReferenceStore()) {
-                    $this->getReferenceStore()->add($id);
+                if (null !== $this->referenceStore) {
+                    $this->referenceStore->add($id);
                 }
 
-                return new ArrayAccessItem($id, $contentProjectionData, $contentProjection);
+                return $this->createResourceItem($id, $contentProjection, $contentProjectionData);
             },
             $data
         );
@@ -126,7 +127,7 @@ class ContentDataProvider extends BaseDataProvider
      */
     protected function getContentProjectionData(ContentProjectionInterface $contentProjection): array
     {
-        return $this->getContentManager()->normalize($contentProjection);
+        return $this->contentManager->normalize($contentProjection);
     }
 
     /**
@@ -137,13 +138,12 @@ class ContentDataProvider extends BaseDataProvider
         return new ContentDataItem($contentProjection, $data);
     }
 
-    protected function getContentManager(): ContentManagerInterface
+    /**
+     * @param mixed $id
+     * @param mixed[] $data
+     */
+    protected function createResourceItem($id, ContentProjectionInterface $contentProjection, array $data): ResourceItemInterface
     {
-        return $this->contentManager;
-    }
-
-    protected function getReferenceStore(): ?ReferenceStoreInterface
-    {
-        return $this->referenceStore;
+        return new ArrayAccessItem($id, $data, $contentProjection);
     }
 }
