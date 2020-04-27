@@ -34,3 +34,12 @@ services:
             - Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example
             - '%sulu.model.route.class%'
             - 'examples'
+
+    example_test.example_teaser_provider:
+        class: Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Teaser\ExampleTeaserProvider
+        public: true
+        arguments:
+            - '@sulu_content.content_manager'
+            - '@sulu_page.structure.factory'
+            - '@doctrine.orm.entity_manager'
+            - '@translator'

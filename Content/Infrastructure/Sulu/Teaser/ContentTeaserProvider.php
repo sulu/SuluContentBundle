@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Teaser;
 
 use Sulu\Bundle\ContentBundle\Content\Application\ContentManager\ContentManagerInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
@@ -22,7 +23,6 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Bundle\PageBundle\Teaser\Provider\TeaserProviderInterface;
 use Sulu\Bundle\PageBundle\Teaser\Teaser;
 use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 abstract class ContentTeaserProvider implements TeaserProviderInterface
 {
@@ -36,19 +36,12 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
      */
     protected $metadataFactory;
 
-    /**
-     * @var TranslatorInterface
-     */
-    protected $translator;
-
     public function __construct(
         ContentManagerInterface $contentManager,
-        StructureMetadataFactoryInterface $metadataFactory,
-        TranslatorInterface $translator
+        StructureMetadataFactoryInterface $metadataFactory
     ) {
         $this->contentManager = $contentManager;
         $this->metadataFactory = $metadataFactory;
-        $this->translator = $translator;
     }
 
     /**
@@ -65,20 +58,22 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
 
         $contentRichEntities = $this->findByIds($ids);
 
-        return array_filter(
-            array_map(
-                function (ContentRichEntityInterface $contentRichEntity) use ($locale): ?Teaser {
-                    $contentProjection = $this->resolveContentRichEntity($contentRichEntity, $locale);
+        return array_values(
+            array_filter(
+                array_map(
+                    function (ContentRichEntityInterface $contentRichEntity) use ($locale): ?Teaser {
+                        $contentProjection = $this->resolveContentRichEntity($contentRichEntity, $locale);
 
-                    if (!$contentProjection) {
-                        return null;
-                    }
+                        if (!$contentProjection) {
+                            return null;
+                        }
 
-                    $data = $this->getContentManager()->normalize($contentProjection);
+                        $data = $this->getContentManager()->normalize($contentProjection);
 
-                    return $this->createTeaser($contentProjection, $data, $locale);
-                },
-                $contentRichEntities
+                        return $this->createTeaser($contentProjection, $data, $locale);
+                    },
+                    $contentRichEntities
+                )
             )
         );
     }
@@ -125,10 +120,14 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
             ? DimensionInterface::STAGE_DRAFT
             : DimensionInterface::STAGE_LIVE;
 
-        $contentProjection = $this->getContentManager()->resolve($contentRichEntity, [
-            'locale' => $locale,
-            'stage' => $stage,
-        ]);
+        try {
+            $contentProjection = $this->getContentManager()->resolve($contentRichEntity, [
+                'locale' => $locale,
+                'stage' => $stage,
+            ]);
+        } catch (ContentNotFoundException $exception) {
+            return null;
+        }
 
         $dimension = $contentProjection->getDimension();
 
@@ -245,11 +244,6 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
     protected function getMetadataFactory(): StructureMetadataFactoryInterface
     {
         return $this->metadataFactory;
-    }
-
-    protected function getTranslator(): TranslatorInterface
-    {
-        return $this->translator;
     }
 
     /**
