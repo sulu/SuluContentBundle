@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Mocks;
 
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
+
 /**
  * Trait for composing a class that wraps a ContentProjectionInterface mock.
  *
@@ -25,8 +27,8 @@ trait ContentProjectionMockWrapperTrait
         return $this->instance->getContentId();
     }
 
-    public function getDimensionId(): string
+    public function getDimension(): DimensionInterface
     {
-        return $this->instance->getDimensionId();
+        return $this->instance->getDimension();
     }
 }

@@ -23,3 +23,14 @@ services:
             - '@doctrine.orm.entity_manager'
         tags:
             - { name: sulu.context, context: admin }
+
+    example_test.example_sitemap_provider:
+        class: Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Sitemap\ContentSitemapProvider
+        public: true
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@sulu_core.webspace.webspace_manager'
+            - '%kernel.environment%'
+            - Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example
+            - '%sulu.model.route.class%'
+            - 'examples'

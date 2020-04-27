@@ -30,6 +30,11 @@ use Sulu\Component\Webspace\PortalInformation;
 
 class ContentSitemapProvider implements SitemapProviderInterface
 {
+    const ROUTE_ALIAS = 'route';
+    const CONTENT_RICH_ENTITY_ALIAS = 'contentRichEntity';
+    const LOCALIZED_DIMENSION_CONTENT_ALIAS = 'localizedDimensionContent';
+    const LOCALIZED_DIMENSION_ALIAS = 'localizedDimension';
+
     /**
      * @var EntityManagerInterface
      */
@@ -82,11 +87,11 @@ class ContentSitemapProvider implements SitemapProviderInterface
 
     public function build($page, $scheme, $host): array
     {
-        $limit = $this->getPageSize();
+        $limit = self::PAGE_SIZE;
         $offset = (int) (($page - 1) * $limit);
 
-        $portalInformations = $this->getWebspaceManager()->findPortalInformationsByHostIncludingSubdomains(
-            $host, $this->getKernelEnvironment()
+        $portalInformations = $this->webspaceManager->findPortalInformationsByHostIncludingSubdomains(
+            $host, $this->kernelEnvironment
         );
 
         /** @var PortalInformation|null $portalInformation */
@@ -142,14 +147,14 @@ class ContentSitemapProvider implements SitemapProviderInterface
 
     public function getMaxPage($scheme, $host): int
     {
-        $queryBuilder = $this->createEntityRoutesQueryBuilder('route');
+        $queryBuilder = $this->createRoutesQueryBuilder();
         try {
             $amount = $queryBuilder
-                ->select('COUNT(route.id)')
+                ->select('COUNT(' . self::ROUTE_ALIAS . ')')
                 ->getQuery()
                 ->getSingleScalarResult();
 
-            return (int) ceil($amount / $this->getPageSize());
+            return (int) ceil($amount / self::PAGE_SIZE);
         } catch (NoResultException | NonUniqueResultException $e) {
             return 0;
         }
@@ -182,34 +187,34 @@ class ContentSitemapProvider implements SitemapProviderInterface
      */
     protected function getRoutes(int $limit, int $offset): array
     {
-        $queryBuilder = $this->createEntityRoutesQueryBuilder('route');
+        $queryBuilder = $this->createRoutesQueryBuilder();
 
         return $queryBuilder
-            ->select('route')
+            ->select(self::ROUTE_ALIAS)
             ->distinct()
-            ->orderBy('route.entityId', 'asc')
+            ->orderBy(self::ROUTE_ALIAS . '.entityId', 'asc')
             ->getQuery()
             ->setFirstResult($offset)
             ->setMaxResults($limit)
             ->getResult();
     }
 
-    protected function createEntityRoutesQueryBuilder(string $routeAlias): QueryBuilder
+    protected function createRoutesQueryBuilder(): QueryBuilder
     {
-        $queryBuilder = $this->getEntityManager()->createQueryBuilder();
+        $queryBuilder = $this->entityManager->createQueryBuilder();
 
         return $queryBuilder
-            ->from($this->getEntityClass(), 'entity')
-            ->innerJoin('entity.dimensionContents', 'dimensionContent')
-            ->innerJoin('dimensionContent.dimension', 'dimension')
-            ->innerJoin($this->getRouteClass(), $routeAlias, Join::WITH, $routeAlias . '.entityId = entity.id')
-            ->where('dimension.stage = :stage')
-            ->andWhere($routeAlias . '.entityClass = :entityClass')
-            ->andWhere($routeAlias . '.history = :history')
-            ->andWhere($routeAlias . '.locale = dimension.locale')
+            ->from($this->entityClassName, self::CONTENT_RICH_ENTITY_ALIAS)
+            ->innerJoin(self::CONTENT_RICH_ENTITY_ALIAS . '.dimensionContents', self::LOCALIZED_DIMENSION_CONTENT_ALIAS)
+            ->innerJoin(self::LOCALIZED_DIMENSION_CONTENT_ALIAS . '.dimension', self::LOCALIZED_DIMENSION_ALIAS)
+            ->innerJoin($this->routeClassName, self::ROUTE_ALIAS, Join::WITH, self::ROUTE_ALIAS . '.entityId = ' . self::CONTENT_RICH_ENTITY_ALIAS . '.' . $this->getEntityIdField())
+            ->where(self::LOCALIZED_DIMENSION_ALIAS . '.stage = :stage')
+            ->andWhere(self::ROUTE_ALIAS . '.entityClass = :entityClass')
+            ->andWhere(self::ROUTE_ALIAS . '.history = :history')
+            ->andWhere(self::ROUTE_ALIAS . '.locale = ' . self::LOCALIZED_DIMENSION_ALIAS . '.locale')
             ->setParameters([
                 'stage' => DimensionInterface::STAGE_LIVE,
-                'entityClass' => $this->getEntityClass(),
+                'entityClass' => $this->entityClassName,
                 'history' => false,
             ]);
     }
@@ -257,9 +262,9 @@ class ContentSitemapProvider implements SitemapProviderInterface
         string $host,
         string $scheme
     ): ?string {
-        $url = $this->getWebspaceManager()->findUrlByResourceLocator(
+        $url = $this->webspaceManager->findUrlByResourceLocator(
             $route->getPath(),
-            $this->getKernelEnvironment(),
+            $this->kernelEnvironment,
             $route->getLocale(),
             $webspaceKey,
             $host,
@@ -269,37 +274,12 @@ class ContentSitemapProvider implements SitemapProviderInterface
         return $url ?: null;
     }
 
-    protected function getPageSize(): int
+    protected function getEntityIdField(): string
     {
-        return self::PAGE_SIZE;
+        return 'id';
     }
 
-    protected function getEntityManager(): EntityManagerInterface
-    {
-        return $this->entityManager;
-    }
-
-    protected function getWebspaceManager(): WebspaceManagerInterface
-    {
-        return $this->webspaceManager;
-    }
-
-    protected function getKernelEnvironment(): string
-    {
-        return $this->kernelEnvironment;
-    }
-
-    protected function getEntityClass(): string
-    {
-        return $this->entityClassName;
-    }
-
-    protected function getRouteClass(): string
-    {
-        return $this->routeClassName;
-    }
-
-    public function getAlias(): string
+    public function getAlias()
     {
         return $this->alias;
     }
