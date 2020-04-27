@@ -34,19 +34,33 @@ trait AssertResponseContentTrait
         $this->assertHttpStatusCode($statusCode, $actualResponse);
         $this->assertIsString($responseContent);
 
-        $responsesFolder = $this->getCalledClassFolder() . \DIRECTORY_SEPARATOR . 'responses';
+        $this->assertContent($patternFilename, $responseContent, $message);
+    }
+
+    protected function assertContent(
+        string $patternFilename,
+        string $content,
+        string $message = ''
+    ): void {
+        $responsesFolder = $this->getCalledClassFolder() . \DIRECTORY_SEPARATOR . $this->getResponseContentFolder();
         $responsePattern = file_get_contents($responsesFolder . \DIRECTORY_SEPARATOR . $patternFilename);
         $this->assertIsString($responsePattern);
 
-        $this->assertMatchesPattern(trim($responsePattern), trim($responseContent), $message);
+        $this->assertMatchesPattern(trim($responsePattern), trim($content), $message);
     }
 
     private function getCalledClassFolder(): string
     {
         $calledClass = static::class;
+
         /** @var string $fileName */
         $fileName = (new \ReflectionClass($calledClass))->getFileName();
 
         return \dirname($fileName);
+    }
+
+    protected function getResponseContentFolder(): string
+    {
+        return 'responses';
     }
 }

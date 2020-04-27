@@ -14,12 +14,12 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Functional\Content\Infrastructure\Sulu\Sitemap;
 
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Sitemap\ContentSitemapProvider;
-use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleContentProjection;
 use Sulu\Bundle\ContentBundle\Tests\Functional\BaseTestCase;
 use Sulu\Bundle\ContentBundle\Tests\Traits\CreateExampleTrait;
 use Sulu\Bundle\ContentBundle\Tests\Traits\ModifyExampleTrait;
 use Sulu\Bundle\ContentBundle\Tests\Traits\PublishExampleTrait;
 use Sulu\Bundle\WebsiteBundle\Sitemap\Sitemap;
+use Sulu\Bundle\WebsiteBundle\Sitemap\SitemapAlternateLink;
 use Sulu\Bundle\WebsiteBundle\Sitemap\SitemapUrl;
 
 class ContentSitemapProviderTest extends BaseTestCase
@@ -36,64 +36,34 @@ class ContentSitemapProviderTest extends BaseTestCase
      */
     private $contentSitemapProvider;
 
-    /**
-     * @var ExampleContentProjection
-     */
-    private static $example1en;
-
-    /**
-     * @var ExampleContentProjection
-     */
-    private static $example1de;
-
-    /**
-     * @var ExampleContentProjection
-     */
-    private static $example2en;
-
-    /**
-     * @var ExampleContentProjection
-     */
-    private static $example3en;
-
-    /**
-     * @var ExampleContentProjection
-     */
-    private static $example3de;
-
-    /**
-     * @var ExampleContentProjection
-     */
-    private static $example4de;
-
     public static function setUpBeforeClass(): void
     {
         static::purgeDatabase();
         parent::setUpBeforeClass();
 
         // Example 1 (both locales, both published)
-        static::$example1en = static::createExample(['title' => 'example-1'], 'en');
-        static::$example1en = static::publishExample(static::$example1en->getContentId(), 'en');
+        $example1en = static::createExample(['title' => 'example-1'], 'en');
+        $example1en = static::publishExample($example1en->getContentId(), 'en');
 
-        static::$example1de = static::modifyExample(static::$example1en->getContentId(), ['title' => 'beispiel-1'], 'de');
-        static::$example1de = static::publishExample(static::$example1de->getContentId(), 'de');
+        $example1de = static::modifyExample($example1en->getContentId(), ['title' => 'beispiel-1'], 'de');
+        $example1de = static::publishExample($example1de->getContentId(), 'de');
 
         // Example 2 (only en, published)
-        static::$example2en = static::createExample(['title' => 'example-2'], 'en');
-        static::$example2en = static::publishExample(static::$example2en->getContentId(), 'en');
+        $example2en = static::createExample(['title' => 'example-2'], 'en');
+        $example2en = static::publishExample($example2en->getContentId(), 'en');
 
         // Example 3 (both locales, only en published)
-        static::$example3en = static::createExample(['title' => 'example-3'], 'en');
-        static::$example3en = static::publishExample(static::$example3en->getContentId(), 'en');
+        $example3en = static::createExample(['title' => 'example-3'], 'en');
+        $example3en = static::publishExample($example3en->getContentId(), 'en');
 
-        static::$example3de = static::modifyExample(static::$example3en->getContentId(), ['title' => 'beispiel-3'], 'de');
+        $example3de = static::modifyExample($example3en->getContentId(), ['title' => 'beispiel-3'], 'de');
 
         // Example 4 (only de, published)
-        static::$example4de = static::createExample(['title' => 'beispiel-4'], 'de');
-        static::$example4de = static::publishExample(static::$example4de->getContentId(), 'de');
+        $example4de = static::createExample(['title' => 'beispiel-4'], 'de');
+        $example4de = static::publishExample($example4de->getContentId(), 'de');
 
         // Example 5 (only en, not published)
-        static::createExample(['title' => 'example-5'], 'en');
+        $example5en = static::createExample(['title' => 'example-5'], 'en');
     }
 
     public function setUp(): void
@@ -103,61 +73,12 @@ class ContentSitemapProviderTest extends BaseTestCase
 
     public function testBuild(): void
     {
-        /** @var SitemapUrl[] $entries */
-        $entries = $this->contentSitemapProvider->build(1, static::SCHEME, static::HOST);
+        /** @var SitemapUrl[] $sitemapEntries */
+        $sitemapEntries = $this->contentSitemapProvider->build(1, static::SCHEME, static::HOST);
 
-        $this->assertIsArray($entries);
-        $this->assertCount(4, $entries);
+        $sitemapEntries = $this->mapSitemapEntries($sitemapEntries);
 
-        foreach ($entries as $i => $entry) {
-            $alternateLinks = $entry->getAlternateLinks();
-            $this->assertIsArray($alternateLinks);
-
-            switch ($i) {
-                case 0:
-                    $this->assertSame($this->getLocale(self::$example1de), $entry->getLocale());
-                    $this->assertSame($this->getLocale(self::$example1de), $entry->getDefaultLocale());
-                    $this->assertSame($this->getUrl(self::$example1de), $entry->getLoc());
-
-                    $this->assertCount(2, $alternateLinks);
-                    $this->assertSame($entry->getLocale(), $alternateLinks[$entry->getLocale()]->getLocale());
-                    $this->assertSame($entry->getLoc(), $alternateLinks[$entry->getLocale()]->getHref());
-                    $this->assertSame($this->getLocale(self::$example1en), $alternateLinks[$this->getLocale(self::$example1en)]->getLocale());
-                    $this->assertSame($this->getUrl(self::$example1en), $alternateLinks[$this->getLocale(self::$example1en)]->getHref());
-
-                    break;
-                case 1:
-                    $this->assertSame($this->getLocale(self::$example2en), $entry->getLocale());
-                    $this->assertSame($this->getLocale(self::$example2en), $entry->getDefaultLocale());
-                    $this->assertSame($this->getUrl(self::$example2en), $entry->getLoc());
-
-                    $this->assertCount(1, $alternateLinks);
-                    $this->assertSame($entry->getLocale(), $alternateLinks[$entry->getLocale()]->getLocale());
-                    $this->assertSame($entry->getLoc(), $alternateLinks[$entry->getLocale()]->getHref());
-
-                    break;
-                case 2:
-                    $this->assertSame($this->getLocale(self::$example3en), $entry->getLocale());
-                    $this->assertSame($this->getLocale(self::$example3en), $entry->getDefaultLocale());
-                    $this->assertSame($this->getUrl(self::$example3en), $entry->getLoc());
-
-                    $this->assertCount(1, $alternateLinks);
-                    $this->assertSame($entry->getLocale(), $alternateLinks[$entry->getLocale()]->getLocale());
-                    $this->assertSame($entry->getLoc(), $alternateLinks[$entry->getLocale()]->getHref());
-
-                    break;
-                case 3:
-                    $this->assertSame($this->getLocale(self::$example4de), $entry->getLocale());
-                    $this->assertSame($this->getLocale(self::$example4de), $entry->getDefaultLocale());
-                    $this->assertSame($this->getUrl(self::$example4de), $entry->getLoc());
-
-                    $this->assertCount(1, $alternateLinks);
-                    $this->assertSame($entry->getLocale(), $alternateLinks[$entry->getLocale()]->getLocale());
-                    $this->assertSame($entry->getLoc(), $alternateLinks[$entry->getLocale()]->getHref());
-
-                    break;
-            }
-        }
+        $this->assertContent('sitemap.json', json_encode($sitemapEntries) ?: '');
     }
 
     public function testCreateSitemap(): void
@@ -180,25 +101,30 @@ class ContentSitemapProviderTest extends BaseTestCase
         $this->assertSame('examples', $this->contentSitemapProvider->getAlias());
     }
 
-    private function getUrl(ExampleContentProjection $contentProjection): string
+    /**
+     * @param SitemapUrl[] $sitemapEntries
+     *
+     * @return array<string, mixed>
+     */
+    private function mapSitemapEntries(array $sitemapEntries): array
     {
-        $locale = '';
-
-        if ('en' === $this->getLocale($contentProjection)) {
-            $locale = '/en';
-        }
-
-        return sprintf('%s://%s%s%s', self::SCHEME, self::HOST, $locale, $contentProjection->getTemplateData()['url']);
+        return array_map(function (SitemapUrl $sitemapUrl) {
+            return [
+                'locale' => $sitemapUrl->getLocale(),
+                'defaultLocale' => $sitemapUrl->getDefaultLocale(),
+                'loc' => $sitemapUrl->getLoc(),
+                'alternateLinks' => array_map(function (SitemapAlternateLink $alternateLink) {
+                    return [
+                        'locale' => $alternateLink->getLocale(),
+                        'href' => $alternateLink->getHref(),
+                    ];
+                }, $sitemapUrl->getAlternateLinks()),
+            ];
+        }, $sitemapEntries);
     }
 
-    private function getLocale(ExampleContentProjection $contentProjection): string
+    protected function getResponseContentFolder(): string
     {
-        $locale = $contentProjection->getDimension()->getLocale();
-
-        if (null === $locale) {
-            throw new \RuntimeException('Locale cannot be null!');
-        }
-
-        return $locale;
+        return 'snapshots';
     }
 }
