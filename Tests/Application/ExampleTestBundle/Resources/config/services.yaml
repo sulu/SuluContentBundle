@@ -40,6 +40,6 @@ services:
         public: true
         arguments:
             - '@sulu_content.content_manager'
-            - '@sulu_page.structure.factory'
             - '@doctrine.orm.entity_manager'
+            - '@sulu_page.structure.factory'
             - '@translator'

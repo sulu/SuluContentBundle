@@ -25,50 +25,19 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class ExampleTeaserProvider extends ContentTeaserProvider
 {
     /**
-     * @var EntityManagerInterface
-     */
-    protected $entityManager;
-
-    /**
      * @var TranslatorInterface
      */
     protected $translator;
 
     public function __construct(
         ContentManagerInterface $contentManager,
-        StructureMetadataFactoryInterface $metadataFactory,
         EntityManagerInterface $entityManager,
+        StructureMetadataFactoryInterface $metadataFactory,
         TranslatorInterface $translator
     ) {
-        parent::__construct($contentManager, $metadataFactory);
+        parent::__construct($contentManager, $entityManager, $metadataFactory, Example::class);
 
-        $this->entityManager = $entityManager;
         $this->translator = $translator;
-    }
-
-    /**
-     * @param mixed[] $ids
-     *
-     * @return Example[]
-     */
-    protected function findByIds(array $ids): array
-    {
-        $repository = $this->entityManager->getRepository(Example::class);
-
-        $examples = $repository->findBy(['id' => $ids]);
-
-        $idPositions = array_flip($ids);
-
-        usort($examples, function (Example $a, Example $b) use ($idPositions) {
-            return $idPositions[$a->getId()] - $idPositions[$b->getId()];
-        });
-
-        return $examples;
-    }
-
-    protected function getResourceKey(): string
-    {
-        return Example::RESOURCE_KEY;
     }
 
     public function getConfiguration(): TeaserConfiguration

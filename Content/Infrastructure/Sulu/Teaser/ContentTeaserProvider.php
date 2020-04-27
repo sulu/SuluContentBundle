@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Teaser;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentManager\ContentManagerInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
@@ -26,22 +27,38 @@ use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
 
 abstract class ContentTeaserProvider implements TeaserProviderInterface
 {
+    const CONTENT_RICH_ENTITY_ALIAS = 'contentRichEntity';
+
     /**
      * @var ContentManagerInterface
      */
     protected $contentManager;
 
     /**
+     * @var EntityManagerInterface
+     */
+    protected $entityManager;
+
+    /**
      * @var StructureMetadataFactoryInterface
      */
     protected $metadataFactory;
 
+    /**
+     * @var string
+     */
+    protected $entityClassName;
+
     public function __construct(
         ContentManagerInterface $contentManager,
-        StructureMetadataFactoryInterface $metadataFactory
+        EntityManagerInterface $entityManager,
+        StructureMetadataFactoryInterface $metadataFactory,
+        string $entityClassName
     ) {
         $this->contentManager = $contentManager;
+        $this->entityManager = $entityManager;
         $this->metadataFactory = $metadataFactory;
+        $this->entityClassName = $entityClassName;
     }
 
     /**
@@ -56,7 +73,7 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
             return [];
         }
 
-        $contentRichEntities = $this->findByIds($ids);
+        $contentRichEntities = $this->findEntitiesByIds($ids);
 
         return array_values(
             array_filter(
@@ -68,7 +85,7 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
                             return null;
                         }
 
-                        $data = $this->getContentManager()->normalize($contentProjection);
+                        $data = $this->contentManager->normalize($contentProjection);
 
                         return $this->createTeaser($contentProjection, $data, $locale);
                     },
@@ -121,7 +138,7 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
             : DimensionInterface::STAGE_LIVE;
 
         try {
-            $contentProjection = $this->getContentManager()->resolve($contentRichEntity, [
+            $contentProjection = $this->contentManager->resolve($contentRichEntity, [
                 'locale' => $locale,
                 'stage' => $stage,
             ]);
@@ -150,7 +167,7 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
         $type = $contentProjection::getTemplateType();
         $template = $contentProjection->getTemplateKey();
 
-        $metadata = $this->getMetadataFactory()->getStructureMetadata($type, $template);
+        $metadata = $this->metadataFactory->getStructureMetadata($type, $template);
 
         if (!$metadata) {
             return null;
@@ -204,7 +221,7 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
             }
         }
 
-        return $data['more'] ?? null;
+        return $data['more'] ?? $data['moreText'] ?? null;
     }
 
     /**
@@ -236,22 +253,53 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
         return false;
     }
 
-    protected function getContentManager(): ContentManagerInterface
-    {
-        return $this->contentManager;
-    }
-
-    protected function getMetadataFactory(): StructureMetadataFactoryInterface
-    {
-        return $this->metadataFactory;
-    }
-
     /**
      * @param mixed[] $ids
      *
      * @return ContentRichEntityInterface[]
      */
-    abstract protected function findByIds(array $ids): array;
+    protected function findEntitiesByIds(array $ids): array
+    {
+        $entityIdField = $this->getEntityIdField();
+        $classMetadata = $this->entityManager->getClassMetadata($this->entityClassName);
 
-    abstract protected function getResourceKey(): string;
+        $entities = $this->entityManager->createQueryBuilder()
+            ->select(self::CONTENT_RICH_ENTITY_ALIAS)
+            ->from($this->entityClassName, self::CONTENT_RICH_ENTITY_ALIAS)
+            ->where(self::CONTENT_RICH_ENTITY_ALIAS . '.' . $entityIdField . ' IN (:ids)')
+            ->getQuery()
+            ->setParameter('ids', $ids)
+            ->getResult();
+
+        $idPositions = array_flip($ids);
+
+        usort(
+            $entities,
+            function (ContentRichEntityInterface $a, ContentRichEntityInterface $b) use ($idPositions, $classMetadata, $entityIdField) {
+                $aId = $classMetadata->getIdentifierValues($a)[$entityIdField];
+                $bId = $classMetadata->getIdentifierValues($b)[$entityIdField];
+
+                return $idPositions[$aId] - $idPositions[$bId];
+            }
+        );
+
+        return $entities;
+    }
+
+    protected function getEntityIdField(): string
+    {
+        return 'id';
+    }
+
+    protected function getResourceKey(): string
+    {
+        $callable = $this->entityClassName . '::getResourceKey';
+        $resourceKey = \call_user_func($callable);
+
+        if (!$resourceKey) {
+            throw new \RuntimeException(sprintf('Error while calling "%s".', $callable));
+        }
+
+        return $resourceKey;
+    }
 }
