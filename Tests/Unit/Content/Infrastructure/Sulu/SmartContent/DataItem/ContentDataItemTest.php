@@ -32,7 +32,7 @@ class ContentDataItemTest extends TestCase
         return new ContentDataItem($contentProjection, $data);
     }
 
-    public function testGetId()
+    public function testGetId(): void
     {
         $contentProjection = $this->prophesize(ContentProjectionInterface::class);
         $contentProjection->getContentId()->willReturn('123-123');
@@ -42,7 +42,7 @@ class ContentDataItemTest extends TestCase
         $this->assertSame('123-123', $dataItem->getId());
     }
 
-    public function testGetTitle()
+    public function testGetTitle(): void
     {
         $contentProjection = $this->prophesize(ContentProjectionInterface::class);
         $contentProjection->getContentId()->willReturn('123-123');
@@ -57,7 +57,7 @@ class ContentDataItemTest extends TestCase
         $this->assertSame('test-title-1', $dataItem->getTitle());
     }
 
-    public function testGetNameAsTitle()
+    public function testGetNameAsTitle(): void
     {
         $contentProjection = $this->prophesize(ContentProjectionInterface::class);
         $contentProjection->getContentId()->willReturn('123-123');
@@ -72,7 +72,7 @@ class ContentDataItemTest extends TestCase
         $this->assertSame('test-name-1', $dataItem->getTitle());
     }
 
-    public function testGetImage()
+    public function testGetImage(): void
     {
         $contentProjection = $this->prophesize(ContentProjectionInterface::class);
         $contentProjection->getContentId()->willReturn('123-123');
@@ -82,7 +82,7 @@ class ContentDataItemTest extends TestCase
         $this->assertNull($dataItem->getImage());
     }
 
-    public function testGetPublished()
+    public function testGetPublished(): void
     {
         $published = new \DateTimeImmutable();
 
@@ -98,7 +98,7 @@ class ContentDataItemTest extends TestCase
         $this->assertSame($published, $dataItem->getPublished());
     }
 
-    public function testGetPublishedLocaleNull()
+    public function testGetPublishedLocaleNull(): void
     {
         $contentProjection = $this->prophesize(ContentProjectionInterface::class);
         $contentProjection->getContentId()->willReturn('123-123');
@@ -111,7 +111,7 @@ class ContentDataItemTest extends TestCase
         $this->assertNull($dataItem->getPublished());
     }
 
-    public function testGetPublishedNoWorkflow()
+    public function testGetPublishedNoWorkflow(): void
     {
         $contentProjection = $this->prophesize(ContentProjectionInterface::class);
         $contentProjection->getContentId()->willReturn('123-123');
@@ -124,7 +124,7 @@ class ContentDataItemTest extends TestCase
         $this->assertNull($dataItem->getPublished());
     }
 
-    public function testGetPublishedState()
+    public function testGetPublishedState(): void
     {
         $contentProjection = $this->prophesize(ExampleContentProjection::class);
         $contentProjection->getContentId()->willReturn('123-123');
@@ -139,7 +139,7 @@ class ContentDataItemTest extends TestCase
         $this->assertTrue($dataItem->getPublishedState());
     }
 
-    public function testGetPublishedStateLocaleNull()
+    public function testGetPublishedStateLocaleNull(): void
     {
         $contentProjection = $this->prophesize(ContentProjectionInterface::class);
         $contentProjection->getContentId()->willReturn('123-123');
@@ -152,7 +152,7 @@ class ContentDataItemTest extends TestCase
         $this->assertFalse($dataItem->getPublishedState());
     }
 
-    public function testGetPublishedStateStageLive()
+    public function testGetPublishedStateStageLive(): void
     {
         $contentProjection = $this->prophesize(ContentProjectionInterface::class);
         $contentProjection->getContentId()->willReturn('123-123');
@@ -166,7 +166,7 @@ class ContentDataItemTest extends TestCase
         $this->assertTrue($dataItem->getPublishedState());
     }
 
-    public function testGetPublishedStateNoWorkflow()
+    public function testGetPublishedStateNoWorkflow(): void
     {
         $contentProjection = $this->prophesize(ContentProjectionInterface::class);
         $contentProjection->getContentId()->willReturn('123-123');
@@ -180,7 +180,7 @@ class ContentDataItemTest extends TestCase
         $this->assertTrue($dataItem->getPublishedState());
     }
 
-    public function testGetPublishedStateUnpublished()
+    public function testGetPublishedStateUnpublished(): void
     {
         $contentProjection = $this->prophesize(ExampleContentProjection::class);
         $contentProjection->getContentId()->willReturn('123-123');
@@ -195,7 +195,7 @@ class ContentDataItemTest extends TestCase
         $this->assertFalse($dataItem->getPublishedState());
     }
 
-    public function testGetPublishedStateDraft()
+    public function testGetPublishedStateDraft(): void
     {
         $contentProjection = $this->prophesize(ExampleContentProjection::class);
         $contentProjection->getContentId()->willReturn('123-123');
