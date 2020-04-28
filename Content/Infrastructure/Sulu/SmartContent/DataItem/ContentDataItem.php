@@ -39,12 +39,12 @@ class ContentDataItem extends ArrayAccessItem implements ItemInterface, PublishI
      */
     public function getTitle(): ?string
     {
-        if ($this->exists('title')) {
-            return $this->get('title');
+        if ($this->exists('title') && ($title = $this->get('title'))) {
+            return $title;
         }
 
-        if ($this->exists('name')) {
-            return $this->get('name');
+        if ($this->exists('name') && ($name = $this->get('name'))) {
+            return $name;
         }
 
         return null;
