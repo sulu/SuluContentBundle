@@ -21,6 +21,9 @@ use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example
 
 trait CreateExampleTrait
 {
+    /**
+     * @param mixed[] $data
+     */
     protected static function createExample(
         array $data = [],
         string $locale = 'en',

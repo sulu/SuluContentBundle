@@ -24,6 +24,7 @@ trait ModifyExampleTrait
 {
     /**
      * @param mixed $id
+     * @param mixed[] $data
      */
     protected static function modifyExample(
         $id,

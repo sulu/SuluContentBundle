@@ -293,11 +293,13 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
 
     protected function getResourceKey(): string
     {
+        /** @var callable $callable */
         $callable = $this->entityClassName . '::getResourceKey';
+
         $resourceKey = \call_user_func($callable);
 
         if (!$resourceKey) {
-            throw new \RuntimeException(sprintf('Error while calling "%s".', $callable));
+            throw new \RuntimeException(sprintf('Error while calling "%s".', $this->entityClassName . '::getResourceKey'));
         }
 
         return $resourceKey;

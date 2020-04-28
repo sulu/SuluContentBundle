@@ -34,6 +34,8 @@ services:
             - Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example
             - '%sulu.model.route.class%'
             - 'examples'
+        tags:
+            - { name: sulu.sitemap.provider }
 
     example_test.example_teaser_provider:
         class: Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Teaser\ExampleTeaserProvider
@@ -43,3 +45,5 @@ services:
             - '@doctrine.orm.entity_manager'
             - '@sulu_page.structure.factory'
             - '@translator'
+        tags:
+            - { name: sulu.teaser.provider, alias: examples }
