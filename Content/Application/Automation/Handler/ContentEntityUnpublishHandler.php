@@ -83,9 +83,10 @@ class ContentEntityUnpublishHandler implements AutomationTaskHandlerInterface
 
         /** @var class-string $class */
         $class = $workload['class'];
-        /** @var ContentRichEntityInterface|null $entity */
-        $entity = $this->entityManager->find($class, $workload['id']);
+        $repository = $this->entityManager->getRepository($class);
 
+        /** @var ContentRichEntityInterface|null $entity */
+        $entity = $repository->findOneBy(['id' => $workload['id']]);
         if (null === $entity) {
             return;
         }

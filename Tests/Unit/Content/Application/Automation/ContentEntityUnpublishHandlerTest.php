@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\Automation;
 
+use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
@@ -33,6 +34,11 @@ class ContentEntityUnpublishHandlerTest extends TestCase
     private $entityManager;
 
     /**
+     * @var ObjectRepository|ObjectProphecy
+     */
+    private $repository;
+
+    /**
      * @var ContentManagerInterface|ObjectProphecy
      */
     private $contentManager;
@@ -51,6 +57,7 @@ class ContentEntityUnpublishHandlerTest extends TestCase
         parent::setUp();
 
         $this->entityManager = $this->prophesize(EntityManagerInterface::class);
+        $this->repository = $this->prophesize(ObjectRepository::class);
         $this->contentManager = $this->prophesize(ContentManagerInterface::class);
         $this->translator = $this->prophesize(TranslatorInterface::class);
 
@@ -66,7 +73,13 @@ class ContentEntityUnpublishHandlerTest extends TestCase
         $id = 1;
         $locale = 'en';
 
-        $this->entityManager->find(Argument::is($class), Argument::is($id))->willReturn($entity->reveal())->shouldBeCalled();
+        $this->entityManager->getRepository(Argument::is($class))
+            ->willReturn($this->repository->reveal())
+            ->shouldBeCalled();
+
+        $this->repository->findOneBy(Argument::is(['id' => $id]))
+            ->willReturn($entity->reveal())
+            ->shouldBeCalled();
 
         $this->contentManager->applyTransition(
             Argument::is($entity->reveal()),
