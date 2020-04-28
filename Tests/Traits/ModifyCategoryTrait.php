@@ -17,6 +17,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Sulu\Bundle\CategoryBundle\Entity\CategoryInterface;
 use Sulu\Bundle\CategoryBundle\Entity\CategoryRepositoryInterface;
 use Sulu\Bundle\CategoryBundle\Entity\CategoryTranslation;
+use Sulu\Bundle\CategoryBundle\Entity\CategoryTranslationInterface;
 
 trait ModifyCategoryTrait
 {
@@ -28,6 +29,7 @@ trait ModifyCategoryTrait
             throw new \RuntimeException(sprintf('Category with id "%d" was not found!', $id));
         }
 
+        /** @var CategoryTranslationInterface|null $translation */
         $translation = $category->findTranslationByLocale($locale);
 
         if (!$translation) {
