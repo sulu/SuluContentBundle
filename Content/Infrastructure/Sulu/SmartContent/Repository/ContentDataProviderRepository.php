@@ -201,12 +201,20 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
             $query->setParameter($parameter, $value);
         }
 
-        if ($page > 0 && $pageSize > 0) {
-            $limit = min($limit, $pageSize) ?? $pageSize;
-            $offset = ($page - 1) * $limit;
+        if (null !== $page && $pageSize > 0) {
+            $pageOffset = ($page - 1) * $pageSize;
+            $restLimit = $limit - $pageOffset;
 
-            $query->setMaxResults($limit);
-            $query->setFirstResult($offset);
+            // if limitation is smaller than the page size then use the rest limit else use page size plus 1 to
+            // determine has next page
+            $maxResults = (null !== $limit && $pageSize > $restLimit ? $restLimit : ($pageSize + 1));
+
+            if ($maxResults <= 0) {
+                return [];
+            }
+
+            $query->setMaxResults($maxResults);
+            $query->setFirstResult($pageOffset);
         } elseif (null !== $limit) {
             $query->setMaxResults($limit);
         }
