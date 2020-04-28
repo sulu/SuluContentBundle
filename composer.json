@@ -80,7 +80,7 @@
         "test-coverage": "@phpunit --coverage-php Tests/reports/coverage.php --coverage-html Tests/reports/html --log-junit Tests/reports/unit/junit.xml",
         "test-coverage-checker": [
             "@php vendor/bin/code-coverage-checker \"Tests/reports/coverage.php\" \"line\" \"99.00\" \"Content/Domain\" \"Content/Application\"",
-            "@php vendor/bin/code-coverage-checker \"Tests/reports/coverage.php\" \"line\" \"90.00\" \"Content/Infrastructure\" \"DependencyInjection\""
+            "@php vendor/bin/code-coverage-checker \"Tests/reports/coverage.php\" \"line\" \"95.00\" \"Content/Infrastructure\" \"DependencyInjection\""
         ],
         "test-unit": "@phpunit Tests/Unit",
         "test-unit-coverage": "@phpunit Tests/Unit --coverage-php Tests/reports/coverage.php --coverage-html Tests/reports/html --log-junit Tests/reports/unit/junit.xml",
