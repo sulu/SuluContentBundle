@@ -3,7 +3,7 @@ services:
         class: Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Admin\ExampleAdmin
         arguments:
             - '@sulu_admin.view_builder_factory'
-            - '@sulu_content.content_view_builder'
+            - '@sulu_content.content_view_builder_factory'
             - '@sulu_security.security_checker'
             - '@sulu.core.localization_manager'
         tags:
