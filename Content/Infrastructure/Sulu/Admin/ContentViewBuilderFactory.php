@@ -104,12 +104,12 @@ class ContentViewBuilderFactory implements ContentViewBuilderFactoryInterface
         ];
     }
 
-    public function createContentRichViews(
+    public function createViews(
         string $entityClass,
         string $editParentView,
         ?string $addParentView = null,
-        ?array $toolbarActions = null,
-        ?string $securityContext = null
+        ?string $securityContext = null,
+        ?array $toolbarActions = null
     ): array {
         $classMetadata = $this->entityManager->getClassMetadata($entityClass);
         $associationMapping = $classMetadata->getAssociationMapping('dimensionContents');
@@ -127,7 +127,11 @@ class ContentViewBuilderFactory implements ContentViewBuilderFactoryInterface
 
         $toolbarActions = $toolbarActions ?: $this->getDefaultToolbarActions();
         $addToolbarActions = $toolbarActions;
-        $seoAndExcerptToolbarActions = ['save' => $toolbarActions['save']];
+
+        $seoAndExcerptToolbarActions = [];
+        if (isset($toolbarActions['save'])) {
+            $seoAndExcerptToolbarActions = ['save' => $toolbarActions['save']];
+        }
 
         if (!$this->hasPermission($securityContext, PermissionTypes::EDIT)) {
             unset($toolbarActions['save']);
@@ -147,14 +151,16 @@ class ContentViewBuilderFactory implements ContentViewBuilderFactoryInterface
         $views = [];
 
         if ($this->hasPermission($securityContext, PermissionTypes::ADD)) {
-            if ($addParentView && is_subclass_of($dimensionContentClass, TemplateInterface::class)) {
-                $views[] = $this->createTemplateFormView(
-                    $addParentView,
-                    false,
-                    $resourceKey,
-                    $templateFormKey,
-                    $addToolbarActions
-                );
+            if ($addParentView) {
+                if (is_subclass_of($dimensionContentClass, TemplateInterface::class)) {
+                    $views[] = $this->createTemplateFormView(
+                        $addParentView,
+                        false,
+                        $resourceKey,
+                        $templateFormKey,
+                        $addToolbarActions
+                    );
+                }
             }
         }
 
@@ -242,18 +248,16 @@ class ContentViewBuilderFactory implements ContentViewBuilderFactoryInterface
     /**
      * @return PreviewFormViewBuilderInterface|FormViewBuilderInterface
      */
-    protected function createFormViewBuilder(string $name, string $path, bool $previewEnabled): ViewBuilderInterface
+    private function createFormViewBuilder(string $name, string $path, bool $previewEnabled): ViewBuilderInterface
     {
         if ($previewEnabled) {
-            $formViewBuilder = $this->viewBuilderFactory->createPreviewFormViewBuilder($name, $path);
-        } else {
-            $formViewBuilder = $this->viewBuilderFactory->createFormViewBuilder($name, $path);
+            return $this->viewBuilderFactory->createPreviewFormViewBuilder($name, $path);
         }
 
-        return $formViewBuilder;
+        return $this->viewBuilderFactory->createFormViewBuilder($name, $path);
     }
 
-    protected function hasPermission(?string $securityContext, string $permissionType): bool
+    private function hasPermission(?string $securityContext, string $permissionType): bool
     {
         if (!$securityContext) {
             return true;

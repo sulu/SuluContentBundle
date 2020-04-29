@@ -28,12 +28,12 @@ interface ContentViewBuilderFactoryInterface
      *
      * @return ViewBuilderInterface[]
      */
-    public function createContentRichViews(
+    public function createViews(
         string $entityClass,
         string $editParentView,
         ?string $addParentView = null,
-        ?array $toolbarActions = null,
-        ?string $securityContext = null
+        ?string $securityContext = null,
+        ?array $toolbarActions = null
     ): array;
 
     /**

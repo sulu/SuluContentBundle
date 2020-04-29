@@ -132,11 +132,10 @@ class ExampleAdmin extends Admin
                     ->setTitleProperty('name')
             );
 
-            $viewBuilders = $this->contentViewBuilderFactory->createContentRichViews(
+            $viewBuilders = $this->contentViewBuilderFactory->createViews(
                 Example::class,
                 static::EDIT_TABS_VIEW,
                 static::ADD_TABS_VIEW,
-                null,
                 static::SECURITY_CONTEXT
             );
 

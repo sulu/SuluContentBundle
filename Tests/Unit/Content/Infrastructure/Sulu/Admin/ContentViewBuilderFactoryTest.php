@@ -74,7 +74,7 @@ class ContentViewBuilderFactoryTest extends TestCase
         );
     }
 
-    public function testCreateContentRichViews(): void
+    public function testCreateViews(): void
     {
         $securityChecker = $this->prophesize(SecurityCheckerInterface::class);
 
@@ -87,7 +87,7 @@ class ContentViewBuilderFactoryTest extends TestCase
 
         $contentViewBuilder = $this->createContentViewBuilder($entityManager->reveal(), $securityChecker->reveal());
 
-        $views = $contentViewBuilder->createContentRichViews(Example::class, 'edit_parent_key');
+        $views = $contentViewBuilder->createViews(Example::class, 'edit_parent_key');
 
         $this->assertCount(3, $views);
 
@@ -103,7 +103,7 @@ class ContentViewBuilderFactoryTest extends TestCase
         $this->assertSame('edit_parent_key.excerpt', $views[2]->getName());
         $this->assertSame('content_excerpt', $views[2]->getView()->getOption('formKey'));
 
-        $views = $contentViewBuilder->createContentRichViews(Example::class, 'edit_parent_key', 'add_parent_key');
+        $views = $contentViewBuilder->createViews(Example::class, 'edit_parent_key', 'add_parent_key');
 
         $this->assertCount(4, $views);
 
@@ -124,7 +124,7 @@ class ContentViewBuilderFactoryTest extends TestCase
         $this->assertSame('content_excerpt', $views[3]->getView()->getOption('formKey'));
     }
 
-    public function testCreateContentRichViewsWithPreview(): void
+    public function testCreateViewsWithPreview(): void
     {
         $securityChecker = $this->prophesize(SecurityCheckerInterface::class);
 
@@ -153,7 +153,7 @@ class ContentViewBuilderFactoryTest extends TestCase
             $previewObjectProviderRegistry
         );
 
-        $views = $contentViewBuilder->createContentRichViews(Example::class, 'edit_parent_key');
+        $views = $contentViewBuilder->createViews(Example::class, 'edit_parent_key');
 
         $this->assertCount(3, $views);
         $this->assertInstanceOf(PreviewFormViewBuilderInterface::class, $views[0]);
@@ -255,7 +255,7 @@ class ContentViewBuilderFactoryTest extends TestCase
      *
      * @dataProvider getSecurityContextData
      */
-    public function testCreateContentRichViewsWithSecurityContext(array $permissions, array $expectedTypes): void
+    public function testCreateViewsWithSecurityContext(array $permissions, array $expectedTypes): void
     {
         $securityChecker = $this->prophesize(SecurityCheckerInterface::class);
 
@@ -273,11 +273,10 @@ class ContentViewBuilderFactoryTest extends TestCase
             $securityChecker->hasPermission('test_context', $permissionType)->willReturn($permission);
         }
 
-        $views = $contentViewBuilder->createContentRichViews(
+        $views = $contentViewBuilder->createViews(
             Example::class,
             'edit_parent_key',
             'add_parent_key',
-            null,
             'test_context'
         );
 

@@ -9,9 +9,14 @@ to `ContentViewBuilderFactory` & `ContentViewBuilderFactoryInterface`.
 
 The service has been renamed from `sulu_content.content_view_builder` to `sulu_content.content_view_builder_factory`.
 
-The function `build` was replaced by `createContentRichViews` and additional functions has been introduced.
+The function `build` was replaced by `createViews` and additional functions has been introduced.
 
-__BEFORE:__
+The behaviour of the `createViews` function detects now the needed views: the template-view if the `TemplateInterface`
+is implemented, the seo-view if the `SeoInterface` is implemented, and the excerpt-view if the `ExcerptInterface` is 
+implemented.
+
+**before**:
+
 ```php
 $this->contentViewBuilder->build(
     $viewCollection,
@@ -22,9 +27,10 @@ $this->contentViewBuilder->build(
 );
 ```
 
-__AFTER:__
+**after**:
+
 ```php
-$viewBuilders = $this->contentViewBuilderFactory->createContentRichViews(
+$viewBuilders = $this->contentViewBuilderFactory->createViews(
     Example::class,
     Example::TEMPLATE_TYPE,
     static::EDIT_TABS_VIEW,
