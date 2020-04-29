@@ -19,7 +19,7 @@ use Sulu\Bundle\AdminBundle\Admin\Navigation\NavigationItemCollection;
 use Sulu\Bundle\AdminBundle\Admin\View\ToolbarAction;
 use Sulu\Bundle\AdminBundle\Admin\View\ViewBuilderFactoryInterface;
 use Sulu\Bundle\AdminBundle\Admin\View\ViewCollection;
-use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Admin\ContentViewBuilderInterface;
+use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Admin\ContentViewBuilderFactoryInterface;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
 use Sulu\Component\Localization\Manager\LocalizationManagerInterface;
 use Sulu\Component\Security\Authorization\PermissionTypes;
@@ -41,9 +41,9 @@ class ExampleAdmin extends Admin
     private $viewBuilderFactory;
 
     /**
-     * @var ContentViewBuilderInterface
+     * @var ContentViewBuilderFactoryInterface
      */
-    private $contentViewBuilder;
+    private $contentViewBuilderFactory;
 
     /**
      * @var SecurityCheckerInterface
@@ -57,12 +57,12 @@ class ExampleAdmin extends Admin
 
     public function __construct(
         ViewBuilderFactoryInterface $viewBuilderFactory,
-        ContentViewBuilderInterface $contentViewBuilder,
+        ContentViewBuilderFactoryInterface $contentViewBuilderFactory,
         SecurityCheckerInterface $securityChecker,
         LocalizationManagerInterface $localizationManager
     ) {
         $this->viewBuilderFactory = $viewBuilderFactory;
-        $this->contentViewBuilder = $contentViewBuilder;
+        $this->contentViewBuilderFactory = $contentViewBuilderFactory;
         $this->securityChecker = $securityChecker;
         $this->localizationManager = $localizationManager;
     }
@@ -132,13 +132,16 @@ class ExampleAdmin extends Admin
                     ->setTitleProperty('name')
             );
 
-            $this->contentViewBuilder->build(
-                 $viewCollection,
-                $resourceKey,
+            $viewBuilders = $this->contentViewBuilderFactory->createContentRichViews(
+                Example::class,
                 Example::TEMPLATE_TYPE,
-                 static::EDIT_TABS_VIEW,
+                static::EDIT_TABS_VIEW,
                 static::ADD_TABS_VIEW
             );
+
+            foreach ($viewBuilders as $viewBuilder) {
+                $viewCollection->add($viewBuilder);
+            }
         }
     }
 

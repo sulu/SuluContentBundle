@@ -28,7 +28,7 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
 use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionContentRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Doctrine\DimensionRepository;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Doctrine\MetadataLoader;
-use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Admin\ContentViewBuilderInterface;
+use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Admin\ContentViewBuilderFactoryInterface;
 use Sulu\Bundle\ContentBundle\DependencyInjection\SuluContentExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -64,7 +64,7 @@ class SuluContentExtensionTest extends AbstractExtensionTestCase
         $this->assertContainerBuilderHasAlias(ContentWorkflowInterface::class, 'sulu_content.content_workflow');
 
         // Additional services aliases
-        $this->assertContainerBuilderHasAlias(ContentViewBuilderInterface::class, 'sulu_content.content_view_builder');
+        $this->assertContainerBuilderHasAlias(ContentViewBuilderFactoryInterface::class, 'sulu_content.content_view_builder_factory');
         $this->assertContainerBuilderHasAlias(ContentProjectionFactoryInterface::class, 'sulu_content.content_projection_factory');
         $this->assertContainerBuilderHasAlias(DimensionContentCollectionFactoryInterface::class, 'sulu_content.dimension_content_collection_factory');
         $this->assertContainerBuilderHasAlias(DimensionContentRepositoryInterface::class, 'sulu_content.dimension_content_repository');

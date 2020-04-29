@@ -1,0 +1,273 @@
+<?php
+
+declare(strict_types=1);
+
+/*
+ * This file is part of Sulu.
+ *
+ * (c) Sulu GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
+namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Infrastructure\Sulu\Admin;
+
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use PHPUnit\Framework\TestCase;
+use Sulu\Bundle\AdminBundle\Admin\View\FormViewBuilderInterface;
+use Sulu\Bundle\AdminBundle\Admin\View\PreviewFormViewBuilderInterface;
+use Sulu\Bundle\AdminBundle\Admin\View\ToolbarAction;
+use Sulu\Bundle\AdminBundle\Admin\View\ViewBuilderFactory;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\ContentDataMapperInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolverInterface;
+use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Admin\ContentViewBuilderFactory;
+use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Admin\ContentViewBuilderFactoryInterface;
+use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Preview\ContentObjectProvider;
+use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
+use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleDimensionContent;
+use Sulu\Bundle\PreviewBundle\Preview\Object\PreviewObjectProviderInterface;
+use Sulu\Bundle\PreviewBundle\Preview\Object\PreviewObjectProviderRegistry;
+use Sulu\Bundle\PreviewBundle\Preview\Object\PreviewObjectProviderRegistryInterface;
+
+class ContentViewBuilderFactoryTest extends TestCase
+{
+    protected function createContentViewBuilder(
+        EntityManagerInterface $entityManager,
+        PreviewObjectProviderRegistryInterface $previewObjectProviderRegistry = null
+    ): ContentViewBuilderFactoryInterface {
+        if (null === $previewObjectProviderRegistry) {
+            $previewObjectProviderRegistry = $this->createPreviewObjectProviderRegistry([]);
+        }
+
+        return new ContentViewBuilderFactory(
+            new ViewBuilderFactory(),
+            $previewObjectProviderRegistry,
+            $entityManager
+        );
+    }
+
+    /**
+     * @param array<string, PreviewObjectProviderInterface> $providers
+     */
+    protected function createPreviewObjectProviderRegistry(array $providers): PreviewObjectProviderRegistryInterface
+    {
+        return new PreviewObjectProviderRegistry($providers);
+    }
+
+    protected function createContentObjectProvider(
+        EntityManagerInterface $entityManager,
+        ContentResolverInterface $contentResolver,
+        ContentDataMapperInterface $contentDataMapper,
+        string $entityClass
+    ): ContentObjectProvider {
+        return new ContentObjectProvider(
+            $entityManager,
+            $contentResolver,
+            $contentDataMapper,
+            $entityClass
+        );
+    }
+
+    public function testCreateContentRichViews(): void
+    {
+        $entityManager = $this->prophesize(EntityManagerInterface::class);
+        $classMetadata = $this->prophesize(ClassMetadata::class);
+        $classMetadata->getAssociationMapping('dimensionContents')
+            ->willReturn(['targetEntity' => ExampleDimensionContent::class]);
+
+        $entityManager->getClassMetadata(Example::class)->willReturn($classMetadata->reveal());
+
+        $contentViewBuilder = $this->createContentViewBuilder($entityManager->reveal());
+
+        $views = $contentViewBuilder->createContentRichViews(Example::class, 'example_detail', 'edit_parent_key');
+
+        $this->assertCount(3, $views);
+
+        $this->assertInstanceOf(FormViewBuilderInterface::class, $views[0]);
+        $this->assertSame('edit_parent_key.content', $views[0]->getName());
+        $this->assertSame('example_detail', $views[0]->getView()->getOption('formKey'));
+
+        $this->assertInstanceOf(FormViewBuilderInterface::class, $views[1]);
+        $this->assertSame('edit_parent_key.seo', $views[1]->getName());
+        $this->assertSame('content_seo', $views[1]->getView()->getOption('formKey'));
+
+        $this->assertInstanceOf(FormViewBuilderInterface::class, $views[2]);
+        $this->assertSame('edit_parent_key.excerpt', $views[2]->getName());
+        $this->assertSame('content_excerpt', $views[2]->getView()->getOption('formKey'));
+
+        $views = $contentViewBuilder->createContentRichViews(Example::class, 'example_detail', 'edit_parent_key', 'add_parent_key');
+
+        $this->assertCount(4, $views);
+
+        $this->assertInstanceOf(FormViewBuilderInterface::class, $views[0]);
+        $this->assertSame('add_parent_key.content', $views[0]->getName());
+        $this->assertSame('example_detail', $views[0]->getView()->getOption('formKey'));
+
+        $this->assertInstanceOf(FormViewBuilderInterface::class, $views[1]);
+        $this->assertSame('edit_parent_key.content', $views[1]->getName());
+        $this->assertSame('example_detail', $views[1]->getView()->getOption('formKey'));
+
+        $this->assertInstanceOf(FormViewBuilderInterface::class, $views[2]);
+        $this->assertSame('edit_parent_key.seo', $views[2]->getName());
+        $this->assertSame('content_seo', $views[2]->getView()->getOption('formKey'));
+
+        $this->assertInstanceOf(FormViewBuilderInterface::class, $views[3]);
+        $this->assertSame('edit_parent_key.excerpt', $views[3]->getName());
+        $this->assertSame('content_excerpt', $views[3]->getView()->getOption('formKey'));
+    }
+
+    public function testCreateContentRichViewsWithPreview(): void
+    {
+        $entityManager = $this->prophesize(EntityManagerInterface::class);
+        $classMetadata = $this->prophesize(ClassMetadata::class);
+        $classMetadata->getAssociationMapping('dimensionContents')
+            ->willReturn(['targetEntity' => ExampleDimensionContent::class]);
+
+        $entityManager->getClassMetadata(Example::class)->willReturn($classMetadata->reveal());
+
+        $contentResolver = $this->prophesize(ContentResolverInterface::class);
+        $contentDataMapper = $this->prophesize(ContentDataMapperInterface::class);
+
+        $contentObjectProvider = $this->createContentObjectProvider(
+            $entityManager->reveal(),
+            $contentResolver->reveal(),
+            $contentDataMapper->reveal(),
+            Example::class
+        );
+
+        $previewObjectProviders = ['examples' => $contentObjectProvider];
+        $previewObjectProviderRegistry = $this->createPreviewObjectProviderRegistry($previewObjectProviders);
+        $contentViewBuilder = $this->createContentViewBuilder($entityManager->reveal(), $previewObjectProviderRegistry);
+
+        $views = $contentViewBuilder->createContentRichViews(Example::class, 'example_detail', 'edit_parent_key');
+
+        $this->assertCount(3, $views);
+        $this->assertInstanceOf(PreviewFormViewBuilderInterface::class, $views[0]);
+        $this->assertInstanceOf(PreviewFormViewBuilderInterface::class, $views[1]);
+        $this->assertInstanceOf(PreviewFormViewBuilderInterface::class, $views[2]);
+    }
+
+    public function testCreateTemplateFormView(): void
+    {
+        $entityManager = $this->prophesize(EntityManagerInterface::class);
+
+        $contentViewBuilder = $this->createContentViewBuilder($entityManager->reveal());
+
+        $viewBuilderWithoutPreview = $contentViewBuilder->createTemplateFormView(
+            'edit_parent_key',
+            false,
+            'examples',
+            'example_detail'
+        );
+
+        $this->assertInstanceOf(FormViewBuilderInterface::class, $viewBuilderWithoutPreview);
+        $this->assertSame('edit_parent_key', $viewBuilderWithoutPreview->getView()->getParent());
+        $this->assertSame('examples', $viewBuilderWithoutPreview->getView()->getOption('resourceKey'));
+        $this->assertSame('example_detail', $viewBuilderWithoutPreview->getView()->getOption('formKey'));
+
+        $viewBuilderWithPreview = $contentViewBuilder->createTemplateFormView(
+            'edit_parent_key',
+            true,
+            'examples',
+            'example_detail'
+        );
+
+        $this->assertInstanceOf(PreviewFormViewBuilderInterface::class, $viewBuilderWithPreview);
+
+        $toolbarActions = ['save' => new ToolbarAction('test_type')];
+        $viewBuilderWithToolbarButtons = $contentViewBuilder->createTemplateFormView(
+            'edit_parent_key',
+            false,
+            'examples',
+            'example_detail',
+            $toolbarActions
+        );
+
+        $this->assertSame(
+            array_values($toolbarActions),
+            $viewBuilderWithToolbarButtons->getView()->getOption('toolbarActions')
+        );
+    }
+
+    public function testCreateSeoFormView(): void
+    {
+        $entityManager = $this->prophesize(EntityManagerInterface::class);
+
+        $contentViewBuilder = $this->createContentViewBuilder($entityManager->reveal());
+
+        $viewBuilderWithoutPreview = $contentViewBuilder->createSeoFormView(
+            'edit_parent_key',
+            false,
+            'examples'
+        );
+
+        $this->assertInstanceOf(FormViewBuilderInterface::class, $viewBuilderWithoutPreview);
+        $this->assertSame('edit_parent_key', $viewBuilderWithoutPreview->getView()->getParent());
+        $this->assertSame('examples', $viewBuilderWithoutPreview->getView()->getOption('resourceKey'));
+        $this->assertSame('content_seo', $viewBuilderWithoutPreview->getView()->getOption('formKey'));
+
+        $viewBuilderWithPreview = $contentViewBuilder->createTemplateFormView(
+            'edit_parent_key',
+            true,
+            'examples',
+            'example_detail'
+        );
+
+        $this->assertInstanceOf(PreviewFormViewBuilderInterface::class, $viewBuilderWithPreview);
+
+        $toolbarActions = ['save' => new ToolbarAction('test_type')];
+        $viewBuilderWithToolbarButtons = $contentViewBuilder->createTemplateFormView(
+            'edit_parent_key',
+            false,
+            'examples',
+            'example_detail',
+            $toolbarActions
+        );
+
+        $this->assertSame(
+            array_values($toolbarActions),
+            $viewBuilderWithToolbarButtons->getView()->getOption('toolbarActions')
+        );
+    }
+
+    public function testCreateExcerptFormView(): void
+    {
+        $entityManager = $this->prophesize(EntityManagerInterface::class);
+
+        $contentViewBuilder = $this->createContentViewBuilder($entityManager->reveal());
+
+        $viewBuilderWithoutPreview = $contentViewBuilder->createSeoFormView(
+            'edit_parent_key',
+            false,
+            'examples'
+        );
+
+        $this->assertInstanceOf(FormViewBuilderInterface::class, $viewBuilderWithoutPreview);
+        $this->assertSame('edit_parent_key', $viewBuilderWithoutPreview->getView()->getParent());
+        $this->assertSame('examples', $viewBuilderWithoutPreview->getView()->getOption('resourceKey'));
+        $this->assertSame('content_seo', $viewBuilderWithoutPreview->getView()->getOption('formKey'));
+
+        $viewBuilderWithPreview = $contentViewBuilder->createSeoFormView(
+            'edit_parent_key',
+            true,
+            'examples'
+        );
+
+        $this->assertInstanceOf(PreviewFormViewBuilderInterface::class, $viewBuilderWithPreview);
+
+        $toolbarActions = ['save' => new ToolbarAction('test_type')];
+        $viewBuilderWithToolbarButtons = $contentViewBuilder->createSeoFormView(
+            'edit_parent_key',
+            false,
+            'examples',
+            $toolbarActions
+        );
+
+        $this->assertSame(
+            array_values($toolbarActions),
+            $viewBuilderWithToolbarButtons->getView()->getOption('toolbarActions')
+        );
+    }
+}
