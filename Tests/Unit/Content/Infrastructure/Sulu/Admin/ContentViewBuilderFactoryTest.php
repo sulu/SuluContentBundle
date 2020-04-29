@@ -30,11 +30,14 @@ use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example
 use Sulu\Bundle\PreviewBundle\Preview\Object\PreviewObjectProviderInterface;
 use Sulu\Bundle\PreviewBundle\Preview\Object\PreviewObjectProviderRegistry;
 use Sulu\Bundle\PreviewBundle\Preview\Object\PreviewObjectProviderRegistryInterface;
+use Sulu\Component\Security\Authorization\PermissionTypes;
+use Sulu\Component\Security\Authorization\SecurityCheckerInterface;
 
 class ContentViewBuilderFactoryTest extends TestCase
 {
     protected function createContentViewBuilder(
         EntityManagerInterface $entityManager,
+        SecurityCheckerInterface $securityChecker,
         PreviewObjectProviderRegistryInterface $previewObjectProviderRegistry = null
     ): ContentViewBuilderFactoryInterface {
         if (null === $previewObjectProviderRegistry) {
@@ -44,7 +47,8 @@ class ContentViewBuilderFactoryTest extends TestCase
         return new ContentViewBuilderFactory(
             new ViewBuilderFactory(),
             $previewObjectProviderRegistry,
-            $entityManager
+            $entityManager,
+            $securityChecker
         );
     }
 
@@ -72,6 +76,8 @@ class ContentViewBuilderFactoryTest extends TestCase
 
     public function testCreateContentRichViews(): void
     {
+        $securityChecker = $this->prophesize(SecurityCheckerInterface::class);
+
         $entityManager = $this->prophesize(EntityManagerInterface::class);
         $classMetadata = $this->prophesize(ClassMetadata::class);
         $classMetadata->getAssociationMapping('dimensionContents')
@@ -79,15 +85,15 @@ class ContentViewBuilderFactoryTest extends TestCase
 
         $entityManager->getClassMetadata(Example::class)->willReturn($classMetadata->reveal());
 
-        $contentViewBuilder = $this->createContentViewBuilder($entityManager->reveal());
+        $contentViewBuilder = $this->createContentViewBuilder($entityManager->reveal(), $securityChecker->reveal());
 
-        $views = $contentViewBuilder->createContentRichViews(Example::class, 'example_detail', 'edit_parent_key');
+        $views = $contentViewBuilder->createContentRichViews(Example::class, 'edit_parent_key');
 
         $this->assertCount(3, $views);
 
         $this->assertInstanceOf(FormViewBuilderInterface::class, $views[0]);
         $this->assertSame('edit_parent_key.content', $views[0]->getName());
-        $this->assertSame('example_detail', $views[0]->getView()->getOption('formKey'));
+        $this->assertSame(Example::TEMPLATE_TYPE, $views[0]->getView()->getOption('formKey'));
 
         $this->assertInstanceOf(FormViewBuilderInterface::class, $views[1]);
         $this->assertSame('edit_parent_key.seo', $views[1]->getName());
@@ -97,17 +103,17 @@ class ContentViewBuilderFactoryTest extends TestCase
         $this->assertSame('edit_parent_key.excerpt', $views[2]->getName());
         $this->assertSame('content_excerpt', $views[2]->getView()->getOption('formKey'));
 
-        $views = $contentViewBuilder->createContentRichViews(Example::class, 'example_detail', 'edit_parent_key', 'add_parent_key');
+        $views = $contentViewBuilder->createContentRichViews(Example::class, 'edit_parent_key', 'add_parent_key');
 
         $this->assertCount(4, $views);
 
         $this->assertInstanceOf(FormViewBuilderInterface::class, $views[0]);
         $this->assertSame('add_parent_key.content', $views[0]->getName());
-        $this->assertSame('example_detail', $views[0]->getView()->getOption('formKey'));
+        $this->assertSame(Example::TEMPLATE_TYPE, $views[0]->getView()->getOption('formKey'));
 
         $this->assertInstanceOf(FormViewBuilderInterface::class, $views[1]);
         $this->assertSame('edit_parent_key.content', $views[1]->getName());
-        $this->assertSame('example_detail', $views[1]->getView()->getOption('formKey'));
+        $this->assertSame(Example::TEMPLATE_TYPE, $views[1]->getView()->getOption('formKey'));
 
         $this->assertInstanceOf(FormViewBuilderInterface::class, $views[2]);
         $this->assertSame('edit_parent_key.seo', $views[2]->getName());
@@ -120,6 +126,8 @@ class ContentViewBuilderFactoryTest extends TestCase
 
     public function testCreateContentRichViewsWithPreview(): void
     {
+        $securityChecker = $this->prophesize(SecurityCheckerInterface::class);
+
         $entityManager = $this->prophesize(EntityManagerInterface::class);
         $classMetadata = $this->prophesize(ClassMetadata::class);
         $classMetadata->getAssociationMapping('dimensionContents')
@@ -139,9 +147,13 @@ class ContentViewBuilderFactoryTest extends TestCase
 
         $previewObjectProviders = ['examples' => $contentObjectProvider];
         $previewObjectProviderRegistry = $this->createPreviewObjectProviderRegistry($previewObjectProviders);
-        $contentViewBuilder = $this->createContentViewBuilder($entityManager->reveal(), $previewObjectProviderRegistry);
+        $contentViewBuilder = $this->createContentViewBuilder(
+            $entityManager->reveal(),
+            $securityChecker->reveal(),
+            $previewObjectProviderRegistry
+        );
 
-        $views = $contentViewBuilder->createContentRichViews(Example::class, 'example_detail', 'edit_parent_key');
+        $views = $contentViewBuilder->createContentRichViews(Example::class, 'edit_parent_key');
 
         $this->assertCount(3, $views);
         $this->assertInstanceOf(PreviewFormViewBuilderInterface::class, $views[0]);
@@ -149,11 +161,145 @@ class ContentViewBuilderFactoryTest extends TestCase
         $this->assertInstanceOf(PreviewFormViewBuilderInterface::class, $views[2]);
     }
 
+    /**
+     * @return mixed[]
+     */
+    public function getSecurityContextData(): array
+    {
+        return [
+            [
+                [
+                    PermissionTypes::ADD => true,
+                    PermissionTypes::EDIT => true,
+                    PermissionTypes::LIVE => true,
+                    PermissionTypes::DELETE => true,
+                ],
+                [
+                    ['sulu_admin.save_with_publishing', 'sulu_admin.type', 'sulu_admin.delete', 'sulu_admin.dropdown'],
+                    ['sulu_admin.save_with_publishing', 'sulu_admin.type', 'sulu_admin.delete', 'sulu_admin.dropdown'],
+                    ['sulu_admin.save_with_publishing'],
+                    ['sulu_admin.save_with_publishing'],
+                ],
+            ],
+            [
+                [
+                    PermissionTypes::ADD => false,
+                    PermissionTypes::EDIT => true,
+                    PermissionTypes::LIVE => true,
+                    PermissionTypes::DELETE => true,
+                ],
+                [
+                    ['sulu_admin.save_with_publishing', 'sulu_admin.type', 'sulu_admin.delete', 'sulu_admin.dropdown'],
+                    ['sulu_admin.save_with_publishing'],
+                    ['sulu_admin.save_with_publishing'],
+                ],
+            ],
+            [
+                [
+                    PermissionTypes::ADD => false,
+                    PermissionTypes::EDIT => true,
+                    PermissionTypes::LIVE => false,
+                    PermissionTypes::DELETE => false,
+                ],
+                [
+                    ['sulu_admin.save_with_publishing', 'sulu_admin.type'],
+                    ['sulu_admin.save_with_publishing'],
+                    ['sulu_admin.save_with_publishing'],
+                ],
+            ],
+            [
+                [
+                    PermissionTypes::ADD => true,
+                    PermissionTypes::EDIT => false,
+                    PermissionTypes::LIVE => true,
+                    PermissionTypes::DELETE => true,
+                ],
+                [
+                    ['sulu_admin.save_with_publishing', 'sulu_admin.type', 'sulu_admin.delete', 'sulu_admin.dropdown'],
+                ],
+            ],
+            [
+                [
+                    PermissionTypes::ADD => true,
+                    PermissionTypes::EDIT => true,
+                    PermissionTypes::LIVE => false,
+                    PermissionTypes::DELETE => true,
+                ],
+                [
+                    ['sulu_admin.save_with_publishing', 'sulu_admin.type', 'sulu_admin.delete'],
+                    ['sulu_admin.save_with_publishing', 'sulu_admin.type', 'sulu_admin.delete'],
+                    ['sulu_admin.save_with_publishing'],
+                    ['sulu_admin.save_with_publishing'],
+                ],
+            ],
+            [
+                [
+                    PermissionTypes::ADD => true,
+                    PermissionTypes::EDIT => true,
+                    PermissionTypes::LIVE => true,
+                    PermissionTypes::DELETE => false,
+                ],
+                [
+                    ['sulu_admin.save_with_publishing', 'sulu_admin.type', 'sulu_admin.dropdown'],
+                    ['sulu_admin.save_with_publishing', 'sulu_admin.type', 'sulu_admin.dropdown'],
+                    ['sulu_admin.save_with_publishing'],
+                    ['sulu_admin.save_with_publishing'],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @param mixed[] $permissions
+     * @param mixed[] $expectedTypes
+     *
+     * @dataProvider getSecurityContextData
+     */
+    public function testCreateContentRichViewsWithSecurityContext(array $permissions, array $expectedTypes): void
+    {
+        $securityChecker = $this->prophesize(SecurityCheckerInterface::class);
+
+        $entityManager = $this->prophesize(EntityManagerInterface::class);
+        $classMetadata = $this->prophesize(ClassMetadata::class);
+        $classMetadata->getAssociationMapping('dimensionContents')->willReturn(
+                ['targetEntity' => ExampleDimensionContent::class]
+            );
+
+        $entityManager->getClassMetadata(Example::class)->willReturn($classMetadata->reveal());
+
+        $contentViewBuilder = $this->createContentViewBuilder($entityManager->reveal(), $securityChecker->reveal());
+
+        foreach ($permissions as $permissionType => $permission) {
+            $securityChecker->hasPermission('test_context', $permissionType)->willReturn($permission);
+        }
+
+        $views = $contentViewBuilder->createContentRichViews(
+            Example::class,
+            'edit_parent_key',
+            'add_parent_key',
+            null,
+            'test_context'
+        );
+
+        $this->assertCount(\count($expectedTypes), $views);
+
+        foreach ($views as $index => $viewBuilder) {
+            $toolbarActions = $viewBuilder->getView()->getOption('toolbarActions');
+
+            $this->assertCount(\count($expectedTypes[$index]), $toolbarActions);
+            foreach ($expectedTypes[$index] as $action => $type) {
+                $this->assertSame($type, $toolbarActions[$action]->getType());
+            }
+        }
+    }
+
     public function testCreateTemplateFormView(): void
     {
+        $securityChecker = $this->prophesize(SecurityCheckerInterface::class);
+
         $entityManager = $this->prophesize(EntityManagerInterface::class);
 
-        $contentViewBuilder = $this->createContentViewBuilder($entityManager->reveal());
+        $contentViewBuilder = $this->createContentViewBuilder($entityManager->reveal(), $securityChecker->reveal());
 
         $viewBuilderWithoutPreview = $contentViewBuilder->createTemplateFormView(
             'edit_parent_key',
@@ -193,9 +339,11 @@ class ContentViewBuilderFactoryTest extends TestCase
 
     public function testCreateSeoFormView(): void
     {
+        $securityChecker = $this->prophesize(SecurityCheckerInterface::class);
+
         $entityManager = $this->prophesize(EntityManagerInterface::class);
 
-        $contentViewBuilder = $this->createContentViewBuilder($entityManager->reveal());
+        $contentViewBuilder = $this->createContentViewBuilder($entityManager->reveal(), $securityChecker->reveal());
 
         $viewBuilderWithoutPreview = $contentViewBuilder->createSeoFormView(
             'edit_parent_key',
@@ -234,9 +382,11 @@ class ContentViewBuilderFactoryTest extends TestCase
 
     public function testCreateExcerptFormView(): void
     {
+        $securityChecker = $this->prophesize(SecurityCheckerInterface::class);
+
         $entityManager = $this->prophesize(EntityManagerInterface::class);
 
-        $contentViewBuilder = $this->createContentViewBuilder($entityManager->reveal());
+        $contentViewBuilder = $this->createContentViewBuilder($entityManager->reveal(), $securityChecker->reveal());
 
         $viewBuilderWithoutPreview = $contentViewBuilder->createSeoFormView(
             'edit_parent_key',

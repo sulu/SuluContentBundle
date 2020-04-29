@@ -134,9 +134,10 @@ class ExampleAdmin extends Admin
 
             $viewBuilders = $this->contentViewBuilderFactory->createContentRichViews(
                 Example::class,
-                Example::TEMPLATE_TYPE,
                 static::EDIT_TABS_VIEW,
-                static::ADD_TABS_VIEW
+                static::ADD_TABS_VIEW,
+                null,
+                static::SECURITY_CONTEXT
             );
 
             foreach ($viewBuilders as $viewBuilder) {
@@ -158,6 +159,7 @@ class ExampleAdmin extends Admin
                         PermissionTypes::ADD,
                         PermissionTypes::EDIT,
                         PermissionTypes::DELETE,
+                        PermissionTypes::LIVE,
                     ],
                 ],
             ],

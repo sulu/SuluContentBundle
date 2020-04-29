@@ -30,10 +30,10 @@ interface ContentViewBuilderFactoryInterface
      */
     public function createContentRichViews(
         string $entityClass,
-        string $templateFormKey,
         string $editParentView,
         ?string $addParentView = null,
-        ?array $toolbarActions = null
+        ?array $toolbarActions = null,
+        ?string $securityContext = null
     ): array;
 
     /**
