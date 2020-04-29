@@ -197,7 +197,10 @@ class ContentViewBuilderFactory implements ContentViewBuilderFactoryInterface
         return $views;
     }
 
-    public function createTemplateFormView(
+    /**
+     * @param array<string, ToolbarAction> $toolbarActions
+     */
+    private function createTemplateFormView(
         string $parentView,
         bool $previewEnabled,
         string $resourceKey,
@@ -213,7 +216,10 @@ class ContentViewBuilderFactory implements ContentViewBuilderFactoryInterface
             ->setParent($parentView);
     }
 
-    public function createSeoFormView(
+    /**
+     * @param array<string, ToolbarAction> $toolbarActions
+     */
+    private function createSeoFormView(
         string $parentView,
         bool $previewEnabled,
         string $resourceKey,
@@ -229,7 +235,10 @@ class ContentViewBuilderFactory implements ContentViewBuilderFactoryInterface
             ->setParent($parentView);
     }
 
-    public function createExcerptFormView(
+    /**
+     * @param array<string, ToolbarAction> $toolbarActions
+     */
+    private function createExcerptFormView(
         string $parentView,
         bool $previewEnabled,
         string $resourceKey,

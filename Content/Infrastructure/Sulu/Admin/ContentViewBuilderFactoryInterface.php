@@ -35,35 +35,4 @@ interface ContentViewBuilderFactoryInterface
         ?string $securityContext = null,
         ?array $toolbarActions = null
     ): array;
-
-    /**
-     * @param array<string, ToolbarAction> $toolbarActions
-     */
-    public function createTemplateFormView(
-        string $parentView,
-        bool $previewEnabled,
-        string $resourceKey,
-        string $formKey,
-        ?array $toolbarActions = null
-    ): ViewBuilderInterface;
-
-    /**
-     * @param array<string, ToolbarAction> $toolbarActions
-     */
-    public function createSeoFormView(
-        string $parentView,
-        bool $previewEnabled,
-        string $resourceKey,
-        ?array $toolbarActions = null
-    ): ViewBuilderInterface;
-
-    /**
-     * @param array<string, ToolbarAction> $toolbarActions
-     */
-    public function createExcerptFormView(
-        string $parentView,
-        bool $previewEnabled,
-        string $resourceKey,
-        ?array $toolbarActions = null
-    ): ViewBuilderInterface;
 }
