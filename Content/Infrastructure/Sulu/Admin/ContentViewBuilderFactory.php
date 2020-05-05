@@ -153,13 +153,18 @@ class ContentViewBuilderFactory implements ContentViewBuilderFactoryInterface
         if ($this->hasPermission($securityContext, PermissionTypes::ADD)) {
             if ($addParentView) {
                 if (is_subclass_of($dimensionContentClass, TemplateInterface::class)) {
-                    $views[] = $this->createTemplateFormView(
+                    /** @var FormViewBuilderInterface|PreviewFormViewBuilderInterface $templateFormView */
+                    $templateFormView = $this->createTemplateFormView(
                         $addParentView,
                         false,
                         $resourceKey,
                         $templateFormKey,
                         $addToolbarActions
                     );
+
+                    $templateFormView->setEditView($editParentView);
+
+                    $views[] = $templateFormView;
                 }
             }
         }
