@@ -24,13 +24,30 @@ class WorkflowDataMapper implements DataMapperInterface
         object $unlocalizedObject,
         ?object $localizedObject = null
     ): void {
-        if (!$localizedObject
-            || !$localizedObject instanceof WorkflowInterface
-            || !$localizedObject instanceof DimensionContentInterface) {
+        if (!$unlocalizedObject instanceof WorkflowInterface) {
             return;
         }
 
-        if (DimensionInterface::STAGE_LIVE !== $localizedObject->getDimension()->getStage()) {
+        if ($localizedObject) {
+            if (!$localizedObject instanceof WorkflowInterface) {
+                throw new \RuntimeException(sprintf('Expected "$localizedObject" from type "%s" but "%s" given.', WorkflowInterface::class, \get_class($localizedObject)));
+            }
+
+            $this->setWorkflowData($localizedObject, $data);
+
+            return;
+        }
+
+        $this->setWorkflowData($unlocalizedObject, $data);
+    }
+
+    /**
+     * @param mixed[] $data
+     */
+    private function setWorkflowData(WorkflowInterface $object, array $data): void
+    {
+        if (!$object instanceof DimensionContentInterface
+            || DimensionInterface::STAGE_LIVE !== $object->getDimension()->getStage()) {
             return;
         }
 
@@ -40,6 +57,6 @@ class WorkflowDataMapper implements DataMapperInterface
             return;
         }
 
-        $localizedObject->setWorkflowPublished(new \DateTimeImmutable($published));
+        $object->setWorkflowPublished(new \DateTimeImmutable($published));
     }
 }

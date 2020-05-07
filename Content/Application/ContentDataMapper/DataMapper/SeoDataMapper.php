@@ -28,7 +28,7 @@ class SeoDataMapper implements DataMapperInterface
 
         if ($localizedObject) {
             if (!$localizedObject instanceof SeoInterface) {
-                throw new \RuntimeException(sprintf('Expected "$localizedDimensionContent" from type "%s" but "%s" given.', SeoInterface::class, \get_class($localizedObject)));
+                throw new \RuntimeException(sprintf('Expected "$localizedObject" from type "%s" but "%s" given.', SeoInterface::class, \get_class($localizedObject)));
             }
 
             $this->setSeoData($localizedObject, $data);
