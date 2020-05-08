@@ -230,8 +230,11 @@ class UnpublishTransitionSubscriberTest extends TestCase
     public function testOnUnpublish(): void
     {
         $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent->willImplement(WorkflowInterface::class);
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
         $dimensionAttributes = ['locale' => 'en', 'stage' => 'draft'];
+
+        $dimensionContent->setWorkflowPublished(null)->shouldBeCalled();
 
         $event = new TransitionEvent(
             $dimensionContent->reveal(),
