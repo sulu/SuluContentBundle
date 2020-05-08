@@ -26,6 +26,7 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionTrait;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptTrait;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
@@ -245,23 +246,90 @@ class ContentObjectProviderTest extends TestCase
 
     public function testSerialize(): void
     {
-        $object = new \stdClass();
-        $object->foo = 'bar';
-        $serializedObject = serialize($object);
+        $projection = $this->prophesize(ContentProjectionInterface::class);
+        $projection->getContentId()->willReturn('123-456');
+        $dimension = $this->prophesize(DimensionInterface::class);
+        $dimension->getLocale()->willReturn('en');
+        $projection->getDimension()->willReturn($dimension->reveal());
 
-        $result = $this->contentObjectProvider->serialize($object);
+        $serializedObject = json_encode([
+            'id' => '123-456',
+            'locale' => 'en',
+        ]);
+
+        $result = $this->contentObjectProvider->serialize($projection->reveal());
 
         $this->assertSame($serializedObject, $result);
     }
 
     public function testDeserialize(): void
     {
-        $object = new \stdClass();
-        $object->foo = 'bar';
-        $serializedObject = serialize($object);
+        $queryBuilder = $this->prophesize(QueryBuilder::class);
 
-        $deserializedObject = $this->contentObjectProvider->deserialize($serializedObject, \get_class($object));
+        $this->entityManager->createQueryBuilder()->willReturn($queryBuilder->reveal())->shouldBeCalledTimes(1);
 
-        $this->assertSame($deserializedObject->foo, $object->foo);
+        $queryBuilder->select(Argument::type('string'))->will(function () {
+            return func_get_arg(\func_num_args() - 2);
+        })->shouldBeCalledTimes(1);
+
+        $queryBuilder->from(Argument::type('string'), Argument::type('string'))->will(function () {
+            return func_get_arg(\func_num_args() - 2);
+        })->shouldBeCalledTimes(1);
+
+        $queryBuilder->where(Argument::type('string'))->will(function () {
+            return func_get_arg(\func_num_args() - 2);
+        })->shouldBeCalledTimes(1);
+
+        $queryBuilder->setParameter(Argument::type('string'), Argument::any())->will(function () {
+            return func_get_arg(\func_num_args() - 2);
+        })->shouldBeCalledTimes(1);
+
+        $query = $this->prophesize(AbstractQuery::class);
+
+        $queryBuilder->getQuery()->willReturn($query->reveal())->shouldBeCalledTimes(1);
+
+        $entity = $this->prophesize(ContentRichEntityInterface::class);
+
+        $query->getSingleResult()->willReturn($entity->reveal())->shouldBeCalledTimes(1);
+
+        $projection = $this->prophesize(ContentProjectionInterface::class);
+
+        $this->contentResolver->resolve(
+            $entity->reveal(),
+            Argument::type('array')
+        )->willReturn($projection->reveal())->shouldBeCalledTimes(1);
+
+        $serializedObject = json_encode([
+            'id' => '123-456',
+            'locale' => 'en',
+        ]) ?: '';
+
+        $result = $this->contentObjectProvider->deserialize($serializedObject, ContentProjectionInterface::class);
+
+        $this->assertSame($projection->reveal(), $result);
+    }
+
+    public function testDeserializeIdNull(): void
+    {
+        $serializedObject = json_encode([
+            'id' => null,
+            'locale' => 'en',
+        ]) ?: '';
+
+        $result = $this->contentObjectProvider->deserialize($serializedObject, ContentProjectionInterface::class);
+
+        $this->assertNull($result);
+    }
+
+    public function testDeserializeLocaleNull(): void
+    {
+        $serializedObject = json_encode([
+            'id' => '123-456',
+            'locale' => null,
+        ]) ?: '';
+
+        $result = $this->contentObjectProvider->deserialize($serializedObject, ContentProjectionInterface::class);
+
+        $this->assertNull($result);
     }
 }

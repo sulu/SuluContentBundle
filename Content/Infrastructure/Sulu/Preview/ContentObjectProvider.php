@@ -119,13 +119,16 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
     }
 
     /**
-     * @param mixed $object
+     * @param ContentProjectionInterface $object
      *
      * @return string
      */
     public function serialize($object)
     {
-        return serialize($object);
+        return json_encode([
+            'id' => $object->getContentId(),
+            'locale' => $object->getDimension()->getLocale(),
+        ]) ?: '[]';
     }
 
     /**
@@ -136,7 +139,16 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
      */
     public function deserialize($serializedObject, $objectClass)
     {
-        return unserialize($serializedObject);
+        $data = json_decode($serializedObject, true);
+
+        $id = $data['id'] ?? null;
+        $locale = $data['locale'] ?? null;
+
+        if (!$id || !$locale) {
+            return null;
+        }
+
+        return $this->getObject($id, $locale);
     }
 
     protected function loadProjection(ContentRichEntityInterface $contentRichEntity, string $locale): ?ContentProjectionInterface
