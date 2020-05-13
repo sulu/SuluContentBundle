@@ -22,6 +22,10 @@
             <tag name="sulu_content.data_mapper" priority="32"/>
         </service>
 
+        <service id="sulu_content.workflow_data_mapper" class="Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\DataMapper\WorkflowDataMapper">
+            <tag name="sulu_content.data_mapper" priority="16"/>
+        </service>
+
         <service id="sulu_content.route_data_mapper" class="Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\DataMapper\RoutableDataMapper">
             <argument type="service" id="sulu_page.structure.factory"/>
             <argument type="service" id="sulu_route.generator.route_generator"/>

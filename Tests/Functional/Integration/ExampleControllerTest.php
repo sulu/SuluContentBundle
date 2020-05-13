@@ -33,7 +33,7 @@ class ExampleControllerTest extends BaseTestCase
         $this->client = $this->createAuthenticatedClient();
     }
 
-    public function testPostPublish(): void
+    public function testPostPublish(): int
     {
         self::purgeDatabase();
         self::initPhpcr();
@@ -42,6 +42,7 @@ class ExampleControllerTest extends BaseTestCase
             'template' => 'example-2',
             'title' => 'Test Example',
             'url' => '/my-example',
+            'published' => '2020-05-08T00:00:00+00:00', // Should be ignored
             'images' => null,
             'seoTitle' => 'Seo Title',
             'seoDescription' => 'Seo Description',
@@ -60,8 +61,11 @@ class ExampleControllerTest extends BaseTestCase
         ]);
 
         $response = $this->client->getResponse();
+        $content = json_decode((string) $response->getContent(), true);
+        $id = $content['id'] ?? null;
 
         $this->assertResponseContent('example_post_publish.json', $response, 201);
+        $this->assertNotSame('2020-05-08T00:00:00+00:00', $content['published']);
 
         self::ensureKernelShutdown();
 
@@ -73,6 +77,28 @@ class ExampleControllerTest extends BaseTestCase
         $content = $response->getContent();
         $this->assertIsString($content);
         $this->assertStringContainsString('EXAMPLE DEFAULT TEMPLATE', $content);
+
+        return $id;
+    }
+
+    /**
+     * @depends testPostPublish
+     */
+    public function testPostTriggerUnpublish(int $id): void
+    {
+        $this->client->request('POST', '/admin/api/examples/' . $id . '?locale=en&action=unpublish');
+
+        $response = $this->client->getResponse();
+
+        $this->assertResponseContent('example_post_trigger_unpublish.json', $response, 200);
+
+        self::ensureKernelShutdown();
+
+        $websiteClient = $this->createWebsiteClient();
+        $websiteClient->request('GET', '/en/my-example');
+
+        $response = $websiteClient->getResponse();
+        $this->assertHttpStatusCode(404, $response);
     }
 
     public function testPost(): int

@@ -67,7 +67,7 @@ class TemplateDataMapper implements DataMapperInterface
 
         if ($localizedObject) {
             if (!$localizedObject instanceof TemplateInterface) {
-                throw new \RuntimeException(sprintf('Expected "$localizedDimensionContent" from type "%s" but "%s" given.', TemplateInterface::class, \get_class($localizedObject)));
+                throw new \RuntimeException(sprintf('Expected "$localizedObject" from type "%s" but "%s" given.', TemplateInterface::class, \get_class($localizedObject)));
             }
 
             $localizedObject->setTemplateKey($template);

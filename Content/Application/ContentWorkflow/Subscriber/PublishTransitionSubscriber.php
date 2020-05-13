@@ -18,6 +18,7 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Workflow\Event\TransitionEvent;
 
@@ -39,6 +40,12 @@ class PublishTransitionSubscriber implements EventSubscriberInterface
 
         if (!$dimensionContent instanceof DimensionContentInterface) {
             return;
+        }
+
+        if ($dimensionContent instanceof WorkflowInterface) {
+            if (!$dimensionContent->getWorkflowPublished()) {
+                $dimensionContent->setWorkflowPublished(new \DateTimeImmutable());
+            }
         }
 
         $context = $transitionEvent->getContext();

@@ -46,23 +46,6 @@ class WorkflowTraitTest extends TestCase
         $workflow = $this->getWorkflowInstance();
         $workflow->setWorkflowPlace(WorkflowInterface::WORKFLOW_PLACE_UNPUBLISHED);
         $this->assertSame('unpublished', $workflow->getWorkflowPlace());
-
-        $published = $workflow->getWorkflowPublished();
-        $this->assertNull($published);
-    }
-
-    public function testSetWorkflowPlaceUnpublishedExistingPublishedDate(): void
-    {
-        $oldPublished = new \DateTimeImmutable('2019-01-01');
-
-        $workflow = $this->getWorkflowInstance();
-        $workflow->setWorkflowPublished($oldPublished);
-
-        $workflow->setWorkflowPlace(WorkflowInterface::WORKFLOW_PLACE_UNPUBLISHED);
-        $this->assertSame('unpublished', $workflow->getWorkflowPlace());
-
-        $published = $workflow->getWorkflowPublished();
-        $this->assertNull($published);
     }
 
     public function testSetWorkflowPlaceDraft(): void
@@ -77,24 +60,6 @@ class WorkflowTraitTest extends TestCase
         $workflow = $this->getWorkflowInstance();
         $workflow->setWorkflowPlace(WorkflowInterface::WORKFLOW_PLACE_PUBLISHED);
         $this->assertSame('published', $workflow->getWorkflowPlace());
-
-        $published = $workflow->getWorkflowPublished();
-        $this->assertInstanceOf(\DateTimeImmutable::class, $published);
-        $this->assertSame(date('Y-m-d H:i:s'), $published->format('Y-m-d H:i:s'));
-    }
-
-    public function testSetWorkflowPlacePublishedExistingPublishedDate(): void
-    {
-        $oldPublished = new \DateTimeImmutable('2019-01-01');
-
-        $workflow = $this->getWorkflowInstance();
-        $workflow->setWorkflowPublished($oldPublished);
-
-        $workflow->setWorkflowPlace(WorkflowInterface::WORKFLOW_PLACE_PUBLISHED);
-        $this->assertSame('published', $workflow->getWorkflowPlace());
-
-        $newPublished = $workflow->getWorkflowPublished();
-        $this->assertSame($oldPublished, $newPublished);
     }
 
     public function testSetWorkflowPlaceReviewDraft(): void

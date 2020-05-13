@@ -143,9 +143,51 @@ class PublishTransitionSubscriberTest extends TestCase
     public function testOnPublish(): void
     {
         $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent->willImplement(WorkflowInterface::class);
         $dimensionContentCollection = $this->prophesize(DimensionContentCollectionInterface::class);
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
         $dimensionAttributes = ['locale' => 'en', 'stage' => 'draft'];
+
+        $dimensionContent->getWorkflowPublished()->willReturn(null);
+        $dimensionContent->setWorkflowPublished(Argument::cetera())->shouldBeCalled();
+
+        $event = new TransitionEvent(
+            $dimensionContent->reveal(),
+            new Marking()
+        );
+        $event->setContext([
+            'dimensionContentCollection' => $dimensionContentCollection->reveal(),
+            'dimensionAttributes' => $dimensionAttributes,
+            'contentRichEntity' => $contentRichEntity->reveal(),
+        ]);
+
+        $contentCopier = $this->prophesize(ContentCopierInterface::class);
+        $sourceDimensionAttributes = $dimensionAttributes;
+        $sourceDimensionAttributes['stage'] = 'live';
+        $copiedContentProjection = $this->prophesize(ContentProjectionInterface::class);
+        $contentCopier->copyFromDimensionContentCollection(
+            $dimensionContentCollection->reveal(),
+            $contentRichEntity->reveal(),
+            $sourceDimensionAttributes
+        )
+            ->willReturn($copiedContentProjection->reveal())
+            ->shouldBeCalled();
+
+        $contentPublishSubscriber = $this->createContentPublisherSubscriberInstance($contentCopier->reveal());
+
+        $contentPublishSubscriber->onPublish($event);
+    }
+
+    public function testOnPublishExistingPublished(): void
+    {
+        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent->willImplement(WorkflowInterface::class);
+        $dimensionContentCollection = $this->prophesize(DimensionContentCollectionInterface::class);
+        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
+        $dimensionAttributes = ['locale' => 'en', 'stage' => 'draft'];
+
+        $dimensionContent->getWorkflowPublished()->willReturn(new \DateTimeImmutable());
+        $dimensionContent->setWorkflowPublished(Argument::any())->shouldNotBeCalled();
 
         $event = new TransitionEvent(
             $dimensionContent->reveal(),
