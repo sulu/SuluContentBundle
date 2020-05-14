@@ -1,6 +1,6 @@
 # Upgrade
 
-## master
+## 0.3.0
 
 ### Refactored the ContentViewBuilder
 
