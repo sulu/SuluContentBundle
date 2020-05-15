@@ -18,6 +18,7 @@ use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\ContentWorkflowInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\RouteBundle\Model\RouteInterface;
 use Sulu\Bundle\WebsiteBundle\Sitemap\Sitemap;
@@ -31,7 +32,7 @@ use Sulu\Component\Webspace\PortalInformation;
 class ContentSitemapProvider implements SitemapProviderInterface
 {
     const ROUTE_ALIAS = 'route';
-    const CONTENT_RICH_ENTITY_ALIAS = 'contentRichEntity';
+    const CONTENT_RICH_ENTITY_ALIAS = ContentWorkflowInterface::CONTENT_RICH_ENTITY_CONTEXT_KEY;
     const LOCALIZED_DIMENSION_CONTENT_ALIAS = 'localizedDimensionContent';
     const LOCALIZED_DIMENSION_ALIAS = 'localizedDimension';
 

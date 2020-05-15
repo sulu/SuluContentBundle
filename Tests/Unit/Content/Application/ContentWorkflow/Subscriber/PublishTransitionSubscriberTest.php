@@ -16,6 +16,7 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentWorkfl
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentCopier\ContentCopierInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\ContentWorkflowInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\Subscriber\PublishTransitionSubscriber;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
@@ -72,8 +73,8 @@ class PublishTransitionSubscriberTest extends TestCase
             new Marking()
         );
         $event->setContext([
-            'dimensionAttributes' => $dimensionAttributes,
-            'contentRichEntity' => $contentRichEntity->reveal(),
+            ContentWorkflowInterface::DIMENSION_ATTRIBUTES_CONTEXT_KEY => $dimensionAttributes,
+            ContentWorkflowInterface::CONTENT_RICH_ENTITY_CONTEXT_KEY => $contentRichEntity->reveal(),
         ]);
 
         $contentCopier = $this->prophesize(ContentCopierInterface::class);
@@ -99,8 +100,8 @@ class PublishTransitionSubscriberTest extends TestCase
             new Marking()
         );
         $event->setContext([
-            'dimensionAttributes' => $dimensionAttributes,
-            'dimensionContentCollection' => $dimensionContentCollection->reveal(),
+            ContentWorkflowInterface::DIMENSION_ATTRIBUTES_CONTEXT_KEY => $dimensionAttributes,
+            ContentWorkflowInterface::DIMENSION_CONTENT_COLLECTION_CONTEXT_KEY => $dimensionContentCollection->reveal(),
         ]);
 
         $contentCopier = $this->prophesize(ContentCopierInterface::class);
@@ -126,8 +127,8 @@ class PublishTransitionSubscriberTest extends TestCase
             new Marking()
         );
         $event->setContext([
-            'dimensionContentCollection' => $dimensionContentCollection->reveal(),
-            'contentRichEntity' => $contentRichEntity->reveal(),
+            ContentWorkflowInterface::DIMENSION_CONTENT_COLLECTION_CONTEXT_KEY => $dimensionContentCollection->reveal(),
+            ContentWorkflowInterface::CONTENT_RICH_ENTITY_CONTEXT_KEY => $contentRichEntity->reveal(),
         ]);
 
         $contentCopier = $this->prophesize(ContentCopierInterface::class);
@@ -155,9 +156,9 @@ class PublishTransitionSubscriberTest extends TestCase
             new Marking()
         );
         $event->setContext([
-            'dimensionContentCollection' => $dimensionContentCollection->reveal(),
-            'dimensionAttributes' => $dimensionAttributes,
-            'contentRichEntity' => $contentRichEntity->reveal(),
+            ContentWorkflowInterface::DIMENSION_CONTENT_COLLECTION_CONTEXT_KEY => $dimensionContentCollection->reveal(),
+            ContentWorkflowInterface::DIMENSION_ATTRIBUTES_CONTEXT_KEY => $dimensionAttributes,
+            ContentWorkflowInterface::CONTENT_RICH_ENTITY_CONTEXT_KEY => $contentRichEntity->reveal(),
         ]);
 
         $contentCopier = $this->prophesize(ContentCopierInterface::class);
@@ -194,9 +195,9 @@ class PublishTransitionSubscriberTest extends TestCase
             new Marking()
         );
         $event->setContext([
-            'dimensionContentCollection' => $dimensionContentCollection->reveal(),
-            'dimensionAttributes' => $dimensionAttributes,
-            'contentRichEntity' => $contentRichEntity->reveal(),
+            ContentWorkflowInterface::DIMENSION_CONTENT_COLLECTION_CONTEXT_KEY => $dimensionContentCollection->reveal(),
+            ContentWorkflowInterface::DIMENSION_ATTRIBUTES_CONTEXT_KEY => $dimensionAttributes,
+            ContentWorkflowInterface::CONTENT_RICH_ENTITY_CONTEXT_KEY => $contentRichEntity->reveal(),
         ]);
 
         $contentCopier = $this->prophesize(ContentCopierInterface::class);

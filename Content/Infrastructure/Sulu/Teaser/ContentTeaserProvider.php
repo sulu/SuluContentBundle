@@ -15,6 +15,7 @@ namespace Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Teaser;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentManager\ContentManagerInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\ContentWorkflowInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
@@ -27,7 +28,7 @@ use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
 
 abstract class ContentTeaserProvider implements TeaserProviderInterface
 {
-    const CONTENT_RICH_ENTITY_ALIAS = 'contentRichEntity';
+    const CONTENT_RICH_ENTITY_ALIAS = ContentWorkflowInterface::CONTENT_RICH_ENTITY_CONTEXT_KEY;
 
     /**
      * @var ContentManagerInterface
