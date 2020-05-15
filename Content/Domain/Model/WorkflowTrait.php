@@ -16,9 +16,9 @@ namespace Sulu\Bundle\ContentBundle\Content\Domain\Model;
 trait WorkflowTrait
 {
     /**
-     * @var string
+     * @var string|null
      */
-    protected $workflowPlace = WorkflowInterface::WORKFLOW_PLACE_UNPUBLISHED;
+    protected $workflowPlace;
 
     /**
      * @var \DateTimeImmutable|null
@@ -30,12 +30,12 @@ trait WorkflowTrait
         return WorkflowInterface::WORKFLOW_DEFAULT_NAME;
     }
 
-    public function getWorkflowPlace(): string
+    public function getWorkflowPlace(): ?string
     {
         return $this->workflowPlace;
     }
 
-    public function setWorkflowPlace(string $workflowPlace): void
+    public function setWorkflowPlace(?string $workflowPlace): void
     {
         $this->workflowPlace = $workflowPlace;
     }

@@ -72,7 +72,7 @@ class ContentWorkflow implements ContentWorkflowInterface
         $this->dimensionContentRepository = $dimensionContentRepository;
         $this->contentMerger = $contentMerger;
         $this->eventDispatcher = $eventDispatcher ?: new EventDispatcher();
-        // TODO get workflow from outside
+        // TODO: get public workflow registry from outside
         $this->workflowRegistry = $workflowRegistry ?: new Registry();
         $this->workflowRegistry->addWorkflow(
             $this->getWorkflow(),
