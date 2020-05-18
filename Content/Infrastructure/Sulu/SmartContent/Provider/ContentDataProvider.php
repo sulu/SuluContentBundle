@@ -78,10 +78,10 @@ class ContentDataProvider extends BaseDataProvider
     protected function decorateDataItems(array $data): array
     {
         return array_map(
-            function (DimensionContentInterface $resolvedContent) {
-                $normalizedContentData = $this->normalizeContent($resolvedContent);
+            function (DimensionContentInterface $resolvedDimensionContent) {
+                $normalizedContentData = $this->normalizeContent($resolvedDimensionContent);
 
-                return $this->createDataItem($resolvedContent, $normalizedContentData);
+                return $this->createDataItem($resolvedDimensionContent, $normalizedContentData);
             },
             $data
         );
@@ -98,52 +98,52 @@ class ContentDataProvider extends BaseDataProvider
     protected function decorateResourceItems(array $data, $locale): array
     {
         return array_map(
-            function (DimensionContentInterface $resolvedContent) {
-                $normalizedContentData = $this->normalizeContent($resolvedContent);
-                $id = $this->getIdForItem($resolvedContent);
+            function (DimensionContentInterface $resolvedDimensionContent) {
+                $normalizedContentData = $this->normalizeContent($resolvedDimensionContent);
+                $id = $this->getIdForItem($resolvedDimensionContent);
 
                 if (null !== $this->referenceStore) {
                     $this->referenceStore->add($id);
                 }
 
-                return $this->createResourceItem($id, $resolvedContent, $normalizedContentData);
+                return $this->createResourceItem($id, $resolvedDimensionContent, $normalizedContentData);
             },
             $data
         );
     }
 
     /**
-     * @param DimensionContentInterface $resolvedContent
+     * @param DimensionContentInterface $resolvedDimensionContent
      *
      * @return mixed
      */
-    protected function getIdForItem($resolvedContent)
+    protected function getIdForItem($resolvedDimensionContent)
     {
-        return $resolvedContent->getContentRichEntity()->getId();
+        return $resolvedDimensionContent->getContentRichEntity()->getId();
     }
 
     /**
      * @return mixed[]
      */
-    protected function normalizeContent(DimensionContentInterface $resolvedContent): array
+    protected function normalizeContent(DimensionContentInterface $resolvedDimensionContent): array
     {
-        return $this->contentManager->normalize($resolvedContent);
+        return $this->contentManager->normalize($resolvedDimensionContent);
     }
 
     /**
      * @param mixed[] $data
      */
-    protected function createDataItem(DimensionContentInterface $resolvedContent, array $data): ItemInterface
+    protected function createDataItem(DimensionContentInterface $resolvedDimensionContent, array $data): ItemInterface
     {
-        return new ContentDataItem($resolvedContent, $data);
+        return new ContentDataItem($resolvedDimensionContent, $data);
     }
 
     /**
      * @param mixed $id
      * @param mixed[] $data
      */
-    protected function createResourceItem($id, DimensionContentInterface $resolvedContent, array $data): ResourceItemInterface
+    protected function createResourceItem($id, DimensionContentInterface $resolvedDimensionContent, array $data): ResourceItemInterface
     {
-        return new ArrayAccessItem($id, $data, $resolvedContent);
+        return new ArrayAccessItem($id, $data, $resolvedDimensionContent);
     }
 }

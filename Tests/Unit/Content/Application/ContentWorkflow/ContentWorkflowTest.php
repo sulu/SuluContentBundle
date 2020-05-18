@@ -312,14 +312,14 @@ class ContentWorkflowTest extends TestCase
             ->willReturn($dimensionContentCollection)
             ->shouldBeCalled();
 
-        $resolvedContent = $this->prophesize(DimensionContentInterface::class);
+        $resolvedDimensionContent = $this->prophesize(DimensionContentInterface::class);
 
         $contentMerger->mergeCollection($dimensionContentCollection)
-            ->willReturn($resolvedContent)
+            ->willReturn($resolvedDimensionContent)
             ->shouldBeCalledTimes($isTransitionAllowed ? 1 : 0);
 
         $this->assertSame(
-            $isTransitionAllowed ? $resolvedContent->reveal() : null,
+            $isTransitionAllowed ? $resolvedDimensionContent->reveal() : null,
             $contentWorkflow->apply(
                 $contentRichEntity->reveal(),
                 $dimensionAttributes,

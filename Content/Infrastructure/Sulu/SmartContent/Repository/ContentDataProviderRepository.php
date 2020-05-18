@@ -102,7 +102,7 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
                         ? DimensionInterface::STAGE_DRAFT
                         : DimensionInterface::STAGE_LIVE;
 
-                    $resolvedContent = $this->contentManager->resolve(
+                    $resolvedDimensionContent = $this->contentManager->resolve(
                         $contentRichEntity,
                         [
                             'locale' => $locale,
@@ -110,13 +110,13 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
                         ]
                     );
 
-                    $dimension = $resolvedContent->getDimension();
+                    $dimension = $resolvedDimensionContent->getDimension();
 
                     if ($stage !== $dimension->getStage() || $locale !== $dimension->getLocale()) {
                         return null;
                     }
 
-                    return $resolvedContent;
+                    return $resolvedDimensionContent;
                 },
                 $contentRichEntities
             )

@@ -79,15 +79,15 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
             array_filter(
                 array_map(
                     function (ContentRichEntityInterface $contentRichEntity) use ($locale): ?Teaser {
-                        $resolvedContent = $this->resolveContent($contentRichEntity, $locale);
+                        $resolvedDimensionContent = $this->resolveContent($contentRichEntity, $locale);
 
-                        if (!$resolvedContent) {
+                        if (!$resolvedDimensionContent) {
                             return null;
                         }
 
-                        $data = $this->contentManager->normalize($resolvedContent);
+                        $data = $this->contentManager->normalize($resolvedDimensionContent);
 
-                        return $this->createTeaser($resolvedContent, $data, $locale);
+                        return $this->createTeaser($resolvedDimensionContent, $data, $locale);
                     },
                     $contentRichEntities
                 )
@@ -98,28 +98,28 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
     /**
      * @param mixed[] $data
      */
-    protected function createTeaser(DimensionContentInterface $resolvedContent, array $data, string $locale): ?Teaser
+    protected function createTeaser(DimensionContentInterface $resolvedDimensionContent, array $data, string $locale): ?Teaser
     {
-        $url = $this->getUrl($resolvedContent, $data);
+        $url = $this->getUrl($resolvedDimensionContent, $data);
 
         if (!$url) {
             return null;
         }
 
         /** @var string $title */
-        $title = $this->getTitle($resolvedContent, $data);
+        $title = $this->getTitle($resolvedDimensionContent, $data);
 
         /** @var string $description */
-        $description = $this->getDescription($resolvedContent, $data);
+        $description = $this->getDescription($resolvedDimensionContent, $data);
 
         /** @var string $moreText */
-        $moreText = $this->getMoreText($resolvedContent, $data);
+        $moreText = $this->getMoreText($resolvedDimensionContent, $data);
 
         /** @var int $mediaId */
-        $mediaId = $this->getMediaId($resolvedContent, $data);
+        $mediaId = $this->getMediaId($resolvedDimensionContent, $data);
 
         return new Teaser(
-            $resolvedContent->getContentRichEntity()->getId(),
+            $resolvedDimensionContent->getContentRichEntity()->getId(),
             $this->getResourceKey(),
             $locale,
             $title,
@@ -127,7 +127,7 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
             $moreText,
             $url,
             $mediaId,
-            $this->getAttributes($resolvedContent, $data)
+            $this->getAttributes($resolvedDimensionContent, $data)
         );
     }
 
@@ -138,7 +138,7 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
             : DimensionInterface::STAGE_LIVE;
 
         try {
-            $resolvedContent = $this->contentManager->resolve($contentRichEntity, [
+            $resolvedDimensionContent = $this->contentManager->resolve($contentRichEntity, [
                 'locale' => $locale,
                 'stage' => $stage,
             ]);
@@ -146,26 +146,26 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
             return null;
         }
 
-        $dimension = $resolvedContent->getDimension();
+        $dimension = $resolvedDimensionContent->getDimension();
 
         if ($stage !== $dimension->getStage() || $locale !== $dimension->getLocale()) {
             return null;
         }
 
-        return $resolvedContent;
+        return $resolvedDimensionContent;
     }
 
     /**
      * @param mixed[] $data
      */
-    protected function getUrl(DimensionContentInterface $resolvedContent, array $data): ?string
+    protected function getUrl(DimensionContentInterface $resolvedDimensionContent, array $data): ?string
     {
-        if (!$resolvedContent instanceof TemplateInterface) {
+        if (!$resolvedDimensionContent instanceof TemplateInterface) {
             return null;
         }
 
-        $type = $resolvedContent::getTemplateType();
-        $template = $resolvedContent->getTemplateKey();
+        $type = $resolvedDimensionContent::getTemplateType();
+        $template = $resolvedDimensionContent->getTemplateKey();
 
         $metadata = $this->metadataFactory->getStructureMetadata($type, $template);
 
@@ -175,7 +175,7 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
 
         foreach ($metadata->getProperties() as $property) {
             if ('route' === $property->getType()) {
-                return $resolvedContent->getTemplateData()[$property->getName()] ?? null;
+                return $resolvedDimensionContent->getTemplateData()[$property->getName()] ?? null;
             }
         }
 
@@ -185,10 +185,10 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
     /**
      * @param mixed[] $data
      */
-    protected function getTitle(DimensionContentInterface $resolvedContent, array $data): ?string
+    protected function getTitle(DimensionContentInterface $resolvedDimensionContent, array $data): ?string
     {
-        if ($resolvedContent instanceof ExcerptInterface) {
-            if ($excerptTitle = $resolvedContent->getExcerptTitle()) {
+        if ($resolvedDimensionContent instanceof ExcerptInterface) {
+            if ($excerptTitle = $resolvedDimensionContent->getExcerptTitle()) {
                 return $excerptTitle;
             }
         }
@@ -199,10 +199,10 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
     /**
      * @param mixed[] $data
      */
-    protected function getDescription(DimensionContentInterface $resolvedContent, array $data): ?string
+    protected function getDescription(DimensionContentInterface $resolvedDimensionContent, array $data): ?string
     {
-        if ($resolvedContent instanceof ExcerptInterface) {
-            if ($excerptDescription = $resolvedContent->getExcerptDescription()) {
+        if ($resolvedDimensionContent instanceof ExcerptInterface) {
+            if ($excerptDescription = $resolvedDimensionContent->getExcerptDescription()) {
                 return $excerptDescription;
             }
         }
@@ -213,10 +213,10 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
     /**
      * @param mixed[] $data
      */
-    protected function getMoreText(DimensionContentInterface $resolvedContent, array $data): ?string
+    protected function getMoreText(DimensionContentInterface $resolvedDimensionContent, array $data): ?string
     {
-        if ($resolvedContent instanceof ExcerptInterface) {
-            if ($excerptMore = $resolvedContent->getExcerptMore()) {
+        if ($resolvedDimensionContent instanceof ExcerptInterface) {
+            if ($excerptMore = $resolvedDimensionContent->getExcerptMore()) {
                 return $excerptMore;
             }
         }
@@ -227,10 +227,10 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
     /**
      * @param mixed[] $data
      */
-    protected function getMediaId(DimensionContentInterface $resolvedContent, array $data): ?string
+    protected function getMediaId(DimensionContentInterface $resolvedDimensionContent, array $data): ?string
     {
-        if ($resolvedContent instanceof ExcerptInterface) {
-            if ($excerptImage = $resolvedContent->getExcerptImage()) {
+        if ($resolvedDimensionContent instanceof ExcerptInterface) {
+            if ($excerptImage = $resolvedDimensionContent->getExcerptImage()) {
                 return $excerptImage['id'] ?? null;
             }
         }
@@ -243,7 +243,7 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
      *
      * @return mixed[]
      */
-    protected function getAttributes(DimensionContentInterface $resolvedContent, array $data): array
+    protected function getAttributes(DimensionContentInterface $resolvedDimensionContent, array $data): array
     {
         return [];
     }

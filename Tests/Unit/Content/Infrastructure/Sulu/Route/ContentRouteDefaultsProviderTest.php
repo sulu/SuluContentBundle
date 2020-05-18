@@ -74,14 +74,14 @@ class ContentRouteDefaultsProviderTest extends TestCase
         );
 
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
-        $resolvedContent = $this->prophesize(TemplateInterface::class);
-        $resolvedContent->willImplement(DimensionContentInterface::class);
+        $resolvedDimensionContent = $this->prophesize(TemplateInterface::class);
+        $resolvedDimensionContent->willImplement(DimensionContentInterface::class);
 
         $dimension = new Dimension('123-456', [
             'locale' => 'en',
             'stage' => 'live',
         ]);
-        $resolvedContent->getDimension()->willReturn($dimension);
+        $resolvedDimensionContent->getDimension()->willReturn($dimension);
 
         $queryBuilder = $this->prophesize(QueryBuilder::class);
         $query = $this->prophesize(AbstractQuery::class);
@@ -97,7 +97,7 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $contentResolver->resolve(
             $contentRichEntity->reveal(),
             ['locale' => 'en', 'stage' => 'live']
-        )->willReturn($resolvedContent->reveal());
+        )->willReturn($resolvedDimensionContent->reveal());
 
         $this->assertTrue($contentRouteDefaultsProvider->isPublished(Example::class, '123-123-123', 'en'));
     }
@@ -175,14 +175,14 @@ class ContentRouteDefaultsProviderTest extends TestCase
             $contentStructureBridgeFactory->reveal()
         );
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
-        $resolvedContent = $this->prophesize(TemplateInterface::class);
-        $resolvedContent->willImplement(DimensionContentInterface::class);
+        $resolvedDimensionContent = $this->prophesize(TemplateInterface::class);
+        $resolvedDimensionContent->willImplement(DimensionContentInterface::class);
 
         $dimension = new Dimension('123-456', [
             'locale' => 'en',
             'stage' => 'live',
         ]);
-        $resolvedContent->getDimension()->willReturn($dimension);
+        $resolvedDimensionContent->getDimension()->willReturn($dimension);
 
         $queryBuilder = $this->prophesize(QueryBuilder::class);
         $query = $this->prophesize(AbstractQuery::class);
@@ -195,7 +195,7 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $query->getSingleResult()->willReturn($contentRichEntity->reveal());
 
         $contentResolver->resolve($contentRichEntity->reveal(), ['locale' => 'en', 'stage' => 'live'])
-            ->willReturn($resolvedContent->reveal())
+            ->willReturn($resolvedDimensionContent->reveal())
             ->shouldBeCalled();
 
         $this->assertTrue($contentRouteDefaultsProvider->isPublished(Example::class, '123-123-123', 'en'));
@@ -213,13 +213,13 @@ class ContentRouteDefaultsProviderTest extends TestCase
             $contentStructureBridgeFactory->reveal()
         );
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
-        $resolvedContent = $this->prophesize(TemplateInterface::class);
-        $resolvedContent->willImplement(DimensionContentInterface::class);
+        $resolvedDimensionContent = $this->prophesize(TemplateInterface::class);
+        $resolvedDimensionContent->willImplement(DimensionContentInterface::class);
 
         $dimension = new Dimension('123-456', [
             'stage' => 'live',
         ]);
-        $resolvedContent->getDimension()->willReturn($dimension);
+        $resolvedDimensionContent->getDimension()->willReturn($dimension);
 
         $queryBuilder = $this->prophesize(QueryBuilder::class);
         $query = $this->prophesize(AbstractQuery::class);
@@ -232,7 +232,7 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $query->getSingleResult()->willReturn($contentRichEntity->reveal());
 
         $contentResolver->resolve($contentRichEntity->reveal(), ['locale' => 'en', 'stage' => 'live'])
-            ->willReturn($resolvedContent->reveal())
+            ->willReturn($resolvedDimensionContent->reveal())
             ->shouldBeCalled();
 
         $this->assertFalse($contentRouteDefaultsProvider->isPublished(Example::class, '123-123-123', 'en'));
@@ -240,13 +240,13 @@ class ContentRouteDefaultsProviderTest extends TestCase
 
     public function testGetByEntityReturnNoneTemplate(): void
     {
-        $resolvedContent = $this->prophesize(DimensionContentInterface::class);
+        $resolvedDimensionContent = $this->prophesize(DimensionContentInterface::class);
 
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage(sprintf(
             'Expected to get "%s" from ContentResolver but "%s" given.',
             TemplateInterface::class,
-            \get_class($resolvedContent->reveal())
+            \get_class($resolvedDimensionContent->reveal())
         ));
 
         $entityManager = $this->prophesize(EntityManagerInterface::class);
@@ -275,7 +275,7 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $contentResolver->resolve(
             $contentRichEntity->reveal(),
             ['locale' => 'en', 'stage' => 'live']
-        )->willReturn($resolvedContent->reveal());
+        )->willReturn($resolvedDimensionContent->reveal());
 
         $contentRouteDefaultsProvider->getByEntity(Example::class, '123-123-123', 'en');
     }
@@ -322,8 +322,8 @@ class ContentRouteDefaultsProviderTest extends TestCase
         );
 
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
-        $resolvedContent = $this->prophesize(TemplateInterface::class);
-        $resolvedContent->willImplement(DimensionContentInterface::class);
+        $resolvedDimensionContent = $this->prophesize(TemplateInterface::class);
+        $resolvedDimensionContent->willImplement(DimensionContentInterface::class);
 
         $queryBuilder = $this->prophesize(QueryBuilder::class);
         $query = $this->prophesize(AbstractQuery::class);
@@ -337,16 +337,16 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $query->getSingleResult()->willReturn($contentRichEntity->reveal());
 
         $contentResolver->resolve($contentRichEntity->reveal(), ['locale' => 'en', 'stage' => 'live'])
-            ->willReturn($resolvedContent->reveal());
+            ->willReturn($resolvedDimensionContent->reveal());
 
         $contentStructureBridge = $this->prophesize(ContentStructureBridge::class);
         $contentStructureBridge->getView()->willReturn('default');
         $contentStructureBridge->getController()->willReturn('App\Controller\TestController:testAction');
-        $contentStructureBridgeFactory->getBridge($resolvedContent->reveal(), '123-123-123', 'en')
+        $contentStructureBridgeFactory->getBridge($resolvedDimensionContent->reveal(), '123-123-123', 'en')
             ->willReturn($contentStructureBridge->reveal());
 
         $result = $contentRouteDefaultsProvider->getByEntity(Example::class, '123-123-123', 'en');
-        $this->assertSame($resolvedContent->reveal(), $result['object']);
+        $this->assertSame($resolvedDimensionContent->reveal(), $result['object']);
         $this->assertSame('default', $result['view']);
         $this->assertSame($contentStructureBridge->reveal(), $result['structure']);
         $this->assertSame('App\Controller\TestController:testAction', $result['_controller']);
@@ -398,8 +398,8 @@ class ContentRouteDefaultsProviderTest extends TestCase
         );
 
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
-        $resolvedContent = $this->prophesize(TemplateInterface::class);
-        $resolvedContent->willImplement(DimensionContentInterface::class);
+        $resolvedDimensionContent = $this->prophesize(TemplateInterface::class);
+        $resolvedDimensionContent->willImplement(DimensionContentInterface::class);
 
         $queryBuilder = $this->prophesize(QueryBuilder::class);
         $query = $this->prophesize(AbstractQuery::class);
@@ -413,9 +413,9 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $query->getSingleResult()->willReturn($contentRichEntity->reveal());
 
         $contentResolver->resolve($contentRichEntity->reveal(), ['locale' => 'en', 'stage' => 'live'])
-            ->willReturn($resolvedContent->reveal());
+            ->willReturn($resolvedDimensionContent->reveal());
 
-        $contentStructureBridgeFactory->getBridge($resolvedContent->reveal(), '123-123-123', 'en')
+        $contentStructureBridgeFactory->getBridge($resolvedDimensionContent->reveal(), '123-123-123', 'en')
             ->willThrow(StructureMetadataNotFoundException::class);
 
         $this->assertEmpty($contentRouteDefaultsProvider->getByEntity(Example::class, '123-123-123', 'en'));

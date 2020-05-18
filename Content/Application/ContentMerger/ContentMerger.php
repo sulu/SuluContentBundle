@@ -54,12 +54,12 @@ class ContentMerger implements ContentMergerInterface
         $contentRichEntity = $mostSpecificDimensionContent->getContentRichEntity();
 
         // TODO: set isResolved flag of dimension content
-        $resolvedContent = $contentRichEntity->createDimensionContent($mostSpecificDimension);
+        $resolvedDimensionContent = $contentRichEntity->createDimensionContent($mostSpecificDimension);
 
         foreach ($dimensionContentCollection as $dimensionContent) {
-            $this->merge($resolvedContent, $dimensionContent);
+            $this->merge($resolvedDimensionContent, $dimensionContent);
         }
 
-        return $resolvedContent;
+        return $resolvedDimensionContent;
     }
 }

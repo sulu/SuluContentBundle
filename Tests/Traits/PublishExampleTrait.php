@@ -37,8 +37,8 @@ trait PublishExampleTrait
             throw new \RuntimeException(sprintf('Example with id "%s" was not found!', $id));
         }
 
-        /** @var ExampleDimensionContent $resolvedContent */
-        $resolvedContent = static::getContentManager()->applyTransition(
+        /** @var ExampleDimensionContent $resolvedDimensionContent */
+        $resolvedDimensionContent = static::getContentManager()->applyTransition(
             $example,
             $dimensionAttributes,
             WorkflowInterface::WORKFLOW_TRANSITION_PUBLISH
@@ -46,7 +46,7 @@ trait PublishExampleTrait
 
         static::getEntityManager()->flush();
 
-        return $resolvedContent;
+        return $resolvedDimensionContent;
     }
 
     abstract protected static function getContentManager(): ContentManagerInterface;

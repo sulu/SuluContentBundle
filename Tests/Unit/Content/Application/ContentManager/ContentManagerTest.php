@@ -38,7 +38,7 @@ class ContentManagerTest extends TestCase
 
     public function testLoad(): void
     {
-        $resolvedContent = $this->prophesize(DimensionContentInterface::class);
+        $resolvedDimensionContent = $this->prophesize(DimensionContentInterface::class);
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
         $dimensionAttributes = ['locale' => 'de', 'stage' => 'draft'];
 
@@ -57,18 +57,18 @@ class ContentManagerTest extends TestCase
         );
 
         $contentResolver->resolve($contentRichEntity->reveal(), $dimensionAttributes)
-            ->willReturn($resolvedContent->reveal())
+            ->willReturn($resolvedDimensionContent->reveal())
             ->shouldBeCalled();
 
         $this->assertSame(
-            $resolvedContent->reveal(),
+            $resolvedDimensionContent->reveal(),
             $contentManager->resolve($contentRichEntity->reveal(), $dimensionAttributes)
         );
     }
 
     public function testPersist(): void
     {
-        $resolvedContent = $this->prophesize(DimensionContentInterface::class);
+        $resolvedDimensionContent = $this->prophesize(DimensionContentInterface::class);
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
         $data = ['data' => 'value'];
         $dimensionAttributes = ['locale' => 'de', 'stage' => 'draft'];
@@ -88,18 +88,18 @@ class ContentManagerTest extends TestCase
         );
 
         $contentPersister->persist($contentRichEntity->reveal(), $data, $dimensionAttributes)
-            ->willReturn($resolvedContent->reveal())
+            ->willReturn($resolvedDimensionContent->reveal())
             ->shouldBeCalled();
 
         $this->assertSame(
-            $resolvedContent->reveal(),
+            $resolvedDimensionContent->reveal(),
             $contentManager->persist($contentRichEntity->reveal(), $data, $dimensionAttributes)
         );
     }
 
     public function testResolve(): void
     {
-        $resolvedContent = $this->prophesize(DimensionContentInterface::class);
+        $resolvedDimensionContent = $this->prophesize(DimensionContentInterface::class);
 
         $contentResolver = $this->prophesize(ContentResolverInterface::class);
         $contentPersister = $this->prophesize(ContentPersisterInterface::class);
@@ -115,13 +115,13 @@ class ContentManagerTest extends TestCase
             $contentWorkflow->reveal()
         );
 
-        $contentNormalizer->normalize($resolvedContent->reveal())
+        $contentNormalizer->normalize($resolvedDimensionContent->reveal())
             ->willReturn(['resolved' => 'data'])
             ->shouldBeCalled();
 
         $this->assertSame(
             ['resolved' => 'data'],
-            $contentManager->normalize($resolvedContent->reveal())
+            $contentManager->normalize($resolvedDimensionContent->reveal())
         );
     }
 
@@ -170,7 +170,7 @@ class ContentManagerTest extends TestCase
 
     public function testTransition(): void
     {
-        $resolvedContent = $this->prophesize(DimensionContentInterface::class);
+        $resolvedDimensionContent = $this->prophesize(DimensionContentInterface::class);
 
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
         $dimensionAttributes = ['locale' => 'en'];
@@ -195,11 +195,11 @@ class ContentManagerTest extends TestCase
             $dimensionAttributes,
             $transitionName
         )
-            ->willReturn($resolvedContent->reveal())
+            ->willReturn($resolvedDimensionContent->reveal())
             ->shouldBeCalled();
 
         $this->assertSame(
-            $resolvedContent->reveal(),
+            $resolvedDimensionContent->reveal(),
             $contentManager->applyTransition(
                 $contentRichEntity->reveal(),
                 $dimensionAttributes,

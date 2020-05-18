@@ -29,9 +29,13 @@ class ContentDataItem extends ArrayAccessItem implements ItemInterface, PublishI
     /**
      * @param mixed[] $data
      */
-    public function __construct(DimensionContentInterface $resolvedContent, array $data)
+    public function __construct(DimensionContentInterface $resolvedDimensionContent, array $data)
     {
-        parent::__construct($resolvedContent->getContentRichEntity()->getId(), $data, $resolvedContent);
+        parent::__construct(
+            $resolvedDimensionContent->getContentRichEntity()->getId(),
+            $data,
+            $resolvedDimensionContent
+        );
     }
 
     /**
@@ -63,18 +67,18 @@ class ContentDataItem extends ArrayAccessItem implements ItemInterface, PublishI
      */
     public function getPublished(): ?\DateTimeInterface
     {
-        $resolvedContent = $this->getResolvedContent();
-        $dimension = $resolvedContent->getDimension();
+        $resolvedDimensionContent = $this->getResolvedDimensionContent();
+        $dimension = $resolvedDimensionContent->getDimension();
 
         if (null === $dimension->getLocale()) {
             return null;
         }
 
-        if (!$resolvedContent instanceof WorkflowInterface) {
+        if (!$resolvedDimensionContent instanceof WorkflowInterface) {
             return null;
         }
 
-        return $resolvedContent->getWorkflowPublished();
+        return $resolvedDimensionContent->getWorkflowPublished();
     }
 
     /**
@@ -82,8 +86,8 @@ class ContentDataItem extends ArrayAccessItem implements ItemInterface, PublishI
      */
     public function getPublishedState(): bool
     {
-        $resolvedContent = $this->getResolvedContent();
-        $dimension = $resolvedContent->getDimension();
+        $resolvedDimensionContent = $this->getResolvedDimensionContent();
+        $dimension = $resolvedDimensionContent->getDimension();
 
         if (null === $dimension->getLocale()) {
             return false;
@@ -93,18 +97,18 @@ class ContentDataItem extends ArrayAccessItem implements ItemInterface, PublishI
             return true;
         }
 
-        if (!$resolvedContent instanceof WorkflowInterface) {
+        if (!$resolvedDimensionContent instanceof WorkflowInterface) {
             return true;
         }
 
-        return WorkflowInterface::WORKFLOW_PLACE_PUBLISHED === $resolvedContent->getWorkflowPlace();
+        return WorkflowInterface::WORKFLOW_PLACE_PUBLISHED === $resolvedDimensionContent->getWorkflowPlace();
     }
 
-    protected function getResolvedContent(): DimensionContentInterface
+    protected function getResolvedDimensionContent(): DimensionContentInterface
     {
-        /** @var DimensionContentInterface $resolvedContent */
-        $resolvedContent = $this->getResource();
+        /** @var DimensionContentInterface $resolvedDimensionContent */
+        $resolvedDimensionContent = $this->getResource();
 
-        return $resolvedContent;
+        return $resolvedDimensionContent;
     }
 }

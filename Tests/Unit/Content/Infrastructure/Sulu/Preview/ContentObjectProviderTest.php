@@ -96,16 +96,16 @@ class ContentObjectProviderTest extends TestCase
 
         $query->getSingleResult()->willReturn($entity->reveal())->shouldBeCalledTimes(1);
 
-        $resolvedContent = $this->prophesize(DimensionContentInterface::class);
+        $resolvedDimensionContent = $this->prophesize(DimensionContentInterface::class);
 
         $this->contentResolver->resolve(
             $entity->reveal(),
             Argument::type('array')
-        )->willReturn($resolvedContent->reveal())->shouldBeCalledTimes(1);
+        )->willReturn($resolvedDimensionContent->reveal())->shouldBeCalledTimes(1);
 
         $result = $this->contentObjectProvider->getObject((string) $id, $locale);
 
-        $this->assertSame($resolvedContent->reveal(), $result);
+        $this->assertSame($resolvedDimensionContent->reveal(), $result);
     }
 
     public function testGetNonExistingObject(int $id = 1, string $locale = 'de'): void
@@ -162,10 +162,10 @@ class ContentObjectProviderTest extends TestCase
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
         $contentRichEntity->getId()->willReturn($id);
 
-        $resolvedContent = $this->prophesize(DimensionContentInterface::class);
-        $resolvedContent->getContentRichEntity()->willReturn($contentRichEntity->reveal());
+        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent->getContentRichEntity()->willReturn($contentRichEntity->reveal());
 
-        $actualId = (string) $this->contentObjectProvider->getId($resolvedContent->reveal());
+        $actualId = (string) $this->contentObjectProvider->getId($dimensionContent->reveal());
 
         $this->assertSame((string) $id, $actualId);
     }
@@ -193,12 +193,12 @@ class ContentObjectProviderTest extends TestCase
             'excerptIcon' => ['id' => 4],
         ]
     ): void {
-        $resolvedContent = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
 
-        $this->contentObjectProvider->setValues($resolvedContent->reveal(), $locale, $data);
+        $this->contentObjectProvider->setValues($dimensionContent->reveal(), $locale, $data);
 
         $this->contentDataMapper->map(
-            $data, $resolvedContent->reveal(), $resolvedContent->reveal()
+            $data, $dimensionContent->reveal(), $dimensionContent->reveal()
         )->shouldBeCalledTimes(1);
     }
 
@@ -207,12 +207,12 @@ class ContentObjectProviderTest extends TestCase
      */
     public function testSetContext(string $locale = 'de', array $context = ['template' => 'overview']): void
     {
-        $resolvedContent = $this->prophesize(DimensionContentInterface::class);
-        $resolvedContent->willImplement(TemplateInterface::class);
+        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent->willImplement(TemplateInterface::class);
 
-        $this->contentObjectProvider->setContext($resolvedContent->reveal(), $locale, $context);
+        $this->contentObjectProvider->setContext($dimensionContent->reveal(), $locale, $context);
 
-        $resolvedContent->setTemplateKey($context['template'])->shouldBeCalled();
+        $dimensionContent->setTemplateKey($context['template'])->shouldBeCalled();
     }
 
     public function testSerialize(): void
@@ -223,16 +223,16 @@ class ContentObjectProviderTest extends TestCase
         $dimension = $this->prophesize(DimensionInterface::class);
         $dimension->getLocale()->willReturn('en');
 
-        $resolvedContent = $this->prophesize(DimensionContentInterface::class);
-        $resolvedContent->getContentRichEntity()->willReturn($contentRichEntity->reveal());
-        $resolvedContent->getDimension()->willReturn($dimension->reveal());
+        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent->getContentRichEntity()->willReturn($contentRichEntity->reveal());
+        $dimensionContent->getDimension()->willReturn($dimension->reveal());
 
         $serializedObject = json_encode([
             'id' => '123-456',
             'locale' => 'en',
         ]);
 
-        $result = $this->contentObjectProvider->serialize($resolvedContent->reveal());
+        $result = $this->contentObjectProvider->serialize($dimensionContent->reveal());
 
         $this->assertSame($serializedObject, $result);
     }
@@ -267,12 +267,12 @@ class ContentObjectProviderTest extends TestCase
 
         $query->getSingleResult()->willReturn($entity->reveal())->shouldBeCalledTimes(1);
 
-        $resolvedContent = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
 
         $this->contentResolver->resolve(
             $entity->reveal(),
             Argument::type('array')
-        )->willReturn($resolvedContent->reveal())->shouldBeCalledTimes(1);
+        )->willReturn($dimensionContent->reveal())->shouldBeCalledTimes(1);
 
         $serializedObject = json_encode([
             'id' => '123-456',
@@ -281,7 +281,7 @@ class ContentObjectProviderTest extends TestCase
 
         $result = $this->contentObjectProvider->deserialize($serializedObject, DimensionContentInterface::class);
 
-        $this->assertSame($resolvedContent->reveal(), $result);
+        $this->assertSame($dimensionContent->reveal(), $result);
     }
 
     public function testDeserializeIdNull(): void

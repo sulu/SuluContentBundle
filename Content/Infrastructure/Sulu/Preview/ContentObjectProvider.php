@@ -154,7 +154,7 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
     protected function resolveContent(ContentRichEntityInterface $contentRichEntity, string $locale): ?DimensionContentInterface
     {
         try {
-            $resolvedContent = $this->contentResolver->resolve(
+            $resolvedDimensionContent = $this->contentResolver->resolve(
                 $contentRichEntity,
                 [
                     'locale' => $locale,
@@ -162,7 +162,7 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
                 ]
             );
 
-            return $resolvedContent;
+            return $resolvedDimensionContent;
         } catch (ContentNotFoundException $exception) {
             return null;
         }

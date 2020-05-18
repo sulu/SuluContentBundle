@@ -32,7 +32,7 @@ interface ContentManagerInterface
     /**
      * @return mixed[]
      */
-    public function normalize(DimensionContentInterface $resolvedContent): array;
+    public function normalize(DimensionContentInterface $dimensionContent): array;
 
     /**
      * @param mixed[] $sourceDimensionAttributes

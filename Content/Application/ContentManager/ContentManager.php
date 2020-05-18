@@ -72,9 +72,9 @@ class ContentManager implements ContentManagerInterface
         return $this->contentPersister->persist($contentRichEntity, $data, $dimensionAttributes);
     }
 
-    public function normalize(DimensionContentInterface $resolvedContent): array
+    public function normalize(DimensionContentInterface $dimensionContent): array
     {
-        return $this->contentNormalizer->normalize($resolvedContent);
+        return $this->contentNormalizer->normalize($dimensionContent);
     }
 
     public function copy(

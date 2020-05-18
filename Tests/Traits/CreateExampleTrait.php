@@ -45,8 +45,8 @@ trait CreateExampleTrait
         static::getEntityManager()->persist($example);
         static::getEntityManager()->flush();
 
-        /** @var ExampleDimensionContent $resolvedContent */
-        $resolvedContent = static::getContentManager()->persist(
+        /** @var ExampleDimensionContent $resolvedDimensionContent */
+        $resolvedDimensionContent = static::getContentManager()->persist(
             $example,
             array_merge($defaultData, $data),
             $dimensionAttributes
@@ -54,7 +54,7 @@ trait CreateExampleTrait
 
         static::getEntityManager()->flush();
 
-        return $resolvedContent;
+        return $resolvedDimensionContent;
     }
 
     abstract protected static function getContentManager(): ContentManagerInterface;
