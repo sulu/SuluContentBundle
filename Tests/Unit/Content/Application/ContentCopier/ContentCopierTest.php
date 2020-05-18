@@ -42,8 +42,8 @@ class ContentCopierTest extends TestCase
 
     public function testCopy(): void
     {
-        $sourceDimensionContent = $this->prophesize(DimensionContentInterface::class);
-        $targetDimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $resolvedSourceContent = $this->prophesize(DimensionContentInterface::class);
+        $resolvedTargetContent = $this->prophesize(DimensionContentInterface::class);
 
         $sourceContentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
         $sourceDimensionAttributes = ['locale' => 'en'];
@@ -56,15 +56,15 @@ class ContentCopierTest extends TestCase
         $contentNormalizer = $this->prophesize(ContentNormalizerInterface::class);
 
         $contentResolver->resolve($sourceContentRichEntity->reveal(), $sourceDimensionAttributes)
-            ->willReturn($sourceDimensionContent->reveal())
+            ->willReturn($resolvedSourceContent->reveal())
             ->shouldBeCalled();
 
-        $contentNormalizer->normalize($sourceDimensionContent->reveal())
+        $contentNormalizer->normalize($resolvedSourceContent->reveal())
             ->willReturn(['resolved' => 'data'])
             ->shouldBeCalled();
 
         $contentPersister->persist($targetContentRichEntity, ['resolved' => 'data'], $targetDimensionAttributes)
-            ->willReturn($targetDimensionContent->reveal())
+            ->willReturn($resolvedTargetContent->reveal())
             ->shouldBeCalled();
 
         $contentCopier = $this->createContentCopierInstance(
@@ -75,7 +75,7 @@ class ContentCopierTest extends TestCase
         );
 
         $this->assertSame(
-            $targetDimensionContent->reveal(),
+            $resolvedTargetContent->reveal(),
             $contentCopier->copy(
                 $sourceContentRichEntity->reveal(),
                 $sourceDimensionAttributes,
@@ -87,8 +87,8 @@ class ContentCopierTest extends TestCase
 
     public function testCopyFromDimensionContentCollection(): void
     {
-        $sourceDimensionContent = $this->prophesize(DimensionContentInterface::class);
-        $targetDimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $resolvedSourceContent = $this->prophesize(DimensionContentInterface::class);
+        $resolvedTargetContent = $this->prophesize(DimensionContentInterface::class);
 
         $sourceContentDimensionCollection = $this->prophesize(DimensionContentCollectionInterface::class);
         $targetContentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
@@ -100,15 +100,15 @@ class ContentCopierTest extends TestCase
         $contentNormalizer = $this->prophesize(ContentNormalizerInterface::class);
 
         $contentMerger->mergeCollection($sourceContentDimensionCollection->reveal())
-            ->willReturn($sourceDimensionContent->reveal())
+            ->willReturn($resolvedSourceContent->reveal())
             ->shouldBeCalled();
 
-        $contentNormalizer->normalize($sourceDimensionContent->reveal())
+        $contentNormalizer->normalize($resolvedSourceContent->reveal())
             ->willReturn(['resolved' => 'data'])
             ->shouldBeCalled();
 
         $contentPersister->persist($targetContentRichEntity, ['resolved' => 'data'], $targetDimensionAttributes)
-            ->willReturn($targetDimensionContent->reveal())
+            ->willReturn($resolvedTargetContent->reveal())
             ->shouldBeCalled();
 
         $contentCopier = $this->createContentCopierInstance(
@@ -119,7 +119,7 @@ class ContentCopierTest extends TestCase
         );
 
         $this->assertSame(
-            $targetDimensionContent->reveal(),
+            $resolvedTargetContent->reveal(),
             $contentCopier->copyFromDimensionContentCollection(
                 $sourceContentDimensionCollection->reveal(),
                 $targetContentRichEntity->reveal(),
@@ -130,8 +130,8 @@ class ContentCopierTest extends TestCase
 
     public function testCopyFromContentProjection(): void
     {
-        $sourceDimensionContent = $this->prophesize(DimensionContentInterface::class);
-        $targetDimenstionContent = $this->prophesize(DimensionContentInterface::class);
+        $resolvedSourceContent = $this->prophesize(DimensionContentInterface::class);
+        $resolvedTargetContent = $this->prophesize(DimensionContentInterface::class);
 
         $targetContentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
         $targetDimensionAttributes = ['locale' => 'de'];
@@ -141,12 +141,12 @@ class ContentCopierTest extends TestCase
         $contentPersister = $this->prophesize(ContentPersisterInterface::class);
         $contentNormalizer = $this->prophesize(ContentNormalizerInterface::class);
 
-        $contentNormalizer->normalize($sourceDimensionContent->reveal())
+        $contentNormalizer->normalize($resolvedSourceContent->reveal())
             ->willReturn(['resolved' => 'data'])
             ->shouldBeCalled();
 
         $contentPersister->persist($targetContentRichEntity, ['resolved' => 'data'], $targetDimensionAttributes)
-            ->willReturn($targetDimenstionContent->reveal())
+            ->willReturn($resolvedTargetContent->reveal())
             ->shouldBeCalled();
 
         $contentCopier = $this->createContentCopierInstance(
@@ -157,9 +157,9 @@ class ContentCopierTest extends TestCase
         );
 
         $this->assertSame(
-            $targetDimenstionContent->reveal(),
+            $resolvedTargetContent->reveal(),
             $contentCopier->copyFromContentProjection(
-                $sourceDimensionContent->reveal(),
+                $resolvedSourceContent->reveal(),
                 $targetContentRichEntity->reveal(),
                 $targetDimensionAttributes
             )

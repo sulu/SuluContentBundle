@@ -61,9 +61,9 @@ class ContentCopier implements ContentCopierInterface
         ContentRichEntityInterface $targetContentRichEntity,
         array $targetDimensionAttributes
     ): DimensionContentInterface {
-        $sourceContentProjection = $this->contentResolver->resolve($sourceContentRichEntity, $sourceDimensionAttributes);
+        $resolvedSourceContent = $this->contentResolver->resolve($sourceContentRichEntity, $sourceDimensionAttributes);
 
-        return $this->copyFromContentProjection($sourceContentProjection, $targetContentRichEntity, $targetDimensionAttributes);
+        return $this->copyFromContentProjection($resolvedSourceContent, $targetContentRichEntity, $targetDimensionAttributes);
     }
 
     public function copyFromDimensionContentCollection(
@@ -71,17 +71,17 @@ class ContentCopier implements ContentCopierInterface
         ContentRichEntityInterface $targetContentRichEntity,
         array $targetDimensionAttributes
     ): DimensionContentInterface {
-        $sourceContentProjection = $this->contentMerger->mergeCollection($dimensionContentCollection);
+        $resolvedSourceContent = $this->contentMerger->mergeCollection($dimensionContentCollection);
 
-        return $this->copyFromContentProjection($sourceContentProjection, $targetContentRichEntity, $targetDimensionAttributes);
+        return $this->copyFromContentProjection($resolvedSourceContent, $targetContentRichEntity, $targetDimensionAttributes);
     }
 
     public function copyFromContentProjection(
-        DimensionContentInterface $sourceContentProjection,
+        DimensionContentInterface $resolvedContent,
         ContentRichEntityInterface $targetContentRichEntity,
         array $targetDimensionAttributes
     ): DimensionContentInterface {
-        $data = $this->contentNormalizer->normalize($sourceContentProjection);
+        $data = $this->contentNormalizer->normalize($resolvedContent);
 
         return $this->contentPersister->persist($targetContentRichEntity, $data, $targetDimensionAttributes);
     }

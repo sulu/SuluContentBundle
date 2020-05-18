@@ -1,5 +1,14 @@
 # Upgrade
 
+## dev-master
+
+### Renamed merger services
+
+* The `sulu_content.template_content_projection_factory_merger` was renamed to `sulu_content.template_merger`.
+* The `sulu_content.workflow_content_projection_factory_merger` was renamed to `sulu_content.workflow_merger`.
+* The `sulu_content.excerpt_content_projection_factory_merger` was renamed to `sulu_content.excerpt_merger`.
+* The `sulu_content.seo_content_projection_factory_merger` was renamed to `sulu_content.seo_merger`.
+
 ## 0.3.0
 
 ### Refactored the ContentViewBuilder

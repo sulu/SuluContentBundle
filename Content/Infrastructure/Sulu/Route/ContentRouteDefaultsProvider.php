@@ -126,7 +126,7 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
             //      to support other dimension attributes here
             //      we should maybe get dimension Attributes from request attributes set by a request listener
             //      e.g. $request->attributes->get('_sulu_content_dimension_attributes');
-            $contentProjection = $this->contentResolver->resolve(
+            $resolvedContent = $this->contentResolver->resolve(
                 $contentRichEntity,
                 [
                     'locale' => $locale,
@@ -134,11 +134,11 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
                 ]
             );
 
-            if (!$contentProjection instanceof TemplateInterface) {
-                throw new \RuntimeException(sprintf('Expected to get "%s" from ContentResolver but "%s" given.', TemplateInterface::class, \get_class($contentProjection)));
+            if (!$resolvedContent instanceof TemplateInterface) {
+                throw new \RuntimeException(sprintf('Expected to get "%s" from ContentResolver but "%s" given.', TemplateInterface::class, \get_class($resolvedContent)));
             }
 
-            return $contentProjection;
+            return $resolvedContent;
         } catch (ContentNotFoundException $exception) {
             return null;
         }

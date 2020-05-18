@@ -51,9 +51,9 @@ class ContentWorkflowTest extends TestCase
     /**
      * @return DimensionContentInterface&WorkflowInterface
      */
-    protected function wrapWorkflowMock(ObjectProphecy $contentProjectionMock)
+    protected function wrapWorkflowMock(ObjectProphecy $workflowMock)
     {
-        return new class($contentProjectionMock) extends MockWrapper implements
+        return new class($workflowMock) extends MockWrapper implements
             DimensionContentInterface,
             WorkflowInterface {
             use DimensionContentMockWrapperTrait;

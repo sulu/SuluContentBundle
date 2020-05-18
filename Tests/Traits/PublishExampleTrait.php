@@ -17,7 +17,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentManager\ContentManagerInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
-use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleContentProjection;
+use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleDimensionContent;
 
 trait PublishExampleTrait
 {
@@ -27,7 +27,7 @@ trait PublishExampleTrait
     protected static function publishExample(
         $id,
         string $locale = 'en'
-    ): ExampleContentProjection {
+    ): ExampleDimensionContent {
         $dimensionAttributes = ['locale' => $locale];
 
         /** @var Example|null $example */
@@ -37,8 +37,8 @@ trait PublishExampleTrait
             throw new \RuntimeException(sprintf('Example with id "%s" was not found!', $id));
         }
 
-        /** @var ExampleContentProjection $contentProjection */
-        $contentProjection = static::getContentManager()->applyTransition(
+        /** @var ExampleDimensionContent $resolvedContent */
+        $resolvedContent = static::getContentManager()->applyTransition(
             $example,
             $dimensionAttributes,
             WorkflowInterface::WORKFLOW_TRANSITION_PUBLISH
@@ -46,7 +46,7 @@ trait PublishExampleTrait
 
         static::getEntityManager()->flush();
 
-        return $contentProjection;
+        return $resolvedContent;
     }
 
     abstract protected static function getContentManager(): ContentManagerInterface;

@@ -164,13 +164,13 @@ class PublishTransitionSubscriberTest extends TestCase
         $sourceDimensionAttributes = $dimensionAttributes;
         $sourceDimensionAttributes['stage'] = 'live';
 
-        $copiedContent = $this->prophesize(DimensionContentInterface::class);
+        $resolvedCopiedContent = $this->prophesize(DimensionContentInterface::class);
         $contentCopier->copyFromDimensionContentCollection(
             $dimensionContentCollection->reveal(),
             $contentRichEntity->reveal(),
             $sourceDimensionAttributes
         )
-            ->willReturn($copiedContent->reveal())
+            ->willReturn($resolvedCopiedContent->reveal())
             ->shouldBeCalled();
 
         $contentPublishSubscriber = $this->createContentPublisherSubscriberInstance($contentCopier->reveal());
@@ -203,13 +203,13 @@ class PublishTransitionSubscriberTest extends TestCase
         $sourceDimensionAttributes = $dimensionAttributes;
         $sourceDimensionAttributes['stage'] = 'live';
 
-        $copiedContent = $this->prophesize(DimensionContentInterface::class);
+        $resolvedCopiedContent = $this->prophesize(DimensionContentInterface::class);
         $contentCopier->copyFromDimensionContentCollection(
             $dimensionContentCollection->reveal(),
             $contentRichEntity->reveal(),
             $sourceDimensionAttributes
         )
-            ->willReturn($copiedContent->reveal())
+            ->willReturn($resolvedCopiedContent->reveal())
             ->shouldBeCalled();
 
         $contentPublishSubscriber = $this->createContentPublisherSubscriberInstance($contentCopier->reveal());

@@ -68,7 +68,7 @@ class ContentManagerTest extends TestCase
 
     public function testPersist(): void
     {
-        $persistedContent = $this->prophesize(DimensionContentInterface::class);
+        $resolvedContent = $this->prophesize(DimensionContentInterface::class);
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
         $data = ['data' => 'value'];
         $dimensionAttributes = ['locale' => 'de', 'stage' => 'draft'];
@@ -88,11 +88,11 @@ class ContentManagerTest extends TestCase
         );
 
         $contentPersister->persist($contentRichEntity->reveal(), $data, $dimensionAttributes)
-            ->willReturn($persistedContent->reveal())
+            ->willReturn($resolvedContent->reveal())
             ->shouldBeCalled();
 
         $this->assertSame(
-            $persistedContent->reveal(),
+            $resolvedContent->reveal(),
             $contentManager->persist($contentRichEntity->reveal(), $data, $dimensionAttributes)
         );
     }

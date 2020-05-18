@@ -21,6 +21,7 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentManager\ContentManagerI
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
+use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleDimensionContent;
 use Sulu\Component\Rest\AbstractRestController;
 use Sulu\Component\Rest\Exception\RestException;
 use Sulu\Component\Rest\ListBuilder\Doctrine\DoctrineListBuilder;
@@ -205,9 +206,10 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         $data = $this->getData($request);
         $dimensionAttributes = $this->getDimensionAttributes($request); // ["locale" => "en", "stage" => "draft"]
 
-        $persistedContent = $this->contentManager->persist($example, $data, $dimensionAttributes);
-        if (WorkflowInterface::WORKFLOW_PLACE_PUBLISHED === $persistedContent->getWorkflowPlace()) {
-            $persistedContent = $this->contentManager->applyTransition(
+        /** @var ExampleDimensionContent $resolvedContent */
+        $resolvedContent = $this->contentManager->persist($example, $data, $dimensionAttributes);
+        if (WorkflowInterface::WORKFLOW_PLACE_PUBLISHED === $resolvedContent->getWorkflowPlace()) {
+            $resolvedContent = $this->contentManager->applyTransition(
                 $example,
                 $dimensionAttributes,
                 WorkflowInterface::WORKFLOW_TRANSITION_CREATE_DRAFT
@@ -217,7 +219,7 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         $this->entityManager->flush();
 
         if ('publish' === $request->query->get('action')) {
-            $persistedContent = $this->contentManager->applyTransition(
+            $resolvedContent = $this->contentManager->applyTransition(
                 $example,
                 $dimensionAttributes,
                 WorkflowInterface::WORKFLOW_TRANSITION_PUBLISH
@@ -226,7 +228,7 @@ class ExampleController extends AbstractRestController implements ClassResourceI
             $this->entityManager->flush();
         }
 
-        return $this->handleView($this->view($this->normalize($example, $persistedContent)));
+        return $this->handleView($this->view($this->normalize($example, $resolvedContent)));
     }
 
     /**
@@ -265,13 +267,13 @@ class ExampleController extends AbstractRestController implements ClassResourceI
     }
 
     /**
-     * Resolve will convert the ContentProjection object into a normalized array.
+     * Resolve will convert the resolved DimensionContentInterface object into a normalized array.
      *
      * @return mixed[]
      */
-    protected function normalize(Example $example, DimensionContentInterface $contentProjection): array
+    protected function normalize(Example $example, DimensionContentInterface $resolvedContent): array
     {
-        $normalizedContent = $this->contentManager->normalize($contentProjection);
+        $normalizedContent = $this->contentManager->normalize($resolvedContent);
 
         return $normalizedContent;
     }

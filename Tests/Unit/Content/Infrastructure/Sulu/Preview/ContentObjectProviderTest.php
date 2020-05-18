@@ -198,7 +198,7 @@ class ContentObjectProviderTest extends TestCase
         ]
     ): void {
         $resolvedContent = (new class() implements DimensionContentInterface, TemplateInterface, SeoInterface, ExcerptInterface {
-            use v;
+            use DimensionContentTrait;
             use TemplateTrait;
             use SeoTrait;
             use ExcerptTrait;
@@ -222,11 +222,6 @@ class ContentObjectProviderTest extends TestCase
         $resolvedContent = (new class() implements DimensionContentInterface, TemplateInterface {
             use DimensionContentTrait;
             use TemplateTrait;
-
-            public function getContentId()
-            {
-                return 1;
-            }
 
             public static function getTemplateType(): string
             {

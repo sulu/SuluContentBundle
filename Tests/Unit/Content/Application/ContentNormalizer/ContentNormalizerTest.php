@@ -56,7 +56,7 @@ class ContentNormalizerTest extends TestCase
         $dimensionMock->getLocale()->willReturn('de');
         $dimensionMock->getStage()->willReturn('live');
 
-        $contentProjection = new class($contentRichEntityMock->reveal(), $dimensionMock->reveal()) implements DimensionContentInterface {
+        $object = new class($contentRichEntityMock->reveal(), $dimensionMock->reveal()) implements DimensionContentInterface {
             use DimensionContentTrait;
 
             public function __construct(ContentRichEntityInterface $contentRichEntity, DimensionInterface $dimension)
@@ -71,7 +71,7 @@ class ContentNormalizerTest extends TestCase
             'id' => 5,
             'locale' => 'de',
             'stage' => 'live',
-        ], $apiViewResolver->normalize($contentProjection));
+        ], $apiViewResolver->normalize($object));
     }
 
     public function testResolveFull(): void
@@ -83,7 +83,7 @@ class ContentNormalizerTest extends TestCase
         $dimensionMock->getLocale()->willReturn('de');
         $dimensionMock->getStage()->willReturn('live');
 
-        $contentProjection = new class($contentRichEntityMock->reveal(), $dimensionMock->reveal()) implements DimensionContentInterface, ExcerptInterface, SeoInterface, TemplateInterface, WorkflowInterface {
+        $object = new class($contentRichEntityMock->reveal(), $dimensionMock->reveal()) implements DimensionContentInterface, ExcerptInterface, SeoInterface, TemplateInterface, WorkflowInterface {
             use DimensionContentTrait;
             use ExcerptTrait;
             use SeoTrait;
@@ -114,24 +114,24 @@ class ContentNormalizerTest extends TestCase
         $category2 = $this->prophesize(CategoryInterface::class);
         $category2->getId()->willReturn(4);
 
-        $contentProjection->setSeoTitle('Seo Title');
-        $contentProjection->setSeoDescription('Seo Description');
-        $contentProjection->setSeoKeywords('Seo Keyword 1, Seo Keyword 2');
-        $contentProjection->setSeoCanonicalUrl('https://caninical.localhost/');
-        $contentProjection->setSeoNoIndex(true);
-        $contentProjection->setSeoNoFollow(true);
-        $contentProjection->setSeoHideInSitemap(true);
+        $object->setSeoTitle('Seo Title');
+        $object->setSeoDescription('Seo Description');
+        $object->setSeoKeywords('Seo Keyword 1, Seo Keyword 2');
+        $object->setSeoCanonicalUrl('https://caninical.localhost/');
+        $object->setSeoNoIndex(true);
+        $object->setSeoNoFollow(true);
+        $object->setSeoHideInSitemap(true);
 
-        $contentProjection->setExcerptTitle('Excerpt Title');
-        $contentProjection->setExcerptDescription('Excerpt Description');
-        $contentProjection->setExcerptMore('Excerpt More');
-        $contentProjection->setExcerptImage(['id' => 8]);
-        $contentProjection->setExcerptIcon(['id' => 9]);
-        $contentProjection->setExcerptTags([$tag1->reveal(), $tag2->reveal()]);
-        $contentProjection->setExcerptCategories([$category1->reveal(), $category2->reveal()]);
+        $object->setExcerptTitle('Excerpt Title');
+        $object->setExcerptDescription('Excerpt Description');
+        $object->setExcerptMore('Excerpt More');
+        $object->setExcerptImage(['id' => 8]);
+        $object->setExcerptIcon(['id' => 9]);
+        $object->setExcerptTags([$tag1->reveal(), $tag2->reveal()]);
+        $object->setExcerptCategories([$category1->reveal(), $category2->reveal()]);
 
-        $contentProjection->setTemplateKey('template-key');
-        $contentProjection->setTemplateData(['someTemplate' => 'data']);
+        $object->setTemplateKey('template-key');
+        $object->setTemplateData(['someTemplate' => 'data']);
 
         $apiViewResolver = $this->createContentNormalizerInstance();
 
@@ -162,6 +162,6 @@ class ContentNormalizerTest extends TestCase
             'someTemplate' => 'data',
             'template' => 'template-key',
             'workflowPlace' => 'unpublished',
-        ], $apiViewResolver->normalize($contentProjection));
+        ], $apiViewResolver->normalize($object));
     }
 }

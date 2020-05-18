@@ -94,9 +94,9 @@ class ContentPersisterTest extends TestCase
             ->willReturn($dimensionContentCollection)
             ->shouldBeCalled();
 
-        $persistedContent = $this->prophesize(DimensionContentInterface::class);
+        $resolvedContent = $this->prophesize(DimensionContentInterface::class);
         $contentMerger = $this->prophesize(ContentMergerInterface::class);
-        $contentMerger->mergeCollection($dimensionContentCollection)->willReturn($persistedContent->reveal())->shouldBeCalled();
+        $contentMerger->mergeCollection($dimensionContentCollection)->willReturn($resolvedContent->reveal())->shouldBeCalled();
 
         $createContentMessageHandler = $this->createContentPersisterInstance(
             $dimensionCollectionFactory->reveal(),
@@ -104,6 +104,6 @@ class ContentPersisterTest extends TestCase
             $contentMerger->reveal()
         );
 
-        $this->assertSame($persistedContent->reveal(), $createContentMessageHandler->persist($contentRichEntity, $data, $attributes));
+        $this->assertSame($resolvedContent->reveal(), $createContentMessageHandler->persist($contentRichEntity, $data, $attributes));
     }
 }

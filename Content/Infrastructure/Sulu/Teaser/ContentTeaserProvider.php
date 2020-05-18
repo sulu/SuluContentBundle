@@ -119,7 +119,7 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
         $mediaId = $this->getMediaId($resolvedContent, $data);
 
         return new Teaser(
-            $resolvedContent->getContentId(),
+            $resolvedContent->getContentRichEntity()->getId(),
             $this->getResourceKey(),
             $locale,
             $title,
