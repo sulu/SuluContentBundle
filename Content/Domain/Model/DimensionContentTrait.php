@@ -20,8 +20,23 @@ trait DimensionContentTrait
      */
     protected $dimension;
 
+    /**
+     * @var bool
+     */
+    private $isMerged = false;
+
     public function getDimension(): DimensionInterface
     {
         return $this->dimension;
+    }
+
+    public function isMerged(): bool
+    {
+        return $this->isMerged;
+    }
+
+    public function markAsMerged(): void
+    {
+        $this->isMerged = true;
     }
 }

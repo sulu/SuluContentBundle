@@ -71,7 +71,7 @@ class RoutableTraitTest extends TestCase
         $this->assertSame('en', $model->getLocale());
     }
 
-    public function getContentId(): void
+    public function testGetContentId(): void
     {
         $model = $this->getRoutableInstance();
         $this->assertSame('content-id-123', $model->getContentId());

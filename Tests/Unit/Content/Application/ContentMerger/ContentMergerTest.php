@@ -86,6 +86,8 @@ class ContentMergerTest extends TestCase
         $merger1->merge($mergedDimensionContent->reveal(), $dimensionContent3->reveal())->shouldBeCalled();
         $merger2->merge($mergedDimensionContent->reveal(), $dimensionContent3->reveal())->shouldBeCalled();
 
+        $mergedDimensionContent->markAsMerged()->shouldBeCalled();
+
         $dimensionContentCollection = new DimensionContentCollection([
             $dimensionContent1->reveal(),
             $dimensionContent2->reveal(),

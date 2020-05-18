@@ -32,4 +32,14 @@ trait DimensionContentMockWrapperTrait
     {
         return $this->instance->getContentRichEntity();
     }
+
+    public function isMerged(): bool
+    {
+        return $this->instance->isMerged();
+    }
+
+    public function markAsMerged(): void
+    {
+        $this->instance->markAsMerged();
+    }
 }

@@ -46,4 +46,15 @@ class DimensionContentTraitTest extends TestCase
         $model = $this->getDimensionContentInstance($dimension->reveal());
         $this->assertSame($dimension->reveal(), $model->getDimension());
     }
+
+    public function testGetSetIsMerged(): void
+    {
+        $dimension = $this->prophesize(DimensionInterface::class);
+
+        $model = $this->getDimensionContentInstance($dimension->reveal());
+        $this->assertFalse($model->isMerged());
+
+        $model->markAsMerged();
+        $this->assertTrue($model->isMerged());
+    }
 }

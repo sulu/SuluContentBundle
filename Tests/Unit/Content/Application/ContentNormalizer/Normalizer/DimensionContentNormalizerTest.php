@@ -43,7 +43,7 @@ class DimensionContentNormalizerTest extends TestCase
         $object = $this->prophesize(DimensionContentInterface::class);
 
         $this->assertSame(
-            ['id', 'dimension', 'contentRichEntity'],
+            ['id', 'merged', 'dimension', 'contentRichEntity'],
             $normalizer->getIgnoredAttributes($object->reveal())
         );
     }

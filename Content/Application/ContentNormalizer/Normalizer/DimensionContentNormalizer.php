@@ -25,6 +25,7 @@ class DimensionContentNormalizer implements NormalizerInterface
 
         return [
             'id',
+            'merged',
             'dimension',
             'contentRichEntity',
         ];
