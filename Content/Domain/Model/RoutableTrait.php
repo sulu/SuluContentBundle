@@ -20,5 +20,12 @@ trait RoutableTrait
         return $this->getDimension()->getLocale();
     }
 
+    public function getContentId()
+    {
+        return $this->getContentRichEntity()->getId();
+    }
+
     abstract public function getDimension(): DimensionInterface;
+
+    abstract public function getContentRichEntity(): ContentRichEntityInterface;
 }

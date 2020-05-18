@@ -102,6 +102,7 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
 
     public function supports($entityClass)
     {
+        // need to support DimensionContentInterface::class because of the ContentObjectProvider::deserialize() method
         return is_a($entityClass, ContentRichEntityInterface::class, true)
             || is_a($entityClass, DimensionContentInterface::class, true);
     }

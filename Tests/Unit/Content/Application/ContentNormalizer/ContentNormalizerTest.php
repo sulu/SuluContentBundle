@@ -19,6 +19,7 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\ContentNorma
 use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\ContentNormalizerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Normalizer\DimensionContentNormalizer;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Normalizer\ExcerptNormalizer;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Normalizer\RoutableNormalizer;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Normalizer\TemplateNormalizer;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Normalizer\WorkflowNormalizer;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
@@ -27,6 +28,8 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentTrait;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptTrait;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\RoutableInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\RoutableTrait;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoTrait;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
@@ -44,6 +47,7 @@ class ContentNormalizerTest extends TestCase
             new ExcerptNormalizer(),
             new TemplateNormalizer(),
             new WorkflowNormalizer(),
+            new RoutableNormalizer(),
         ]);
     }
 
@@ -83,12 +87,13 @@ class ContentNormalizerTest extends TestCase
         $dimensionMock->getLocale()->willReturn('de');
         $dimensionMock->getStage()->willReturn('live');
 
-        $object = new class($contentRichEntityMock->reveal(), $dimensionMock->reveal()) implements DimensionContentInterface, ExcerptInterface, SeoInterface, TemplateInterface, WorkflowInterface {
+        $object = new class($contentRichEntityMock->reveal(), $dimensionMock->reveal()) implements DimensionContentInterface, ExcerptInterface, SeoInterface, TemplateInterface, WorkflowInterface, RoutableInterface {
             use DimensionContentTrait;
             use ExcerptTrait;
             use SeoTrait;
             use TemplateTrait;
             use WorkflowTrait;
+            use RoutableTrait;
 
             public function __construct(ContentRichEntityInterface $contentRichEntity, DimensionInterface $dimension)
             {
@@ -99,6 +104,11 @@ class ContentNormalizerTest extends TestCase
             public static function getTemplateType(): string
             {
                 return 'example';
+            }
+
+            public static function getContentClass(): string
+            {
+                return \stdClass::class;
             }
         };
 
@@ -150,6 +160,7 @@ class ContentNormalizerTest extends TestCase
             ],
             'excerptTitle' => 'Excerpt Title',
             'id' => 5,
+            'locale' => 'de',
             'published' => null,
             'publishedState' => false,
             'seoCanonicalUrl' => 'https://caninical.localhost/',
@@ -160,6 +171,7 @@ class ContentNormalizerTest extends TestCase
             'seoNoIndex' => true,
             'seoTitle' => 'Seo Title',
             'someTemplate' => 'data',
+            'stage' => 'live',
             'template' => 'template-key',
             'workflowPlace' => 'unpublished',
         ], $apiViewResolver->normalize($object));

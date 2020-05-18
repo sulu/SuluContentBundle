@@ -105,9 +105,4 @@ class ExampleDimensionContent implements DimensionContentInterface, ExcerptInter
     {
         return Example::class;
     }
-
-    public function getContentId()
-    {
-        return $this->example->getId();
-    }
 }
