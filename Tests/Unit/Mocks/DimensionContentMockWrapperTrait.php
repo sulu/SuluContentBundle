@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Mocks;
 
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 

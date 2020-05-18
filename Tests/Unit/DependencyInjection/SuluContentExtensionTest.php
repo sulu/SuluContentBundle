@@ -22,7 +22,6 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\ContentNorma
 use Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersisterInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\ContentWorkflowInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ContentProjectionFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\DimensionContentCollectionFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
 use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionContentRepositoryInterface;

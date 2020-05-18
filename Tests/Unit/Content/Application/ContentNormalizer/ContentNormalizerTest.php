@@ -17,13 +17,14 @@ use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\CategoryBundle\Entity\CategoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\ContentNormalizer;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\ContentNormalizerInterface;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Normalizer\ContentProjectionNormalizer;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Normalizer\DimensionContentNormalizer;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Normalizer\ExcerptNormalizer;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Normalizer\TemplateNormalizer;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Normalizer\WorkflowNormalizer;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionTrait;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentTrait;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptTrait;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
@@ -39,7 +40,7 @@ class ContentNormalizerTest extends TestCase
     protected function createContentNormalizerInstance(): ContentNormalizerInterface
     {
         return new ContentNormalizer([
-            new ContentProjectionNormalizer(),
+            new DimensionContentNormalizer(),
             new ExcerptNormalizer(),
             new TemplateNormalizer(),
             new WorkflowNormalizer(),
@@ -48,53 +49,51 @@ class ContentNormalizerTest extends TestCase
 
     public function testResolveSimple(): void
     {
-        $contentProjection = new class() implements ContentProjectionInterface {
-            use ContentProjectionTrait;
+        $contentRichEntityMock = $this->prophesize(ContentRichEntityInterface::class);
+        $contentRichEntityMock->getId()->willReturn(5);
 
-            /**
-             * @var int
-             */
-            protected $id = 2;
+        $dimensionMock = $this->prophesize(DimensionInterface::class);
+        $dimensionMock->getLocale()->willReturn('de');
+        $dimensionMock->getStage()->willReturn('live');
 
-            public function __construct()
+        $contentProjection = new class($contentRichEntityMock->reveal(), $dimensionMock->reveal()) implements DimensionContentInterface {
+            use DimensionContentTrait;
+
+            public function __construct(ContentRichEntityInterface $contentRichEntity, DimensionInterface $dimension)
             {
-                $this->dimension = new Dimension('123-456');
-            }
-
-            public function getContentId()
-            {
-                return 5;
+                $this->contentRichEntity = $contentRichEntity;
+                $this->dimension = $dimension;
             }
         };
 
         $apiViewResolver = $this->createContentNormalizerInstance();
         $this->assertSame([
             'id' => 5,
+            'locale' => 'de',
+            'stage' => 'live',
         ], $apiViewResolver->normalize($contentProjection));
     }
 
     public function testResolveFull(): void
     {
-        $contentProjection = new class() implements ContentProjectionInterface, ExcerptInterface, SeoInterface, TemplateInterface, WorkflowInterface {
-            use ContentProjectionTrait;
+        $contentRichEntityMock = $this->prophesize(ContentRichEntityInterface::class);
+        $contentRichEntityMock->getId()->willReturn(5);
+
+        $dimensionMock = $this->prophesize(DimensionInterface::class);
+        $dimensionMock->getLocale()->willReturn('de');
+        $dimensionMock->getStage()->willReturn('live');
+
+        $contentProjection = new class($contentRichEntityMock->reveal(), $dimensionMock->reveal()) implements DimensionContentInterface, ExcerptInterface, SeoInterface, TemplateInterface, WorkflowInterface {
+            use DimensionContentTrait;
             use ExcerptTrait;
             use SeoTrait;
             use TemplateTrait;
             use WorkflowTrait;
 
-            /**
-             * @var int
-             */
-            protected $id = 2;
-
-            public function __construct()
+            public function __construct(ContentRichEntityInterface $contentRichEntity, DimensionInterface $dimension)
             {
-                $this->dimension = new Dimension('123-456');
-            }
-
-            public function getContentId()
-            {
-                return 5;
+                $this->contentRichEntity = $contentRichEntity;
+                $this->dimension = $dimension;
             }
 
             public static function getTemplateType(): string

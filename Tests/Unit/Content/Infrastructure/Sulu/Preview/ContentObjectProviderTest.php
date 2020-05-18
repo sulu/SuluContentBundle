@@ -25,6 +25,7 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolve
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentTrait;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptTrait;
@@ -196,16 +197,11 @@ class ContentObjectProviderTest extends TestCase
             'excerptIcon' => ['id' => 4],
         ]
     ): void {
-        $projection = (new class() implements ContentProjectionInterface, TemplateInterface, SeoInterface, ExcerptInterface {
-            use ContentProjectionTrait;
+        $resolvedContent = (new class() implements DimensionContentInterface, TemplateInterface, SeoInterface, ExcerptInterface {
+            use v;
             use TemplateTrait;
             use SeoTrait;
             use ExcerptTrait;
-
-            public function getContentId()
-            {
-                return 1;
-            }
 
             public static function getTemplateType(): string
             {
@@ -213,9 +209,9 @@ class ContentObjectProviderTest extends TestCase
             }
         });
 
-        $this->contentObjectProvider->setValues($projection, $locale, $data);
+        $this->contentObjectProvider->setValues($resolvedContent, $locale, $data);
 
-        $this->contentDataMapper->map($data, $projection, $projection)->shouldBeCalledTimes(1);
+        $this->contentDataMapper->map($data, $resolvedContent, $resolvedContent)->shouldBeCalledTimes(1);
     }
 
     /**
@@ -223,8 +219,8 @@ class ContentObjectProviderTest extends TestCase
      */
     public function testSetContext(string $locale = 'de', array $context = ['template' => 'overview']): void
     {
-        $projection = (new class() implements ContentProjectionInterface, TemplateInterface {
-            use ContentProjectionTrait;
+        $resolvedContent = (new class() implements DimensionContentInterface, TemplateInterface {
+            use DimensionContentTrait;
             use TemplateTrait;
 
             public function getContentId()
@@ -238,25 +234,26 @@ class ContentObjectProviderTest extends TestCase
             }
         });
 
-        $this->contentObjectProvider->setContext($projection, $locale, $context);
+        $this->contentObjectProvider->setContext($resolvedContent, $locale, $context);
 
-        $this->assertSame($context['template'], $projection->getTemplateKey());
+        $this->assertSame($context['template'], $resolvedContent->getTemplateKey());
     }
 
     public function testSerialize(): void
     {
-        $projection = $this->prophesize(ContentProjectionInterface::class);
-        $projection->getContentId()->willReturn('123-456');
+        $resolvedContent = $this->prophesize(DimensionContentInterface::class);
+        $resolvedContent->getContentId()->willReturn('123-456');
+
         $dimension = $this->prophesize(DimensionInterface::class);
         $dimension->getLocale()->willReturn('en');
-        $projection->getDimension()->willReturn($dimension->reveal());
+        $resolvedContent->getDimension()->willReturn($dimension->reveal());
 
         $serializedObject = json_encode([
             'id' => '123-456',
             'locale' => 'en',
         ]);
 
-        $result = $this->contentObjectProvider->serialize($projection->reveal());
+        $result = $this->contentObjectProvider->serialize($resolvedContent->reveal());
 
         $this->assertSame($serializedObject, $result);
     }
@@ -291,21 +288,21 @@ class ContentObjectProviderTest extends TestCase
 
         $query->getSingleResult()->willReturn($entity->reveal())->shouldBeCalledTimes(1);
 
-        $projection = $this->prophesize(ContentProjectionInterface::class);
+        $resolvedContent = $this->prophesize(DimensionContentInterface::class);
 
         $this->contentResolver->resolve(
             $entity->reveal(),
             Argument::type('array')
-        )->willReturn($projection->reveal())->shouldBeCalledTimes(1);
+        )->willReturn($resolvedContent->reveal())->shouldBeCalledTimes(1);
 
         $serializedObject = json_encode([
             'id' => '123-456',
             'locale' => 'en',
         ]) ?: '';
 
-        $result = $this->contentObjectProvider->deserialize($serializedObject, ContentProjectionInterface::class);
+        $result = $this->contentObjectProvider->deserialize($serializedObject, DimensionContentInterface::class);
 
-        $this->assertSame($projection->reveal(), $result);
+        $this->assertSame($resolvedContent->reveal(), $result);
     }
 
     public function testDeserializeIdNull(): void
@@ -315,7 +312,7 @@ class ContentObjectProviderTest extends TestCase
             'locale' => 'en',
         ]) ?: '';
 
-        $result = $this->contentObjectProvider->deserialize($serializedObject, ContentProjectionInterface::class);
+        $result = $this->contentObjectProvider->deserialize($serializedObject, DimensionContentInterface::class);
 
         $this->assertNull($result);
     }
@@ -327,7 +324,7 @@ class ContentObjectProviderTest extends TestCase
             'locale' => null,
         ]) ?: '';
 
-        $result = $this->contentObjectProvider->deserialize($serializedObject, ContentProjectionInterface::class);
+        $result = $this->contentObjectProvider->deserialize($serializedObject, DimensionContentInterface::class);
 
         $this->assertNull($result);
     }

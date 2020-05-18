@@ -16,10 +16,8 @@ namespace Sulu\Bundle\ContentBundle\Tests\Traits;
 use Doctrine\ORM\EntityManagerInterface;
 use Ferrandini\Urlizer;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentManager\ContentManagerInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
-use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleContentProjection;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleDimensionContent;
 
 trait ModifyExampleTrait
