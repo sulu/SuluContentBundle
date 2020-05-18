@@ -51,10 +51,10 @@ class ExampleTeaserProvider extends ContentTeaserProvider
         );
     }
 
-    protected function getDescription(DimensionContentInterface $resolvedDimensionContent, array $data): ?string
+    protected function getDescription(DimensionContentInterface $dimensionContent, array $data): ?string
     {
         $article = strip_tags($data['article'] ?? '');
 
-        return $article ?: parent::getDescription($resolvedDimensionContent, $data);
+        return $article ?: parent::getDescription($dimensionContent, $data);
     }
 }

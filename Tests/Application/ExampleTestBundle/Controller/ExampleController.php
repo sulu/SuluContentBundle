@@ -116,9 +116,9 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         }
 
         $dimensionAttributes = $this->getDimensionAttributes($request);
-        $resolvedDimensionContent = $this->contentManager->resolve($example, $dimensionAttributes);
+        $dimensionContent = $this->contentManager->resolve($example, $dimensionAttributes);
 
-        return $this->handleView($this->view($this->normalize($example, $resolvedDimensionContent)));
+        return $this->handleView($this->view($this->normalize($example, $dimensionContent)));
     }
 
     /**
@@ -131,13 +131,13 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         $data = $this->getData($request);
         $dimensionAttributes = $this->getDimensionAttributes($request); // ["locale" => "en", "stage" => "draft"]
 
-        $resolvedDimensionContent = $this->contentManager->persist($example, $data, $dimensionAttributes);
+        $dimensionContent = $this->contentManager->persist($example, $data, $dimensionAttributes);
 
         $this->entityManager->persist($example);
         $this->entityManager->flush();
 
         if ('publish' === $request->query->get('action')) {
-            $resolvedDimensionContent = $this->contentManager->applyTransition(
+            $dimensionContent = $this->contentManager->applyTransition(
                 $example,
                 $dimensionAttributes,
                 WorkflowInterface::WORKFLOW_TRANSITION_PUBLISH
@@ -146,7 +146,7 @@ class ExampleController extends AbstractRestController implements ClassResourceI
             $this->entityManager->flush();
         }
 
-        return $this->handleView($this->view($this->normalize($example, $resolvedDimensionContent), 201));
+        return $this->handleView($this->view($this->normalize($example, $dimensionContent), 201));
     }
 
     /**
@@ -169,23 +169,23 @@ class ExampleController extends AbstractRestController implements ClassResourceI
 
         switch ($action) {
             case 'unpublish':
-                $resolvedDimensionContent = $this->contentManager->applyTransition(
+                $dimensionContent = $this->contentManager->applyTransition(
                     $example,
                     $dimensionAttributes,
                     WorkflowInterface::WORKFLOW_TRANSITION_UNPUBLISH
                 );
                 $this->entityManager->flush();
 
-                return $this->handleView($this->view($this->normalize($example, $resolvedDimensionContent)));
+                return $this->handleView($this->view($this->normalize($example, $dimensionContent)));
             case 'remove-draft':
-                $resolvedDimensionContent = $this->contentManager->applyTransition(
+                $dimensionContent = $this->contentManager->applyTransition(
                     $example,
                     $dimensionAttributes,
                     WorkflowInterface::WORKFLOW_TRANSITION_REMOVE_DRAFT
                 );
                 $this->entityManager->flush();
 
-                return $this->handleView($this->view($this->normalize($example, $resolvedDimensionContent)));
+                return $this->handleView($this->view($this->normalize($example, $dimensionContent)));
             default:
                 throw new RestException('Unrecognized action: ' . $action);
         }
@@ -206,10 +206,10 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         $data = $this->getData($request);
         $dimensionAttributes = $this->getDimensionAttributes($request); // ["locale" => "en", "stage" => "draft"]
 
-        /** @var ExampleDimensionContent $resolvedDimensionContent */
-        $resolvedDimensionContent = $this->contentManager->persist($example, $data, $dimensionAttributes);
-        if (WorkflowInterface::WORKFLOW_PLACE_PUBLISHED === $resolvedDimensionContent->getWorkflowPlace()) {
-            $resolvedDimensionContent = $this->contentManager->applyTransition(
+        /** @var ExampleDimensionContent $dimensionContent */
+        $dimensionContent = $this->contentManager->persist($example, $data, $dimensionAttributes);
+        if (WorkflowInterface::WORKFLOW_PLACE_PUBLISHED === $dimensionContent->getWorkflowPlace()) {
+            $dimensionContent = $this->contentManager->applyTransition(
                 $example,
                 $dimensionAttributes,
                 WorkflowInterface::WORKFLOW_TRANSITION_CREATE_DRAFT
@@ -219,7 +219,7 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         $this->entityManager->flush();
 
         if ('publish' === $request->query->get('action')) {
-            $resolvedDimensionContent = $this->contentManager->applyTransition(
+            $dimensionContent = $this->contentManager->applyTransition(
                 $example,
                 $dimensionAttributes,
                 WorkflowInterface::WORKFLOW_TRANSITION_PUBLISH
@@ -228,7 +228,7 @@ class ExampleController extends AbstractRestController implements ClassResourceI
             $this->entityManager->flush();
         }
 
-        return $this->handleView($this->view($this->normalize($example, $resolvedDimensionContent)));
+        return $this->handleView($this->view($this->normalize($example, $dimensionContent)));
     }
 
     /**
@@ -271,9 +271,9 @@ class ExampleController extends AbstractRestController implements ClassResourceI
      *
      * @return mixed[]
      */
-    protected function normalize(Example $example, DimensionContentInterface $resolvedDimensionContent): array
+    protected function normalize(Example $example, DimensionContentInterface $dimensionContent): array
     {
-        $normalizedContent = $this->contentManager->normalize($resolvedDimensionContent);
+        $normalizedContent = $this->contentManager->normalize($dimensionContent);
 
         return $normalizedContent;
     }

@@ -36,9 +36,9 @@ class ContentManagerTest extends TestCase
         return new ContentManager($contentResolver, $contentPersister, $contentNormalizer, $contentCopier, $contentWorkflow);
     }
 
-    public function testLoad(): void
+    public function testResolve(): void
     {
-        $resolvedDimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
         $dimensionAttributes = ['locale' => 'de', 'stage' => 'draft'];
 
@@ -57,18 +57,18 @@ class ContentManagerTest extends TestCase
         );
 
         $contentResolver->resolve($contentRichEntity->reveal(), $dimensionAttributes)
-            ->willReturn($resolvedDimensionContent->reveal())
+            ->willReturn($dimensionContent->reveal())
             ->shouldBeCalled();
 
         $this->assertSame(
-            $resolvedDimensionContent->reveal(),
+            $dimensionContent->reveal(),
             $contentManager->resolve($contentRichEntity->reveal(), $dimensionAttributes)
         );
     }
 
     public function testPersist(): void
     {
-        $resolvedDimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
         $data = ['data' => 'value'];
         $dimensionAttributes = ['locale' => 'de', 'stage' => 'draft'];
@@ -88,18 +88,18 @@ class ContentManagerTest extends TestCase
         );
 
         $contentPersister->persist($contentRichEntity->reveal(), $data, $dimensionAttributes)
-            ->willReturn($resolvedDimensionContent->reveal())
+            ->willReturn($dimensionContent->reveal())
             ->shouldBeCalled();
 
         $this->assertSame(
-            $resolvedDimensionContent->reveal(),
+            $dimensionContent->reveal(),
             $contentManager->persist($contentRichEntity->reveal(), $data, $dimensionAttributes)
         );
     }
 
-    public function testResolve(): void
+    public function testNormalize(): void
     {
-        $resolvedDimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
 
         $contentResolver = $this->prophesize(ContentResolverInterface::class);
         $contentPersister = $this->prophesize(ContentPersisterInterface::class);
@@ -115,13 +115,13 @@ class ContentManagerTest extends TestCase
             $contentWorkflow->reveal()
         );
 
-        $contentNormalizer->normalize($resolvedDimensionContent->reveal())
+        $contentNormalizer->normalize($dimensionContent->reveal())
             ->willReturn(['resolved' => 'data'])
             ->shouldBeCalled();
 
         $this->assertSame(
             ['resolved' => 'data'],
-            $contentManager->normalize($resolvedDimensionContent->reveal())
+            $contentManager->normalize($dimensionContent->reveal())
         );
     }
 
@@ -168,9 +168,9 @@ class ContentManagerTest extends TestCase
         );
     }
 
-    public function testTransition(): void
+    public function testApplyTransition(): void
     {
-        $resolvedDimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
 
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
         $dimensionAttributes = ['locale' => 'en'];
@@ -195,11 +195,11 @@ class ContentManagerTest extends TestCase
             $dimensionAttributes,
             $transitionName
         )
-            ->willReturn($resolvedDimensionContent->reveal())
+            ->willReturn($dimensionContent->reveal())
             ->shouldBeCalled();
 
         $this->assertSame(
-            $resolvedDimensionContent->reveal(),
+            $dimensionContent->reveal(),
             $contentManager->applyTransition(
                 $contentRichEntity->reveal(),
                 $dimensionAttributes,

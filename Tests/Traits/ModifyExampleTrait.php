@@ -50,16 +50,16 @@ trait ModifyExampleTrait
             throw new \RuntimeException(sprintf('Example with id "%s" was not found!', $id));
         }
 
-        /** @var ExampleDimensionContent $resolvedDimensionContent */
-        $resolvedDimensionContent = static::getContentManager()->persist(
+        /** @var ExampleDimensionContent $dimensionContent */
+        $dimensionContent = static::getContentManager()->persist(
             $example,
             array_merge($defaultData, $data),
             $dimensionAttributes
         );
 
-        if (WorkflowInterface::WORKFLOW_PLACE_PUBLISHED === $resolvedDimensionContent->getWorkflowPlace()) {
-            /** @var ExampleDimensionContent $resolvedDimensionContent */
-            $resolvedDimensionContent = static::getContentManager()->applyTransition(
+        if (WorkflowInterface::WORKFLOW_PLACE_PUBLISHED === $dimensionContent->getWorkflowPlace()) {
+            /** @var ExampleDimensionContent $dimensionContent */
+            $dimensionContent = static::getContentManager()->applyTransition(
                 $example,
                 $dimensionAttributes,
                 WorkflowInterface::WORKFLOW_TRANSITION_CREATE_DRAFT
@@ -69,7 +69,7 @@ trait ModifyExampleTrait
         static::getEntityManager()->flush();
 
         /** @var Example $example */
-        $example = $resolvedDimensionContent->getContentRichEntity();
+        $example = $dimensionContent->getContentRichEntity();
 
         return $example;
     }

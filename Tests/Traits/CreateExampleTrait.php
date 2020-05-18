@@ -44,7 +44,7 @@ trait CreateExampleTrait
         static::getEntityManager()->persist($example);
         static::getEntityManager()->flush();
 
-        $resolvedDimensionContent = static::getContentManager()->persist(
+        $dimensionContent = static::getContentManager()->persist(
             $example,
             array_merge($defaultData, $data),
             $dimensionAttributes
@@ -53,7 +53,7 @@ trait CreateExampleTrait
         static::getEntityManager()->flush();
 
         /** @var Example $example */
-        $example = $resolvedDimensionContent->getContentRichEntity();
+        $example = $dimensionContent->getContentRichEntity();
 
         return $example;
     }

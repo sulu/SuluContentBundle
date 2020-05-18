@@ -96,16 +96,16 @@ class ContentObjectProviderTest extends TestCase
 
         $query->getSingleResult()->willReturn($entity->reveal())->shouldBeCalledTimes(1);
 
-        $resolvedDimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
 
         $this->contentResolver->resolve(
             $entity->reveal(),
             Argument::type('array')
-        )->willReturn($resolvedDimensionContent->reveal())->shouldBeCalledTimes(1);
+        )->willReturn($dimensionContent->reveal())->shouldBeCalledTimes(1);
 
         $result = $this->contentObjectProvider->getObject((string) $id, $locale);
 
-        $this->assertSame($resolvedDimensionContent->reveal(), $result);
+        $this->assertSame($dimensionContent->reveal(), $result);
     }
 
     public function testGetNonExistingObject(int $id = 1, string $locale = 'de'): void
