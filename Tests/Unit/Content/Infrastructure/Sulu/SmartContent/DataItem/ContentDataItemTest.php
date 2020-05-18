@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Infrastructure\Sulu\SmartContent\DataItem;
 
 use PHPUnit\Framework\TestCase;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
@@ -33,8 +34,11 @@ class ContentDataItemTest extends TestCase
 
     public function testGetId(): void
     {
+        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
+        $contentRichEntity->getId()->willReturn('123-123');
+
         $resolvedContent = $this->prophesize(DimensionContentInterface::class);
-        $resolvedContent->getContentId()->willReturn('123-123');
+        $resolvedContent->getContentRichEntity()->willReturn($contentRichEntity->reveal());
 
         $dataItem = $this->getContentDataItem($resolvedContent->reveal(), []);
 
@@ -43,8 +47,11 @@ class ContentDataItemTest extends TestCase
 
     public function testGetTitle(): void
     {
+        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
+        $contentRichEntity->getId()->willReturn('123-123');
+
         $resolvedContent = $this->prophesize(DimensionContentInterface::class);
-        $resolvedContent->getContentId()->willReturn('123-123');
+        $resolvedContent->getContentRichEntity()->willReturn($contentRichEntity->reveal());
 
         $data = [
             'title' => 'test-title-1',
@@ -58,8 +65,11 @@ class ContentDataItemTest extends TestCase
 
     public function testGetNameAsTitle(): void
     {
+        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
+        $contentRichEntity->getId()->willReturn('123-123');
+
         $resolvedContent = $this->prophesize(DimensionContentInterface::class);
-        $resolvedContent->getContentId()->willReturn('123-123');
+        $resolvedContent->getContentRichEntity()->willReturn($contentRichEntity->reveal());
 
         $data = [
             'title' => null,
@@ -73,8 +83,11 @@ class ContentDataItemTest extends TestCase
 
     public function testGetImage(): void
     {
+        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
+        $contentRichEntity->getId()->willReturn('123-123');
+
         $resolvedContent = $this->prophesize(DimensionContentInterface::class);
-        $resolvedContent->getContentId()->willReturn('123-123');
+        $resolvedContent->getContentRichEntity()->willReturn($contentRichEntity->reveal());
 
         $dataItem = $this->getContentDataItem($resolvedContent->reveal(), []);
 
@@ -83,26 +96,36 @@ class ContentDataItemTest extends TestCase
 
     public function testGetPublished(): void
     {
+        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
+        $contentRichEntity->getId()->willReturn('123-123');
+
+        $dimension = $this->prophesize(DimensionInterface::class);
+        $dimension->getLocale()->willReturn('en');
+
         $published = new \DateTimeImmutable();
 
         $resolvedContent = $this->prophesize(DimensionContentInterface::class);
-        $resolvedContent->getContentId()->willReturn('123-123');
-        $dimension = $this->prophesize(DimensionInterface::class);
-        $dimension->getLocale()->willReturn('en');
+        $resolvedContent->willImplement(WorkflowInterface::class);
+        $resolvedContent->getContentRichEntity()->willReturn($contentRichEntity->reveal());
         $resolvedContent->getDimension()->willReturn($dimension->reveal());
         $resolvedContent->getWorkflowPublished()->willReturn($published);
 
         $dataItem = $this->getContentDataItem($resolvedContent->reveal(), []);
 
+        /* @phpstan-ignore-next-line */
         $this->assertSame($published, $dataItem->getPublished());
     }
 
     public function testGetPublishedLocaleNull(): void
     {
-        $resolvedContent = $this->prophesize(DimensionContentInterface::class);
-        $resolvedContent->getContentId()->willReturn('123-123');
+        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
+        $contentRichEntity->getId()->willReturn('123-123');
+
         $dimension = $this->prophesize(DimensionInterface::class);
         $dimension->getLocale()->willReturn(null);
+
+        $resolvedContent = $this->prophesize(DimensionContentInterface::class);
+        $resolvedContent->getContentRichEntity()->willReturn($contentRichEntity->reveal());
         $resolvedContent->getDimension()->willReturn($dimension->reveal());
 
         $dataItem = $this->getContentDataItem($resolvedContent->reveal(), []);
@@ -112,10 +135,14 @@ class ContentDataItemTest extends TestCase
 
     public function testGetPublishedNoWorkflow(): void
     {
-        $resolvedContent = $this->prophesize(DimensionContentInterface::class);
-        $resolvedContent->getContentId()->willReturn('123-123');
+        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
+        $contentRichEntity->getId()->willReturn('123-123');
+
         $dimension = $this->prophesize(DimensionInterface::class);
         $dimension->getLocale()->willReturn('en');
+
+        $resolvedContent = $this->prophesize(DimensionContentInterface::class);
+        $resolvedContent->getContentRichEntity()->willReturn($contentRichEntity->reveal());
         $resolvedContent->getDimension()->willReturn($dimension->reveal());
 
         $dataItem = $this->getContentDataItem($resolvedContent->reveal(), []);
@@ -125,11 +152,16 @@ class ContentDataItemTest extends TestCase
 
     public function testGetPublishedState(): void
     {
-        $resolvedContent = $this->prophesize(DimensionContentInterface::class);
-        $resolvedContent->getContentId()->willReturn('123-123');
+        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
+        $contentRichEntity->getId()->willReturn('123-123');
+
         $dimension = $this->prophesize(DimensionInterface::class);
         $dimension->getLocale()->willReturn('en');
         $dimension->getStage()->willReturn(DimensionInterface::STAGE_DRAFT);
+
+        $resolvedContent = $this->prophesize(DimensionContentInterface::class);
+        $resolvedContent->willImplement(WorkflowInterface::class);
+        $resolvedContent->getContentRichEntity()->willReturn($contentRichEntity->reveal());
         $resolvedContent->getDimension()->willReturn($dimension->reveal());
         $resolvedContent->getWorkflowPlace()->willReturn(WorkflowInterface::WORKFLOW_PLACE_PUBLISHED);
 
@@ -140,10 +172,14 @@ class ContentDataItemTest extends TestCase
 
     public function testGetPublishedStateLocaleNull(): void
     {
-        $resolvedContent = $this->prophesize(DimensionContentInterface::class);
-        $resolvedContent->getContentId()->willReturn('123-123');
+        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
+        $contentRichEntity->getId()->willReturn('123-123');
+
         $dimension = $this->prophesize(DimensionInterface::class);
         $dimension->getLocale()->willReturn(null);
+
+        $resolvedContent = $this->prophesize(DimensionContentInterface::class);
+        $resolvedContent->getContentRichEntity()->willReturn($contentRichEntity->reveal());
         $resolvedContent->getDimension()->willReturn($dimension->reveal());
 
         $dataItem = $this->getContentDataItem($resolvedContent->reveal(), []);
@@ -153,11 +189,15 @@ class ContentDataItemTest extends TestCase
 
     public function testGetPublishedStateStageLive(): void
     {
-        $resolvedContent = $this->prophesize(DimensionContentInterface::class);
-        $resolvedContent->getContentId()->willReturn('123-123');
+        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
+        $contentRichEntity->getId()->willReturn('123-123');
+
         $dimension = $this->prophesize(DimensionInterface::class);
         $dimension->getLocale()->willReturn('en');
         $dimension->getStage()->willReturn(DimensionInterface::STAGE_LIVE);
+
+        $resolvedContent = $this->prophesize(DimensionContentInterface::class);
+        $resolvedContent->getContentRichEntity()->willReturn($contentRichEntity->reveal());
         $resolvedContent->getDimension()->willReturn($dimension->reveal());
 
         $dataItem = $this->getContentDataItem($resolvedContent->reveal(), []);
@@ -167,11 +207,15 @@ class ContentDataItemTest extends TestCase
 
     public function testGetPublishedStateNoWorkflow(): void
     {
-        $resolvedContent = $this->prophesize(DimensionContentInterface::class);
-        $resolvedContent->getContentId()->willReturn('123-123');
+        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
+        $contentRichEntity->getId()->willReturn('123-123');
+
         $dimension = $this->prophesize(DimensionInterface::class);
         $dimension->getLocale()->willReturn('en');
         $dimension->getStage()->willReturn(DimensionInterface::STAGE_DRAFT);
+
+        $resolvedContent = $this->prophesize(DimensionContentInterface::class);
+        $resolvedContent->getContentRichEntity()->willReturn($contentRichEntity->reveal());
         $resolvedContent->getDimension()->willReturn($dimension->reveal());
 
         $dataItem = $this->getContentDataItem($resolvedContent->reveal(), []);
@@ -181,11 +225,16 @@ class ContentDataItemTest extends TestCase
 
     public function testGetPublishedStateUnpublished(): void
     {
-        $resolvedContent = $this->prophesize(DimensionContentInterface::class);
-        $resolvedContent->getContentId()->willReturn('123-123');
+        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
+        $contentRichEntity->getId()->willReturn('123-123');
+
         $dimension = $this->prophesize(DimensionInterface::class);
         $dimension->getLocale()->willReturn('en');
         $dimension->getStage()->willReturn(DimensionInterface::STAGE_DRAFT);
+
+        $resolvedContent = $this->prophesize(DimensionContentInterface::class);
+        $resolvedContent->willImplement(WorkflowInterface::class);
+        $resolvedContent->getContentRichEntity()->willReturn($contentRichEntity->reveal());
         $resolvedContent->getDimension()->willReturn($dimension->reveal());
         $resolvedContent->getWorkflowPlace()->willReturn(WorkflowInterface::WORKFLOW_PLACE_UNPUBLISHED);
 
@@ -196,11 +245,16 @@ class ContentDataItemTest extends TestCase
 
     public function testGetPublishedStateDraft(): void
     {
-        $resolvedContent = $this->prophesize(DimensionContentInterface::class);
-        $resolvedContent->getContentId()->willReturn('123-123');
+        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
+        $contentRichEntity->getId()->willReturn('123-123');
+
         $dimension = $this->prophesize(DimensionInterface::class);
         $dimension->getLocale()->willReturn('en');
         $dimension->getStage()->willReturn(DimensionInterface::STAGE_DRAFT);
+
+        $resolvedContent = $this->prophesize(DimensionContentInterface::class);
+        $resolvedContent->willImplement(WorkflowInterface::class);
+        $resolvedContent->getContentRichEntity()->willReturn($contentRichEntity->reveal());
         $resolvedContent->getDimension()->willReturn($dimension->reveal());
         $resolvedContent->getWorkflowPlace()->willReturn(WorkflowInterface::WORKFLOW_PLACE_DRAFT);
 

@@ -165,9 +165,11 @@ class ContentObjectProviderTest extends TestCase
 
     public function testGetId(int $id = 1): void
     {
-        $resolvedContent = $this->prophesize(DimensionContentInterface::class);
+        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
+        $contentRichEntity->getId()->willReturn($id);
 
-        $resolvedContent->getContentId()->willReturn($id);
+        $resolvedContent = $this->prophesize(DimensionContentInterface::class);
+        $resolvedContent->getContentRichEntity()->willReturn($contentRichEntity->reveal());
 
         $actualId = (string) $this->contentObjectProvider->getId($resolvedContent->reveal());
 
@@ -236,11 +238,14 @@ class ContentObjectProviderTest extends TestCase
 
     public function testSerialize(): void
     {
-        $resolvedContent = $this->prophesize(DimensionContentInterface::class);
-        $resolvedContent->getContentId()->willReturn('123-456');
+        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
+        $contentRichEntity->getId()->willReturn('123-456');
 
         $dimension = $this->prophesize(DimensionInterface::class);
         $dimension->getLocale()->willReturn('en');
+
+        $resolvedContent = $this->prophesize(DimensionContentInterface::class);
+        $resolvedContent->getContentRichEntity()->willReturn($contentRichEntity->reveal());
         $resolvedContent->getDimension()->willReturn($dimension->reveal());
 
         $serializedObject = json_encode([
