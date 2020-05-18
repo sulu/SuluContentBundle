@@ -17,7 +17,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Ferrandini\Urlizer;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentManager\ContentManagerInterface;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
-use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleDimensionContent;
 
 trait CreateExampleTrait
 {
@@ -28,7 +27,7 @@ trait CreateExampleTrait
         array $data = [],
         string $locale = 'en',
         string $template = 'default'
-    ): ExampleDimensionContent {
+    ): Example {
         $title = $data['title'] ?? 'Test Example';
 
         $defaultData = [
@@ -45,7 +44,6 @@ trait CreateExampleTrait
         static::getEntityManager()->persist($example);
         static::getEntityManager()->flush();
 
-        /** @var ExampleDimensionContent $resolvedDimensionContent */
         $resolvedDimensionContent = static::getContentManager()->persist(
             $example,
             array_merge($defaultData, $data),
@@ -54,7 +52,10 @@ trait CreateExampleTrait
 
         static::getEntityManager()->flush();
 
-        return $resolvedDimensionContent;
+        /** @var Example $example */
+        $example = $resolvedDimensionContent->getContentRichEntity();
+
+        return $example;
     }
 
     abstract protected static function getContentManager(): ContentManagerInterface;
