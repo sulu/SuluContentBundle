@@ -25,14 +25,8 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolve
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentTrait;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptTrait;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoTrait;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateTrait;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Preview\ContentObjectProvider;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
 
@@ -199,21 +193,13 @@ class ContentObjectProviderTest extends TestCase
             'excerptIcon' => ['id' => 4],
         ]
     ): void {
-        $resolvedContent = (new class() implements DimensionContentInterface, TemplateInterface, SeoInterface, ExcerptInterface {
-            use DimensionContentTrait;
-            use TemplateTrait;
-            use SeoTrait;
-            use ExcerptTrait;
+        $resolvedContent = $this->prophesize(DimensionContentInterface::class);
 
-            public static function getTemplateType(): string
-            {
-                return 'example';
-            }
-        });
+        $this->contentObjectProvider->setValues($resolvedContent->reveal(), $locale, $data);
 
-        $this->contentObjectProvider->setValues($resolvedContent, $locale, $data);
-
-        $this->contentDataMapper->map($data, $resolvedContent, $resolvedContent)->shouldBeCalledTimes(1);
+        $this->contentDataMapper->map(
+            $data, $resolvedContent->reveal(), $resolvedContent->reveal()
+        )->shouldBeCalledTimes(1);
     }
 
     /**
@@ -221,19 +207,12 @@ class ContentObjectProviderTest extends TestCase
      */
     public function testSetContext(string $locale = 'de', array $context = ['template' => 'overview']): void
     {
-        $resolvedContent = (new class() implements DimensionContentInterface, TemplateInterface {
-            use DimensionContentTrait;
-            use TemplateTrait;
+        $resolvedContent = $this->prophesize(DimensionContentInterface::class);
+        $resolvedContent->willImplement(TemplateInterface::class);
 
-            public static function getTemplateType(): string
-            {
-                return 'example';
-            }
-        });
+        $this->contentObjectProvider->setContext($resolvedContent->reveal(), $locale, $context);
 
-        $this->contentObjectProvider->setContext($resolvedContent, $locale, $context);
-
-        $this->assertSame($context['template'], $resolvedContent->getTemplateKey());
+        $resolvedContent->setTemplateKey($context['template'])->shouldBeCalled();
     }
 
     public function testSerialize(): void

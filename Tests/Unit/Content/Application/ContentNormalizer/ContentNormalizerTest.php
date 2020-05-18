@@ -63,19 +63,29 @@ class ContentNormalizerTest extends TestCase
         $object = new class($contentRichEntityMock->reveal(), $dimensionMock->reveal()) implements DimensionContentInterface {
             use DimensionContentTrait;
 
+            /**
+             * @var ContentRichEntityInterface
+             */
+            protected $contentRichEntity;
+
             public function __construct(ContentRichEntityInterface $contentRichEntity, DimensionInterface $dimension)
             {
                 $this->contentRichEntity = $contentRichEntity;
                 $this->dimension = $dimension;
             }
+
+            public function getContentRichEntity(): ContentRichEntityInterface
+            {
+                return $this->contentRichEntity;
+            }
         };
 
-        $apiViewResolver = $this->createContentNormalizerInstance();
+        $contentNormalizer = $this->createContentNormalizerInstance();
         $this->assertSame([
             'id' => 5,
             'locale' => 'de',
             'stage' => 'live',
-        ], $apiViewResolver->normalize($object));
+        ], $contentNormalizer->normalize($object));
     }
 
     public function testResolveFull(): void
@@ -95,6 +105,11 @@ class ContentNormalizerTest extends TestCase
             use WorkflowTrait;
             use RoutableTrait;
 
+            /**
+             * @var ContentRichEntityInterface
+             */
+            protected $contentRichEntity;
+
             public function __construct(ContentRichEntityInterface $contentRichEntity, DimensionInterface $dimension)
             {
                 $this->contentRichEntity = $contentRichEntity;
@@ -103,12 +118,17 @@ class ContentNormalizerTest extends TestCase
 
             public static function getTemplateType(): string
             {
-                return 'example';
+                throw new \RuntimeException('Should not be called while executing tests.');
             }
 
             public static function getContentClass(): string
             {
-                return \stdClass::class;
+                throw new \RuntimeException('Should not be called while executing tests.');
+            }
+
+            public function getContentRichEntity(): ContentRichEntityInterface
+            {
+                return $this->contentRichEntity;
             }
         };
 
@@ -143,7 +163,7 @@ class ContentNormalizerTest extends TestCase
         $object->setTemplateKey('template-key');
         $object->setTemplateData(['someTemplate' => 'data']);
 
-        $apiViewResolver = $this->createContentNormalizerInstance();
+        $contentNormalizer = $this->createContentNormalizerInstance();
 
         $this->assertSame([
             'excerptCategories' => [
@@ -174,6 +194,6 @@ class ContentNormalizerTest extends TestCase
             'stage' => 'live',
             'template' => 'template-key',
             'workflowPlace' => 'unpublished',
-        ], $apiViewResolver->normalize($object));
+        ], $contentNormalizer->normalize($object));
     }
 }

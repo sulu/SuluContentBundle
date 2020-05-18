@@ -43,7 +43,7 @@ interface ContentCopierInterface
      * @param mixed[] $targetDimensionAttributes
      */
     public function copyFromDimensionContent(
-        DimensionContentInterface $resolvedContent,
+        DimensionContentInterface $dimensionContent,
         ContentRichEntityInterface $targetContentRichEntity,
         array $targetDimensionAttributes
     ): DimensionContentInterface;

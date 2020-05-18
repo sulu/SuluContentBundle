@@ -21,11 +21,15 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\RoutableTrait;
 
 class RoutableTraitTest extends TestCase
 {
-    protected function getRoutableInstance(
-        ContentRichEntityInterface $contentRichEntity,
-        DimensionInterface $dimension
-    ): RoutableInterface {
-        return new class($contentRichEntity, $dimension) implements RoutableInterface {
+    protected function getRoutableInstance(): RoutableInterface
+    {
+        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
+        $contentRichEntity->getId()->willReturn('content-id-123');
+
+        $dimension = $this->prophesize(DimensionInterface::class);
+        $dimension->getLocale()->willReturn('en');
+
+        return new class($contentRichEntity->reveal(), $dimension->reveal()) implements RoutableInterface {
             use RoutableTrait;
 
             /**
@@ -46,7 +50,7 @@ class RoutableTraitTest extends TestCase
 
             public static function getContentClass(): string
             {
-                return self::class;
+                throw new \RuntimeException('Should not be called while executing tests.');
             }
 
             public function getDimension(): DimensionInterface
@@ -63,24 +67,13 @@ class RoutableTraitTest extends TestCase
 
     public function testGetLocale(): void
     {
-        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
-
-        $dimension = $this->prophesize(DimensionInterface::class);
-        $dimension->getLocale()->willReturn('en');
-
-        $model = $this->getRoutableInstance($contentRichEntity->reveal(), $dimension->reveal());
+        $model = $this->getRoutableInstance();
         $this->assertSame('en', $model->getLocale());
     }
 
     public function getContentId(): void
     {
-        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
-        $contentRichEntity->getId()->willReturn('content-id-123');
-
-        $dimension = $this->prophesize(DimensionInterface::class);
-        $dimension->getLocale()->willReturn('en');
-
-        $model = $this->getRoutableInstance($contentRichEntity->reveal(), $dimension->reveal());
+        $model = $this->getRoutableInstance();
         $this->assertSame('content-id-123', $model->getContentId());
     }
 }

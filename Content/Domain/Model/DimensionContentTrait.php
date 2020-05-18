@@ -20,18 +20,8 @@ trait DimensionContentTrait
      */
     protected $dimension;
 
-    /**
-     * @var ContentRichEntityInterface
-     */
-    protected $contentRichEntity;
-
     public function getDimension(): DimensionInterface
     {
         return $this->dimension;
-    }
-
-    public function getContentRichEntity(): ContentRichEntityInterface
-    {
-        return $this->contentRichEntity;
     }
 }
