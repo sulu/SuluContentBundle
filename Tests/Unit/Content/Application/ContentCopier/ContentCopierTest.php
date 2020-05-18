@@ -128,7 +128,7 @@ class ContentCopierTest extends TestCase
         );
     }
 
-    public function testCopyFromContentProjection(): void
+    public function testCopyFromDimensionContent(): void
     {
         $resolvedSourceContent = $this->prophesize(DimensionContentInterface::class);
         $resolvedTargetContent = $this->prophesize(DimensionContentInterface::class);
@@ -158,7 +158,7 @@ class ContentCopierTest extends TestCase
 
         $this->assertSame(
             $resolvedTargetContent->reveal(),
-            $contentCopier->copyFromContentProjection(
+            $contentCopier->copyFromDimensionContent(
                 $resolvedSourceContent->reveal(),
                 $targetContentRichEntity->reveal(),
                 $targetDimensionAttributes

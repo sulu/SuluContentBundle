@@ -63,7 +63,7 @@ class ContentCopier implements ContentCopierInterface
     ): DimensionContentInterface {
         $resolvedSourceContent = $this->contentResolver->resolve($sourceContentRichEntity, $sourceDimensionAttributes);
 
-        return $this->copyFromContentProjection($resolvedSourceContent, $targetContentRichEntity, $targetDimensionAttributes);
+        return $this->copyFromDimensionContent($resolvedSourceContent, $targetContentRichEntity, $targetDimensionAttributes);
     }
 
     public function copyFromDimensionContentCollection(
@@ -73,10 +73,10 @@ class ContentCopier implements ContentCopierInterface
     ): DimensionContentInterface {
         $resolvedSourceContent = $this->contentMerger->mergeCollection($dimensionContentCollection);
 
-        return $this->copyFromContentProjection($resolvedSourceContent, $targetContentRichEntity, $targetDimensionAttributes);
+        return $this->copyFromDimensionContent($resolvedSourceContent, $targetContentRichEntity, $targetDimensionAttributes);
     }
 
-    public function copyFromContentProjection(
+    public function copyFromDimensionContent(
         DimensionContentInterface $resolvedContent,
         ContentRichEntityInterface $targetContentRichEntity,
         array $targetDimensionAttributes
