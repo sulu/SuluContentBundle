@@ -314,7 +314,7 @@ class ContentWorkflowTest extends TestCase
 
         $mergedDimensionContent = $this->prophesize(DimensionContentInterface::class);
 
-        $contentMerger->mergeCollection($dimensionContentCollection)
+        $contentMerger->merge($dimensionContentCollection)
             ->willReturn($mergedDimensionContent)
             ->shouldBeCalledTimes($isTransitionAllowed ? 1 : 0);
 

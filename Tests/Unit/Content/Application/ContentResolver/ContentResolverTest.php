@@ -76,7 +76,7 @@ class ContentResolverTest extends TestCase
         $dimensionContentRepository->load($contentRichEntity->reveal(), $dimensionCollection)->willReturn($dimensionContentCollection);
         $mergedDimensionContent = $this->prophesize(DimensionContentInterface::class);
         $contentMerger = $this->prophesize(ContentMergerInterface::class);
-        $contentMerger->mergeCollection($dimensionContentCollection)->willReturn($mergedDimensionContent->reveal())->shouldBeCalled();
+        $contentMerger->merge($dimensionContentCollection)->willReturn($mergedDimensionContent->reveal())->shouldBeCalled();
 
         $contentResolver = $this->createContentResolverInstance(
             $dimensionRepository->reveal(),
@@ -145,7 +145,7 @@ class ContentResolverTest extends TestCase
         $dimensionContentRepository->load($contentRichEntity->reveal(), $dimensionCollection)->willReturn($dimensionContentCollection);
 
         $contentMerger = $this->prophesize(ContentMergerInterface::class);
-        $contentMerger->mergeCollection($dimensionContentCollection)->willReturn(Argument::cetera())->shouldNotBeCalled();
+        $contentMerger->merge($dimensionContentCollection)->willReturn(Argument::cetera())->shouldNotBeCalled();
 
         $contentResolver = $this->createContentResolverInstance(
             $dimensionRepository->reveal(),

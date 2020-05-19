@@ -99,7 +99,7 @@ class ContentCopierTest extends TestCase
         $contentPersister = $this->prophesize(ContentPersisterInterface::class);
         $contentNormalizer = $this->prophesize(ContentNormalizerInterface::class);
 
-        $contentMerger->mergeCollection($sourceContentDimensionCollection->reveal())
+        $contentMerger->merge($sourceContentDimensionCollection->reveal())
             ->willReturn($resolvedSourceContent->reveal())
             ->shouldBeCalled();
 
