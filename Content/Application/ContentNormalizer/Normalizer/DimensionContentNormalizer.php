@@ -13,31 +13,33 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Normalizer;
 
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 
-class ContentProjectionNormalizer implements NormalizerInterface
+class DimensionContentNormalizer implements NormalizerInterface
 {
     public function getIgnoredAttributes(object $object): array
     {
-        if (!$object instanceof ContentProjectionInterface) {
+        if (!$object instanceof DimensionContentInterface) {
             return [];
         }
 
         return [
             'id',
+            'merged',
             'dimension',
+            'contentRichEntity',
         ];
     }
 
     public function enhance(object $object, array $normalizedData): array
     {
-        if (!$object instanceof ContentProjectionInterface) {
+        if (!$object instanceof DimensionContentInterface) {
             return $normalizedData;
         }
 
-        // as a content-projection is a resolved entity, we want to set the entity-id to the returned data
-        $normalizedData['id'] = $normalizedData['contentId'];
-        unset($normalizedData['contentId']);
+        $normalizedData['id'] = $object->getContentRichEntity()->getId();
+        $normalizedData['locale'] = $object->getDimension()->getLocale();
+        $normalizedData['stage'] = $object->getDimension()->getStage();
 
         return $normalizedData;
     }

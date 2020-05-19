@@ -20,14 +20,14 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class SuluContentBundleTest extends TestCase
 {
-    protected function getBundle(): SuluContentBundle
+    protected function getContentBundle(): SuluContentBundle
     {
         return new SuluContentBundle();
     }
 
     public function testPersistenceCompilerPass(): void
     {
-        $bundle = $this->getBundle();
+        $bundle = $this->getContentBundle();
         $containerBuilder = new ContainerBuilder();
 
         $bundle->build($containerBuilder);

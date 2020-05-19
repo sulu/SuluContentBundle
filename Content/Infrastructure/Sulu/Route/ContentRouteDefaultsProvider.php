@@ -17,8 +17,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NoResultException;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Structure\ContentStructureBridgeFactory;
@@ -56,7 +56,7 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
      * @param string $entityClass
      * @param string $id
      * @param string $locale
-     * @param ContentProjectionInterface|null $object
+     * @param DimensionContentInterface|null $object
      *
      * @return mixed[]
      */
@@ -91,7 +91,7 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
     {
         $entity = $this->loadEntity($entityClass, $id, $locale);
 
-        if ($entity instanceof ContentProjectionInterface) {
+        if ($entity instanceof DimensionContentInterface) {
             $dimension = $entity->getDimension();
 
             return DimensionInterface::STAGE_LIVE === $dimension->getStage() && $locale === $dimension->getLocale();
@@ -102,8 +102,9 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
 
     public function supports($entityClass)
     {
+        // need to support DimensionContentInterface::class because of the ContentObjectProvider::deserialize() method
         return is_a($entityClass, ContentRichEntityInterface::class, true)
-            || is_a($entityClass, ContentProjectionInterface::class, true);
+            || is_a($entityClass, DimensionContentInterface::class, true);
     }
 
     protected function loadEntity(string $entityClass, string $id, string $locale): ?TemplateInterface
@@ -126,7 +127,7 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
             //      to support other dimension attributes here
             //      we should maybe get dimension Attributes from request attributes set by a request listener
             //      e.g. $request->attributes->get('_sulu_content_dimension_attributes');
-            $contentProjection = $this->contentResolver->resolve(
+            $resolvedDimensionContent = $this->contentResolver->resolve(
                 $contentRichEntity,
                 [
                     'locale' => $locale,
@@ -134,11 +135,11 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
                 ]
             );
 
-            if (!$contentProjection instanceof TemplateInterface) {
-                throw new \RuntimeException(sprintf('Expected to get "%s" from ContentResolver but "%s" given.', TemplateInterface::class, \get_class($contentProjection)));
+            if (!$resolvedDimensionContent instanceof TemplateInterface) {
+                throw new \RuntimeException(sprintf('Expected to get "%s" from ContentResolver but "%s" given.', TemplateInterface::class, \get_class($resolvedDimensionContent)));
             }
 
-            return $contentProjection;
+            return $resolvedDimensionContent;
         } catch (ContentNotFoundException $exception) {
             return null;
         }

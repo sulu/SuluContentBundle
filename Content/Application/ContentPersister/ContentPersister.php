@@ -13,11 +13,11 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentPersister;
 
-use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ContentProjectionFactoryInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentMerger\ContentMergerInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\DimensionCollectionFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\DimensionContentCollectionFactoryInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 
 class ContentPersister implements ContentPersisterInterface
 {
@@ -32,21 +32,21 @@ class ContentPersister implements ContentPersisterInterface
     private $dimensionContentCollectionFactory;
 
     /**
-     * @var ContentProjectionFactoryInterface
+     * @var ContentMergerInterface
      */
-    private $viewFactory;
+    private $contentMerger;
 
     public function __construct(
         DimensionCollectionFactoryInterface $dimensionCollectionFactory,
         DimensionContentCollectionFactoryInterface $dimensionContentCollectionFactory,
-        ContentProjectionFactoryInterface $viewFactory
+        ContentMergerInterface $contentMerger
     ) {
         $this->dimensionCollectionFactory = $dimensionCollectionFactory;
         $this->dimensionContentCollectionFactory = $dimensionContentCollectionFactory;
-        $this->viewFactory = $viewFactory;
+        $this->contentMerger = $contentMerger;
     }
 
-    public function persist(ContentRichEntityInterface $contentRichEntity, array $data, array $dimensionAttributes): ContentProjectionInterface
+    public function persist(ContentRichEntityInterface $contentRichEntity, array $data, array $dimensionAttributes): DimensionContentInterface
     {
         /*
          * Data should always be persisted to the STAGE_DRAFT content-dimension of the given $dimensionAttributes.
@@ -63,6 +63,6 @@ class ContentPersister implements ContentPersisterInterface
             $data
         );
 
-        return $this->viewFactory->create($dimensionContentCollection);
+        return $this->contentMerger->merge($dimensionContentCollection);
     }
 }

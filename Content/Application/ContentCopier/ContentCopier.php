@@ -13,13 +13,13 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentCopier;
 
+use Sulu\Bundle\ContentBundle\Content\Application\ContentMerger\ContentMergerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\ContentNormalizerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersisterInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolverInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ContentProjectionFactoryInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 
 class ContentCopier implements ContentCopierInterface
 {
@@ -29,9 +29,9 @@ class ContentCopier implements ContentCopierInterface
     private $contentResolver;
 
     /**
-     * @var ContentProjectionFactoryInterface
+     * @var ContentMergerInterface
      */
-    private $viewFactory;
+    private $contentMerger;
 
     /**
      * @var ContentPersisterInterface
@@ -45,12 +45,12 @@ class ContentCopier implements ContentCopierInterface
 
     public function __construct(
         ContentResolverInterface $contentResolver,
-        ContentProjectionFactoryInterface $viewFactory,
+        ContentMergerInterface $contentMerger,
         ContentPersisterInterface $contentPersister,
         ContentNormalizerInterface $contentNormalizer
     ) {
         $this->contentResolver = $contentResolver;
-        $this->viewFactory = $viewFactory;
+        $this->contentMerger = $contentMerger;
         $this->contentPersister = $contentPersister;
         $this->contentNormalizer = $contentNormalizer;
     }
@@ -60,28 +60,28 @@ class ContentCopier implements ContentCopierInterface
         array $sourceDimensionAttributes,
         ContentRichEntityInterface $targetContentRichEntity,
         array $targetDimensionAttributes
-    ): ContentProjectionInterface {
-        $sourceContentProjection = $this->contentResolver->resolve($sourceContentRichEntity, $sourceDimensionAttributes);
+    ): DimensionContentInterface {
+        $sourceDimensionContent = $this->contentResolver->resolve($sourceContentRichEntity, $sourceDimensionAttributes);
 
-        return $this->copyFromContentProjection($sourceContentProjection, $targetContentRichEntity, $targetDimensionAttributes);
+        return $this->copyFromDimensionContent($sourceDimensionContent, $targetContentRichEntity, $targetDimensionAttributes);
     }
 
     public function copyFromDimensionContentCollection(
         DimensionContentCollectionInterface $dimensionContentCollection,
         ContentRichEntityInterface $targetContentRichEntity,
         array $targetDimensionAttributes
-    ): ContentProjectionInterface {
-        $sourceContentProjection = $this->viewFactory->create($dimensionContentCollection);
+    ): DimensionContentInterface {
+        $sourceDimensionContent = $this->contentMerger->merge($dimensionContentCollection);
 
-        return $this->copyFromContentProjection($sourceContentProjection, $targetContentRichEntity, $targetDimensionAttributes);
+        return $this->copyFromDimensionContent($sourceDimensionContent, $targetContentRichEntity, $targetDimensionAttributes);
     }
 
-    public function copyFromContentProjection(
-        ContentProjectionInterface $sourceContentProjection,
+    public function copyFromDimensionContent(
+        DimensionContentInterface $dimensionContent,
         ContentRichEntityInterface $targetContentRichEntity,
         array $targetDimensionAttributes
-    ): ContentProjectionInterface {
-        $data = $this->contentNormalizer->normalize($sourceContentProjection);
+    ): DimensionContentInterface {
+        $data = $this->contentNormalizer->normalize($dimensionContent);
 
         return $this->contentPersister->persist($targetContentRichEntity, $data, $targetDimensionAttributes);
     }

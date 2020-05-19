@@ -4,7 +4,7 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
         <!-- Normalizer -->
-        <service id="sulu_content.content_projection_normalizer" class="Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Normalizer\ContentProjectionNormalizer">
+        <service id="sulu_content.dimension_content_normalizer" class="Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Normalizer\DimensionContentNormalizer">
             <tag name="sulu_content.normalizer" priority="256"/>
         </service>
 
@@ -18,6 +18,10 @@
 
         <service id="sulu_content.excerpt_normalizer" class="Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Normalizer\ExcerptNormalizer">
             <tag name="sulu_content.normalizer" priority="32"/>
+        </service>
+
+        <service id="sulu_content.routable_normalizer" class="Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Normalizer\RoutableNormalizer">
+            <tag name="sulu_content.normalizer" priority="16"/>
         </service>
     </services>
 </container>

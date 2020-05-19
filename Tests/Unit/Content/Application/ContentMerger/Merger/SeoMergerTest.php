@@ -17,7 +17,6 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentMerger\Merger\MergerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentMerger\Merger\SeoMerger;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
 
@@ -28,83 +27,83 @@ class SeoMergerTest extends TestCase
         return new SeoMerger();
     }
 
-    public function testMergeDimensionNotImplementSeoInterface(): void
+    public function testMergeSourceNotImplementSeoInterface(): void
     {
         $merger = $this->getSeoMergerInstance();
 
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $source = $this->prophesize(DimensionContentInterface::class);
 
-        $contentProjection = $this->prophesize(ContentProjectionInterface::class);
-        $contentProjection->willImplement(SeoInterface::class);
-        $contentProjection->setSeoTitle(Argument::any())->shouldNotBeCalled();
+        $target = $this->prophesize(DimensionContentInterface::class);
+        $target->willImplement(SeoInterface::class);
+        $target->setSeoTitle(Argument::any())->shouldNotBeCalled();
 
-        $merger->merge($contentProjection->reveal(), $dimensionContent->reveal());
+        $merger->merge($target->reveal(), $source->reveal());
     }
 
-    public function testMergeViewNotImplementSeoInterface(): void
+    public function testMergeTargetNotImplementSeoInterface(): void
     {
         $merger = $this->getSeoMergerInstance();
 
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent->willImplement(SeoInterface::class);
-        $dimensionContent->getSeoTitle(Argument::any())->shouldNotBeCalled();
+        $source = $this->prophesize(DimensionContentInterface::class);
+        $source->willImplement(SeoInterface::class);
+        $source->getSeoTitle(Argument::any())->shouldNotBeCalled();
 
-        $contentProjection = $this->prophesize(ContentProjectionInterface::class);
+        $target = $this->prophesize(DimensionContentInterface::class);
 
-        $merger->merge($contentProjection->reveal(), $dimensionContent->reveal());
+        $merger->merge($target->reveal(), $source->reveal());
     }
 
     public function testMergeSet(): void
     {
         $merger = $this->getSeoMergerInstance();
 
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent->willImplement(SeoInterface::class);
-        $dimensionContent->getSeoTitle()->willReturn('Seo Title')->shouldBeCalled();
-        $dimensionContent->getSeoDescription()->willReturn('Seo Description')->shouldBeCalled();
-        $dimensionContent->getSeoKeywords()->willReturn('Seo Keyword 1, Seo Keyword 2')->shouldBeCalled();
-        $dimensionContent->getSeoCanonicalUrl()->willReturn('https://canonical.localhost/')->shouldBeCalled();
-        $dimensionContent->getSeoNoFollow()->willReturn(true)->shouldBeCalled();
-        $dimensionContent->getSeoNoIndex()->willReturn(true)->shouldBeCalled();
-        $dimensionContent->getSeoHideInSitemap()->willReturn(true)->shouldBeCalled();
+        $source = $this->prophesize(DimensionContentInterface::class);
+        $source->willImplement(SeoInterface::class);
+        $source->getSeoTitle()->willReturn('Seo Title')->shouldBeCalled();
+        $source->getSeoDescription()->willReturn('Seo Description')->shouldBeCalled();
+        $source->getSeoKeywords()->willReturn('Seo Keyword 1, Seo Keyword 2')->shouldBeCalled();
+        $source->getSeoCanonicalUrl()->willReturn('https://canonical.localhost/')->shouldBeCalled();
+        $source->getSeoNoFollow()->willReturn(true)->shouldBeCalled();
+        $source->getSeoNoIndex()->willReturn(true)->shouldBeCalled();
+        $source->getSeoHideInSitemap()->willReturn(true)->shouldBeCalled();
 
-        $contentProjection = $this->prophesize(ContentProjectionInterface::class);
-        $contentProjection->willImplement(SeoInterface::class);
-        $contentProjection->setSeoTitle('Seo Title')->shouldBeCalled();
-        $contentProjection->setSeoDescription('Seo Description')->shouldBeCalled();
-        $contentProjection->setSeoKeywords('Seo Keyword 1, Seo Keyword 2')->shouldBeCalled();
-        $contentProjection->setSeoCanonicalUrl('https://canonical.localhost/')->shouldBeCalled();
-        $contentProjection->setSeoNoFollow(true)->shouldBeCalled();
-        $contentProjection->setSeoNoIndex(true)->shouldBeCalled();
-        $contentProjection->setSeoHideInSitemap(true)->shouldBeCalled();
+        $target = $this->prophesize(DimensionContentInterface::class);
+        $target->willImplement(SeoInterface::class);
+        $target->setSeoTitle('Seo Title')->shouldBeCalled();
+        $target->setSeoDescription('Seo Description')->shouldBeCalled();
+        $target->setSeoKeywords('Seo Keyword 1, Seo Keyword 2')->shouldBeCalled();
+        $target->setSeoCanonicalUrl('https://canonical.localhost/')->shouldBeCalled();
+        $target->setSeoNoFollow(true)->shouldBeCalled();
+        $target->setSeoNoIndex(true)->shouldBeCalled();
+        $target->setSeoHideInSitemap(true)->shouldBeCalled();
 
-        $merger->merge($contentProjection->reveal(), $dimensionContent->reveal());
+        $merger->merge($target->reveal(), $source->reveal());
     }
 
     public function testMergeNotSet(): void
     {
         $seoMerger = $this->getSeoMergerInstance();
 
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent->willImplement(SeoInterface::class);
-        $dimensionContent->getSeoTitle()->willReturn(null)->shouldBeCalled();
-        $dimensionContent->getSeoDescription()->willReturn(null)->shouldBeCalled();
-        $dimensionContent->getSeoKeywords()->willReturn(null)->shouldBeCalled();
-        $dimensionContent->getSeoCanonicalUrl()->willReturn(null)->shouldBeCalled();
-        $dimensionContent->getSeoNoFollow()->willReturn(false)->shouldBeCalled();
-        $dimensionContent->getSeoNoIndex()->willReturn(false)->shouldBeCalled();
-        $dimensionContent->getSeoHideInSitemap()->willReturn(false)->shouldBeCalled();
+        $source = $this->prophesize(DimensionContentInterface::class);
+        $source->willImplement(SeoInterface::class);
+        $source->getSeoTitle()->willReturn(null)->shouldBeCalled();
+        $source->getSeoDescription()->willReturn(null)->shouldBeCalled();
+        $source->getSeoKeywords()->willReturn(null)->shouldBeCalled();
+        $source->getSeoCanonicalUrl()->willReturn(null)->shouldBeCalled();
+        $source->getSeoNoFollow()->willReturn(false)->shouldBeCalled();
+        $source->getSeoNoIndex()->willReturn(false)->shouldBeCalled();
+        $source->getSeoHideInSitemap()->willReturn(false)->shouldBeCalled();
 
-        $contentProjection = $this->prophesize(ContentProjectionInterface::class);
-        $contentProjection->willImplement(SeoInterface::class);
-        $contentProjection->setSeoTitle('Seo Title')->shouldNotBeCalled();
-        $contentProjection->setSeoDescription('Seo Description')->shouldNotBeCalled();
-        $contentProjection->setSeoKeywords('Seo Keyword 1, Seo Keyword 2')->shouldNotBeCalled();
-        $contentProjection->setSeoCanonicalUrl('https://canonical.localhost/')->shouldNotBeCalled();
-        $contentProjection->setSeoNoFollow(false)->shouldNotBeCalled();
-        $contentProjection->setSeoNoIndex(false)->shouldNotBeCalled();
-        $contentProjection->setSeoHideInSitemap(false)->shouldNotBeCalled();
+        $target = $this->prophesize(DimensionContentInterface::class);
+        $target->willImplement(SeoInterface::class);
+        $target->setSeoTitle('Seo Title')->shouldNotBeCalled();
+        $target->setSeoDescription('Seo Description')->shouldNotBeCalled();
+        $target->setSeoKeywords('Seo Keyword 1, Seo Keyword 2')->shouldNotBeCalled();
+        $target->setSeoCanonicalUrl('https://canonical.localhost/')->shouldNotBeCalled();
+        $target->setSeoNoFollow(false)->shouldNotBeCalled();
+        $target->setSeoNoIndex(false)->shouldNotBeCalled();
+        $target->setSeoHideInSitemap(false)->shouldNotBeCalled();
 
-        $seoMerger->merge($contentProjection->reveal(), $dimensionContent->reveal());
+        $seoMerger->merge($target->reveal(), $source->reveal());
     }
 }

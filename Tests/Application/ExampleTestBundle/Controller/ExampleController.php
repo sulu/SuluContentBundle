@@ -18,10 +18,10 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\ViewHandlerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentManager\ContentManagerInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
-use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleContentProjection;
+use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleDimensionContent;
 use Sulu\Component\Rest\AbstractRestController;
 use Sulu\Component\Rest\Exception\RestException;
 use Sulu\Component\Rest\ListBuilder\Doctrine\DoctrineListBuilder;
@@ -116,9 +116,9 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         }
 
         $dimensionAttributes = $this->getDimensionAttributes($request);
-        $contentProjection = $this->contentManager->resolve($example, $dimensionAttributes);
+        $dimensionContent = $this->contentManager->resolve($example, $dimensionAttributes);
 
-        return $this->handleView($this->view($this->normalize($example, $contentProjection)));
+        return $this->handleView($this->view($this->normalize($example, $dimensionContent)));
     }
 
     /**
@@ -131,13 +131,13 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         $data = $this->getData($request);
         $dimensionAttributes = $this->getDimensionAttributes($request); // ["locale" => "en", "stage" => "draft"]
 
-        $contentProjection = $this->contentManager->persist($example, $data, $dimensionAttributes);
+        $dimensionContent = $this->contentManager->persist($example, $data, $dimensionAttributes);
 
         $this->entityManager->persist($example);
         $this->entityManager->flush();
 
         if ('publish' === $request->query->get('action')) {
-            $contentProjection = $this->contentManager->applyTransition(
+            $dimensionContent = $this->contentManager->applyTransition(
                 $example,
                 $dimensionAttributes,
                 WorkflowInterface::WORKFLOW_TRANSITION_PUBLISH
@@ -146,7 +146,7 @@ class ExampleController extends AbstractRestController implements ClassResourceI
             $this->entityManager->flush();
         }
 
-        return $this->handleView($this->view($this->normalize($example, $contentProjection), 201));
+        return $this->handleView($this->view($this->normalize($example, $dimensionContent), 201));
     }
 
     /**
@@ -169,23 +169,23 @@ class ExampleController extends AbstractRestController implements ClassResourceI
 
         switch ($action) {
             case 'unpublish':
-                $contentProjection = $this->contentManager->applyTransition(
+                $dimensionContent = $this->contentManager->applyTransition(
                     $example,
                     $dimensionAttributes,
                     WorkflowInterface::WORKFLOW_TRANSITION_UNPUBLISH
                 );
                 $this->entityManager->flush();
 
-                return $this->handleView($this->view($this->normalize($example, $contentProjection)));
+                return $this->handleView($this->view($this->normalize($example, $dimensionContent)));
             case 'remove-draft':
-                $contentProjection = $this->contentManager->applyTransition(
+                $dimensionContent = $this->contentManager->applyTransition(
                     $example,
                     $dimensionAttributes,
                     WorkflowInterface::WORKFLOW_TRANSITION_REMOVE_DRAFT
                 );
                 $this->entityManager->flush();
 
-                return $this->handleView($this->view($this->normalize($example, $contentProjection)));
+                return $this->handleView($this->view($this->normalize($example, $dimensionContent)));
             default:
                 throw new RestException('Unrecognized action: ' . $action);
         }
@@ -206,10 +206,10 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         $data = $this->getData($request);
         $dimensionAttributes = $this->getDimensionAttributes($request); // ["locale" => "en", "stage" => "draft"]
 
-        /** @var ExampleContentProjection $contentProjection */
-        $contentProjection = $this->contentManager->persist($example, $data, $dimensionAttributes);
-        if (WorkflowInterface::WORKFLOW_PLACE_PUBLISHED === $contentProjection->getWorkflowPlace()) {
-            $contentProjection = $this->contentManager->applyTransition(
+        /** @var ExampleDimensionContent $dimensionContent */
+        $dimensionContent = $this->contentManager->persist($example, $data, $dimensionAttributes);
+        if (WorkflowInterface::WORKFLOW_PLACE_PUBLISHED === $dimensionContent->getWorkflowPlace()) {
+            $dimensionContent = $this->contentManager->applyTransition(
                 $example,
                 $dimensionAttributes,
                 WorkflowInterface::WORKFLOW_TRANSITION_CREATE_DRAFT
@@ -219,7 +219,7 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         $this->entityManager->flush();
 
         if ('publish' === $request->query->get('action')) {
-            $contentProjection = $this->contentManager->applyTransition(
+            $dimensionContent = $this->contentManager->applyTransition(
                 $example,
                 $dimensionAttributes,
                 WorkflowInterface::WORKFLOW_TRANSITION_PUBLISH
@@ -228,7 +228,7 @@ class ExampleController extends AbstractRestController implements ClassResourceI
             $this->entityManager->flush();
         }
 
-        return $this->handleView($this->view($this->normalize($example, $contentProjection)));
+        return $this->handleView($this->view($this->normalize($example, $dimensionContent)));
     }
 
     /**
@@ -267,14 +267,14 @@ class ExampleController extends AbstractRestController implements ClassResourceI
     }
 
     /**
-     * Resolve will convert the ContentProjection object into a normalized array.
+     * Resolve will convert the resolved DimensionContentInterface object into a normalized array.
      *
      * @return mixed[]
      */
-    protected function normalize(Example $example, ContentProjectionInterface $contentProjection): array
+    protected function normalize(Example $example, DimensionContentInterface $dimensionContent): array
     {
-        $resolvedData = $this->contentManager->normalize($contentProjection);
+        $normalizedContent = $this->contentManager->normalize($dimensionContent);
 
-        return $resolvedData;
+        return $normalizedContent;
     }
 }

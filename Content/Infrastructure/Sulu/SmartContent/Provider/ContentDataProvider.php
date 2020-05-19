@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\SmartContent\Provider;
 
 use Sulu\Bundle\ContentBundle\Content\Application\ContentManager\ContentManagerInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\SmartContent\DataItem\ContentDataItem;
 use Sulu\Bundle\WebsiteBundle\ReferenceStore\ReferenceStoreInterface;
 use Sulu\Component\Serializer\ArraySerializerInterface;
@@ -71,17 +71,17 @@ class ContentDataProvider extends BaseDataProvider
     }
 
     /**
-     * @param ContentProjectionInterface[] $data
+     * @param DimensionContentInterface[] $data
      *
      * @return mixed[]
      */
     protected function decorateDataItems(array $data): array
     {
         return array_map(
-            function (ContentProjectionInterface $contentProjection) {
-                $contentProjectionData = $this->getContentProjectionData($contentProjection);
+            function (DimensionContentInterface $dimensionContent) {
+                $normalizedContentData = $this->normalizeContent($dimensionContent);
 
-                return $this->createDataItem($contentProjection, $contentProjectionData);
+                return $this->createDataItem($dimensionContent, $normalizedContentData);
             },
             $data
         );
@@ -90,7 +90,7 @@ class ContentDataProvider extends BaseDataProvider
     /**
      * Decorates result as resource item.
      *
-     * @param ContentProjectionInterface[] $data
+     * @param DimensionContentInterface[] $data
      * @param string $locale
      *
      * @return ArrayAccessItem[]
@@ -98,52 +98,52 @@ class ContentDataProvider extends BaseDataProvider
     protected function decorateResourceItems(array $data, $locale): array
     {
         return array_map(
-            function (ContentProjectionInterface $contentProjection) {
-                $contentProjectionData = $this->getContentProjectionData($contentProjection);
-                $id = $this->getIdForItem($contentProjection);
+            function (DimensionContentInterface $dimensionContent) {
+                $normalizedContentData = $this->normalizeContent($dimensionContent);
+                $id = $this->getIdForItem($dimensionContent);
 
                 if (null !== $this->referenceStore) {
                     $this->referenceStore->add($id);
                 }
 
-                return $this->createResourceItem($id, $contentProjection, $contentProjectionData);
+                return $this->createResourceItem($id, $dimensionContent, $normalizedContentData);
             },
             $data
         );
     }
 
     /**
-     * @param ContentProjectionInterface $contentProjection
+     * @param DimensionContentInterface $dimensionContent
      *
      * @return mixed
      */
-    protected function getIdForItem($contentProjection)
+    protected function getIdForItem($dimensionContent)
     {
-        return $contentProjection->getContentId() ?: null;
+        return $dimensionContent->getContentRichEntity()->getId();
     }
 
     /**
      * @return mixed[]
      */
-    protected function getContentProjectionData(ContentProjectionInterface $contentProjection): array
+    protected function normalizeContent(DimensionContentInterface $dimensionContent): array
     {
-        return $this->contentManager->normalize($contentProjection);
+        return $this->contentManager->normalize($dimensionContent);
     }
 
     /**
      * @param mixed[] $data
      */
-    protected function createDataItem(ContentProjectionInterface $contentProjection, array $data): ItemInterface
+    protected function createDataItem(DimensionContentInterface $dimensionContent, array $data): ItemInterface
     {
-        return new ContentDataItem($contentProjection, $data);
+        return new ContentDataItem($dimensionContent, $data);
     }
 
     /**
      * @param mixed $id
      * @param mixed[] $data
      */
-    protected function createResourceItem($id, ContentProjectionInterface $contentProjection, array $data): ResourceItemInterface
+    protected function createResourceItem($id, DimensionContentInterface $dimensionContent, array $data): ResourceItemInterface
     {
-        return new ArrayAccessItem($id, $data, $contentProjection);
+        return new ArrayAccessItem($id, $data, $dimensionContent);
     }
 }

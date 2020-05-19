@@ -17,15 +17,19 @@ use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\CategoryBundle\Entity\CategoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\ContentNormalizer;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\ContentNormalizerInterface;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Normalizer\ContentProjectionNormalizer;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Normalizer\DimensionContentNormalizer;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Normalizer\ExcerptNormalizer;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Normalizer\RoutableNormalizer;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Normalizer\TemplateNormalizer;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Normalizer\WorkflowNormalizer;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionTrait;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentTrait;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptTrait;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\RoutableInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\RoutableTrait;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoTrait;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
@@ -39,67 +43,92 @@ class ContentNormalizerTest extends TestCase
     protected function createContentNormalizerInstance(): ContentNormalizerInterface
     {
         return new ContentNormalizer([
-            new ContentProjectionNormalizer(),
+            new DimensionContentNormalizer(),
             new ExcerptNormalizer(),
             new TemplateNormalizer(),
             new WorkflowNormalizer(),
+            new RoutableNormalizer(),
         ]);
     }
 
     public function testResolveSimple(): void
     {
-        $contentProjection = new class() implements ContentProjectionInterface {
-            use ContentProjectionTrait;
+        $contentRichEntityMock = $this->prophesize(ContentRichEntityInterface::class);
+        $contentRichEntityMock->getId()->willReturn(5);
+
+        $dimensionMock = $this->prophesize(DimensionInterface::class);
+        $dimensionMock->getLocale()->willReturn('de');
+        $dimensionMock->getStage()->willReturn('live');
+
+        $object = new class($contentRichEntityMock->reveal(), $dimensionMock->reveal()) implements DimensionContentInterface {
+            use DimensionContentTrait;
 
             /**
-             * @var int
+             * @var ContentRichEntityInterface
              */
-            protected $id = 2;
+            protected $contentRichEntity;
 
-            public function __construct()
+            public function __construct(ContentRichEntityInterface $contentRichEntity, DimensionInterface $dimension)
             {
-                $this->dimension = new Dimension('123-456');
+                $this->contentRichEntity = $contentRichEntity;
+                $this->dimension = $dimension;
             }
 
-            public function getContentId()
+            public function getContentRichEntity(): ContentRichEntityInterface
             {
-                return 5;
+                return $this->contentRichEntity;
             }
         };
 
-        $apiViewResolver = $this->createContentNormalizerInstance();
+        $contentNormalizer = $this->createContentNormalizerInstance();
         $this->assertSame([
             'id' => 5,
-        ], $apiViewResolver->normalize($contentProjection));
+            'locale' => 'de',
+            'stage' => 'live',
+        ], $contentNormalizer->normalize($object));
     }
 
     public function testResolveFull(): void
     {
-        $contentProjection = new class() implements ContentProjectionInterface, ExcerptInterface, SeoInterface, TemplateInterface, WorkflowInterface {
-            use ContentProjectionTrait;
+        $contentRichEntityMock = $this->prophesize(ContentRichEntityInterface::class);
+        $contentRichEntityMock->getId()->willReturn(5);
+
+        $dimensionMock = $this->prophesize(DimensionInterface::class);
+        $dimensionMock->getLocale()->willReturn('de');
+        $dimensionMock->getStage()->willReturn('live');
+
+        $object = new class($contentRichEntityMock->reveal(), $dimensionMock->reveal()) implements DimensionContentInterface, ExcerptInterface, SeoInterface, TemplateInterface, WorkflowInterface, RoutableInterface {
+            use DimensionContentTrait;
             use ExcerptTrait;
             use SeoTrait;
             use TemplateTrait;
             use WorkflowTrait;
+            use RoutableTrait;
 
             /**
-             * @var int
+             * @var ContentRichEntityInterface
              */
-            protected $id = 2;
+            protected $contentRichEntity;
 
-            public function __construct()
+            public function __construct(ContentRichEntityInterface $contentRichEntity, DimensionInterface $dimension)
             {
-                $this->dimension = new Dimension('123-456');
-            }
-
-            public function getContentId()
-            {
-                return 5;
+                $this->contentRichEntity = $contentRichEntity;
+                $this->dimension = $dimension;
             }
 
             public static function getTemplateType(): string
             {
-                return 'example';
+                throw new \RuntimeException('Should not be called while executing tests.');
+            }
+
+            public static function getContentClass(): string
+            {
+                throw new \RuntimeException('Should not be called while executing tests.');
+            }
+
+            public function getContentRichEntity(): ContentRichEntityInterface
+            {
+                return $this->contentRichEntity;
             }
         };
 
@@ -115,26 +144,26 @@ class ContentNormalizerTest extends TestCase
         $category2 = $this->prophesize(CategoryInterface::class);
         $category2->getId()->willReturn(4);
 
-        $contentProjection->setSeoTitle('Seo Title');
-        $contentProjection->setSeoDescription('Seo Description');
-        $contentProjection->setSeoKeywords('Seo Keyword 1, Seo Keyword 2');
-        $contentProjection->setSeoCanonicalUrl('https://caninical.localhost/');
-        $contentProjection->setSeoNoIndex(true);
-        $contentProjection->setSeoNoFollow(true);
-        $contentProjection->setSeoHideInSitemap(true);
+        $object->setSeoTitle('Seo Title');
+        $object->setSeoDescription('Seo Description');
+        $object->setSeoKeywords('Seo Keyword 1, Seo Keyword 2');
+        $object->setSeoCanonicalUrl('https://caninical.localhost/');
+        $object->setSeoNoIndex(true);
+        $object->setSeoNoFollow(true);
+        $object->setSeoHideInSitemap(true);
 
-        $contentProjection->setExcerptTitle('Excerpt Title');
-        $contentProjection->setExcerptDescription('Excerpt Description');
-        $contentProjection->setExcerptMore('Excerpt More');
-        $contentProjection->setExcerptImage(['id' => 8]);
-        $contentProjection->setExcerptIcon(['id' => 9]);
-        $contentProjection->setExcerptTags([$tag1->reveal(), $tag2->reveal()]);
-        $contentProjection->setExcerptCategories([$category1->reveal(), $category2->reveal()]);
+        $object->setExcerptTitle('Excerpt Title');
+        $object->setExcerptDescription('Excerpt Description');
+        $object->setExcerptMore('Excerpt More');
+        $object->setExcerptImage(['id' => 8]);
+        $object->setExcerptIcon(['id' => 9]);
+        $object->setExcerptTags([$tag1->reveal(), $tag2->reveal()]);
+        $object->setExcerptCategories([$category1->reveal(), $category2->reveal()]);
 
-        $contentProjection->setTemplateKey('template-key');
-        $contentProjection->setTemplateData(['someTemplate' => 'data']);
+        $object->setTemplateKey('template-key');
+        $object->setTemplateData(['someTemplate' => 'data']);
 
-        $apiViewResolver = $this->createContentNormalizerInstance();
+        $contentNormalizer = $this->createContentNormalizerInstance();
 
         $this->assertSame([
             'excerptCategories' => [
@@ -151,6 +180,7 @@ class ContentNormalizerTest extends TestCase
             ],
             'excerptTitle' => 'Excerpt Title',
             'id' => 5,
+            'locale' => 'de',
             'published' => null,
             'publishedState' => false,
             'seoCanonicalUrl' => 'https://caninical.localhost/',
@@ -161,8 +191,9 @@ class ContentNormalizerTest extends TestCase
             'seoNoIndex' => true,
             'seoTitle' => 'Seo Title',
             'someTemplate' => 'data',
+            'stage' => 'live',
             'template' => 'template-key',
             'workflowPlace' => 'unpublished',
-        ], $apiViewResolver->normalize($contentProjection));
+        ], $contentNormalizer->normalize($object));
     }
 }

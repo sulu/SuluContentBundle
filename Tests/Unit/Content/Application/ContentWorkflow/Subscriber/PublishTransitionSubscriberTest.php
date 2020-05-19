@@ -17,7 +17,6 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentCopier\ContentCopierInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\Subscriber\PublishTransitionSubscriber;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
@@ -164,13 +163,14 @@ class PublishTransitionSubscriberTest extends TestCase
         $contentCopier = $this->prophesize(ContentCopierInterface::class);
         $sourceDimensionAttributes = $dimensionAttributes;
         $sourceDimensionAttributes['stage'] = 'live';
-        $copiedContentProjection = $this->prophesize(ContentProjectionInterface::class);
+
+        $resolvedCopiedContent = $this->prophesize(DimensionContentInterface::class);
         $contentCopier->copyFromDimensionContentCollection(
             $dimensionContentCollection->reveal(),
             $contentRichEntity->reveal(),
             $sourceDimensionAttributes
         )
-            ->willReturn($copiedContentProjection->reveal())
+            ->willReturn($resolvedCopiedContent->reveal())
             ->shouldBeCalled();
 
         $contentPublishSubscriber = $this->createContentPublisherSubscriberInstance($contentCopier->reveal());
@@ -202,13 +202,14 @@ class PublishTransitionSubscriberTest extends TestCase
         $contentCopier = $this->prophesize(ContentCopierInterface::class);
         $sourceDimensionAttributes = $dimensionAttributes;
         $sourceDimensionAttributes['stage'] = 'live';
-        $copiedContentProjection = $this->prophesize(ContentProjectionInterface::class);
+
+        $resolvedCopiedContent = $this->prophesize(DimensionContentInterface::class);
         $contentCopier->copyFromDimensionContentCollection(
             $dimensionContentCollection->reveal(),
             $contentRichEntity->reveal(),
             $sourceDimensionAttributes
         )
-            ->willReturn($copiedContentProjection->reveal())
+            ->willReturn($resolvedCopiedContent->reveal())
             ->shouldBeCalled();
 
         $contentPublishSubscriber = $this->createContentPublisherSubscriberInstance($contentCopier->reveal());

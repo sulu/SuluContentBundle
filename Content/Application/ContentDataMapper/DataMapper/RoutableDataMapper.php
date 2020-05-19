@@ -95,7 +95,7 @@ class RoutableDataMapper implements DataMapperInterface
         }
 
         if (!$localizedObject->getContentId()) {
-            // FIXME the code only works if the content-dimension is flushed once and has a valid id
+            // FIXME the code only works if the entity is flushed once and has a valid id
 
             return;
         }

@@ -26,7 +26,7 @@ class TemplateTraitTest extends TestCase
 
             public static function getTemplateType(): string
             {
-                return 'example';
+                throw new \RuntimeException('Should not be called while executing tests.');
             }
         };
     }
@@ -45,11 +45,5 @@ class TemplateTraitTest extends TestCase
         $this->assertSame([], $model->getTemplateData());
         $model->setTemplateData(['data' => 'My Data']);
         $this->assertSame(['data' => 'My Data'], $model->getTemplateData());
-    }
-
-    public function testGetTemplateType(): void
-    {
-        $model = $this->getTemplateInstance();
-        $this->assertSame('example', $model::getTemplateType());
     }
 }

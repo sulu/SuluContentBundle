@@ -13,12 +13,12 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow;
 
+use Sulu\Bundle\ContentBundle\Content\Application\ContentMerger\ContentMergerInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\UnavailableContentTransitionException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\UnknownContentTransitionException;
-use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ContentProjectionFactoryInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionContentRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionRepositoryInterface;
@@ -47,9 +47,9 @@ class ContentWorkflow implements ContentWorkflowInterface
     private $dimensionContentRepository;
 
     /**
-     * @var ContentProjectionFactoryInterface
+     * @var ContentMergerInterface
      */
-    private $viewFactory;
+    private $contentMerger;
 
     /**
      * @var EventDispatcherInterface
@@ -64,13 +64,13 @@ class ContentWorkflow implements ContentWorkflowInterface
     public function __construct(
         DimensionRepositoryInterface $dimensionRepository,
         DimensionContentRepositoryInterface $dimensionContentRepository,
-        ContentProjectionFactoryInterface $viewFactory,
+        ContentMergerInterface $contentMerger,
         ?Registry $workflowRegistry = null,
         ?EventDispatcherInterface $eventDispatcher = null
     ) {
         $this->dimensionRepository = $dimensionRepository;
         $this->dimensionContentRepository = $dimensionContentRepository;
-        $this->viewFactory = $viewFactory;
+        $this->contentMerger = $contentMerger;
         $this->eventDispatcher = $eventDispatcher ?: new EventDispatcher();
         // TODO get workflow from outside
         $this->workflowRegistry = $workflowRegistry ?: new Registry();
@@ -84,7 +84,7 @@ class ContentWorkflow implements ContentWorkflowInterface
         ContentRichEntityInterface $contentRichEntity,
         array $dimensionAttributes,
         string $transitionName
-    ): ContentProjectionInterface {
+    ): DimensionContentInterface {
         /*
          * Transition should always be applied to the STAGE_DRAFT content-dimension of the given $dimensionAttributes.
          * This ensures that the STAGE_DRAFT content-dimension is the single source of truth for the current
@@ -128,7 +128,7 @@ class ContentWorkflow implements ContentWorkflowInterface
             throw new UnavailableContentTransitionException($e->getMessage(), $e->getCode(), $e);
         }
 
-        return $this->viewFactory->create($dimensionContentCollection);
+        return $this->contentMerger->merge($dimensionContentCollection);
     }
 
     private function getWorkflow(): SymfonyWorkflowInterface

@@ -21,8 +21,8 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\ContentNorma
 use Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersisterInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\ContentWorkflowInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 
 class ContentManagerTest extends TestCase
 {
@@ -36,9 +36,9 @@ class ContentManagerTest extends TestCase
         return new ContentManager($contentResolver, $contentPersister, $contentNormalizer, $contentCopier, $contentWorkflow);
     }
 
-    public function testLoad(): void
+    public function testResolve(): void
     {
-        $contentProjection = $this->prophesize(ContentProjectionInterface::class);
+        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
         $dimensionAttributes = ['locale' => 'de', 'stage' => 'draft'];
 
@@ -57,18 +57,18 @@ class ContentManagerTest extends TestCase
         );
 
         $contentResolver->resolve($contentRichEntity->reveal(), $dimensionAttributes)
-            ->willReturn($contentProjection->reveal())
+            ->willReturn($dimensionContent->reveal())
             ->shouldBeCalled();
 
         $this->assertSame(
-            $contentProjection->reveal(),
+            $dimensionContent->reveal(),
             $contentManager->resolve($contentRichEntity->reveal(), $dimensionAttributes)
         );
     }
 
     public function testPersist(): void
     {
-        $contentProjection = $this->prophesize(ContentProjectionInterface::class);
+        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
         $data = ['data' => 'value'];
         $dimensionAttributes = ['locale' => 'de', 'stage' => 'draft'];
@@ -88,18 +88,18 @@ class ContentManagerTest extends TestCase
         );
 
         $contentPersister->persist($contentRichEntity->reveal(), $data, $dimensionAttributes)
-            ->willReturn($contentProjection->reveal())
+            ->willReturn($dimensionContent->reveal())
             ->shouldBeCalled();
 
         $this->assertSame(
-            $contentProjection->reveal(),
+            $dimensionContent->reveal(),
             $contentManager->persist($contentRichEntity->reveal(), $data, $dimensionAttributes)
         );
     }
 
-    public function testResolve(): void
+    public function testNormalize(): void
     {
-        $contentProjection = $this->prophesize(ContentProjectionInterface::class);
+        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
 
         $contentResolver = $this->prophesize(ContentResolverInterface::class);
         $contentPersister = $this->prophesize(ContentPersisterInterface::class);
@@ -115,19 +115,19 @@ class ContentManagerTest extends TestCase
             $contentWorkflow->reveal()
         );
 
-        $contentNormalizer->normalize($contentProjection->reveal())
+        $contentNormalizer->normalize($dimensionContent->reveal())
             ->willReturn(['resolved' => 'data'])
             ->shouldBeCalled();
 
         $this->assertSame(
             ['resolved' => 'data'],
-            $contentManager->normalize($contentProjection->reveal())
+            $contentManager->normalize($dimensionContent->reveal())
         );
     }
 
     public function testCopy(): void
     {
-        $contentProjection = $this->prophesize(ContentProjectionInterface::class);
+        $copiedContent = $this->prophesize(DimensionContentInterface::class);
 
         $sourceContentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
         $sourceDimensionAttributes = ['locale' => 'en'];
@@ -154,11 +154,11 @@ class ContentManagerTest extends TestCase
             $targetContentRichEntity->reveal(),
             $targetDimensionAttributes
         )
-            ->willReturn($contentProjection->reveal())
+            ->willReturn($copiedContent->reveal())
             ->shouldBeCalled();
 
         $this->assertSame(
-            $contentProjection->reveal(),
+            $copiedContent->reveal(),
             $contentManager->copy(
                 $sourceContentRichEntity->reveal(),
                 $sourceDimensionAttributes,
@@ -168,9 +168,9 @@ class ContentManagerTest extends TestCase
         );
     }
 
-    public function testTransition(): void
+    public function testApplyTransition(): void
     {
-        $contentProjection = $this->prophesize(ContentProjectionInterface::class);
+        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
 
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
         $dimensionAttributes = ['locale' => 'en'];
@@ -195,11 +195,11 @@ class ContentManagerTest extends TestCase
             $dimensionAttributes,
             $transitionName
         )
-            ->willReturn($contentProjection->reveal())
+            ->willReturn($dimensionContent->reveal())
             ->shouldBeCalled();
 
         $this->assertSame(
-            $contentProjection->reveal(),
+            $dimensionContent->reveal(),
             $contentManager->applyTransition(
                 $contentRichEntity->reveal(),
                 $dimensionAttributes,

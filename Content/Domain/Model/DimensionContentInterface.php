@@ -17,5 +17,9 @@ interface DimensionContentInterface
 {
     public function getDimension(): DimensionInterface;
 
-    public function createProjectionInstance(): ContentProjectionInterface;
+    public function getContentRichEntity(): ContentRichEntityInterface;
+
+    public function isMerged(): bool;
+
+    public function markAsMerged(): void;
 }

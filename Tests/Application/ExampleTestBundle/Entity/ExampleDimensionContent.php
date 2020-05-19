@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity;
 
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentTrait;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
@@ -66,7 +66,7 @@ class ExampleDimensionContent implements DimensionContentInterface, ExcerptInter
         return $this->id;
     }
 
-    public function getExample(): Example
+    public function getContentRichEntity(): ContentRichEntityInterface
     {
         return $this->example;
     }
@@ -96,14 +96,6 @@ class ExampleDimensionContent implements DimensionContentInterface, ExcerptInter
         $this->parentSetTemplateData($templateData);
     }
 
-    public function createProjectionInstance(): ContentProjectionInterface
-    {
-        $contentProjection = new ExampleContentProjection($this->getExample(), $this->dimension);
-        $contentProjection->setTitle($this->getTitle());
-
-        return $contentProjection;
-    }
-
     public static function getTemplateType(): string
     {
         return Example::TEMPLATE_TYPE;
@@ -112,10 +104,5 @@ class ExampleDimensionContent implements DimensionContentInterface, ExcerptInter
     public static function getContentClass(): string
     {
         return Example::class;
-    }
-
-    public function getContentId()
-    {
-        return $this->example->getId();
     }
 }

@@ -18,8 +18,8 @@ use Doctrine\ORM\NoResultException;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\ContentDataMapperInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Bundle\PreviewBundle\Preview\Object\PreviewObjectProviderInterface;
@@ -62,7 +62,7 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
      * @param string $id
      * @param string $locale
      *
-     * @return ContentProjectionInterface|null
+     * @return DimensionContentInterface|null
      */
     public function getObject($id, $locale)
     {
@@ -79,21 +79,21 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
             return null;
         }
 
-        return $this->loadProjection($contentRichEntity, $locale);
+        return $this->resolveContent($contentRichEntity, $locale);
     }
 
     /**
-     * @param ContentProjectionInterface $object
+     * @param DimensionContentInterface $object
      *
      * @return string
      */
     public function getId($object)
     {
-        return $object->getContentId();
+        return $object->getContentRichEntity()->getId();
     }
 
     /**
-     * @param ContentProjectionInterface $object
+     * @param DimensionContentInterface $object
      * @param string $locale
      * @param mixed[] $data
      */
@@ -103,11 +103,11 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
     }
 
     /**
-     * @param ContentProjectionInterface $object
+     * @param DimensionContentInterface $object
      * @param string $locale
      * @param mixed[] $context
      */
-    public function setContext($object, $locale, array $context): ContentProjectionInterface
+    public function setContext($object, $locale, array $context): DimensionContentInterface
     {
         if ($object instanceof TemplateInterface) {
             if (\array_key_exists('template', $context)) {
@@ -119,14 +119,14 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
     }
 
     /**
-     * @param ContentProjectionInterface $object
+     * @param DimensionContentInterface $object
      *
      * @return string
      */
     public function serialize($object)
     {
         return json_encode([
-            'id' => $object->getContentId(),
+            'id' => $object->getContentRichEntity()->getId(),
             'locale' => $object->getDimension()->getLocale(),
         ]) ?: '[]';
     }
@@ -151,10 +151,10 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
         return $this->getObject($id, $locale);
     }
 
-    protected function loadProjection(ContentRichEntityInterface $contentRichEntity, string $locale): ?ContentProjectionInterface
+    protected function resolveContent(ContentRichEntityInterface $contentRichEntity, string $locale): ?DimensionContentInterface
     {
         try {
-            $contentProjection = $this->contentResolver->resolve(
+            $resolvedDimensionContent = $this->contentResolver->resolve(
                 $contentRichEntity,
                 [
                     'locale' => $locale,
@@ -162,7 +162,7 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
                 ]
             );
 
-            return $contentProjection;
+            return $resolvedDimensionContent;
         } catch (ContentNotFoundException $exception) {
             return null;
         }

@@ -15,7 +15,7 @@ namespace Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Teaser;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentManager\ContentManagerInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Teaser\ContentTeaserProvider;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
 use Sulu\Bundle\PageBundle\Teaser\Configuration\TeaserConfiguration;
@@ -51,10 +51,10 @@ class ExampleTeaserProvider extends ContentTeaserProvider
         );
     }
 
-    protected function getDescription(ContentProjectionInterface $contentProjection, array $data): ?string
+    protected function getDescription(DimensionContentInterface $dimensionContent, array $data): ?string
     {
         $article = strip_tags($data['article'] ?? '');
 
-        return $article ?: parent::getDescription($contentProjection, $data);
+        return $article ?: parent::getDescription($dimensionContent, $data);
     }
 }

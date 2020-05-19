@@ -14,15 +14,22 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Domain\Model;
 
 use PHPUnit\Framework\TestCase;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\RoutableInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\RoutableTrait;
 
 class RoutableTraitTest extends TestCase
 {
-    protected function getRoutableInstance(DimensionInterface $dimension): RoutableInterface
+    protected function getRoutableInstance(): RoutableInterface
     {
-        return new class($dimension) implements RoutableInterface {
+        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
+        $contentRichEntity->getId()->willReturn('content-id-123');
+
+        $dimension = $this->prophesize(DimensionInterface::class);
+        $dimension->getLocale()->willReturn('en');
+
+        return new class($contentRichEntity->reveal(), $dimension->reveal()) implements RoutableInterface {
             use RoutableTrait;
 
             /**
@@ -30,34 +37,43 @@ class RoutableTraitTest extends TestCase
              */
             private $dimension;
 
-            public function __construct(DimensionInterface $dimension)
+            /**
+             * @var ContentRichEntityInterface
+             */
+            private $contentRichEntity;
+
+            public function __construct(ContentRichEntityInterface $contentRichEntity, DimensionInterface $dimension)
             {
+                $this->contentRichEntity = $contentRichEntity;
                 $this->dimension = $dimension;
             }
 
             public static function getContentClass(): string
             {
-                return self::class;
-            }
-
-            public function getContentId()
-            {
-                return 1;
+                throw new \RuntimeException('Should not be called while executing tests.');
             }
 
             public function getDimension(): DimensionInterface
             {
                 return $this->dimension;
             }
+
+            public function getContentRichEntity(): ContentRichEntityInterface
+            {
+                return $this->contentRichEntity;
+            }
         };
     }
 
     public function testGetLocale(): void
     {
-        $dimension = $this->prophesize(DimensionInterface::class);
-        $dimension->getLocale()->willReturn('en');
-
-        $model = $this->getRoutableInstance($dimension->reveal());
+        $model = $this->getRoutableInstance();
         $this->assertSame('en', $model->getLocale());
+    }
+
+    public function testGetContentId(): void
+    {
+        $model = $this->getRoutableInstance();
+        $this->assertSame('content-id-123', $model->getContentId());
     }
 }

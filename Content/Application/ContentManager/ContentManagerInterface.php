@@ -13,26 +13,26 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentManager;
 
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 
 interface ContentManagerInterface
 {
     /**
      * @param mixed[] $dimensionAttributes
      */
-    public function resolve(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes): ContentProjectionInterface;
+    public function resolve(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes): DimensionContentInterface;
 
     /**
      * @param mixed[] $data
      * @param mixed[] $dimensionAttributes
      */
-    public function persist(ContentRichEntityInterface $contentRichEntity, array $data, array $dimensionAttributes): ContentProjectionInterface;
+    public function persist(ContentRichEntityInterface $contentRichEntity, array $data, array $dimensionAttributes): DimensionContentInterface;
 
     /**
      * @return mixed[]
      */
-    public function normalize(ContentProjectionInterface $contentProjection): array;
+    public function normalize(DimensionContentInterface $dimensionContent): array;
 
     /**
      * @param mixed[] $sourceDimensionAttributes
@@ -43,7 +43,7 @@ interface ContentManagerInterface
         array $sourceDimensionAttributes,
         ContentRichEntityInterface $targetContentRichEntity,
         array $targetDimensionAttributes
-    ): ContentProjectionInterface;
+    ): DimensionContentInterface;
 
     /**
      * @param mixed[] $dimensionAttributes
@@ -52,5 +52,5 @@ interface ContentManagerInterface
         ContentRichEntityInterface $contentRichEntity,
         array $dimensionAttributes,
         string $transitionName
-    ): ContentProjectionInterface;
+    ): DimensionContentInterface;
 }

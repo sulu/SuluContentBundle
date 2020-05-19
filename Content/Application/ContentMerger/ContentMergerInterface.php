@@ -13,7 +13,10 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentMerger;
 
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
+
 interface ContentMergerInterface
 {
-    public function merge(object $targetObject, object $sourceObject): void;
+    public function merge(DimensionContentCollectionInterface $dimensionContentCollection): DimensionContentInterface;
 }

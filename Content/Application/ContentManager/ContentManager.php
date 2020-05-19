@@ -18,8 +18,8 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\ContentNorma
 use Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersisterInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\ContentWorkflowInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 
 class ContentManager implements ContentManagerInterface
 {
@@ -62,19 +62,19 @@ class ContentManager implements ContentManagerInterface
         $this->contentWorkflow = $contentWorkflow;
     }
 
-    public function resolve(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes): ContentProjectionInterface
+    public function resolve(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes): DimensionContentInterface
     {
         return $this->contentResolver->resolve($contentRichEntity, $dimensionAttributes);
     }
 
-    public function persist(ContentRichEntityInterface $contentRichEntity, array $data, array $dimensionAttributes): ContentProjectionInterface
+    public function persist(ContentRichEntityInterface $contentRichEntity, array $data, array $dimensionAttributes): DimensionContentInterface
     {
         return $this->contentPersister->persist($contentRichEntity, $data, $dimensionAttributes);
     }
 
-    public function normalize(ContentProjectionInterface $contentProjection): array
+    public function normalize(DimensionContentInterface $dimensionContent): array
     {
-        return $this->contentNormalizer->normalize($contentProjection);
+        return $this->contentNormalizer->normalize($dimensionContent);
     }
 
     public function copy(
@@ -82,7 +82,7 @@ class ContentManager implements ContentManagerInterface
         array $sourceDimensionAttributes,
         ContentRichEntityInterface $targetContentRichEntity,
         array $targetDimensionAttributes
-    ): ContentProjectionInterface {
+    ): DimensionContentInterface {
         return $this->contentCopier->copy(
             $sourceContentRichEntity,
             $sourceDimensionAttributes,
@@ -95,7 +95,7 @@ class ContentManager implements ContentManagerInterface
         ContentRichEntityInterface $contentRichEntity,
         array $dimensionAttributes,
         string $transitionName
-    ): ContentProjectionInterface {
+    ): DimensionContentInterface {
         return $this->contentWorkflow->apply($contentRichEntity, $dimensionAttributes, $transitionName);
     }
 }

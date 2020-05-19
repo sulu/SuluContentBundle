@@ -13,10 +13,10 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentResolver;
 
+use Sulu\Bundle\ContentBundle\Content\Application\ContentMerger\ContentMergerInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
-use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ContentProjectionFactoryInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentProjectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionContentRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionRepositoryInterface;
 
@@ -33,21 +33,21 @@ class ContentResolver implements ContentResolverInterface
     private $dimensionContentRepository;
 
     /**
-     * @var ContentProjectionFactoryInterface
+     * @var ContentMergerInterface
      */
-    private $viewFactory;
+    private $contentMerger;
 
     public function __construct(
         DimensionRepositoryInterface $dimensionRepository,
         DimensionContentRepositoryInterface $dimensionContentRepository,
-        ContentProjectionFactoryInterface $viewFactory
+        ContentMergerInterface $contentMerger
     ) {
         $this->dimensionRepository = $dimensionRepository;
         $this->dimensionContentRepository = $dimensionContentRepository;
-        $this->viewFactory = $viewFactory;
+        $this->contentMerger = $contentMerger;
     }
 
-    public function resolve(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes): ContentProjectionInterface
+    public function resolve(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes): DimensionContentInterface
     {
         $dimensionCollection = $this->dimensionRepository->findByAttributes($dimensionAttributes);
 
@@ -61,6 +61,6 @@ class ContentResolver implements ContentResolverInterface
             throw new ContentNotFoundException($contentRichEntity, $dimensionAttributes);
         }
 
-        return $this->viewFactory->create($dimensionContentCollection);
+        return $this->contentMerger->merge($dimensionContentCollection);
     }
 }
