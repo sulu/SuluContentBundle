@@ -45,7 +45,7 @@ trait CreateExampleTrait
         static::getEntityManager()->persist($example);
         static::getEntityManager()->flush();
 
-        /** @var ExampleDimensionContent $contentProjection */
+        /** @var ExampleDimensionContent $dimensionContent */
         $dimensionContent = static::getContentManager()->persist(
             $example,
             array_merge($defaultData, $data),
