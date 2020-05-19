@@ -31,7 +31,7 @@ trait ModifyExampleTrait
         array $data = [],
         string $locale = 'en',
         string $template = 'default'
-    ): Example {
+    ): ExampleDimensionContent {
         $title = $data['title'] ?? 'Test Example';
 
         $defaultData = [
@@ -68,10 +68,7 @@ trait ModifyExampleTrait
 
         static::getEntityManager()->flush();
 
-        /** @var Example $example */
-        $example = $dimensionContent->getContentRichEntity();
-
-        return $example;
+        return $dimensionContent;
     }
 
     abstract protected static function getContentManager(): ContentManagerInterface;

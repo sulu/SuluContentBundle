@@ -27,7 +27,7 @@ trait PublishExampleTrait
     protected static function publishExample(
         $id,
         string $locale = 'en'
-    ): Example {
+    ): ExampleDimensionContent {
         $dimensionAttributes = ['locale' => $locale];
 
         /** @var Example|null $example */
@@ -46,10 +46,7 @@ trait PublishExampleTrait
 
         static::getEntityManager()->flush();
 
-        /** @var Example $example */
-        $example = $dimensionContent->getContentRichEntity();
-
-        return $example;
+        return $dimensionContent;
     }
 
     abstract protected static function getContentManager(): ContentManagerInterface;

@@ -42,47 +42,47 @@ class ContentTeaserProviderTest extends BaseTestCase
         parent::setUpBeforeClass();
 
         // Example 1 (both locales, both published)
-        $example1en = static::createExample([
+        $example1 = static::createExample([
             'title' => 'example-1',
             'article' => 'example-1-article',
             'excerptTitle' => 'example-1-excerpt-title',
             'excerptDescription' => 'example-1-excerpt-description',
-        ], 'en');
-        $example1en = static::publishExample($example1en->getId(), 'en');
+        ], 'en')->getContentRichEntity();
+        static::publishExample($example1->getId(), 'en');
 
-        $example1de = static::modifyExample($example1en->getId(), [
+        static::modifyExample($example1->getId(), [
             'title' => 'beispiel-1',
             'article' => null,
             'excerptDescription' => 'beispiel-1-excerpt-description',
         ], 'de');
-        $example1de = static::publishExample($example1de->getId(), 'de');
+        static::publishExample($example1->getId(), 'de');
 
-        static::$exampleIds[] = $example1en->getId();
+        static::$exampleIds[] = $example1->getId();
 
         // Example 2 (only en, published)
-        $example2en = static::createExample(['title' => 'example-2'], 'en');
-        $example2en = static::publishExample($example2en->getId(), 'en');
+        $example2 = static::createExample(['title' => 'example-2'], 'en')->getContentRichEntity();
+        static::publishExample($example2->getId(), 'en');
 
-        static::$exampleIds[] = $example2en->getId();
+        static::$exampleIds[] = $example2->getId();
 
         // Example 3 (both locales, only en published)
-        $example3en = static::createExample(['title' => 'example-3'], 'en');
-        $example3en = static::publishExample($example3en->getId(), 'en');
+        $example3 = static::createExample(['title' => 'example-3'], 'en')->getContentRichEntity();
+        static::publishExample($example3->getId(), 'en');
 
-        $example3de = static::modifyExample($example3en->getId(), ['title' => 'beispiel-3'], 'de');
+        static::modifyExample($example3->getId(), ['title' => 'beispiel-3'], 'de');
 
-        static::$exampleIds[] = $example3en->getId();
+        static::$exampleIds[] = $example3->getId();
 
         // Example 4 (only de, published)
-        $example4de = static::createExample(['title' => 'beispiel-4'], 'de');
-        $example4de = static::publishExample($example4de->getId(), 'de');
+        $example4 = static::createExample(['title' => 'beispiel-4'], 'de')->getContentRichEntity();
+        static::publishExample($example4->getId(), 'de');
 
-        static::$exampleIds[] = $example4de->getId();
+        static::$exampleIds[] = $example4->getId();
 
         // Example 5 (only en, not published)
-        $example5en = static::createExample(['title' => 'example-5'], 'en');
+        $example5 = static::createExample(['title' => 'example-5'], 'en')->getContentRichEntity();
 
-        static::$exampleIds[] = $example5en->getId();
+        static::$exampleIds[] = $example5->getId();
     }
 
     public function setUp(): void
