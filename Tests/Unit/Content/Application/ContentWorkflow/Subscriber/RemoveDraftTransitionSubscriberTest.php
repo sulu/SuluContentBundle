@@ -16,6 +16,7 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentWorkfl
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentCopier\ContentCopierInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\ContentWorkflowInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\Subscriber\RemoveDraftTransitionSubscriber;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
@@ -70,7 +71,7 @@ class RemoveDraftTransitionSubscriberTest extends TestCase
             new Marking()
         );
         $event->setContext([
-            'contentRichEntity' => $contentRichEntity->reveal(),
+            ContentWorkflowInterface::CONTENT_RICH_ENTITY_CONTEXT_KEY => $contentRichEntity->reveal(),
         ]);
 
         $contentCopier = $this->prophesize(ContentCopierInterface::class);
@@ -94,7 +95,7 @@ class RemoveDraftTransitionSubscriberTest extends TestCase
             new Marking()
         );
         $event->setContext([
-            'dimensionAttributes' => $dimensionAttributes,
+            ContentWorkflowInterface::DIMENSION_ATTRIBUTES_CONTEXT_KEY => $dimensionAttributes,
         ]);
 
         $contentCopier = $this->prophesize(ContentCopierInterface::class);
@@ -116,8 +117,8 @@ class RemoveDraftTransitionSubscriberTest extends TestCase
             new Marking()
         );
         $event->setContext([
-            'dimensionAttributes' => $dimensionAttributes,
-            'contentRichEntity' => $contentRichEntity->reveal(),
+            ContentWorkflowInterface::DIMENSION_ATTRIBUTES_CONTEXT_KEY => $dimensionAttributes,
+            ContentWorkflowInterface::CONTENT_RICH_ENTITY_CONTEXT_KEY => $contentRichEntity->reveal(),
         ]);
 
         $contentCopier = $this->prophesize(ContentCopierInterface::class);

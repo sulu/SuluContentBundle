@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\Subscriber;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\ContentWorkflowInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
@@ -65,12 +66,12 @@ class UnpublishTransitionSubscriber implements EventSubscriberInterface
 
         $context = $transitionEvent->getContext();
 
-        $dimensionAttributes = $context['dimensionAttributes'] ?? null;
+        $dimensionAttributes = $context[ContentWorkflowInterface::DIMENSION_ATTRIBUTES_CONTEXT_KEY] ?? null;
         if (!$dimensionAttributes) {
             throw new \RuntimeException('Transition context must contain "dimensionAttributes".');
         }
 
-        $contentRichEntity = $context['contentRichEntity'] ?? null;
+        $contentRichEntity = $context[ContentWorkflowInterface::CONTENT_RICH_ENTITY_CONTEXT_KEY] ?? null;
         if (!$contentRichEntity instanceof ContentRichEntityInterface) {
             throw new \RuntimeException('Transition context must contain "contentRichEntity".');
         }

@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\Subscriber;
 
 use Sulu\Bundle\ContentBundle\Content\Application\ContentCopier\ContentCopierInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\ContentWorkflowInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
@@ -50,9 +51,9 @@ class PublishTransitionSubscriber implements EventSubscriberInterface
 
         $context = $transitionEvent->getContext();
 
-        $dimensionContentCollection = $context['dimensionContentCollection'] ?? null;
-        $dimensionAttributes = $context['dimensionAttributes'] ?? null;
-        $contentRichEntity = $context['contentRichEntity'] ?? null;
+        $dimensionContentCollection = $context[ContentWorkflowInterface::DIMENSION_CONTENT_COLLECTION_CONTEXT_KEY] ?? null;
+        $dimensionAttributes = $context[ContentWorkflowInterface::DIMENSION_ATTRIBUTES_CONTEXT_KEY] ?? null;
+        $contentRichEntity = $context[ContentWorkflowInterface::CONTENT_RICH_ENTITY_CONTEXT_KEY] ?? null;
 
         if (!$dimensionAttributes) {
             throw new \RuntimeException('No "dimensionAttributes" given.');

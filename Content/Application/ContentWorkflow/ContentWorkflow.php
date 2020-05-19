@@ -118,9 +118,9 @@ class ContentWorkflow implements ContentWorkflowInterface
 
         try {
             $workflow->apply($localizedDimensionContent, $transitionName, [
-                'contentRichEntity' => $contentRichEntity,
-                'dimensionContentCollection' => $dimensionContentCollection,
-                'dimensionAttributes' => $dimensionAttributes,
+                ContentWorkflowInterface::CONTENT_RICH_ENTITY_CONTEXT_KEY => $contentRichEntity,
+                ContentWorkflowInterface::DIMENSION_CONTENT_COLLECTION_CONTEXT_KEY => $dimensionContentCollection,
+                ContentWorkflowInterface::DIMENSION_ATTRIBUTES_CONTEXT_KEY => $dimensionAttributes,
             ]);
         } catch (UndefinedTransitionException $e) {
             throw new UnknownContentTransitionException($e->getMessage(), $e->getCode(), $e);
