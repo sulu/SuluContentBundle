@@ -11,22 +11,22 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\Automation;
+namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Infrastructure\Sulu\Automation;
 
 use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
-use Sulu\Bundle\ContentBundle\Content\Application\Automation\Handler\ContentEntityPublishHandler;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentManager\ContentManagerInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
+use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Automation\ContentUnpublishTaskHandler;
 use Sulu\Bundle\PageBundle\Document\PageDocument;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Translation\TranslatorInterface;
 
-class ContentEntityPublishHandlerTest extends TestCase
+class ContentUnpublishTaskHandlerTest extends TestCase
 {
     /**
      * @var EntityManagerInterface|ObjectProphecy
@@ -48,7 +48,7 @@ class ContentEntityPublishHandlerTest extends TestCase
     private $translator;
 
     /**
-     * @var ContentEntityPublishHandler
+     * @var ContentUnpublishTaskHandler
      */
     private $handler;
 
@@ -61,10 +61,10 @@ class ContentEntityPublishHandlerTest extends TestCase
         $this->contentManager = $this->prophesize(ContentManagerInterface::class);
         $this->translator = $this->prophesize(TranslatorInterface::class);
 
-        $this->handler = new ContentEntityPublishHandler($this->contentManager->reveal(), $this->entityManager->reveal(), $this->translator->reveal());
+        $this->handler = new ContentUnpublishTaskHandler($this->contentManager->reveal(), $this->entityManager->reveal(), $this->translator->reveal());
     }
 
-    public function testPublish(): void
+    public function testUnpublish(): void
     {
         /** @var ContentRichEntityInterface|ObjectProphecy $entity */
         $entity = $this->prophesize(ContentRichEntityInterface::class);
@@ -84,7 +84,7 @@ class ContentEntityPublishHandlerTest extends TestCase
         $this->contentManager->applyTransition(
             Argument::is($entity->reveal()),
             Argument::is(['locale' => $locale]),
-            Argument::is(WorkflowInterface::WORKFLOW_TRANSITION_PUBLISH)
+            Argument::is(WorkflowInterface::WORKFLOW_TRANSITION_UNPUBLISH)
         )->shouldBeCalled();
 
         $this->entityManager->flush()->shouldBeCalled();
@@ -98,11 +98,11 @@ class ContentEntityPublishHandlerTest extends TestCase
 
     public function testConfiguration(): void
     {
-        $this->translator->trans(Argument::type('string'), Argument::type('array'), Argument::exact('admin'))->willReturn('Publish');
+        $this->translator->trans(Argument::type('string'), Argument::type('array'), Argument::exact('admin'))->willReturn('Unpublish');
 
         $configuration = $this->handler->getConfiguration();
 
-        $this->assertSame('Publish', $configuration->getTitle());
+        $this->assertSame('Unpublish', $configuration->getTitle());
     }
 
     public function testSupports(): void

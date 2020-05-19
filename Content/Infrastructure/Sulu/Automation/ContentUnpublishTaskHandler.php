@@ -11,7 +11,7 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Content\Application\Automation\Handler;
+namespace Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Automation;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Sulu\Bundle\AutomationBundle\TaskHandler\AutomationTaskHandlerInterface;
@@ -22,7 +22,7 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Translation\TranslatorInterface;
 
-class ContentEntityPublishHandler implements AutomationTaskHandlerInterface
+class ContentUnpublishTaskHandler implements AutomationTaskHandlerInterface
 {
     /**
      * @var ContentManagerInterface
@@ -69,7 +69,7 @@ class ContentEntityPublishHandler implements AutomationTaskHandlerInterface
      */
     public function getConfiguration(): TaskHandlerConfiguration
     {
-        return TaskHandlerConfiguration::create($this->translator->trans('sulu_content.task_handler.publish', [], 'admin'));
+        return TaskHandlerConfiguration::create($this->translator->trans('sulu_content.task_handler.unpublish', [], 'admin'));
     }
 
     /**
@@ -94,7 +94,7 @@ class ContentEntityPublishHandler implements AutomationTaskHandlerInterface
         $this->contentManager->applyTransition(
             $entity,
             ['locale' => $workload['locale']],
-            WorkflowInterface::WORKFLOW_TRANSITION_PUBLISH
+            WorkflowInterface::WORKFLOW_TRANSITION_UNPUBLISH
         );
         $this->entityManager->flush();
     }

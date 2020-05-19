@@ -2,6 +2,13 @@
 
 ## dev-master
 
+### Moved automation bundle services
+
+The services related to the `SuluAutomationBundle` were moved to the 
+`Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Automation` namespace. 
+Furthermore the `ContentEntityPublishHandler` was renamed to `ContentPublishTaskHandler` and 
+the `ContentEntityUnpublishHandler` was renamed to `ContentUnpublishTaskHandler`.
+
 ### Removed ContentProjection concept
 
 To simplify the usage of the bundle, the ContentProjection concept was removed from the source code.
