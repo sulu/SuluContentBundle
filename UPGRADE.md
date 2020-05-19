@@ -2,6 +2,15 @@
 
 ## dev-master
 
+### Removed ContentProjection concept
+
+To simplify the usage of the bundle, the ContentProjection concept was removed from the source code.
+Therefore, the `ContentProjectionInterface` and the `ContentProjectionFactoryInterface` were removed.
+
+Services that returned a `ContentProjectionInterface` instance were adjusted to return a merged
+`DimensionContentInterface` instance. Furthermore, the `ContentMergerInterface::merge` method 
+was refactored to accept a `DimensionContentCollectionInterface` parameter.
+
 ### Renamed merger services
 
 * The `sulu_content.template_content_projection_factory_merger` was renamed to `sulu_content.template_merger`.
