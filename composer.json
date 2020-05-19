@@ -42,12 +42,12 @@
         "phpstan/phpstan-symfony": "^0.12",
         "phpstan/phpstan-webmozart-assert": "^0.12",
         "sensiolabs-de/deptrac-shim": "^0.6.0",
+        "sulu/automation-bundle": "^2.0@dev",
         "symfony/browser-kit": "^4.3",
         "symfony/dotenv": "^4.3",
         "symfony/monolog-bundle": "^3.1",
         "symfony/phpunit-bridge": "^4.3",
-        "thecodingmachine/phpstan-strict-rules": "^0.12",
-        "sulu/automation-bundle": "^2.0@dev"
+        "thecodingmachine/phpstan-strict-rules": "^0.12"
     },
     "conflict": {
         "doctrine/persistence": "1.3.2"
@@ -71,6 +71,8 @@
             "@lint-composer",
             "@phpstan",
             "@lint-yaml",
+            "@lint-container",
+            "@lint-twig",
             "@lint-schema",
             "@deptract"
         ],
@@ -87,7 +89,9 @@
         "test-unit-coverage-checker": "@php Tests/coverage-checker.php \"line\" \"96.00\" \"Dimension/Domain\" \"Content/Domain\"",
         "test-functional": "@phpunit Tests/Functional --log-junit Tests/reports/functional/junit.xml",
         "lint-composer": "@composer validate --strict",
-        "lint-yaml": "Tests/Application/bin/adminconsole lint:yaml Resources/config",
+        "lint-yaml": "Tests/Application/bin/adminconsole lint:yaml Resources/config Tests/Application/config",
+        "lint-twig": "Tests/Application/bin/adminconsole lint:twig Tests/Application/templates",
+        "lint-container": "Tests/Application/bin/adminconsole lint:container",
         "lint-schema": "Tests/Application/bin/adminconsole doctrine:schema:validate",
         "deptract": "vendor/bin/deptrac",
         "phpstan": [
