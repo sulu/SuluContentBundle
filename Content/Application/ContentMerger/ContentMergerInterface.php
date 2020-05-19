@@ -18,7 +18,5 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 
 interface ContentMergerInterface
 {
-    public function mergeCollection(DimensionContentCollectionInterface $dimensionContentCollection): DimensionContentInterface;
-
-    public function merge(object $targetObject, object $sourceObject): void;
+    public function merge(DimensionContentCollectionInterface $dimensionContentCollection): DimensionContentInterface;
 }

@@ -44,25 +44,6 @@ class ContentMergerTest extends TestCase
             $merger2->reveal(),
         ]);
 
-        $targetObject = $this->prophesize(\stdClass::class);
-        $sourceObject = $this->prophesize(\stdClass::class);
-
-        $merger1->merge($targetObject->reveal(), $sourceObject->reveal())->shouldBeCalled();
-        $merger2->merge($targetObject->reveal(), $sourceObject->reveal())->shouldBeCalled();
-
-        $contentMerger->merge($targetObject->reveal(), $sourceObject->reveal());
-    }
-
-    public function testMergeCollection(): void
-    {
-        $merger1 = $this->prophesize(MergerInterface::class);
-        $merger2 = $this->prophesize(MergerInterface::class);
-
-        $contentMerger = $this->createContentMergerInstance([
-            $merger1->reveal(),
-            $merger2->reveal(),
-        ]);
-
         $mergedDimensionContent = $this->prophesize(DimensionContentInterface::class);
         $dimensionContent1 = $this->prophesize(DimensionContentInterface::class);
         $dimensionContent2 = $this->prophesize(DimensionContentInterface::class);
@@ -94,10 +75,13 @@ class ContentMergerTest extends TestCase
             $dimensionContent3->reveal(),
         ], new DimensionCollection([], []));
 
-        $contentMerger->mergeCollection($dimensionContentCollection);
+        $this->assertSame(
+            $mergedDimensionContent->reveal(),
+            $contentMerger->merge($dimensionContentCollection)
+    );
     }
 
-    public function testMergeCollectionEmpty(): void
+    public function testMergeEmptyCollection(): void
     {
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('Expected at least one dimensionContent given.');
@@ -112,6 +96,6 @@ class ContentMergerTest extends TestCase
 
         $dimensionContentCollection = new DimensionContentCollection([], new DimensionCollection([], []));
 
-        $contentMerger->mergeCollection($dimensionContentCollection);
+        $contentMerger->merge($dimensionContentCollection);
     }
 }

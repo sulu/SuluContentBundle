@@ -32,14 +32,7 @@ class ContentMerger implements ContentMergerInterface
         $this->mergers = $mergers;
     }
 
-    public function merge(object $targetObject, object $sourceObject): void
-    {
-        foreach ($this->mergers as $merger) {
-            $merger->merge($targetObject, $sourceObject);
-        }
-    }
-
-    public function mergeCollection(DimensionContentCollectionInterface $dimensionContentCollection): DimensionContentInterface
+    public function merge(DimensionContentCollectionInterface $dimensionContentCollection): DimensionContentInterface
     {
         if (!$dimensionContentCollection->count()) {
             throw new \RuntimeException('Expected at least one dimensionContent given.');
@@ -57,7 +50,9 @@ class ContentMerger implements ContentMergerInterface
         $mergedDimensionContent->markAsMerged();
 
         foreach ($dimensionContentCollection as $dimensionContent) {
-            $this->merge($mergedDimensionContent, $dimensionContent);
+            foreach ($this->mergers as $merger) {
+                $merger->merge($mergedDimensionContent, $dimensionContent);
+            }
         }
 
         return $mergedDimensionContent;

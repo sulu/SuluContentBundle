@@ -63,6 +63,6 @@ class ContentPersister implements ContentPersisterInterface
             $data
         );
 
-        return $this->contentMerger->mergeCollection($dimensionContentCollection);
+        return $this->contentMerger->merge($dimensionContentCollection);
     }
 }

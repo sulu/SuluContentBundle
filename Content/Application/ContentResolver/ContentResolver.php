@@ -61,6 +61,6 @@ class ContentResolver implements ContentResolverInterface
             throw new ContentNotFoundException($contentRichEntity, $dimensionAttributes);
         }
 
-        return $this->contentMerger->mergeCollection($dimensionContentCollection);
+        return $this->contentMerger->merge($dimensionContentCollection);
     }
 }
