@@ -47,9 +47,9 @@ interface WorkflowInterface
 
     public static function getWorkflowName(): string;
 
-    public function getWorkflowPlace(): string;
+    public function getWorkflowPlace(): ?string;
 
-    public function setWorkflowPlace(string $workflowPlace): void;
+    public function setWorkflowPlace(?string $workflowPlace): void;
 
     public function getWorkflowPublished(): ?\DateTimeImmutable;
 

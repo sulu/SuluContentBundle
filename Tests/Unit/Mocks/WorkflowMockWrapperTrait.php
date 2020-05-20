@@ -25,12 +25,12 @@ trait WorkflowMockWrapperTrait
         return 'mock-workflow-name';
     }
 
-    public function getWorkflowPlace(): string
+    public function getWorkflowPlace(): ?string
     {
         return $this->instance->getWorkflowPlace();
     }
 
-    public function setWorkflowPlace(string $workflowPlace): void
+    public function setWorkflowPlace(?string $workflowPlace): void
     {
         $this->instance->setWorkflowPlace($workflowPlace);
     }

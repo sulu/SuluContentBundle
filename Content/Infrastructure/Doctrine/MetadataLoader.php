@@ -100,7 +100,7 @@ class MetadataLoader implements EventSubscriber
         }
 
         if ($reflection->implementsInterface(WorkflowInterface::class)) {
-            $this->addField($metadata, 'workflowPlace', 'string', ['length' => 32, 'nullable' => false, 'default' => WorkflowInterface::WORKFLOW_PLACE_UNPUBLISHED]);
+            $this->addField($metadata, 'workflowPlace', 'string', ['length' => 32, 'nullable' => true]);
             $this->addField($metadata, 'workflowPublished', 'datetime_immutable', ['nullable' => true]);
         }
     }

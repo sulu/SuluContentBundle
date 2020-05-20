@@ -163,6 +163,10 @@ class ContentNormalizerTest extends TestCase
         $object->setTemplateKey('template-key');
         $object->setTemplateData(['someTemplate' => 'data']);
 
+        $published = new \DateTimeImmutable('2020-02-02T12:30:00+00:00');
+        $object->setWorkflowPlace(WorkflowInterface::WORKFLOW_PLACE_DRAFT);
+        $object->setWorkflowPublished($published);
+
         $contentNormalizer = $this->createContentNormalizerInstance();
 
         $this->assertSame([
@@ -181,7 +185,7 @@ class ContentNormalizerTest extends TestCase
             'excerptTitle' => 'Excerpt Title',
             'id' => 5,
             'locale' => 'de',
-            'published' => null,
+            'published' => '2020-02-02T12:30:00+00:00',
             'publishedState' => false,
             'seoCanonicalUrl' => 'https://caninical.localhost/',
             'seoDescription' => 'Seo Description',
@@ -193,7 +197,7 @@ class ContentNormalizerTest extends TestCase
             'someTemplate' => 'data',
             'stage' => 'live',
             'template' => 'template-key',
-            'workflowPlace' => 'unpublished',
+            'workflowPlace' => 'draft',
         ], $contentNormalizer->normalize($object));
     }
 }

@@ -31,7 +31,7 @@ class WorkflowTraitTest extends TestCase
     public function testGetWorkflowPlace(): void
     {
         $workflow = $this->getWorkflowInstance();
-        $this->assertSame('unpublished', $workflow->getWorkflowPlace());
+        $this->assertNull($workflow->getWorkflowPlace());
     }
 
     public function testSetWorkflowPlaceReview(): void
