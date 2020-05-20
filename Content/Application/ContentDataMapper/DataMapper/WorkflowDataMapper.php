@@ -86,7 +86,7 @@ class WorkflowDataMapper implements DataMapperInterface
         $published = $data['published'] ?? null;
 
         if (!$published) {
-            return;
+            throw new \RuntimeException('Expected "published" to be set in the data array.');
         }
 
         $object->setWorkflowPublished(new \DateTimeImmutable($published));
