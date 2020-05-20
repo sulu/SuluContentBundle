@@ -96,7 +96,7 @@ class ContentTeaserProviderTest extends BaseTestCase
 
         $teasers = $this->mapTeasers($teasers);
 
-        $this->assertContent('teasers_de.json', json_encode($teasers) ?: '');
+        $this->assertArraySnapshot('teasers_de.json', $teasers);
     }
 
     public function testFindEN(): void
@@ -105,7 +105,7 @@ class ContentTeaserProviderTest extends BaseTestCase
 
         $teasers = $this->mapTeasers($teasers);
 
-        $this->assertContent('teasers_en.json', json_encode($teasers) ?: '');
+        $this->assertArraySnapshot('teasers_en.json', $teasers);
     }
 
     /**
@@ -128,10 +128,5 @@ class ContentTeaserProviderTest extends BaseTestCase
                 'attributes' => $teaser->getAttributes(),
             ];
         }, $teasers);
-    }
-
-    protected function getResponseContentFolder(): string
-    {
-        return 'snapshots';
     }
 }

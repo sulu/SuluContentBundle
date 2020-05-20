@@ -15,12 +15,12 @@ namespace Sulu\Bundle\ContentBundle\Tests\Functional;
 
 use Sulu\Bundle\CategoryBundle\Entity\CategoryRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentManager\ContentManagerInterface;
-use Sulu\Bundle\ContentBundle\Tests\Traits\AssertResponseContentTrait;
+use Sulu\Bundle\ContentBundle\Tests\Traits\AssertSnapshotTrait;
 use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
 
 abstract class BaseTestCase extends SuluTestCase
 {
-    use AssertResponseContentTrait;
+    use AssertSnapshotTrait;
 
     protected static function getContentManager(): ContentManagerInterface
     {

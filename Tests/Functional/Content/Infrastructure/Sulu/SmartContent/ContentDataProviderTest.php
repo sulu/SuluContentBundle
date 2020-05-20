@@ -300,7 +300,7 @@ class ContentDataProviderTest extends BaseTestCase
 
         $dataItems = $this->mapDataProviderResult($dataProviderResult);
 
-        $this->assertContent('data_items.json', json_encode($dataItems) ?: '');
+        $this->assertArraySnapshot('data_items.json', $dataItems);
     }
 
     public function testResolveResourceItemsSnapshot(): void
@@ -328,7 +328,7 @@ class ContentDataProviderTest extends BaseTestCase
 
         $resourceItems = $this->mapDataProviderResult($dataProviderResult);
 
-        $this->assertContent('resource_items.json', json_encode($resourceItems) ?: '');
+        $this->assertArraySnapshot('resource_items.json', $resourceItems);
     }
 
     /**
@@ -532,10 +532,5 @@ class ContentDataProviderTest extends BaseTestCase
                 'url' => $item['url'],
             ];
         }, $dataProviderResult->getItems());
-    }
-
-    protected function getResponseContentFolder(): string
-    {
-        return 'snapshots';
     }
 }
