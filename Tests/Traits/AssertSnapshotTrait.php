@@ -16,15 +16,15 @@ namespace Sulu\Bundle\ContentBundle\Tests\Traits;
 use Coduo\PHPMatcher\PHPUnit\PHPMatcherAssertions;
 use Symfony\Component\HttpFoundation\Response;
 
-trait AssertResponseContentTrait
+trait AssertSnapshotTrait
 {
     use PHPMatcherAssertions;
 
     /**
      * @param object $actualResponse
      */
-    protected function assertResponseContent(
-        string $patternFilename,
+    protected function assertResponseSnapshot(
+        string $snapshotPatternFilename,
         $actualResponse,
         int $statusCode = 200,
         string $message = ''
@@ -34,19 +34,33 @@ trait AssertResponseContentTrait
         $this->assertHttpStatusCode($statusCode, $actualResponse);
         $this->assertIsString($responseContent);
 
-        $this->assertContent($patternFilename, $responseContent, $message);
+        $this->assertSnapshot($snapshotPatternFilename, $responseContent, $message);
     }
 
-    protected function assertContent(
-        string $patternFilename,
+    /**
+     * @param mixed[] $array
+     */
+    protected function assertArraySnapshot(
+        string $snapshotPatternFilename,
+        array $array,
+        string $message = ''
+    ): void {
+        $arrayContent = json_encode($array);
+        $this->assertIsString($arrayContent);
+
+        $this->assertSnapshot($snapshotPatternFilename, $arrayContent, $message);
+    }
+
+    protected function assertSnapshot(
+        string $snapshotPatternFilename,
         string $content,
         string $message = ''
     ): void {
-        $responsesFolder = $this->getCalledClassFolder() . \DIRECTORY_SEPARATOR . $this->getResponseContentFolder();
-        $responsePattern = file_get_contents($responsesFolder . \DIRECTORY_SEPARATOR . $patternFilename);
-        $this->assertIsString($responsePattern);
+        $snapshotFolder = $this->getCalledClassFolder() . \DIRECTORY_SEPARATOR . $this->getSnapshotFolder();
+        $snapshotPattern = file_get_contents($snapshotFolder . \DIRECTORY_SEPARATOR . $snapshotPatternFilename);
+        $this->assertIsString($snapshotPattern);
 
-        $this->assertMatchesPattern(trim($responsePattern), trim($content), $message);
+        $this->assertMatchesPattern(trim($snapshotPattern), trim($content), $message);
     }
 
     private function getCalledClassFolder(): string
@@ -59,8 +73,8 @@ trait AssertResponseContentTrait
         return \dirname($fileName);
     }
 
-    protected function getResponseContentFolder(): string
+    protected function getSnapshotFolder(): string
     {
-        return 'responses';
+        return 'snapshots';
     }
 }

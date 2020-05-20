@@ -64,7 +64,7 @@ class ExampleControllerTest extends BaseTestCase
         $content = json_decode((string) $response->getContent(), true);
         $id = $content['id'] ?? null;
 
-        $this->assertResponseContent('example_post_publish.json', $response, 201);
+        $this->assertResponseSnapshot('example_post_publish.json', $response, 201);
         $this->assertNotSame('2020-05-08T00:00:00+00:00', $content['published']);
 
         self::ensureKernelShutdown();
@@ -90,7 +90,7 @@ class ExampleControllerTest extends BaseTestCase
 
         $response = $this->client->getResponse();
 
-        $this->assertResponseContent('example_post_trigger_unpublish.json', $response, 200);
+        $this->assertResponseSnapshot('example_post_trigger_unpublish.json', $response, 200);
 
         self::ensureKernelShutdown();
 
@@ -128,7 +128,7 @@ class ExampleControllerTest extends BaseTestCase
 
         $response = $this->client->getResponse();
 
-        $this->assertResponseContent('example_post.json', $response, 201);
+        $this->assertResponseSnapshot('example_post.json', $response, 201);
 
         $id = json_decode((string) $response->getContent(), true)['id'] ?? null;
 
@@ -142,7 +142,7 @@ class ExampleControllerTest extends BaseTestCase
     {
         $this->client->request('GET', '/admin/api/examples/' . $id . '?locale=en');
         $response = $this->client->getResponse();
-        $this->assertResponseContent('example_get.json', $response, 200);
+        $this->assertResponseSnapshot('example_get.json', $response, 200);
 
         self::ensureKernelShutdown();
 
@@ -182,7 +182,7 @@ class ExampleControllerTest extends BaseTestCase
 
         $response = $this->client->getResponse();
 
-        $this->assertResponseContent('example_put.json', $response, 200);
+        $this->assertResponseSnapshot('example_put.json', $response, 200);
     }
 
     /**
@@ -194,7 +194,7 @@ class ExampleControllerTest extends BaseTestCase
         $this->client->request('GET', '/admin/api/examples?locale=en');
         $response = $this->client->getResponse();
 
-        $this->assertResponseContent('example_cget.json', $response, 200);
+        $this->assertResponseSnapshot('example_cget.json', $response, 200);
     }
 
     /**
@@ -206,5 +206,10 @@ class ExampleControllerTest extends BaseTestCase
         $this->client->request('DELETE', '/admin/api/examples/' . $id . '?locale=en');
         $response = $this->client->getResponse();
         $this->assertHttpStatusCode(204, $response);
+    }
+
+    protected function getSnapshotFolder(): string
+    {
+        return 'responses';
     }
 }

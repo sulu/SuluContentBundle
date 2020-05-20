@@ -78,7 +78,7 @@ class ContentSitemapProviderTest extends BaseTestCase
 
         $sitemapEntries = $this->mapSitemapEntries($sitemapEntries);
 
-        $this->assertContent('sitemap.json', json_encode($sitemapEntries) ?: '');
+        $this->assertArraySnapshot('sitemap.json', $sitemapEntries);
     }
 
     public function testCreateSitemap(): void
@@ -121,10 +121,5 @@ class ContentSitemapProviderTest extends BaseTestCase
                 }, $sitemapUrl->getAlternateLinks()),
             ];
         }, $sitemapEntries);
-    }
-
-    protected function getResponseContentFolder(): string
-    {
-        return 'snapshots';
     }
 }
