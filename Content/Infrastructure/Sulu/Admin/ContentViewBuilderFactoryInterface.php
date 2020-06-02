@@ -15,6 +15,7 @@ namespace Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Admin;
 
 use Sulu\Bundle\AdminBundle\Admin\View\ToolbarAction;
 use Sulu\Bundle\AdminBundle\Admin\View\ViewBuilderInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 
 interface ContentViewBuilderFactoryInterface
 {
@@ -24,12 +25,13 @@ interface ContentViewBuilderFactoryInterface
     public function getDefaultToolbarActions(): array;
 
     /**
+     * @param class-string<ContentRichEntityInterface> $contentRichEntityClass
      * @param array<string, ToolbarAction> $toolbarActions
      *
      * @return ViewBuilderInterface[]
      */
     public function createViews(
-        string $entityClass,
+        string $contentRichEntityClass,
         string $editParentView,
         ?string $addParentView = null,
         ?string $securityContext = null,

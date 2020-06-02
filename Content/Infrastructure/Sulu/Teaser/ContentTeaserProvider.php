@@ -46,20 +46,23 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
     protected $metadataFactory;
 
     /**
-     * @var string
+     * @var class-string<ContentRichEntityInterface>
      */
-    protected $entityClassName;
+    protected $contentRichEntityClass;
 
+    /**
+     * @param class-string<ContentRichEntityInterface> $contentRichEntityClass
+     */
     public function __construct(
         ContentManagerInterface $contentManager,
         EntityManagerInterface $entityManager,
         StructureMetadataFactoryInterface $metadataFactory,
-        string $entityClassName
+        string $contentRichEntityClass
     ) {
         $this->contentManager = $contentManager;
         $this->entityManager = $entityManager;
         $this->metadataFactory = $metadataFactory;
-        $this->entityClassName = $entityClassName;
+        $this->contentRichEntityClass = $contentRichEntityClass;
     }
 
     /**
@@ -262,11 +265,11 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
     protected function findEntitiesByIds(array $ids): array
     {
         $entityIdField = $this->getEntityIdField();
-        $classMetadata = $this->entityManager->getClassMetadata($this->entityClassName);
+        $classMetadata = $this->entityManager->getClassMetadata($this->contentRichEntityClass);
 
         $entities = $this->entityManager->createQueryBuilder()
             ->select(self::CONTENT_RICH_ENTITY_ALIAS)
-            ->from($this->entityClassName, self::CONTENT_RICH_ENTITY_ALIAS)
+            ->from($this->contentRichEntityClass, self::CONTENT_RICH_ENTITY_ALIAS)
             ->where(self::CONTENT_RICH_ENTITY_ALIAS . '.' . $entityIdField . ' IN (:ids)')
             ->getQuery()
             ->setParameter('ids', $ids)
@@ -294,13 +297,10 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
 
     protected function getResourceKey(): string
     {
-        /** @var class-string<ContentRichEntityInterface> $entityClassName */
-        $entityClassName = $this->entityClassName;
-
-        $resourceKey = $entityClassName::getResourceKey();
+        $resourceKey = $this->contentRichEntityClass::getResourceKey();
 
         if (!$resourceKey) {
-            throw new \RuntimeException(sprintf('Error while calling "%s".', $this->entityClassName . '::getResourceKey'));
+            throw new \RuntimeException(sprintf('Error while calling "%s".', $this->contentRichEntityClass . '::getResourceKey'));
         }
 
         return $resourceKey;
