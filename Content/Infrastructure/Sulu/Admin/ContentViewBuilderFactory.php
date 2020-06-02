@@ -107,16 +107,16 @@ class ContentViewBuilderFactory implements ContentViewBuilderFactoryInterface
     }
 
     public function createViews(
-        string $entityClass,
+        string $contentRichEntityClass,
         string $editParentView,
         ?string $addParentView = null,
         ?string $securityContext = null,
         ?array $toolbarActions = null
     ): array {
-        $dimensionContentClass = $this->getDimensionContentClass($entityClass);
+        $dimensionContentClass = $this->getDimensionContentClass($contentRichEntityClass);
 
         /** @var callable $callable */
-        $callable = [$entityClass, 'getResourceKey'];
+        $callable = [$contentRichEntityClass, 'getResourceKey'];
         $resourceKey = \call_user_func($callable);
 
         /** @var callable $callable */

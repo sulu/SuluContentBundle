@@ -42,20 +42,23 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
     private $contentDataMapper;
 
     /**
-     * @var string
+     * @var class-string<ContentRichEntityInterface>
      */
-    private $entityClass;
+    private $contentRichEntityClass;
 
+    /**
+     * @param class-string<ContentRichEntityInterface> $contentRichEntityClass
+     */
     public function __construct(
         EntityManagerInterface $entityManager,
         ContentResolverInterface $contentResolver,
         ContentDataMapperInterface $contentDataMapper,
-        string $entityClass
+        string $contentRichEntityClass
     ) {
         $this->entityManager = $entityManager;
         $this->contentResolver = $contentResolver;
         $this->contentDataMapper = $contentDataMapper;
-        $this->entityClass = $entityClass;
+        $this->contentRichEntityClass = $contentRichEntityClass;
     }
 
     /**
@@ -70,7 +73,7 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
             /** @var ContentRichEntityInterface $contentRichEntity */
             $contentRichEntity = $this->entityManager->createQueryBuilder()
                 ->select('entity')
-                ->from($this->entityClass, 'entity')
+                ->from($this->contentRichEntityClass, 'entity')
                 ->where('entity.id = :id')
                 ->setParameter('id', $id)
                 ->getQuery()
