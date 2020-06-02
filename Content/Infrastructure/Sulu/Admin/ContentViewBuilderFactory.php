@@ -20,6 +20,8 @@ use Sulu\Bundle\AdminBundle\Admin\View\PreviewFormViewBuilderInterface;
 use Sulu\Bundle\AdminBundle\Admin\View\ToolbarAction;
 use Sulu\Bundle\AdminBundle\Admin\View\ViewBuilderFactoryInterface;
 use Sulu\Bundle\AdminBundle\Admin\View\ViewBuilderInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
@@ -111,9 +113,7 @@ class ContentViewBuilderFactory implements ContentViewBuilderFactoryInterface
         ?string $securityContext = null,
         ?array $toolbarActions = null
     ): array {
-        $classMetadata = $this->entityManager->getClassMetadata($entityClass);
-        $associationMapping = $classMetadata->getAssociationMapping('dimensionContents');
-        $dimensionContentClass = $associationMapping['targetEntity'];
+        $dimensionContentClass = $this->getDimensionContentClass($entityClass);
 
         /** @var callable $callable */
         $callable = [$entityClass, 'getResourceKey'];
@@ -278,5 +278,18 @@ class ContentViewBuilderFactory implements ContentViewBuilderFactoryInterface
         }
 
         return $this->securityChecker->hasPermission($securityContext, $permissionType);
+    }
+
+    /**
+     * @param class-string<ContentRichEntityInterface> $contentRichEntityClass
+     *
+     * @return class-string<DimensionContentInterface>
+     */
+    private function getDimensionContentClass(string $contentRichEntityClass): string
+    {
+        $classMetadata = $this->entityManager->getClassMetadata($contentRichEntityClass);
+        $associationMapping = $classMetadata->getAssociationMapping('dimensionContents');
+
+        return $associationMapping['targetEntity'];
     }
 }
