@@ -46,31 +46,31 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
     protected $showDrafts;
 
     /**
-     * @var string
+     * @var class-string<ContentRichEntityInterface>
      */
-    protected $entityClassName;
+    protected $contentRichEntityClass;
 
     /**
      * @var ClassMetadata
      */
-    protected $entityClassMetadata;
+    protected $contentRichEntityClassMetadata;
 
     /**
      * @param bool $showDrafts Inject parameter "sulu_document_manager.show_drafts" here
-     * @param class-string<ContentRichEntityInterface> $entityClassName
+     * @param class-string<ContentRichEntityInterface> $contentRichEntityClass
      */
     public function __construct(
         ContentManagerInterface $contentManager,
         EntityManagerInterface $entityManager,
         bool $showDrafts,
-        string $entityClassName
+        string $contentRichEntityClass
     ) {
         $this->contentManager = $contentManager;
         $this->entityManager = $entityManager;
         $this->showDrafts = $showDrafts;
-        $this->entityClassName = $entityClassName;
+        $this->contentRichEntityClass = $contentRichEntityClass;
 
-        $this->entityClassMetadata = $this->entityManager->getClassMetadata($this->entityClassName);
+        $this->contentRichEntityClassMetadata = $this->entityManager->getClassMetadata($this->contentRichEntityClass);
     }
 
     /**
@@ -419,7 +419,7 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
         return $this->entityManager->createQueryBuilder()
             ->select(self::CONTENT_RICH_ENTITY_ALIAS . '.' . $this->getEntityIdentifierFieldName() . ' as id')
             ->distinct()
-            ->from($this->entityClassName, self::CONTENT_RICH_ENTITY_ALIAS)
+            ->from($this->contentRichEntityClass, self::CONTENT_RICH_ENTITY_ALIAS)
             ->innerJoin(self::CONTENT_RICH_ENTITY_ALIAS . '.dimensionContents', self::LOCALIZED_DIMENSION_CONTENT_ALIAS)
             ->innerJoin(self::LOCALIZED_DIMENSION_CONTENT_ALIAS . '.dimension', self::LOCALIZED_DIMENSION_ALIAS)
             ->andWhere(self::LOCALIZED_DIMENSION_ALIAS . '.stage = (:stage)')
@@ -443,7 +443,7 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
 
         $entities = $this->entityManager->createQueryBuilder()
             ->select(self::CONTENT_RICH_ENTITY_ALIAS)
-            ->from($this->entityClassName, self::CONTENT_RICH_ENTITY_ALIAS)
+            ->from($this->contentRichEntityClass, self::CONTENT_RICH_ENTITY_ALIAS)
             ->where(self::CONTENT_RICH_ENTITY_ALIAS . '.' . $entityIdentifierFieldName . ' IN (:ids)')
             ->getQuery()
             ->setParameter('ids', $ids)
@@ -454,8 +454,8 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
         usort(
             $entities,
             function (ContentRichEntityInterface $a, ContentRichEntityInterface $b) use ($idPositions, $entityIdentifierFieldName) {
-                $aId = $this->entityClassMetadata->getIdentifierValues($a)[$entityIdentifierFieldName];
-                $bId = $this->entityClassMetadata->getIdentifierValues($b)[$entityIdentifierFieldName];
+                $aId = $this->contentRichEntityClassMetadata->getIdentifierValues($a)[$entityIdentifierFieldName];
+                $bId = $this->contentRichEntityClassMetadata->getIdentifierValues($b)[$entityIdentifierFieldName];
 
                 return $idPositions[$aId] - $idPositions[$bId];
             }
@@ -469,6 +469,6 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
      */
     protected function getEntityIdentifierFieldName(): string
     {
-        return $this->entityClassMetadata->getSingleIdentifierFieldName();
+        return $this->contentRichEntityClassMetadata->getSingleIdentifierFieldName();
     }
 }
