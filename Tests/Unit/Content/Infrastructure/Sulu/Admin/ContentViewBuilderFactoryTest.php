@@ -21,6 +21,7 @@ use Sulu\Bundle\AdminBundle\Admin\View\PreviewFormViewBuilderInterface;
 use Sulu\Bundle\AdminBundle\Admin\View\ViewBuilderFactory;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\ContentDataMapperInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolverInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Admin\ContentViewBuilderFactory;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Admin\ContentViewBuilderFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Preview\ContentObjectProvider;
@@ -59,6 +60,9 @@ class ContentViewBuilderFactoryTest extends TestCase
         return new PreviewObjectProviderRegistry($providers);
     }
 
+    /**
+     * @param class-string<ContentRichEntityInterface> $entityClass
+     */
     protected function createContentObjectProvider(
         EntityManagerInterface $entityManager,
         ContentResolverInterface $contentResolver,
