@@ -115,14 +115,7 @@ class ContentViewBuilderFactory implements ContentViewBuilderFactoryInterface
     ): array {
         $dimensionContentClass = $this->getDimensionContentClass($contentRichEntityClass);
 
-        /** @var callable $callable */
-        $callable = [$contentRichEntityClass, 'getResourceKey'];
-        $resourceKey = \call_user_func($callable);
-
-        /** @var callable $callable */
-        $callable = [$dimensionContentClass, 'getTemplateType'];
-        $templateFormKey = \call_user_func($callable);
-
+        $resourceKey = $contentRichEntityClass::getResourceKey();
         $previewEnabled = $this->objectProviderRegistry->hasPreviewObjectProvider($resourceKey);
 
         $toolbarActions = $toolbarActions ?: $this->getDefaultToolbarActions();
@@ -158,7 +151,7 @@ class ContentViewBuilderFactory implements ContentViewBuilderFactoryInterface
                         $addParentView,
                         false,
                         $resourceKey,
-                        $templateFormKey,
+                        $dimensionContentClass::getTemplateType(),
                         $addToolbarActions
                     );
 
@@ -175,7 +168,7 @@ class ContentViewBuilderFactory implements ContentViewBuilderFactoryInterface
                     $editParentView,
                     $previewEnabled,
                     $resourceKey,
-                    $templateFormKey,
+                    $dimensionContentClass::getTemplateType(),
                     $toolbarActions
                 );
             }

@@ -36,5 +36,5 @@ interface ContentViewBuilderFactoryInterface
         ?string $addParentView = null,
         ?string $securityContext = null,
         ?array $toolbarActions = null
-    );
+    ): array;
 }
