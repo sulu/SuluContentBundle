@@ -52,14 +52,14 @@ class ContentSitemapProvider implements SitemapProviderInterface
     protected $kernelEnvironment;
 
     /**
-     * @var string
+     * @var class-string
      */
-    protected $entityClassName;
+    protected $contentClass;
 
     /**
-     * @var string
+     * @var class-string
      */
-    protected $routeClassName;
+    protected $routeClass;
 
     /**
      * @var string
@@ -68,21 +68,22 @@ class ContentSitemapProvider implements SitemapProviderInterface
 
     /**
      * @param string $kernelEnvironment Inject parameter "kernel.environment" here
-     * @param string $entityClassName Classname that's used in the route table
+     * @param class-string $contentClass Classname that is used in the route table
+     * @param class-string $routeClass
      */
     public function __construct(
         EntityManagerInterface $entityManager,
         WebspaceManagerInterface $webspaceManager,
         string $kernelEnvironment,
-        string $entityClassName,
-        string $routeClassName,
+        string $contentClass,
+        string $routeClass,
         string $alias
     ) {
         $this->entityManager = $entityManager;
         $this->webspaceManager = $webspaceManager;
         $this->kernelEnvironment = $kernelEnvironment;
-        $this->entityClassName = $entityClassName;
-        $this->routeClassName = $routeClassName;
+        $this->contentClass = $contentClass;
+        $this->routeClass = $routeClass;
         $this->alias = $alias;
     }
 
@@ -205,17 +206,17 @@ class ContentSitemapProvider implements SitemapProviderInterface
         $queryBuilder = $this->entityManager->createQueryBuilder();
 
         return $queryBuilder
-            ->from($this->entityClassName, self::CONTENT_RICH_ENTITY_ALIAS)
+            ->from($this->contentClass, self::CONTENT_RICH_ENTITY_ALIAS)
             ->innerJoin(self::CONTENT_RICH_ENTITY_ALIAS . '.dimensionContents', self::LOCALIZED_DIMENSION_CONTENT_ALIAS)
             ->innerJoin(self::LOCALIZED_DIMENSION_CONTENT_ALIAS . '.dimension', self::LOCALIZED_DIMENSION_ALIAS)
-            ->innerJoin($this->routeClassName, self::ROUTE_ALIAS, Join::WITH, self::ROUTE_ALIAS . '.entityId = ' . self::CONTENT_RICH_ENTITY_ALIAS . '.' . $this->getEntityIdField())
+            ->innerJoin($this->routeClass, self::ROUTE_ALIAS, Join::WITH, self::ROUTE_ALIAS . '.entityId = ' . self::CONTENT_RICH_ENTITY_ALIAS . '.' . $this->getEntityIdField())
             ->where(self::LOCALIZED_DIMENSION_ALIAS . '.stage = :stage')
             ->andWhere(self::ROUTE_ALIAS . '.entityClass = :entityClass')
             ->andWhere(self::ROUTE_ALIAS . '.history = :history')
             ->andWhere(self::ROUTE_ALIAS . '.locale = ' . self::LOCALIZED_DIMENSION_ALIAS . '.locale')
             ->setParameters([
                 'stage' => DimensionInterface::STAGE_LIVE,
-                'entityClass' => $this->entityClassName,
+                'entityClass' => $this->contentClass,
                 'history' => false,
             ]);
     }
