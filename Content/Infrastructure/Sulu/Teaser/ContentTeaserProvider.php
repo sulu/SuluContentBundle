@@ -227,7 +227,7 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
     /**
      * @param mixed[] $data
      */
-    protected function getMediaId(ContentProjectionInterface $contentProjection, array $data): ?string
+    protected function getMediaId(ContentProjectionInterface $contentProjection, array $data): ?int
     {
         if ($contentProjection instanceof ExcerptInterface) {
             if ($excerptImage = $contentProjection->getExcerptImage()) {
