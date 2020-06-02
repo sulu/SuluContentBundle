@@ -95,7 +95,10 @@ class ContentDataItemTest extends TestCase
 
         $dataItem = $this->getContentDataItem($contentProjection->reveal(), []);
 
-        $this->assertSame($published, $dataItem->getPublished());
+        /** @var \DateTimeImmutable $publishedDate */
+        $publishedDate = $dataItem->getPublished();
+
+        $this->assertSame($published, $publishedDate);
     }
 
     public function testGetPublishedLocaleNull(): void
