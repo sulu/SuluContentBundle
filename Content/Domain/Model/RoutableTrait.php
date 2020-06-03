@@ -25,6 +25,11 @@ trait RoutableTrait
         return $this->getContentRichEntity()->getId();
     }
 
+    public function getResourceKey(): string
+    {
+        return $this->getContentRichEntity()::getResourceKey();
+    }
+
     abstract public function getDimension(): DimensionInterface;
 
     abstract public function getContentRichEntity(): ContentRichEntityInterface;

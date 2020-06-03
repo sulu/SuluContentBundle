@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\DataMapper;
 
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\RoutableInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Bundle\RouteBundle\Generator\RouteGeneratorInterface;
@@ -47,24 +46,24 @@ class RoutableDataMapper implements DataMapperInterface
     /**
      * @var array<string, array<mixed>>
      */
-    private $resourceKeyMappings;
+    private $routeMappings;
 
     /**
      * @param array<string, string> $structureDefaultTypes
-     * @param array<string, array<mixed>> $resourceKeyMappings
+     * @param array<string, array<mixed>> $routeMappings
      */
     public function __construct(
         StructureMetadataFactoryInterface $factory,
         RouteGeneratorInterface $routeGenerator,
         RouteManagerInterface $routeManager,
         array $structureDefaultTypes,
-        array $resourceKeyMappings
+        array $routeMappings
     ) {
         $this->factory = $factory;
         $this->routeGenerator = $routeGenerator;
         $this->routeManager = $routeManager;
         $this->structureDefaultTypes = $structureDefaultTypes;
-        $this->resourceKeyMappings = $resourceKeyMappings;
+        $this->routeMappings = $routeMappings;
     }
 
     public function map(
@@ -122,16 +121,26 @@ class RoutableDataMapper implements DataMapperInterface
             return;
         }
 
+        $entityClass = null;
+        $routeSchema = null;
+        $resourceKey = $localizedObject->getResourceKey();
+        foreach ($this->routeMappings as $key => $mapping) {
+            if ($resourceKey === $mapping['resource_key']) {
+                $entityClass = $mapping['entityClass'] ?? $key;
+                $routeSchema = $mapping['options'];
+                break;
+            }
+        }
+
+        if (null === $entityClass || null === $routeSchema) {
+            return;
+        }
+
         $routePath = $data[$name] ?? null;
         if (!$routePath) {
-            if ($localizedObject instanceof DimensionContentInterface) {
-                $resourceKey = $localizedObject->getContentRichEntity()->getResourceKey();
-                $routeSchema = $this->resourceKeyMappings[$resourceKey]['options'] ?? null;
-            }
-
             $routePath = $this->routeGenerator->generate(
                 $localizedObject,
-                $routeSchema ?? ['route_schema' => '/{object.getTitle()}']
+                $routeSchema
             );
 
             if ('/' === $routePath) {
@@ -147,7 +156,7 @@ class RoutableDataMapper implements DataMapperInterface
         }
 
         $this->routeManager->createOrUpdateByAttributes(
-            $localizedObject::getContentClass(),
+            $entityClass,
             (string) $localizedObject->getContentId(),
             $locale,
             $routePath

@@ -31,7 +31,7 @@
             <argument type="service" id="sulu_route.generator.route_generator"/>
             <argument type="service" id="sulu_route.manager.route_manager"/>
             <argument>%sulu.content.structure.default_types%</argument>
-            <argument>%sulu_route.resource_key_mappings%</argument>
+            <argument>%sulu_route.mappings%</argument>
 
             <tag name="sulu_content.data_mapper" priority="-32"/>
         </service>
