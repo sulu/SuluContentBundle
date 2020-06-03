@@ -95,6 +95,7 @@ class ContentDataItemTest extends TestCase
 
         $dataItem = $this->getContentDataItem($contentProjection->reveal(), []);
 
+        /* @phpstan-ignore-next-line */
         $this->assertSame($published, $dataItem->getPublished());
     }
 
