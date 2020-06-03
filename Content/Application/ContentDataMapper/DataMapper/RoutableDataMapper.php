@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\DataMapper;
 
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\RoutableInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Bundle\RouteBundle\Generator\RouteGeneratorInterface;
@@ -44,18 +45,26 @@ class RoutableDataMapper implements DataMapperInterface
     private $structureDefaultTypes;
 
     /**
+     * @var array<string, array<mixed>>
+     */
+    private $resourceKeyMappings;
+
+    /**
      * @param array<string, string> $structureDefaultTypes
+     * @param array<string, array<mixed>> $resourceKeyMappings
      */
     public function __construct(
         StructureMetadataFactoryInterface $factory,
         RouteGeneratorInterface $routeGenerator,
         RouteManagerInterface $routeManager,
-        array $structureDefaultTypes
+        array $structureDefaultTypes,
+        array $resourceKeyMappings
     ) {
         $this->factory = $factory;
         $this->routeGenerator = $routeGenerator;
         $this->routeManager = $routeManager;
         $this->structureDefaultTypes = $structureDefaultTypes;
+        $this->resourceKeyMappings = $resourceKeyMappings;
     }
 
     public function map(
@@ -115,10 +124,14 @@ class RoutableDataMapper implements DataMapperInterface
 
         $routePath = $data[$name] ?? null;
         if (!$routePath) {
-            // FIXME this should be handled directly in the form - see pages as an example
+            if ($localizedObject instanceof DimensionContentInterface) {
+                $resourceKey = $localizedObject->getContentRichEntity()->getResourceKey();
+                $routeSchema = $this->resourceKeyMappings[$resourceKey]['options'] ?? null;
+            }
+
             $routePath = $this->routeGenerator->generate(
                 $localizedObject,
-                ['route_schema' => '/{object.getTitle()}']
+                $routeSchema ?? ['route_schema' => '/{object.getTitle()}']
             );
 
             if ('/' === $routePath) {

@@ -228,7 +228,7 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
     /**
      * @param mixed[] $data
      */
-    protected function getMediaId(DimensionContentInterface $dimensionContent, array $data): ?string
+    protected function getMediaId(DimensionContentInterface $dimensionContent, array $data): ?int
     {
         if ($dimensionContent instanceof ExcerptInterface) {
             if ($excerptImage = $dimensionContent->getExcerptImage()) {

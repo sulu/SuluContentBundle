@@ -33,14 +33,16 @@ class RoutableDataMapperTest extends TestCase
 {
     /**
      * @param array<string, string> $structureDefaultTypes
+     * @param array<string, array<mixed>> $resourceKeyMappings
      */
     protected function createRouteDataMapperInstance(
         StructureMetadataFactoryInterface $factory,
         RouteGeneratorInterface $routeGenerator,
         RouteManagerInterface $routeManager,
-        array $structureDefaultTypes = []
+        array $structureDefaultTypes = [],
+        array $resourceKeyMappings = []
     ): RoutableDataMapper {
-        return new RoutableDataMapper($factory, $routeGenerator, $routeManager, $structureDefaultTypes);
+        return new RoutableDataMapper($factory, $routeGenerator, $routeManager, $structureDefaultTypes, $resourceKeyMappings);
     }
 
     protected function wrapRoutableMock(ObjectProphecy $routableMock): RoutableInterface
