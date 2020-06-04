@@ -32,6 +32,10 @@ class RoutableNormalizer implements NormalizerInterface
             return [];
         }
 
-        return ['contentId'];
+        return [
+            'routableId',
+            'routableLocale',
+            'routableResourceKey',
+        ];
     }
 }

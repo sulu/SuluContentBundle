@@ -102,13 +102,13 @@ class RoutableDataMapper implements DataMapperInterface
             return;
         }
 
-        if (!$localizedObject->getContentId()) {
+        if (!$localizedObject->getRoutableId()) {
             // FIXME the code only works if the entity is flushed once and has a valid id
 
             return;
         }
 
-        $locale = $localizedObject->getLocale();
+        $locale = $localizedObject->getRoutableLocale();
         if (!$locale) {
             return;
         }
@@ -123,7 +123,7 @@ class RoutableDataMapper implements DataMapperInterface
 
         $entityClass = null;
         $routeSchema = null;
-        $resourceKey = $localizedObject->getResourceKey();
+        $resourceKey = $localizedObject->getRoutableResourceKey();
         foreach ($this->routeMappings as $key => $mapping) {
             if ($resourceKey === $mapping['resource_key']) {
                 $entityClass = $mapping['entityClass'] ?? $key;
@@ -157,7 +157,7 @@ class RoutableDataMapper implements DataMapperInterface
 
         $this->routeManager->createOrUpdateByAttributes(
             $entityClass,
-            (string) $localizedObject->getContentId(),
+            (string) $localizedObject->getRoutableId(),
             $locale,
             $routePath
         );

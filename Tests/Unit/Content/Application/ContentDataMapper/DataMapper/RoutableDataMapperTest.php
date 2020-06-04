@@ -129,7 +129,7 @@ class RoutableDataMapperTest extends TestCase
 
         $factory->getStructureMetadata(Argument::cetera())->shouldNotBeCalled();
         $routeManager->createOrUpdateByAttributes(Argument::cetera())->shouldNotBeCalled();
-        $localizedDimensionContent->getContentId()->shouldNotBeCalled();
+        $localizedDimensionContent->getRoutableId()->shouldNotBeCalled();
 
         $mapper = $this->createRouteDataMapperInstance(
             $factory->reveal(),
@@ -157,7 +157,7 @@ class RoutableDataMapperTest extends TestCase
 
         $factory->getStructureMetadata(Argument::cetera())->shouldNotBeCalled();
         $routeManager->createOrUpdateByAttributes(Argument::cetera())->shouldNotBeCalled();
-        $localizedDimensionContent->getContentId()->shouldNotBeCalled();
+        $localizedDimensionContent->getRoutableId()->shouldNotBeCalled();
 
         $mapper = $this->createRouteDataMapperInstance(
             $factory->reveal(),
@@ -228,9 +228,9 @@ class RoutableDataMapperTest extends TestCase
 
         $metadata->getProperties()->WillReturn([$property->reveal()]);
 
-        $localizedDimensionContent->getContentId()->willReturn('123-123-123');
-        $localizedDimensionContent->getLocale()->willReturn('de');
-        $localizedDimensionContent->getResourceKey()->willReturn('testKey');
+        $localizedDimensionContent->getRoutableId()->willReturn('123-123-123');
+        $localizedDimensionContent->getRoutableLocale()->willReturn('de');
+        $localizedDimensionContent->getRoutableResourceKey()->willReturn('testKey');
         $factory->getStructureMetadata('mock-template-type', 'default')->willReturn($metadata->reveal())->shouldBeCalled();
 
         $mapper = $this->createRouteDataMapperInstance(
@@ -270,9 +270,9 @@ class RoutableDataMapperTest extends TestCase
 
         $metadata->getProperties()->WillReturn([$property->reveal()]);
 
-        $localizedDimensionContent->getContentId()->willReturn('123-123-123');
+        $localizedDimensionContent->getRoutableId()->willReturn('123-123-123');
         $localizedDimensionContent->getTemplateData()->willReturn(['url' => '/test']);
-        $localizedDimensionContent->getLocale()->willReturn('de');
+        $localizedDimensionContent->getRoutableLocale()->willReturn('de');
         $factory->getStructureMetadata('mock-template-type', 'default')->willReturn($metadata->reveal())->shouldBeCalled();
 
         $mapper = $this->createRouteDataMapperInstance(
@@ -310,11 +310,11 @@ class RoutableDataMapperTest extends TestCase
 
         $metadata->getProperties()->WillReturn([$property->reveal()]);
 
-        $localizedDimensionContent->getContentId()->willReturn('123-123-123');
+        $localizedDimensionContent->getRoutableId()->willReturn('123-123-123');
         $localizedDimensionContent->getTemplateData()->willReturn([]);
-        $localizedDimensionContent->getLocale()->willReturn('en');
+        $localizedDimensionContent->getRoutableLocale()->willReturn('en');
         $localizedDimensionContent->setTemplateData(['url' => '/test'])->shouldBeCalled();
-        $localizedDimensionContent->getResourceKey()->willReturn('testKey');
+        $localizedDimensionContent->getRoutableResourceKey()->willReturn('testKey');
         $localizedDimensionContentMock = $this->wrapRoutableMock($localizedDimensionContent);
 
         $factory->getStructureMetadata('mock-template-type', 'default')->willReturn($metadata->reveal())->shouldBeCalled();
@@ -364,11 +364,11 @@ class RoutableDataMapperTest extends TestCase
 
         $metadata->getProperties()->WillReturn([$property->reveal()]);
 
-        $localizedDimensionContent->getContentId()->willReturn('123-123-123');
+        $localizedDimensionContent->getRoutableId()->willReturn('123-123-123');
         $localizedDimensionContent->getTemplateData()->willReturn([]);
-        $localizedDimensionContent->getLocale()->willReturn('en');
+        $localizedDimensionContent->getRoutableLocale()->willReturn('en');
         $localizedDimensionContent->setTemplateData(Argument::cetera())->shouldNotBeCalled();
-        $localizedDimensionContent->getResourceKey()->willReturn('testKey');
+        $localizedDimensionContent->getRoutableResourceKey()->willReturn('testKey');
         $localizedDimensionContentMock = $this->wrapRoutableMock($localizedDimensionContent);
 
         $factory->getStructureMetadata('mock-template-type', 'default')->willReturn($metadata->reveal())->shouldBeCalled();
@@ -416,7 +416,7 @@ class RoutableDataMapperTest extends TestCase
 
         $factory->getStructureMetadata('mock-template-type', 'default')->willReturn($metadata->reveal())->shouldBeCalled();
 
-        $localizedDimensionContent->getContentId()->willReturn(null);
+        $localizedDimensionContent->getRoutableId()->willReturn(null);
 
         $mapper = $this->createRouteDataMapperInstance(
             $factory->reveal(),
@@ -456,8 +456,8 @@ class RoutableDataMapperTest extends TestCase
 
         $factory->getStructureMetadata('mock-template-type', 'default')->willReturn($metadata->reveal())->shouldBeCalled();
 
-        $localizedDimensionContent->getContentId()->willReturn('123-123-123');
-        $localizedDimensionContent->getLocale()->willReturn(null);
+        $localizedDimensionContent->getRoutableId()->willReturn('123-123-123');
+        $localizedDimensionContent->getRoutableLocale()->willReturn(null);
 
         $mapper = $this->createRouteDataMapperInstance(
             $factory->reveal(),
@@ -497,11 +497,11 @@ class RoutableDataMapperTest extends TestCase
 
         $factory->getStructureMetadata('mock-template-type', 'default')->willReturn($metadata->reveal())->shouldBeCalled();
 
-        $localizedDimensionContent->getContentId()->willReturn('123-123-123');
+        $localizedDimensionContent->getRoutableId()->willReturn('123-123-123');
         $localizedDimensionContent->getTemplateData()->willReturn(['title' => 'Test', 'url' => null]);
         $localizedDimensionContent->setTemplateData(['title' => 'Test', 'url' => '/test'])->shouldBeCalled();
-        $localizedDimensionContent->getLocale()->willReturn('en');
-        $localizedDimensionContent->getResourceKey()->willReturn('testKey');
+        $localizedDimensionContent->getRoutableLocale()->willReturn('en');
+        $localizedDimensionContent->getRoutableResourceKey()->willReturn('testKey');
 
         $localizedDimensionContentMock = $this->wrapRoutableMock($localizedDimensionContent);
 
@@ -554,9 +554,9 @@ class RoutableDataMapperTest extends TestCase
         $localizedDimensionContent->getTemplateData()->willReturn([]);
         $factory->getStructureMetadata('mock-template-type', 'default')->willReturn($metadata->reveal())->shouldBeCalled();
 
-        $localizedDimensionContent->getContentId()->willReturn('123-123-123');
-        $localizedDimensionContent->getLocale()->willReturn('en');
-        $localizedDimensionContent->getResourceKey()->willReturn('testKey');
+        $localizedDimensionContent->getRoutableId()->willReturn('123-123-123');
+        $localizedDimensionContent->getRoutableLocale()->willReturn('en');
+        $localizedDimensionContent->getRoutableResourceKey()->willReturn('testKey');
         $localizedDimensionContentMock = $this->wrapRoutableMock($localizedDimensionContent);
 
         $routeGenerator->generate($localizedDimensionContentMock, ['schema' => '/{object.getTitle()}'])
@@ -607,9 +607,9 @@ class RoutableDataMapperTest extends TestCase
         $localizedDimensionContent->getTemplateData()->willReturn([]);
         $factory->getStructureMetadata('mock-template-type', 'default')->willReturn($metadata->reveal())->shouldBeCalled();
 
-        $localizedDimensionContent->getContentId()->willReturn('123-123-123');
-        $localizedDimensionContent->getLocale()->willReturn('en');
-        $localizedDimensionContent->getResourceKey()->willReturn('testKey');
+        $localizedDimensionContent->getRoutableId()->willReturn('123-123-123');
+        $localizedDimensionContent->getRoutableLocale()->willReturn('en');
+        $localizedDimensionContent->getRoutableResourceKey()->willReturn('testKey');
         $localizedDimensionContentMock = $this->wrapRoutableMock($localizedDimensionContent);
 
         $routeGenerator->generate($localizedDimensionContentMock, ['schema' => '/{object.getTitle()}'])
@@ -661,11 +661,11 @@ class RoutableDataMapperTest extends TestCase
 
         $factory->getStructureMetadata('mock-template-type', 'default')->willReturn($metadata->reveal())->shouldBeCalled();
 
-        $localizedDimensionContent->getContentId()->willReturn('123-123-123');
+        $localizedDimensionContent->getRoutableId()->willReturn('123-123-123');
         $localizedDimensionContent->getTemplateData()->willReturn(['title' => 'Test', 'url' => null]);
         $localizedDimensionContent->setTemplateData(['title' => 'Test', 'url' => '/custom/testEntity-123'])->shouldBeCalled();
-        $localizedDimensionContent->getLocale()->willReturn('en');
-        $localizedDimensionContent->getResourceKey()->willReturn('testKey');
+        $localizedDimensionContent->getRoutableLocale()->willReturn('en');
+        $localizedDimensionContent->getRoutableResourceKey()->willReturn('testKey');
         $localizedDimensionContentMock = $this->wrapRoutableMock($localizedDimensionContent);
 
         $routeGenerator->generate($localizedDimensionContentMock, ['route_schema' => 'custom/{object.getName()}-{object.getId()}'])

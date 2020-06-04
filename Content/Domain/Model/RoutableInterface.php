@@ -18,12 +18,12 @@ namespace Sulu\Bundle\ContentBundle\Content\Domain\Model;
  */
 interface RoutableInterface
 {
-    public function getResourceKey(): string;
+    public function getRoutableResourceKey(): string;
 
     /**
      * @return mixed
      */
-    public function getContentId();
+    public function getRoutableId();
 
-    public function getLocale(): ?string;
+    public function getRoutableLocale(): ?string;
 }

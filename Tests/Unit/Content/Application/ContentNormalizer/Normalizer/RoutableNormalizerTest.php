@@ -41,7 +41,11 @@ class RoutableNormalizerTest extends TestCase
         $object = $this->prophesize(RoutableInterface::class);
 
         $this->assertSame(
-            ['contentId'],
+            [
+                'routableId',
+                'routableLocale',
+                'routableResourceKey',
+            ],
             $normalizer->getIgnoredAttributes($object->reveal())
         );
     }

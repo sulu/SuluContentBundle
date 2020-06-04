@@ -20,18 +20,18 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\Mocks;
  */
 trait RoutableMockWrapperTrait
 {
-    public function getResourceKey(): string
+    public function getRoutableResourceKey(): string
     {
-        return $this->instance->getResourceKey();
+        return $this->instance->getRoutableResourceKey();
     }
 
-    public function getContentId()
+    public function getRoutableId()
     {
-        return $this->instance->getContentId();
+        return $this->instance->getRoutableId();
     }
 
-    public function getLocale(): ?string
+    public function getRoutableLocale(): ?string
     {
-        return $this->instance->getLocale();
+        return $this->instance->getRoutableLocale();
     }
 }
