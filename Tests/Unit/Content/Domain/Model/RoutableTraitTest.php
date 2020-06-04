@@ -67,10 +67,10 @@ class RoutableTraitTest extends TestCase
         };
     }
 
-    public function testGetRoutableLocale(): void
+    public function testGetLocale(): void
     {
         $model = $this->getRoutableInstance();
-        $this->assertSame('en', $model->getRoutableLocale());
+        $this->assertSame('en', $model->getLocale());
     }
 
     public function testGetRoutableId(): void
@@ -79,9 +79,9 @@ class RoutableTraitTest extends TestCase
         $this->assertSame('content-id-123', $model->getRoutableId());
     }
 
-    public function testGetRoutableResourceKey(): void
+    public function testGetResourceKey(): void
     {
         $model = $this->getRoutableInstance();
-        $this->assertSame('mock-resource-key', $model->getRoutableResourceKey());
+        $this->assertSame('mock-resource-key', $model->getResourceKey());
     }
 }

@@ -43,8 +43,6 @@ class RoutableNormalizerTest extends TestCase
         $this->assertSame(
             [
                 'routableId',
-                'routableLocale',
-                'routableResourceKey',
             ],
             $normalizer->getIgnoredAttributes($object->reveal())
         );

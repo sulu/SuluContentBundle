@@ -15,7 +15,7 @@ namespace Sulu\Bundle\ContentBundle\Content\Domain\Model;
 
 trait RoutableTrait
 {
-    public function getRoutableLocale(): ?string
+    public function getLocale(): ?string
     {
         return $this->getDimension()->getLocale();
     }
@@ -25,7 +25,7 @@ trait RoutableTrait
         return $this->getContentRichEntity()->getId();
     }
 
-    public function getRoutableResourceKey(): string
+    public function getResourceKey(): string
     {
         return $this->getContentRichEntity()::getResourceKey();
     }

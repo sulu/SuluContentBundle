@@ -116,9 +116,9 @@ class ContentNormalizerTest extends TestCase
                 $this->dimension = $dimension;
             }
 
-            public function getRoutableResourceKey(): string
+            public function getResourceKey(): string
             {
-                return 'routable_resource_key';
+                return 'resource_key';
             }
 
             public static function getTemplateType(): string
@@ -187,6 +187,7 @@ class ContentNormalizerTest extends TestCase
             'locale' => 'de',
             'published' => '2020-02-02T12:30:00+00:00',
             'publishedState' => false,
+            'resourceKey' => 'resource_key',
             'seoCanonicalUrl' => 'https://caninical.localhost/',
             'seoDescription' => 'Seo Description',
             'seoHideInSitemap' => true,

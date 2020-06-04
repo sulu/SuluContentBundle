@@ -108,7 +108,7 @@ class RoutableDataMapper implements DataMapperInterface
             return;
         }
 
-        $locale = $localizedObject->getRoutableLocale();
+        $locale = $localizedObject->getLocale();
         if (!$locale) {
             return;
         }
@@ -123,7 +123,7 @@ class RoutableDataMapper implements DataMapperInterface
 
         $entityClass = null;
         $routeSchema = null;
-        $resourceKey = $localizedObject->getRoutableResourceKey();
+        $resourceKey = $localizedObject->getResourceKey();
         foreach ($this->routeMappings as $key => $mapping) {
             if ($resourceKey === $mapping['resource_key']) {
                 $entityClass = $mapping['entityClass'] ?? $key;
