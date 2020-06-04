@@ -72,6 +72,10 @@ class ExampleTestExtension extends Extension implements PrependExtensionInterfac
                 [
                     'mappings' => [
                         Example::class => [
+                            'generator' => 'schema',
+                            'options' => [
+                                'route_schema' => '/{object.getName()}',
+                            ],
                             'resource_key' => Example::RESOURCE_KEY,
                         ],
                     ],

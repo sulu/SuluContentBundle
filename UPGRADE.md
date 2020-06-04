@@ -2,6 +2,14 @@
 
 ## dev-master
 
+### Replaced RoutableInterface::getContentClass
+
+The `getContentClass` method of the `RoutableInterface` was replaced with a `getResourceKey` method. The 
+`RoutableTrait` already includes a default implementation for the new `getResourceKey` method.
+
+The bundle was adjusted to use the configured `route_schema` instead of a hardcoded schema for generating the routes 
+of `RoutableInterface` instances.
+
 ### Moved automation bundle services
 
 The services related to the `SuluAutomationBundle` were moved to the 

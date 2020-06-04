@@ -44,18 +44,26 @@ class RoutableDataMapper implements DataMapperInterface
     private $structureDefaultTypes;
 
     /**
+     * @var array<string, array<mixed>>
+     */
+    private $routeMappings;
+
+    /**
      * @param array<string, string> $structureDefaultTypes
+     * @param array<string, array<mixed>> $routeMappings
      */
     public function __construct(
         StructureMetadataFactoryInterface $factory,
         RouteGeneratorInterface $routeGenerator,
         RouteManagerInterface $routeManager,
-        array $structureDefaultTypes
+        array $structureDefaultTypes,
+        array $routeMappings
     ) {
         $this->factory = $factory;
         $this->routeGenerator = $routeGenerator;
         $this->routeManager = $routeManager;
         $this->structureDefaultTypes = $structureDefaultTypes;
+        $this->routeMappings = $routeMappings;
     }
 
     public function map(
@@ -113,12 +121,26 @@ class RoutableDataMapper implements DataMapperInterface
             return;
         }
 
+        $entityClass = null;
+        $routeSchema = null;
+        $resourceKey = $localizedObject->getResourceKey();
+        foreach ($this->routeMappings as $key => $mapping) {
+            if ($resourceKey === $mapping['resource_key']) {
+                $entityClass = $mapping['entityClass'] ?? $key;
+                $routeSchema = $mapping['options'];
+                break;
+            }
+        }
+
+        if (null === $entityClass || null === $routeSchema) {
+            return;
+        }
+
         $routePath = $data[$name] ?? null;
         if (!$routePath) {
-            // FIXME this should be handled directly in the form - see pages as an example
             $routePath = $this->routeGenerator->generate(
                 $localizedObject,
-                ['route_schema' => '/{object.getTitle()}']
+                $routeSchema
             );
 
             if ('/' === $routePath) {
@@ -134,7 +156,7 @@ class RoutableDataMapper implements DataMapperInterface
         }
 
         $this->routeManager->createOrUpdateByAttributes(
-            $localizedObject::getContentClass(),
+            $entityClass,
             (string) $localizedObject->getContentId(),
             $locale,
             $routePath
