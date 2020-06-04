@@ -118,15 +118,10 @@ class ContentNormalizerTest extends TestCase
 
             public function getResourceKey(): string
             {
-                return 'testKey';
+                return 'resource_key';
             }
 
             public static function getTemplateType(): string
-            {
-                throw new \RuntimeException('Should not be called while executing tests.');
-            }
-
-            public static function getContentClass(): string
             {
                 throw new \RuntimeException('Should not be called while executing tests.');
             }
@@ -192,7 +187,7 @@ class ContentNormalizerTest extends TestCase
             'locale' => 'de',
             'published' => '2020-02-02T12:30:00+00:00',
             'publishedState' => false,
-            'resourceKey' => 'testKey',
+            'resourceKey' => 'resource_key',
             'seoCanonicalUrl' => 'https://caninical.localhost/',
             'seoDescription' => 'Seo Description',
             'seoHideInSitemap' => true,

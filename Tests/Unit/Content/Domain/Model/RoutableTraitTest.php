@@ -18,6 +18,8 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\RoutableInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\RoutableTrait;
+use Sulu\Bundle\ContentBundle\Tests\Unit\Mocks\ContentRichEntityMockWrapperTrait;
+use Sulu\Bundle\ContentBundle\Tests\Unit\Mocks\MockWrapper;
 
 class RoutableTraitTest extends TestCase
 {
@@ -29,7 +31,12 @@ class RoutableTraitTest extends TestCase
         $dimension = $this->prophesize(DimensionInterface::class);
         $dimension->getLocale()->willReturn('en');
 
-        return new class($contentRichEntity->reveal(), $dimension->reveal()) implements RoutableInterface {
+        $contentRichEntityMock = new class($contentRichEntity) extends MockWrapper implements
+            ContentRichEntityInterface {
+            use ContentRichEntityMockWrapperTrait;
+        };
+
+        return new class($contentRichEntityMock, $dimension->reveal()) implements RoutableInterface {
             use RoutableTrait;
 
             /**
@@ -46,11 +53,6 @@ class RoutableTraitTest extends TestCase
             {
                 $this->contentRichEntity = $contentRichEntity;
                 $this->dimension = $dimension;
-            }
-
-            public static function getContentClass(): string
-            {
-                throw new \RuntimeException('Should not be called while executing tests.');
             }
 
             public function getDimension(): DimensionInterface
@@ -71,9 +73,15 @@ class RoutableTraitTest extends TestCase
         $this->assertSame('en', $model->getLocale());
     }
 
-    public function testGetContentId(): void
+    public function testGetRoutableId(): void
     {
         $model = $this->getRoutableInstance();
-        $this->assertSame('content-id-123', $model->getContentId());
+        $this->assertSame('content-id-123', $model->getRoutableId());
+    }
+
+    public function testGetResourceKey(): void
+    {
+        $model = $this->getRoutableInstance();
+        $this->assertSame('mock-resource-key', $model->getResourceKey());
     }
 }

@@ -23,7 +23,7 @@ interface RoutableInterface
     /**
      * @return mixed
      */
-    public function getContentId();
+    public function getRoutableId();
 
     public function getLocale(): ?string;
 }

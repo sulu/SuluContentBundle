@@ -2,13 +2,13 @@
 
 ## dev-master
 
-### Replaced RoutableInterface::getContentClass
+### Refactor RoutableInterface to use configured schema for route generation
 
-The `getContentClass` method of the `RoutableInterface` was replaced with a `getResourceKey` method. The 
-`RoutableTrait` already includes a default implementation for the new `getResourceKey` method.
+The bundle now uses the `route_schema` that is configured via `sulu_route.mappings` for generating the route for an
+entity instead of a hardcoded value. If no `route_schema` is configured, no route will be generated.
 
-The bundle was adjusted to use the configured `route_schema` instead of a hardcoded schema for generating the routes 
-of `RoutableInterface` instances.
+Therefore, the `getContentId` method of the `RoutableInterface` was renamed to `getRoutableId` and the 
+`getContentClass` method was replaced with a `getResourceKey` method.
 
 ### Moved automation bundle services
 
