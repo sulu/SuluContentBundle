@@ -666,8 +666,9 @@ class RoutableDataMapperTest extends TestCase
         $localizedDimensionContent->setTemplateData(['title' => 'Test', 'url' => '/custom/testEntity-123'])->shouldBeCalled();
         $localizedDimensionContent->getLocale()->willReturn('en');
         $localizedDimensionContent->getResourceKey()->willReturn('testKey');
+        $localizedDimensionContentMock = $this->wrapRoutableMock($localizedDimensionContent);
 
-        $routeGenerator->generate(Argument::any(), Argument::any())
+        $routeGenerator->generate($localizedDimensionContentMock, ['route_schema' => 'custom/{object.getName()}-{object.getId()}'])
             ->willReturn('/custom/testEntity-123');
 
         $routeManager->createOrUpdateByAttributes(
@@ -697,7 +698,7 @@ class RoutableDataMapperTest extends TestCase
         $mapper->map(
             $data,
             $dimensionContent->reveal(),
-            $this->wrapRoutableMock($localizedDimensionContent)
+            $localizedDimensionContentMock
         );
     }
 }
