@@ -17,7 +17,6 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\DataMapper\RoutableDataMapper;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\ContentNormalizerInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\RoutableInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
@@ -40,7 +39,6 @@ class RoutableDataMapperTest extends TestCase
         StructureMetadataFactoryInterface $factory,
         RouteGeneratorInterface $routeGenerator,
         RouteManagerInterface $routeManager,
-        ContentNormalizerInterface $contentNormalizer,
         array $structureDefaultTypes = [],
         array $resourceKeyMappings = []
     ): RoutableDataMapper {
@@ -57,7 +55,7 @@ class RoutableDataMapperTest extends TestCase
             ];
         }
 
-        return new RoutableDataMapper($factory, $routeGenerator, $routeManager, $contentNormalizer, $structureDefaultTypes, $resourceKeyMappings);
+        return new RoutableDataMapper($factory, $routeGenerator, $routeManager, $structureDefaultTypes, $resourceKeyMappings);
     }
 
     protected function wrapRoutableMock(ObjectProphecy $routableMock): RoutableInterface
@@ -80,7 +78,6 @@ class RoutableDataMapperTest extends TestCase
         $factory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $routeGenerator = $this->prophesize(RouteGeneratorInterface::class);
         $routeManager = $this->prophesize(RouteManagerInterface::class);
-        $contentNormalizer = $this->prophesize(ContentNormalizerInterface::class);
 
         $factory->getStructureMetadata(Argument::cetera())->shouldNotBeCalled();
         $routeManager->createOrUpdateByAttributes(Argument::cetera())->shouldNotBeCalled();
@@ -88,8 +85,7 @@ class RoutableDataMapperTest extends TestCase
         $mapper = $this->createRouteDataMapperInstance(
             $factory->reveal(),
             $routeGenerator->reveal(),
-            $routeManager->reveal(),
-            $contentNormalizer->reveal()
+            $routeManager->reveal()
         );
 
         $mapper->map($data, $dimensionContent->reveal(), $localizedDimensionContent->reveal());
@@ -104,7 +100,6 @@ class RoutableDataMapperTest extends TestCase
         $factory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $routeGenerator = $this->prophesize(RouteGeneratorInterface::class);
         $routeManager = $this->prophesize(RouteManagerInterface::class);
-        $contentNormalizer = $this->prophesize(ContentNormalizerInterface::class);
 
         $factory->getStructureMetadata(Argument::cetera())->shouldNotBeCalled();
         $routeManager->createOrUpdateByAttributes(Argument::cetera())->shouldNotBeCalled();
@@ -112,8 +107,7 @@ class RoutableDataMapperTest extends TestCase
         $mapper = $this->createRouteDataMapperInstance(
             $factory->reveal(),
             $routeGenerator->reveal(),
-            $routeManager->reveal(),
-            $contentNormalizer->reveal()
+            $routeManager->reveal()
         );
 
         $mapper->map($data, $dimensionContent->reveal(), null);
@@ -132,7 +126,6 @@ class RoutableDataMapperTest extends TestCase
         $factory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $routeGenerator = $this->prophesize(RouteGeneratorInterface::class);
         $routeManager = $this->prophesize(RouteManagerInterface::class);
-        $contentNormalizer = $this->prophesize(ContentNormalizerInterface::class);
 
         $factory->getStructureMetadata(Argument::cetera())->shouldNotBeCalled();
         $routeManager->createOrUpdateByAttributes(Argument::cetera())->shouldNotBeCalled();
@@ -141,8 +134,7 @@ class RoutableDataMapperTest extends TestCase
         $mapper = $this->createRouteDataMapperInstance(
             $factory->reveal(),
             $routeGenerator->reveal(),
-            $routeManager->reveal(),
-            $contentNormalizer->reveal()
+            $routeManager->reveal()
         );
 
         $mapper->map($data, $dimensionContent->reveal(), $localizedDimensionContent->reveal());
@@ -162,7 +154,6 @@ class RoutableDataMapperTest extends TestCase
         $factory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $routeGenerator = $this->prophesize(RouteGeneratorInterface::class);
         $routeManager = $this->prophesize(RouteManagerInterface::class);
-        $contentNormalizer = $this->prophesize(ContentNormalizerInterface::class);
 
         $factory->getStructureMetadata(Argument::cetera())->shouldNotBeCalled();
         $routeManager->createOrUpdateByAttributes(Argument::cetera())->shouldNotBeCalled();
@@ -171,8 +162,7 @@ class RoutableDataMapperTest extends TestCase
         $mapper = $this->createRouteDataMapperInstance(
             $factory->reveal(),
             $routeGenerator->reveal(),
-            $routeManager->reveal(),
-            $contentNormalizer->reveal()
+            $routeManager->reveal()
         );
 
         $mapper->map(
@@ -196,7 +186,6 @@ class RoutableDataMapperTest extends TestCase
         $factory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $routeGenerator = $this->prophesize(RouteGeneratorInterface::class);
         $routeManager = $this->prophesize(RouteManagerInterface::class);
-        $contentNormalizer = $this->prophesize(ContentNormalizerInterface::class);
 
         $routeManager->createOrUpdateByAttributes(Argument::cetera())->shouldNotBeCalled();
 
@@ -205,8 +194,7 @@ class RoutableDataMapperTest extends TestCase
         $mapper = $this->createRouteDataMapperInstance(
             $factory->reveal(),
             $routeGenerator->reveal(),
-            $routeManager->reveal(),
-            $contentNormalizer->reveal()
+            $routeManager->reveal()
         );
 
         $mapper->map(
@@ -230,7 +218,6 @@ class RoutableDataMapperTest extends TestCase
         $factory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $routeGenerator = $this->prophesize(RouteGeneratorInterface::class);
         $routeManager = $this->prophesize(RouteManagerInterface::class);
-        $contentNormalizer = $this->prophesize(ContentNormalizerInterface::class);
 
         $routeManager->createOrUpdateByAttributes(Argument::cetera())->shouldNotBeCalled();
 
@@ -249,8 +236,7 @@ class RoutableDataMapperTest extends TestCase
         $mapper = $this->createRouteDataMapperInstance(
             $factory->reveal(),
             $routeGenerator->reveal(),
-            $routeManager->reveal(),
-            $contentNormalizer->reveal()
+            $routeManager->reveal()
         );
 
         $mapper->map(
@@ -274,7 +260,6 @@ class RoutableDataMapperTest extends TestCase
         $factory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $routeGenerator = $this->prophesize(RouteGeneratorInterface::class);
         $routeManager = $this->prophesize(RouteManagerInterface::class);
-        $contentNormalizer = $this->prophesize(ContentNormalizerInterface::class);
 
         $routeManager->createOrUpdateByAttributes(Argument::cetera())->shouldNotBeCalled();
 
@@ -293,8 +278,7 @@ class RoutableDataMapperTest extends TestCase
         $mapper = $this->createRouteDataMapperInstance(
             $factory->reveal(),
             $routeGenerator->reveal(),
-            $routeManager->reveal(),
-            $contentNormalizer->reveal()
+            $routeManager->reveal()
         );
 
         $mapper->map(
@@ -318,7 +302,6 @@ class RoutableDataMapperTest extends TestCase
         $factory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $routeGenerator = $this->prophesize(RouteGeneratorInterface::class);
         $routeManager = $this->prophesize(RouteManagerInterface::class);
-        $contentNormalizer = $this->prophesize(ContentNormalizerInterface::class);
 
         $metadata = $this->prophesize(StructureMetadata::class);
         $property = $this->prophesize(PropertyMetadata::class);
@@ -336,13 +319,13 @@ class RoutableDataMapperTest extends TestCase
 
         $factory->getStructureMetadata('mock-template-type', 'default')->willReturn($metadata->reveal())->shouldBeCalled();
 
-        $normalizedData = [
-            'title' => 'test',
-        ];
-        $contentNormalizer->normalize($dimensionContent->reveal())->willReturn([]);
-        $contentNormalizer->normalize($localizedDimensionContentMock)->willReturn($normalizedData);
-        $routeGenerator->generate($normalizedData, ['route_schema' => '/{object["title"]}'])
-            ->willReturn('/test');
+        $routeGenerator->generate(
+            array_merge($data, [
+                '_unlocalizedObject' => $dimensionContent->reveal(),
+                '_localizedObject' => $localizedDimensionContentMock,
+            ]),
+            ['route_schema' => '/{object["title"]}']
+        )->willReturn('/test');
 
         $routeManager->createOrUpdateByAttributes(
             'mock-content-class',
@@ -354,8 +337,7 @@ class RoutableDataMapperTest extends TestCase
         $mapper = $this->createRouteDataMapperInstance(
             $factory->reveal(),
             $routeGenerator->reveal(),
-            $routeManager->reveal(),
-            $contentNormalizer->reveal()
+            $routeManager->reveal()
         );
 
         $mapper->map(
@@ -379,7 +361,6 @@ class RoutableDataMapperTest extends TestCase
         $factory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $routeGenerator = $this->prophesize(RouteGeneratorInterface::class);
         $routeManager = $this->prophesize(RouteManagerInterface::class);
-        $contentNormalizer = $this->prophesize(ContentNormalizerInterface::class);
 
         $metadata = $this->prophesize(StructureMetadata::class);
         $property = $this->prophesize(PropertyMetadata::class);
@@ -397,21 +378,20 @@ class RoutableDataMapperTest extends TestCase
 
         $factory->getStructureMetadata('mock-template-type', 'default')->willReturn($metadata->reveal())->shouldBeCalled();
 
-        $normalizedData = [
-            'title' => '',
-        ];
-        $contentNormalizer->normalize($dimensionContent->reveal())->willReturn([]);
-        $contentNormalizer->normalize($localizedDimensionContentMock)->willReturn($normalizedData);
-        $routeGenerator->generate($normalizedData, ['route_schema' => '/{object["title"]}'])
-            ->willReturn('/');
+        $routeGenerator->generate(
+            array_merge($data, [
+                '_unlocalizedObject' => $dimensionContent->reveal(),
+                '_localizedObject' => $localizedDimensionContentMock,
+            ]),
+            ['route_schema' => '/{object["title"]}']
+        )->willReturn('/');
 
         $routeManager->createOrUpdateByAttributes(Argument::cetera())->shouldNotBeCalled();
 
         $mapper = $this->createRouteDataMapperInstance(
             $factory->reveal(),
             $routeGenerator->reveal(),
-            $routeManager->reveal(),
-            $contentNormalizer->reveal()
+            $routeManager->reveal()
         );
 
         $mapper->map(
@@ -435,7 +415,6 @@ class RoutableDataMapperTest extends TestCase
         $factory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $routeGenerator = $this->prophesize(RouteGeneratorInterface::class);
         $routeManager = $this->prophesize(RouteManagerInterface::class);
-        $contentNormalizer = $this->prophesize(ContentNormalizerInterface::class);
 
         $routeManager->createOrUpdateByAttributes(Argument::cetera())->shouldNotBeCalled();
 
@@ -452,8 +431,7 @@ class RoutableDataMapperTest extends TestCase
         $mapper = $this->createRouteDataMapperInstance(
             $factory->reveal(),
             $routeGenerator->reveal(),
-            $routeManager->reveal(),
-            $contentNormalizer->reveal()
+            $routeManager->reveal()
         );
 
         $mapper->map(
@@ -477,7 +455,6 @@ class RoutableDataMapperTest extends TestCase
         $factory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $routeGenerator = $this->prophesize(RouteGeneratorInterface::class);
         $routeManager = $this->prophesize(RouteManagerInterface::class);
-        $contentNormalizer = $this->prophesize(ContentNormalizerInterface::class);
 
         $routeManager->createOrUpdateByAttributes(Argument::cetera())->shouldNotBeCalled();
 
@@ -495,8 +472,7 @@ class RoutableDataMapperTest extends TestCase
         $mapper = $this->createRouteDataMapperInstance(
             $factory->reveal(),
             $routeGenerator->reveal(),
-            $routeManager->reveal(),
-            $contentNormalizer->reveal()
+            $routeManager->reveal()
         );
 
         $mapper->map(
@@ -521,7 +497,6 @@ class RoutableDataMapperTest extends TestCase
         $factory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $routeGenerator = $this->prophesize(RouteGeneratorInterface::class);
         $routeManager = $this->prophesize(RouteManagerInterface::class);
-        $contentNormalizer = $this->prophesize(ContentNormalizerInterface::class);
 
         $metadata = $this->prophesize(StructureMetadata::class);
         $property = $this->prophesize(PropertyMetadata::class);
@@ -540,13 +515,13 @@ class RoutableDataMapperTest extends TestCase
 
         $localizedDimensionContentMock = $this->wrapRoutableMock($localizedDimensionContent);
 
-        $normalizedData = [
-            'title' => 'test',
-        ];
-        $contentNormalizer->normalize($dimensionContent->reveal())->willReturn([]);
-        $contentNormalizer->normalize($localizedDimensionContentMock)->willReturn($normalizedData);
-        $routeGenerator->generate($normalizedData, ['route_schema' => '/{object["title"]}'])
-            ->willReturn('/test');
+        $routeGenerator->generate(
+            array_merge($data, [
+                '_unlocalizedObject' => $dimensionContent->reveal(),
+                '_localizedObject' => $localizedDimensionContentMock,
+            ]),
+            ['route_schema' => '/{object["title"]}']
+        )->willReturn('/test');
 
         $routeManager->createOrUpdateByAttributes(
             'mock-content-class',
@@ -558,8 +533,7 @@ class RoutableDataMapperTest extends TestCase
         $mapper = $this->createRouteDataMapperInstance(
             $factory->reveal(),
             $routeGenerator->reveal(),
-            $routeManager->reveal(),
-            $contentNormalizer->reveal()
+            $routeManager->reveal()
         );
 
         $mapper->map(
@@ -584,7 +558,6 @@ class RoutableDataMapperTest extends TestCase
         $factory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $routeGenerator = $this->prophesize(RouteGeneratorInterface::class);
         $routeManager = $this->prophesize(RouteManagerInterface::class);
-        $contentNormalizer = $this->prophesize(ContentNormalizerInterface::class);
 
         $metadata = $this->prophesize(StructureMetadata::class);
         $property = $this->prophesize(PropertyMetadata::class);
@@ -601,9 +574,7 @@ class RoutableDataMapperTest extends TestCase
         $localizedDimensionContent->getResourceKey()->willReturn('testKey');
         $localizedDimensionContentMock = $this->wrapRoutableMock($localizedDimensionContent);
 
-        $contentNormalizer->normalize($localizedDimensionContentMock)->shouldNotBeCalled();
-        $routeGenerator->generate(Argument::any(), ['schema' => '/{object["title"]}'])
-            ->shouldNotBeCalled();
+        $routeGenerator->generate(Argument::any())->shouldNotBeCalled();
 
         $routeManager->createOrUpdateByAttributes(
             'mock-content-class',
@@ -615,8 +586,7 @@ class RoutableDataMapperTest extends TestCase
         $mapper = $this->createRouteDataMapperInstance(
             $factory->reveal(),
             $routeGenerator->reveal(),
-            $routeManager->reveal(),
-            $contentNormalizer->reveal()
+            $routeManager->reveal()
         );
 
         $mapper->map(
@@ -640,7 +610,6 @@ class RoutableDataMapperTest extends TestCase
         $factory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $routeGenerator = $this->prophesize(RouteGeneratorInterface::class);
         $routeManager = $this->prophesize(RouteManagerInterface::class);
-        $contentNormalizer = $this->prophesize(ContentNormalizerInterface::class);
 
         $metadata = $this->prophesize(StructureMetadata::class);
         $property = $this->prophesize(PropertyMetadata::class);
@@ -657,9 +626,7 @@ class RoutableDataMapperTest extends TestCase
         $localizedDimensionContent->getResourceKey()->willReturn('testKey');
         $localizedDimensionContentMock = $this->wrapRoutableMock($localizedDimensionContent);
 
-        $contentNormalizer->normalize($localizedDimensionContentMock)->shouldNotBeCalled();
-        $routeGenerator->generate(Argument::any(), ['schema' => '/{object["title"]}'])
-            ->shouldNotBeCalled();
+        $routeGenerator->generate(Argument::any())->shouldNotBeCalled();
 
         $routeManager->createOrUpdateByAttributes(
             'mock-content-class',
@@ -672,7 +639,6 @@ class RoutableDataMapperTest extends TestCase
             $factory->reveal(),
             $routeGenerator->reveal(),
             $routeManager->reveal(),
-            $contentNormalizer->reveal(),
             ['mock-template-type' => 'default']
         );
 
@@ -698,7 +664,6 @@ class RoutableDataMapperTest extends TestCase
         $factory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $routeGenerator = $this->prophesize(RouteGeneratorInterface::class);
         $routeManager = $this->prophesize(RouteManagerInterface::class);
-        $contentNormalizer = $this->prophesize(ContentNormalizerInterface::class);
 
         $metadata = $this->prophesize(StructureMetadata::class);
         $property = $this->prophesize(PropertyMetadata::class);
@@ -716,14 +681,13 @@ class RoutableDataMapperTest extends TestCase
         $localizedDimensionContent->getResourceKey()->willReturn('testKey');
         $localizedDimensionContentMock = $this->wrapRoutableMock($localizedDimensionContent);
 
-        $normalizedData = [
-            'id' => '123',
-            'name' => 'testEntity',
-        ];
-        $contentNormalizer->normalize($dimensionContent->reveal())->willReturn([]);
-        $contentNormalizer->normalize($localizedDimensionContentMock)->willReturn($normalizedData);
-        $routeGenerator->generate($normalizedData, ['route_schema' => 'custom/{object["name"]}-{object["id"]}'])
-            ->willReturn('/custom/testEntity-123');
+        $routeGenerator->generate(
+            array_merge($data, [
+                '_unlocalizedObject' => $dimensionContent->reveal(),
+                '_localizedObject' => $localizedDimensionContentMock,
+            ]),
+            ['route_schema' => 'custom/{object["_localizedObject"].getName()}-{object["_unlocalizedObject"].getRoutableId()}']
+        )->willReturn('/custom/testEntity-123');
 
         $routeManager->createOrUpdateByAttributes(
             'Sulu/Test/TestEntity',
@@ -736,13 +700,12 @@ class RoutableDataMapperTest extends TestCase
             $factory->reveal(),
             $routeGenerator->reveal(),
             $routeManager->reveal(),
-            $contentNormalizer->reveal(),
             [],
             [
                 'testKey' => [
                     'generator' => 'schema',
                     'options' => [
-                        'route_schema' => 'custom/{object["name"]}-{object["id"]}',
+                        'route_schema' => 'custom/{object["_localizedObject"].getName()}-{object["_unlocalizedObject"].getRoutableId()}',
                     ],
                     'resource_key' => 'testKey',
                     'entityClass' => 'Sulu/Test/TestEntity',
