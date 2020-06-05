@@ -400,6 +400,7 @@ class RoutableDataMapperTest extends TestCase
         $normalizedData = [
             'title' => '',
         ];
+        $contentNormalizer->normalize($dimensionContent->reveal())->willReturn([]);
         $contentNormalizer->normalize($localizedDimensionContentMock)->willReturn($normalizedData);
         $routeGenerator->generate($normalizedData, ['route_schema' => '/{object["title"]}'])
             ->willReturn('/');
@@ -671,6 +672,7 @@ class RoutableDataMapperTest extends TestCase
             $factory->reveal(),
             $routeGenerator->reveal(),
             $routeManager->reveal(),
+            $contentNormalizer->reveal(),
             ['mock-template-type' => 'default']
         );
 
@@ -734,6 +736,7 @@ class RoutableDataMapperTest extends TestCase
             $factory->reveal(),
             $routeGenerator->reveal(),
             $routeManager->reveal(),
+            $contentNormalizer->reveal(),
             [],
             [
                 'testKey' => [
