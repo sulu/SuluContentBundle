@@ -138,8 +138,17 @@ class RoutableDataMapper implements DataMapperInterface
 
         $routePath = $data[$name] ?? null;
         if (!$routePath) {
+            /** @var mixed $routeGenerationData */
+            $routeGenerationData = array_merge(
+                $data,
+                [
+                    '_unlocalizedObject' => $unlocalizedObject,
+                    '_localizedObject' => $localizedObject,
+                ]
+            );
+
             $routePath = $this->routeGenerator->generate(
-                $localizedObject,
+                $routeGenerationData,
                 $routeSchema
             );
 

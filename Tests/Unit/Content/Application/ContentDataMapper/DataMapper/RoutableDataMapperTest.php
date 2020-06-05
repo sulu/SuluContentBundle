@@ -47,7 +47,7 @@ class RoutableDataMapperTest extends TestCase
                 'testKey' => [
                     'generator' => 'schema',
                     'options' => [
-                        'route_schema' => '/{object.getTitle()}',
+                        'route_schema' => '/{object["title"]}',
                     ],
                     'resource_key' => 'testKey',
                     'entityClass' => 'mock-content-class',
@@ -319,8 +319,13 @@ class RoutableDataMapperTest extends TestCase
 
         $factory->getStructureMetadata('mock-template-type', 'default')->willReturn($metadata->reveal())->shouldBeCalled();
 
-        $routeGenerator->generate($localizedDimensionContentMock, ['route_schema' => '/{object.getTitle()}'])
-            ->willReturn('/test');
+        $routeGenerator->generate(
+            array_merge($data, [
+                '_unlocalizedObject' => $dimensionContent->reveal(),
+                '_localizedObject' => $localizedDimensionContentMock,
+            ]),
+            ['route_schema' => '/{object["title"]}']
+        )->willReturn('/test');
 
         $routeManager->createOrUpdateByAttributes(
             'mock-content-class',
@@ -373,8 +378,13 @@ class RoutableDataMapperTest extends TestCase
 
         $factory->getStructureMetadata('mock-template-type', 'default')->willReturn($metadata->reveal())->shouldBeCalled();
 
-        $routeGenerator->generate($localizedDimensionContentMock, ['route_schema' => '/{object.getTitle()}'])
-            ->willReturn('/');
+        $routeGenerator->generate(
+            array_merge($data, [
+                '_unlocalizedObject' => $dimensionContent->reveal(),
+                '_localizedObject' => $localizedDimensionContentMock,
+            ]),
+            ['route_schema' => '/{object["title"]}']
+        )->willReturn('/');
 
         $routeManager->createOrUpdateByAttributes(Argument::cetera())->shouldNotBeCalled();
 
@@ -505,8 +515,13 @@ class RoutableDataMapperTest extends TestCase
 
         $localizedDimensionContentMock = $this->wrapRoutableMock($localizedDimensionContent);
 
-        $routeGenerator->generate($localizedDimensionContentMock, ['route_schema' => '/{object.getTitle()}'])
-            ->willReturn('/test');
+        $routeGenerator->generate(
+            array_merge($data, [
+                '_unlocalizedObject' => $dimensionContent->reveal(),
+                '_localizedObject' => $localizedDimensionContentMock,
+            ]),
+            ['route_schema' => '/{object["title"]}']
+        )->willReturn('/test');
 
         $routeManager->createOrUpdateByAttributes(
             'mock-content-class',
@@ -559,8 +574,7 @@ class RoutableDataMapperTest extends TestCase
         $localizedDimensionContent->getResourceKey()->willReturn('testKey');
         $localizedDimensionContentMock = $this->wrapRoutableMock($localizedDimensionContent);
 
-        $routeGenerator->generate($localizedDimensionContentMock, ['schema' => '/{object.getTitle()}'])
-            ->shouldNotBeCalled();
+        $routeGenerator->generate(Argument::any())->shouldNotBeCalled();
 
         $routeManager->createOrUpdateByAttributes(
             'mock-content-class',
@@ -612,8 +626,7 @@ class RoutableDataMapperTest extends TestCase
         $localizedDimensionContent->getResourceKey()->willReturn('testKey');
         $localizedDimensionContentMock = $this->wrapRoutableMock($localizedDimensionContent);
 
-        $routeGenerator->generate($localizedDimensionContentMock, ['schema' => '/{object.getTitle()}'])
-            ->shouldNotBeCalled();
+        $routeGenerator->generate(Argument::any())->shouldNotBeCalled();
 
         $routeManager->createOrUpdateByAttributes(
             'mock-content-class',
@@ -668,8 +681,13 @@ class RoutableDataMapperTest extends TestCase
         $localizedDimensionContent->getResourceKey()->willReturn('testKey');
         $localizedDimensionContentMock = $this->wrapRoutableMock($localizedDimensionContent);
 
-        $routeGenerator->generate($localizedDimensionContentMock, ['route_schema' => 'custom/{object.getName()}-{object.getId()}'])
-            ->willReturn('/custom/testEntity-123');
+        $routeGenerator->generate(
+            array_merge($data, [
+                '_unlocalizedObject' => $dimensionContent->reveal(),
+                '_localizedObject' => $localizedDimensionContentMock,
+            ]),
+            ['route_schema' => 'custom/{object["_localizedObject"].getName()}-{object["_unlocalizedObject"].getRoutableId()}']
+        )->willReturn('/custom/testEntity-123');
 
         $routeManager->createOrUpdateByAttributes(
             'Sulu/Test/TestEntity',
@@ -687,7 +705,7 @@ class RoutableDataMapperTest extends TestCase
                 'testKey' => [
                     'generator' => 'schema',
                     'options' => [
-                        'route_schema' => 'custom/{object.getName()}-{object.getId()}',
+                        'route_schema' => 'custom/{object["_localizedObject"].getName()}-{object["_unlocalizedObject"].getRoutableId()}',
                     ],
                     'resource_key' => 'testKey',
                     'entityClass' => 'Sulu/Test/TestEntity',
