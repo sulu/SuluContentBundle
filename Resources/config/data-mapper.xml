@@ -30,6 +30,7 @@
             <argument type="service" id="sulu_page.structure.factory"/>
             <argument type="service" id="sulu_route.generator.route_generator"/>
             <argument type="service" id="sulu_route.manager.route_manager"/>
+            <argument type="service" id="sulu_content.content_normalizer"/>
             <argument>%sulu.content.structure.default_types%</argument>
             <argument>%sulu_route.mappings%</argument>
 

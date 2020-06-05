@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\DataMapper;
 
+use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\ContentNormalizerInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\RoutableInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Bundle\RouteBundle\Generator\RouteGeneratorInterface;
@@ -39,6 +40,11 @@ class RoutableDataMapper implements DataMapperInterface
     private $routeManager;
 
     /**
+     * @var ContentNormalizerInterface
+     */
+    private $contentNormalizer;
+
+    /**
      * @var array<string, string>
      */
     private $structureDefaultTypes;
@@ -56,12 +62,14 @@ class RoutableDataMapper implements DataMapperInterface
         StructureMetadataFactoryInterface $factory,
         RouteGeneratorInterface $routeGenerator,
         RouteManagerInterface $routeManager,
+        ContentNormalizerInterface $contentNormalizer,
         array $structureDefaultTypes,
         array $routeMappings
     ) {
         $this->factory = $factory;
         $this->routeGenerator = $routeGenerator;
         $this->routeManager = $routeManager;
+        $this->contentNormalizer = $contentNormalizer;
         $this->structureDefaultTypes = $structureDefaultTypes;
         $this->routeMappings = $routeMappings;
     }
@@ -138,8 +146,14 @@ class RoutableDataMapper implements DataMapperInterface
 
         $routePath = $data[$name] ?? null;
         if (!$routePath) {
+            /** @var mixed $routeGenerationData */
+            $routeGenerationData = array_merge(
+                $this->contentNormalizer->normalize($unlocalizedObject),
+                $this->contentNormalizer->normalize($localizedObject)
+            );
+
             $routePath = $this->routeGenerator->generate(
-                $localizedObject,
+                $routeGenerationData,
                 $routeSchema
             );
 
