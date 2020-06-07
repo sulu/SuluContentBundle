@@ -71,7 +71,7 @@ class ContentViewBuilderFactory implements ContentViewBuilderFactoryInterface
 
         $toolbarActions = [];
 
-        if (is_subclass_of($dimensionContentClass, ExcerptInterface::class)) {
+        if (is_subclass_of($dimensionContentClass, WorkflowInterface::class)) {
             $toolbarActions['save'] = new ToolbarAction(
                     'sulu_admin.save_with_publishing',
                     [
