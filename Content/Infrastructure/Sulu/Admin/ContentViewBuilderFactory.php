@@ -25,6 +25,7 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 use Sulu\Bundle\PreviewBundle\Preview\Object\PreviewObjectProviderRegistryInterface;
 use Sulu\Component\Security\Authorization\PermissionTypes;
 use Sulu\Component\Security\Authorization\SecurityCheckerInterface;
@@ -63,47 +64,65 @@ class ContentViewBuilderFactory implements ContentViewBuilderFactoryInterface
         $this->securityChecker = $securityChecker;
     }
 
-    public function getDefaultToolbarActions(): array
-    {
-        return [
-            'save' => new ToolbarAction(
-                'sulu_admin.save_with_publishing',
-                [
-                    'publish_visible_condition' => '(!_permissions || _permissions.live)',
-                    'save_visible_condition' => '(!_permissions || _permissions.edit)',
-                ]
-            ),
-            'type' => new ToolbarAction(
+    public function getDefaultToolbarActions(
+        string $contentRichEntityClass
+    ): array {
+        $dimensionContentClass = $this->getDimensionContentClass($contentRichEntityClass);
+
+        $toolbarActions = [];
+
+        if (is_subclass_of($dimensionContentClass, ExcerptInterface::class)) {
+            $toolbarActions['save'] = new ToolbarAction(
+                    'sulu_admin.save_with_publishing',
+                    [
+                        'publish_visible_condition' => '(!_permissions || _permissions.live)',
+                        'save_visible_condition' => '(!_permissions || _permissions.edit)',
+                    ]
+                );
+        } else {
+            $toolbarActions['save'] = new ToolbarAction(
+                    'sulu_admin.save'
+                );
+        }
+
+        if (is_subclass_of($dimensionContentClass, TemplateInterface::class)) {
+            $toolbarActions['type'] = new ToolbarAction(
                 'sulu_admin.type',
                 [
                     'disabled_condition' => '(_permissions && !_permissions.edit)',
                 ]
-            ),
-            'delete' => new ToolbarAction(
+            );
+        }
+
+        $toolbarActions['delete'] = new ToolbarAction(
                 'sulu_admin.delete',
                 [
                     'visible_condition' => '(!_permissions || _permissions.delete) && url != "/"',
                 ]
-            ),
-            'edit' => new DropdownToolbarAction(
-                'sulu_admin.edit',
-                'su-pen',
-                [
-                    new ToolbarAction(
-                        'sulu_admin.delete_draft',
-                        [
-                            'visible_condition' => '(!_permissions || _permissions.live)',
-                        ]
-                    ),
-                    new ToolbarAction(
-                        'sulu_admin.set_unpublished',
-                        [
-                            'visible_condition' => '(!_permissions || _permissions.live)',
-                        ]
-                    ),
-                ]
-            ),
-        ];
+            );
+
+        if (is_subclass_of($dimensionContentClass, WorkflowInterface::class)) {
+            $toolbarActions['edit'] = new DropdownToolbarAction(
+                    'sulu_admin.edit',
+                    'su-pen',
+                    [
+                        new ToolbarAction(
+                            'sulu_admin.delete_draft',
+                            [
+                                'visible_condition' => '(!_permissions || _permissions.live)',
+                            ]
+                        ),
+                        new ToolbarAction(
+                            'sulu_admin.set_unpublished',
+                            [
+                                'visible_condition' => '(!_permissions || _permissions.live)',
+                            ]
+                        ),
+                    ]
+                );
+        }
+
+        return $toolbarActions;
     }
 
     public function createViews(
@@ -118,7 +137,7 @@ class ContentViewBuilderFactory implements ContentViewBuilderFactoryInterface
         $resourceKey = $contentRichEntityClass::getResourceKey();
         $previewEnabled = $this->objectProviderRegistry->hasPreviewObjectProvider($resourceKey);
 
-        $toolbarActions = $toolbarActions ?: $this->getDefaultToolbarActions();
+        $toolbarActions = $toolbarActions ?: $this->getDefaultToolbarActions($contentRichEntityClass);
         $addToolbarActions = $toolbarActions;
 
         $seoAndExcerptToolbarActions = [];
@@ -203,13 +222,13 @@ class ContentViewBuilderFactory implements ContentViewBuilderFactoryInterface
         bool $previewEnabled,
         string $resourceKey,
         string $formKey,
-        ?array $toolbarActions = null
+        array $toolbarActions
     ): ViewBuilderInterface {
         return $this->createFormViewBuilder($parentView . '.content', '/content', $previewEnabled)
             ->setResourceKey($resourceKey)
             ->setFormKey($formKey)
             ->setTabTitle('sulu_content.content')
-            ->addToolbarActions(array_values($toolbarActions ?: $this->getDefaultToolbarActions()))
+            ->addToolbarActions(array_values($toolbarActions))
             ->setTabOrder(20)
             ->setParent($parentView);
     }
@@ -221,14 +240,14 @@ class ContentViewBuilderFactory implements ContentViewBuilderFactoryInterface
         string $parentView,
         bool $previewEnabled,
         string $resourceKey,
-        ?array $toolbarActions = null
+        array $toolbarActions
     ): ViewBuilderInterface {
         return $this->createFormViewBuilder($parentView . '.seo', '/seo', $previewEnabled)
             ->setResourceKey($resourceKey)
             ->setFormKey('content_seo')
             ->setTabTitle('sulu_content.seo')
             ->setTitleVisible(true)
-            ->addToolbarActions(array_values($toolbarActions ?: [$this->getDefaultToolbarActions()['save']]))
+            ->addToolbarActions(array_values($toolbarActions))
             ->setTabOrder(30)
             ->setParent($parentView);
     }
@@ -240,14 +259,14 @@ class ContentViewBuilderFactory implements ContentViewBuilderFactoryInterface
         string $parentView,
         bool $previewEnabled,
         string $resourceKey,
-        ?array $toolbarActions = null
+        array $toolbarActions
     ): ViewBuilderInterface {
         return $this->createFormViewBuilder($parentView . '.excerpt', '/excerpt', $previewEnabled)
             ->setResourceKey($resourceKey)
             ->setFormKey('content_excerpt')
             ->setTabTitle('sulu_content.excerpt')
             ->setTitleVisible(true)
-            ->addToolbarActions(array_values($toolbarActions ?: [$this->getDefaultToolbarActions()['save']]))
+            ->addToolbarActions(array_values($toolbarActions))
             ->setTabOrder(40)
             ->setParent($parentView);
     }
