@@ -131,7 +131,7 @@ class RoutableDataMapper implements DataMapperInterface
 
         $entityClass = null;
         $routeSchema = null;
-        $resourceKey = $localizedObject->getResourceKey();
+        $resourceKey = $localizedObject::getResourceKey();
         foreach ($this->routeMappings as $key => $mapping) {
             if ($resourceKey === $mapping['resource_key']) {
                 $entityClass = $mapping['entityClass'] ?? $key;

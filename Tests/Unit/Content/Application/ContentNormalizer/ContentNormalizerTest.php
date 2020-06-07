@@ -192,7 +192,6 @@ class ContentNormalizerTest extends TestCase
             'locale' => 'de',
             'published' => '2020-02-02T12:30:00+00:00',
             'publishedState' => false,
-            'resourceKey' => 'resource_key',
             'seoCanonicalUrl' => 'https://caninical.localhost/',
             'seoDescription' => 'Seo Description',
             'seoHideInSitemap' => true,
