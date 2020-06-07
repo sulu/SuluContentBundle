@@ -15,6 +15,8 @@ namespace Sulu\Bundle\ContentBundle\Content\Domain\Model;
 
 interface DimensionContentInterface
 {
+    public static function getResourceKey(): string;
+
     public function getDimension(): DimensionInterface;
 
     public function getContentRichEntity(): ContentRichEntityInterface;

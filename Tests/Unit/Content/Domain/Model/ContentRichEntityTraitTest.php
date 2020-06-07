@@ -26,11 +26,6 @@ class ContentRichEntityTraitTest extends TestCase
         return new class() implements ContentRichEntityInterface {
             use ContentRichEntityTrait;
 
-            public static function getResourceKey(): string
-            {
-                throw new \RuntimeException('Should not be called while executing tests.');
-            }
-
             public function createDimensionContent(DimensionInterface $dimension): DimensionContentInterface
             {
                 throw new \RuntimeException('Should not be called while executing tests.');

@@ -18,8 +18,6 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\RoutableInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\RoutableTrait;
-use Sulu\Bundle\ContentBundle\Tests\Unit\Mocks\ContentRichEntityMockWrapperTrait;
-use Sulu\Bundle\ContentBundle\Tests\Unit\Mocks\MockWrapper;
 
 class RoutableTraitTest extends TestCase
 {
@@ -31,12 +29,7 @@ class RoutableTraitTest extends TestCase
         $dimension = $this->prophesize(DimensionInterface::class);
         $dimension->getLocale()->willReturn('en');
 
-        $contentRichEntityMock = new class($contentRichEntity) extends MockWrapper implements
-            ContentRichEntityInterface {
-            use ContentRichEntityMockWrapperTrait;
-        };
-
-        return new class($contentRichEntityMock, $dimension->reveal()) implements RoutableInterface {
+        return new class($contentRichEntity->reveal(), $dimension->reveal()) implements RoutableInterface {
             use RoutableTrait;
 
             /**
@@ -53,6 +46,11 @@ class RoutableTraitTest extends TestCase
             {
                 $this->contentRichEntity = $contentRichEntity;
                 $this->dimension = $dimension;
+            }
+
+            public static function getResourceKey(): string
+            {
+                throw new \RuntimeException('Should not be called while executing tests.');
             }
 
             public function getDimension(): DimensionInterface
@@ -77,11 +75,5 @@ class RoutableTraitTest extends TestCase
     {
         $model = $this->getRoutableInstance();
         $this->assertSame('content-id-123', $model->getRoutableId());
-    }
-
-    public function testGetResourceKey(): void
-    {
-        $model = $this->getRoutableInstance();
-        $this->assertSame('mock-resource-key', $model->getResourceKey());
     }
 }

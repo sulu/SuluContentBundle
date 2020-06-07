@@ -134,7 +134,7 @@ class ContentViewBuilderFactory implements ContentViewBuilderFactoryInterface
     ): array {
         $dimensionContentClass = $this->getDimensionContentClass($contentRichEntityClass);
 
-        $resourceKey = $contentRichEntityClass::getResourceKey();
+        $resourceKey = $dimensionContentClass::getResourceKey();
         $previewEnabled = $this->objectProviderRegistry->hasPreviewObjectProvider($resourceKey);
 
         $toolbarActions = $toolbarActions ?: $this->getDefaultToolbarActions($contentRichEntityClass);

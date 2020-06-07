@@ -20,9 +20,9 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\Mocks;
  */
 trait RoutableMockWrapperTrait
 {
-    public function getResourceKey(): string
+    public static function getResourceKey(): string
     {
-        return $this->instance->getResourceKey();
+        return 'mock-resource-key';
     }
 
     public function getRoutableId()

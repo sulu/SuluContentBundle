@@ -74,6 +74,11 @@ class ContentNormalizerTest extends TestCase
                 $this->dimension = $dimension;
             }
 
+            public static function getResourceKey(): string
+            {
+                throw new \RuntimeException('Should not be called while executing tests.');
+            }
+
             public function getContentRichEntity(): ContentRichEntityInterface
             {
                 return $this->contentRichEntity;
@@ -116,9 +121,9 @@ class ContentNormalizerTest extends TestCase
                 $this->dimension = $dimension;
             }
 
-            public function getResourceKey(): string
+            public static function getResourceKey(): string
             {
-                return 'resource_key';
+                throw new \RuntimeException('Should not be called while executing tests.');
             }
 
             public static function getTemplateType(): string
