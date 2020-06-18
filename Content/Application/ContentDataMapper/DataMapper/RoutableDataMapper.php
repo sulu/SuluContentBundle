@@ -16,6 +16,7 @@ namespace Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\DataMa
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\RoutableInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Bundle\RouteBundle\Generator\RouteGeneratorInterface;
+use Sulu\Bundle\RouteBundle\Manager\ConflictResolverInterface;
 use Sulu\Bundle\RouteBundle\Manager\RouteManagerInterface;
 use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
 use Sulu\Component\Content\Metadata\PropertyMetadata;
@@ -39,6 +40,11 @@ class RoutableDataMapper implements DataMapperInterface
     private $routeManager;
 
     /**
+     * @var ConflictResolverInterface
+     */
+    private $conflictResolver;
+
+    /**
      * @var array<string, string>
      */
     private $structureDefaultTypes;
@@ -56,12 +62,14 @@ class RoutableDataMapper implements DataMapperInterface
         StructureMetadataFactoryInterface $factory,
         RouteGeneratorInterface $routeGenerator,
         RouteManagerInterface $routeManager,
+        ConflictResolverInterface $conflictResolver,
         array $structureDefaultTypes,
         array $routeMappings
     ) {
         $this->factory = $factory;
         $this->routeGenerator = $routeGenerator;
         $this->routeManager = $routeManager;
+        $this->conflictResolver = $conflictResolver;
         $this->structureDefaultTypes = $structureDefaultTypes;
         $this->routeMappings = $routeMappings;
     }
@@ -155,21 +163,25 @@ class RoutableDataMapper implements DataMapperInterface
             if ('/' === $routePath) {
                 return;
             }
-
-            $localizedObject->setTemplateData(
-                array_merge(
-                    $localizedObject->getTemplateData(),
-                    [$name => $routePath]
-                )
-            );
         }
 
-        $this->routeManager->createOrUpdateByAttributes(
+        $route = $this->routeManager->createOrUpdateByAttributes(
             $entityClass,
             (string) $localizedObject->getRoutableId(),
             $locale,
             $routePath
         );
+
+        $this->conflictResolver->resolve($route);
+
+        if (($data[$name] ?? null) !== $route->getPath()) {
+            $localizedObject->setTemplateData(
+                array_merge(
+                    $localizedObject->getTemplateData(),
+                    [$name => $route->getPath()]
+                )
+            );
+        }
     }
 
     private function getRouteProperty(StructureMetadata $metadata): ?PropertyMetadata
