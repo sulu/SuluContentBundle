@@ -17,11 +17,11 @@ parameters:
         - %currentWorkingDirectory%/Tests/Application/Kernel.php
         - %currentWorkingDirectory%/Tests/Application/var/*
     symfony:
-        container_xml_path: %currentWorkingDirectory%/Tests/Application/var/cache/admin/test/adminAdminTestDebugProjectContainer.xml
+        container_xml_path: %currentWorkingDirectory%/Tests/Application/var/cache/admin/test/Massive_Bundle_VCloudBundle_Tests_Application_KernelTestDebugContainer.xml
         console_application_loader: Tests/phpstan/console-application.php
     doctrine:
         objectManagerLoader: Tests/phpstan/object-manager.php
-    autoload_files:
+    bootstrapFiles:
         - vendor/bin/.phpunit/phpunit-8-0/vendor/autoload.php
         - vendor/autoload.php
     ignoreErrors:
