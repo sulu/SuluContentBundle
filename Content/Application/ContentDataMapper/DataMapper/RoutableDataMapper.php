@@ -174,7 +174,7 @@ class RoutableDataMapper implements DataMapperInterface
 
         $this->conflictResolver->resolve($route);
 
-        if ($route->getPath() !== ($data[$name] ?? null)) {
+        if (($data[$name] ?? null) !== $route->getPath()) {
             $localizedObject->setTemplateData(
                 array_merge(
                     $localizedObject->getTemplateData(),
