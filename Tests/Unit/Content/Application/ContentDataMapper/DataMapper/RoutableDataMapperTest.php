@@ -141,6 +141,7 @@ class RoutableDataMapperTest extends TestCase
         $routeManager->createOrUpdateByAttributes(Argument::cetera())->shouldNotBeCalled();
         $conflictResolver->resolve(Argument::cetera())->shouldNotBeCalled();
         $localizedDimensionContent->getRoutableId()->shouldNotBeCalled();
+        $localizedDimensionContent->setTemplateData(Argument::cetera())->shouldNotBeCalled();
 
         $mapper = $this->createRouteDataMapperInstance(
             $factory->reveal(),
@@ -172,6 +173,7 @@ class RoutableDataMapperTest extends TestCase
         $routeManager->createOrUpdateByAttributes(Argument::cetera())->shouldNotBeCalled();
         $conflictResolver->resolve(Argument::cetera())->shouldNotBeCalled();
         $localizedDimensionContent->getRoutableId()->shouldNotBeCalled();
+        $localizedDimensionContent->setTemplateData(Argument::cetera())->shouldNotBeCalled();
 
         $mapper = $this->createRouteDataMapperInstance(
             $factory->reveal(),
@@ -205,6 +207,7 @@ class RoutableDataMapperTest extends TestCase
 
         $routeManager->createOrUpdateByAttributes(Argument::cetera())->shouldNotBeCalled();
         $conflictResolver->resolve(Argument::cetera())->shouldNotBeCalled();
+        $localizedDimensionContent->setTemplateData(Argument::cetera())->shouldNotBeCalled();
 
         $factory->getStructureMetadata('mock-template-type', 'default')->willReturn(null)->shouldBeCalled();
 
@@ -240,6 +243,7 @@ class RoutableDataMapperTest extends TestCase
 
         $routeManager->createOrUpdateByAttributes(Argument::cetera())->shouldNotBeCalled();
         $conflictResolver->resolve(Argument::cetera())->shouldNotBeCalled();
+        $localizedDimensionContent->setTemplateData(Argument::cetera())->shouldNotBeCalled();
 
         $metadata = $this->prophesize(StructureMetadata::class);
         $property = $this->prophesize(PropertyMetadata::class);
@@ -285,6 +289,7 @@ class RoutableDataMapperTest extends TestCase
 
         $routeManager->createOrUpdateByAttributes(Argument::cetera())->shouldNotBeCalled();
         $conflictResolver->resolve(Argument::cetera())->shouldNotBeCalled();
+        $localizedDimensionContent->setTemplateData(Argument::cetera())->shouldNotBeCalled();
 
         $metadata = $this->prophesize(StructureMetadata::class);
         $property = $this->prophesize(PropertyMetadata::class);
@@ -338,7 +343,6 @@ class RoutableDataMapperTest extends TestCase
         $localizedDimensionContent->getRoutableId()->willReturn('123-123-123');
         $localizedDimensionContent->getTemplateData()->willReturn([]);
         $localizedDimensionContent->getLocale()->willReturn('en');
-        $localizedDimensionContent->setTemplateData(['url' => '/test'])->shouldBeCalled();
         $localizedDimensionContent->getResourceKey()->willReturn('testKey');
         $localizedDimensionContentMock = $this->wrapRoutableMock($localizedDimensionContent);
 
@@ -353,6 +357,7 @@ class RoutableDataMapperTest extends TestCase
         )->willReturn('/test');
 
         $route = $this->prophesize(RouteInterface::class);
+        $route->getPath()->willReturn('/test');
         $routeManager->createOrUpdateByAttributes(
             'mock-content-class',
             '123-123-123',
@@ -361,6 +366,7 @@ class RoutableDataMapperTest extends TestCase
         )->willReturn($route->reveal());
 
         $conflictResolver->resolve($route->reveal())->shouldBeCalled();
+        $localizedDimensionContent->setTemplateData(['url' => '/test'])->shouldBeCalled();
 
         $mapper = $this->createRouteDataMapperInstance(
             $factory->reveal(),
@@ -402,7 +408,6 @@ class RoutableDataMapperTest extends TestCase
         $localizedDimensionContent->getRoutableId()->willReturn('123-123-123');
         $localizedDimensionContent->getTemplateData()->willReturn([]);
         $localizedDimensionContent->getLocale()->willReturn('en');
-        $localizedDimensionContent->setTemplateData(Argument::cetera())->shouldNotBeCalled();
         $localizedDimensionContent->getResourceKey()->willReturn('testKey');
         $localizedDimensionContentMock = $this->wrapRoutableMock($localizedDimensionContent);
 
@@ -418,6 +423,7 @@ class RoutableDataMapperTest extends TestCase
 
         $routeManager->createOrUpdateByAttributes(Argument::cetera())->shouldNotBeCalled();
         $conflictResolver->resolve(Argument::cetera())->shouldNotBeCalled();
+        $localizedDimensionContent->setTemplateData(Argument::cetera())->shouldNotBeCalled();
 
         $mapper = $this->createRouteDataMapperInstance(
             $factory->reveal(),
@@ -451,6 +457,7 @@ class RoutableDataMapperTest extends TestCase
 
         $routeManager->createOrUpdateByAttributes(Argument::cetera())->shouldNotBeCalled();
         $conflictResolver->resolve(Argument::cetera())->shouldNotBeCalled();
+        $localizedDimensionContent->setTemplateData(Argument::cetera())->shouldNotBeCalled();
 
         $metadata = $this->prophesize(StructureMetadata::class);
         $property = $this->prophesize(PropertyMetadata::class);
@@ -494,6 +501,7 @@ class RoutableDataMapperTest extends TestCase
 
         $routeManager->createOrUpdateByAttributes(Argument::cetera())->shouldNotBeCalled();
         $conflictResolver->resolve(Argument::cetera())->shouldNotBeCalled();
+        $localizedDimensionContent->setTemplateData(Argument::cetera())->shouldNotBeCalled();
 
         $metadata = $this->prophesize(StructureMetadata::class);
         $property = $this->prophesize(PropertyMetadata::class);
@@ -548,7 +556,6 @@ class RoutableDataMapperTest extends TestCase
 
         $localizedDimensionContent->getRoutableId()->willReturn('123-123-123');
         $localizedDimensionContent->getTemplateData()->willReturn(['title' => 'Test', 'url' => null]);
-        $localizedDimensionContent->setTemplateData(['title' => 'Test', 'url' => '/test'])->shouldBeCalled();
         $localizedDimensionContent->getLocale()->willReturn('en');
         $localizedDimensionContent->getResourceKey()->willReturn('testKey');
 
@@ -563,6 +570,7 @@ class RoutableDataMapperTest extends TestCase
         )->willReturn('/test');
 
         $route = $this->prophesize(RouteInterface::class);
+        $route->getPath()->willReturn('/test');
         $routeManager->createOrUpdateByAttributes(
             'mock-content-class',
             '123-123-123',
@@ -571,6 +579,7 @@ class RoutableDataMapperTest extends TestCase
         )->willReturn($route->reveal());
 
         $conflictResolver->resolve($route->reveal())->shouldBeCalled();
+        $localizedDimensionContent->setTemplateData(['title' => 'Test', 'url' => '/test'])->shouldBeCalled();
 
         $mapper = $this->createRouteDataMapperInstance(
             $factory->reveal(),
@@ -621,6 +630,7 @@ class RoutableDataMapperTest extends TestCase
         $routeGenerator->generate(Argument::any())->shouldNotBeCalled();
 
         $route = $this->prophesize(RouteInterface::class);
+        $route->getPath()->willReturn('/test');
         $routeManager->createOrUpdateByAttributes(
             'mock-content-class',
             '123-123-123',
@@ -629,6 +639,68 @@ class RoutableDataMapperTest extends TestCase
         )->willReturn($route->reveal());
 
         $conflictResolver->resolve($route->reveal())->shouldBeCalled();
+        $localizedDimensionContent->setTemplateData(Argument::cetera())->shouldNotBeCalled();
+
+        $mapper = $this->createRouteDataMapperInstance(
+            $factory->reveal(),
+            $routeGenerator->reveal(),
+            $routeManager->reveal(),
+            $conflictResolver->reveal()
+        );
+
+        $mapper->map(
+            $data,
+            $dimensionContent->reveal(),
+            $localizedDimensionContentMock
+        );
+    }
+
+    public function testMapConflictingRoute(): void
+    {
+        $data = [
+            'template' => 'default',
+            'url' => '/test',
+        ];
+
+        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $localizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $localizedDimensionContent->willImplement(RoutableInterface::class);
+        $localizedDimensionContent->willImplement(TemplateInterface::class);
+
+        $factory = $this->prophesize(StructureMetadataFactoryInterface::class);
+        $routeGenerator = $this->prophesize(RouteGeneratorInterface::class);
+        $routeManager = $this->prophesize(RouteManagerInterface::class);
+        $conflictResolver = $this->prophesize(ConflictResolverInterface::class);
+
+        $metadata = $this->prophesize(StructureMetadata::class);
+        $property = $this->prophesize(PropertyMetadata::class);
+        $property->getType()->willReturn('route');
+        $property->getName()->willReturn('url');
+
+        $metadata->getProperties()->WillReturn([$property->reveal()]);
+
+        $localizedDimensionContent->getTemplateData()->willReturn([]);
+        $factory->getStructureMetadata('mock-template-type', 'default')->willReturn($metadata->reveal())->shouldBeCalled();
+
+        $localizedDimensionContent->getRoutableId()->willReturn('123-123-123');
+        $localizedDimensionContent->getLocale()->willReturn('en');
+        $localizedDimensionContent->getResourceKey()->willReturn('testKey');
+        $localizedDimensionContentMock = $this->wrapRoutableMock($localizedDimensionContent);
+
+        $routeGenerator->generate(Argument::any())->shouldNotBeCalled();
+
+        $route = $this->prophesize(RouteInterface::class);
+        $route->getPath()->willReturn('/test-1');
+
+        $routeManager->createOrUpdateByAttributes(
+            'mock-content-class',
+            '123-123-123',
+            'en',
+            '/test'
+        )->willReturn($route->reveal());
+
+        $conflictResolver->resolve($route->reveal())->shouldBeCalled();
+        $localizedDimensionContent->setTemplateData(['url' => '/test-1'])->shouldBeCalled();
 
         $mapper = $this->createRouteDataMapperInstance(
             $factory->reveal(),
@@ -678,6 +750,7 @@ class RoutableDataMapperTest extends TestCase
         $routeGenerator->generate(Argument::any())->shouldNotBeCalled();
 
         $route = $this->prophesize(RouteInterface::class);
+        $route->getPath()->willReturn('/test');
         $routeManager->createOrUpdateByAttributes(
             'mock-content-class',
             '123-123-123',
@@ -686,6 +759,7 @@ class RoutableDataMapperTest extends TestCase
         )->willReturn($route->reveal());
 
         $conflictResolver->resolve($route->reveal())->shouldBeCalled();
+        $localizedDimensionContent->setTemplateData(Argument::cetera())->shouldNotBeCalled();
 
         $mapper = $this->createRouteDataMapperInstance(
             $factory->reveal(),
@@ -730,7 +804,6 @@ class RoutableDataMapperTest extends TestCase
 
         $localizedDimensionContent->getRoutableId()->willReturn('123-123-123');
         $localizedDimensionContent->getTemplateData()->willReturn(['title' => 'Test', 'url' => null]);
-        $localizedDimensionContent->setTemplateData(['title' => 'Test', 'url' => '/custom/testEntity-123'])->shouldBeCalled();
         $localizedDimensionContent->getLocale()->willReturn('en');
         $localizedDimensionContent->getResourceKey()->willReturn('testKey');
         $localizedDimensionContentMock = $this->wrapRoutableMock($localizedDimensionContent);
@@ -744,6 +817,7 @@ class RoutableDataMapperTest extends TestCase
         )->willReturn('/custom/testEntity-123');
 
         $route = $this->prophesize(RouteInterface::class);
+        $route->getPath()->willReturn('/custom/testEntity-123');
         $routeManager->createOrUpdateByAttributes(
             'Sulu/Test/TestEntity',
             '123-123-123',
@@ -752,6 +826,7 @@ class RoutableDataMapperTest extends TestCase
         )->willReturn($route->reveal());
 
         $conflictResolver->resolve($route->reveal())->shouldBeCalled();
+        $localizedDimensionContent->setTemplateData(['title' => 'Test', 'url' => '/custom/testEntity-123'])->shouldBeCalled();
 
         $mapper = $this->createRouteDataMapperInstance(
             $factory->reveal(),

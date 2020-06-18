@@ -163,13 +163,6 @@ class RoutableDataMapper implements DataMapperInterface
             if ('/' === $routePath) {
                 return;
             }
-
-            $localizedObject->setTemplateData(
-                array_merge(
-                    $localizedObject->getTemplateData(),
-                    [$name => $routePath]
-                )
-            );
         }
 
         $route = $this->routeManager->createOrUpdateByAttributes(
@@ -180,6 +173,15 @@ class RoutableDataMapper implements DataMapperInterface
         );
 
         $this->conflictResolver->resolve($route);
+
+        if ($route->getPath() !== ($data[$name] ?? null)) {
+            $localizedObject->setTemplateData(
+                array_merge(
+                    $localizedObject->getTemplateData(),
+                    [$name => $route->getPath()]
+                )
+            );
+        }
     }
 
     private function getRouteProperty(StructureMetadata $metadata): ?PropertyMetadata
