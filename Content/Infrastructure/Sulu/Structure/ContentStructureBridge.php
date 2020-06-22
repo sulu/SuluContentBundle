@@ -77,6 +77,11 @@ class ContentStructureBridge implements StructureInterface
         return new ContentDocument($this->content, $this->locale);
     }
 
+    public function getStructure(): StructureMetadata
+    {
+        return $this->structure;
+    }
+
     public function getContent(): TemplateInterface
     {
         return $this->content;

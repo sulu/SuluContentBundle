@@ -30,16 +30,22 @@ use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Structure\ContentStruc
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Structure\ContentStructureBridgeFactory;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Structure\StructureMetadataNotFoundException;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
+use Sulu\Bundle\HttpCacheBundle\CacheLifetime\CacheLifetimeResolverInterface;
+use Sulu\Component\Content\Metadata\StructureMetadata;
 
 class ContentRouteDefaultsProviderTest extends TestCase
 {
     protected function getContentRouteDefaultsProvider(
         EntityManagerInterface $entityManager,
         ContentResolverInterface $contentResolver,
-        ContentStructureBridgeFactory $contentStructureBridgeFactory
+        ContentStructureBridgeFactory $contentStructureBridgeFactory,
+        CacheLifetimeResolverInterface $cacheLifetimeResolver
     ): ContentRouteDefaultsProvider {
         return new ContentRouteDefaultsProvider(
-            $entityManager, $contentResolver, $contentStructureBridgeFactory
+            $entityManager,
+            $contentResolver,
+            $contentStructureBridgeFactory,
+            $cacheLifetimeResolver
         );
     }
 
@@ -48,11 +54,13 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $entityManager = $this->prophesize(EntityManagerInterface::class);
         $contentResolver = $this->prophesize(ContentResolverInterface::class);
         $contentStructureBridgeFactory = $this->prophesize(ContentStructureBridgeFactory::class);
+        $cacheLifetimeResolver = $this->prophesize(CacheLifetimeResolverInterface::class);
 
         $contentRouteDefaultsProvider = $this->getContentRouteDefaultsProvider(
             $entityManager->reveal(),
             $contentResolver->reveal(),
-            $contentStructureBridgeFactory->reveal()
+            $contentStructureBridgeFactory->reveal(),
+            $cacheLifetimeResolver->reveal()
         );
 
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
@@ -66,11 +74,13 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $entityManager = $this->prophesize(EntityManagerInterface::class);
         $contentResolver = $this->prophesize(ContentResolverInterface::class);
         $contentStructureBridgeFactory = $this->prophesize(ContentStructureBridgeFactory::class);
+        $cacheLifetimeResolver = $this->prophesize(CacheLifetimeResolverInterface::class);
 
         $contentRouteDefaultsProvider = $this->getContentRouteDefaultsProvider(
             $entityManager->reveal(),
             $contentResolver->reveal(),
-            $contentStructureBridgeFactory->reveal()
+            $contentStructureBridgeFactory->reveal(),
+            $cacheLifetimeResolver->reveal()
         );
 
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
@@ -107,11 +117,13 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $entityManager = $this->prophesize(EntityManagerInterface::class);
         $contentResolver = $this->prophesize(ContentResolverInterface::class);
         $contentStructureBridgeFactory = $this->prophesize(ContentStructureBridgeFactory::class);
+        $cacheLifetimeResolver = $this->prophesize(CacheLifetimeResolverInterface::class);
 
         $contentRouteDefaultsProvider = $this->getContentRouteDefaultsProvider(
             $entityManager->reveal(),
             $contentResolver->reveal(),
-            $contentStructureBridgeFactory->reveal()
+            $contentStructureBridgeFactory->reveal(),
+            $cacheLifetimeResolver->reveal()
         );
 
         $queryBuilder = $this->prophesize(QueryBuilder::class);
@@ -135,11 +147,13 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $entityManager = $this->prophesize(EntityManagerInterface::class);
         $contentResolver = $this->prophesize(ContentResolverInterface::class);
         $contentStructureBridgeFactory = $this->prophesize(ContentStructureBridgeFactory::class);
+        $cacheLifetimeResolver = $this->prophesize(CacheLifetimeResolverInterface::class);
 
         $contentRouteDefaultsProvider = $this->getContentRouteDefaultsProvider(
             $entityManager->reveal(),
             $contentResolver->reveal(),
-            $contentStructureBridgeFactory->reveal()
+            $contentStructureBridgeFactory->reveal(),
+            $cacheLifetimeResolver->reveal()
         );
 
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
@@ -168,12 +182,15 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $entityManager = $this->prophesize(EntityManagerInterface::class);
         $contentResolver = $this->prophesize(ContentResolverInterface::class);
         $contentStructureBridgeFactory = $this->prophesize(ContentStructureBridgeFactory::class);
+        $cacheLifetimeResolver = $this->prophesize(CacheLifetimeResolverInterface::class);
 
         $contentRouteDefaultsProvider = $this->getContentRouteDefaultsProvider(
             $entityManager->reveal(),
             $contentResolver->reveal(),
-            $contentStructureBridgeFactory->reveal()
+            $contentStructureBridgeFactory->reveal(),
+            $cacheLifetimeResolver->reveal()
         );
+
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
         $resolvedDimensionContent = $this->prophesize(TemplateInterface::class);
         $resolvedDimensionContent->willImplement(DimensionContentInterface::class);
@@ -206,12 +223,15 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $entityManager = $this->prophesize(EntityManagerInterface::class);
         $contentResolver = $this->prophesize(ContentResolverInterface::class);
         $contentStructureBridgeFactory = $this->prophesize(ContentStructureBridgeFactory::class);
+        $cacheLifetimeResolver = $this->prophesize(CacheLifetimeResolverInterface::class);
 
         $contentRouteDefaultsProvider = $this->getContentRouteDefaultsProvider(
             $entityManager->reveal(),
             $contentResolver->reveal(),
-            $contentStructureBridgeFactory->reveal()
+            $contentStructureBridgeFactory->reveal(),
+            $cacheLifetimeResolver->reveal()
         );
+
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
         $resolvedDimensionContent = $this->prophesize(TemplateInterface::class);
         $resolvedDimensionContent->willImplement(DimensionContentInterface::class);
@@ -252,11 +272,13 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $entityManager = $this->prophesize(EntityManagerInterface::class);
         $contentResolver = $this->prophesize(ContentResolverInterface::class);
         $contentStructureBridgeFactory = $this->prophesize(ContentStructureBridgeFactory::class);
+        $cacheLifetimeResolver = $this->prophesize(CacheLifetimeResolverInterface::class);
 
         $contentRouteDefaultsProvider = $this->getContentRouteDefaultsProvider(
             $entityManager->reveal(),
             $contentResolver->reveal(),
-            $contentStructureBridgeFactory->reveal()
+            $contentStructureBridgeFactory->reveal(),
+            $cacheLifetimeResolver->reveal()
         );
 
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
@@ -294,16 +316,16 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $entityManager = $this->prophesize(EntityManagerInterface::class);
         $contentResolver = $this->prophesize(ContentResolverInterface::class);
         $contentStructureBridgeFactory = $this->prophesize(ContentStructureBridgeFactory::class);
+        $cacheLifetimeResolver = $this->prophesize(CacheLifetimeResolverInterface::class);
 
         $contentRouteDefaultsProvider = $this->getContentRouteDefaultsProvider(
             $entityManager->reveal(),
             $contentResolver->reveal(),
-            $contentStructureBridgeFactory->reveal()
+            $contentStructureBridgeFactory->reveal(),
+            $cacheLifetimeResolver->reveal()
         );
 
-        /**
-         * @var DimensionContentInterface
-         */
+        /** @var DimensionContentInterface */
         $entity = $contentRichEntity->reveal();
 
         $contentRouteDefaultsProvider->getByEntity(Example::class, '123-123-123', 'en', $entity);
@@ -314,11 +336,13 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $entityManager = $this->prophesize(EntityManagerInterface::class);
         $contentResolver = $this->prophesize(ContentResolverInterface::class);
         $contentStructureBridgeFactory = $this->prophesize(ContentStructureBridgeFactory::class);
+        $cacheLifetimeResolver = $this->prophesize(CacheLifetimeResolverInterface::class);
 
         $contentRouteDefaultsProvider = $this->getContentRouteDefaultsProvider(
             $entityManager->reveal(),
             $contentResolver->reveal(),
-            $contentStructureBridgeFactory->reveal()
+            $contentStructureBridgeFactory->reveal(),
+            $cacheLifetimeResolver->reveal()
         );
 
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
@@ -339,9 +363,16 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $contentResolver->resolve($contentRichEntity->reveal(), ['locale' => 'en', 'stage' => 'live'])
             ->willReturn($resolvedDimensionContent->reveal());
 
+        $cacheLifetimeResolver->supports('seconds', 3600)->willReturn(true);
+        $cacheLifetimeResolver->resolve('seconds', 3600)->willReturn(3600);
+
+        $structureMetadata = $this->prophesize(StructureMetadata::class);
+        $structureMetadata->getCacheLifetime()->willReturn(['value' => 3600, 'type' => 'seconds']);
+
         $contentStructureBridge = $this->prophesize(ContentStructureBridge::class);
         $contentStructureBridge->getView()->willReturn('default');
         $contentStructureBridge->getController()->willReturn('App\Controller\TestController:testAction');
+        $contentStructureBridge->getStructure()->willReturn($structureMetadata->reveal());
         $contentStructureBridgeFactory->getBridge($resolvedDimensionContent->reveal(), '123-123-123', 'en')
             ->willReturn($contentStructureBridge->reveal());
 
@@ -357,11 +388,13 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $entityManager = $this->prophesize(EntityManagerInterface::class);
         $contentResolver = $this->prophesize(ContentResolverInterface::class);
         $contentStructureBridgeFactory = $this->prophesize(ContentStructureBridgeFactory::class);
+        $cacheLifetimeResolver = $this->prophesize(CacheLifetimeResolverInterface::class);
 
         $contentRouteDefaultsProvider = $this->getContentRouteDefaultsProvider(
             $entityManager->reveal(),
             $contentResolver->reveal(),
-            $contentStructureBridgeFactory->reveal()
+            $contentStructureBridgeFactory->reveal(),
+            $cacheLifetimeResolver->reveal()
         );
 
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
@@ -390,11 +423,13 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $entityManager = $this->prophesize(EntityManagerInterface::class);
         $contentResolver = $this->prophesize(ContentResolverInterface::class);
         $contentStructureBridgeFactory = $this->prophesize(ContentStructureBridgeFactory::class);
+        $cacheLifetimeResolver = $this->prophesize(CacheLifetimeResolverInterface::class);
 
         $contentRouteDefaultsProvider = $this->getContentRouteDefaultsProvider(
             $entityManager->reveal(),
             $contentResolver->reveal(),
-            $contentStructureBridgeFactory->reveal()
+            $contentStructureBridgeFactory->reveal(),
+            $cacheLifetimeResolver->reveal()
         );
 
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
