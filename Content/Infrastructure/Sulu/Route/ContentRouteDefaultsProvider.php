@@ -23,7 +23,9 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Structure\ContentStructureBridgeFactory;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Structure\StructureMetadataNotFoundException;
+use Sulu\Bundle\HttpCacheBundle\CacheLifetime\CacheLifetimeResolverInterface;
 use Sulu\Bundle\RouteBundle\Routing\Defaults\RouteDefaultsProviderInterface;
+use Sulu\Component\Content\Metadata\StructureMetadata;
 
 class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
 {
@@ -42,14 +44,21 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
      */
     protected $contentStructureBridgeFactory;
 
+    /**
+     * @var CacheLifetimeResolverInterface
+     */
+    private $cacheLifetimeResolver;
+
     public function __construct(
         EntityManagerInterface $entityManager,
         ContentResolverInterface $contentResolver,
-        ContentStructureBridgeFactory $contentStructureBridgeFactory
+        ContentStructureBridgeFactory $contentStructureBridgeFactory,
+        CacheLifetimeResolverInterface $cacheLifetimeResolver
     ) {
         $this->entityManager = $entityManager;
         $this->contentResolver = $contentResolver;
         $this->contentStructureBridgeFactory = $contentStructureBridgeFactory;
+        $this->cacheLifetimeResolver = $cacheLifetimeResolver;
     }
 
     /**
@@ -84,6 +93,7 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
             'view' => $structureBridge->getView(),
             'structure' => $structureBridge,
             '_controller' => $structureBridge->getController(),
+            '_cacheLifetime' => $this->getCacheLifetime($structureBridge->getStructure()),
         ];
     }
 
@@ -143,5 +153,23 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
         } catch (ContentNotFoundException $exception) {
             return null;
         }
+    }
+
+    private function getCacheLifetime(StructureMetadata $metadata): ?int
+    {
+        $cacheLifetime = $metadata->getCacheLifetime();
+        if (!$cacheLifetime) {
+            return null;
+        }
+
+        if (!\is_array($cacheLifetime)
+            || !isset($cacheLifetime['type'])
+            || !isset($cacheLifetime['value'])
+            || !$this->cacheLifetimeResolver->supports($cacheLifetime['type'], $cacheLifetime['value'])
+        ) {
+            throw new \InvalidArgumentException(sprintf('Invalid cachelifetime in route default provider: %s', var_export($cacheLifetime, true)));
+        }
+
+        return $this->cacheLifetimeResolver->resolve($cacheLifetime['type'], $cacheLifetime['value']);
     }
 }
