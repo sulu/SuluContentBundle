@@ -381,6 +381,7 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $this->assertSame('default', $result['view']);
         $this->assertSame($contentStructureBridge->reveal(), $result['structure']);
         $this->assertSame('App\Controller\TestController:testAction', $result['_controller']);
+        $this->assertSame(3600, $result['_cacheLifetime']);
     }
 
     public function testGetByEntityNotPublished(): void

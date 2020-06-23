@@ -58,6 +58,15 @@ class ContentStructureBridgeTest extends TestCase
         $this->assertSame('en', $result->getLocale());
     }
 
+    public function testGetStructure(): void
+    {
+        $structureMetadata = $this->prophesize(StructureMetadata::class);
+
+        $structureBridge = $this->createStructureBridge(null, $structureMetadata->reveal());
+
+        $this->assertSame($structureMetadata->reveal(), $structureBridge->getStructure());
+    }
+
     public function testGetContent(): void
     {
         $content = $this->prophesize(TemplateInterface::class);
