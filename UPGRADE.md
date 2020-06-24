@@ -2,6 +2,11 @@
 
 ## dev-master
 
+### Add contentRichEntityClass parameter to getDefaultToolbarActions method of ContentViewBuilderFactory
+
+The `getDefaultToolbarActions` method of the `contentRichEntityClass` has a required `contentRichEntityClass` parameter
+now. The parameter is used for determining the correct toolbar actions based on the implemented interfaces.
+
 ### Refactor RoutableInterface to use configured schema for route generation
 
 The bundle now uses the `route_schema` that is configured via `sulu_route.mappings` for generating the route for an
