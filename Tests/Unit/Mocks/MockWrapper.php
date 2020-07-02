@@ -14,6 +14,9 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Mocks;
 
 use Prophecy\Prophecy\ObjectProphecy;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 
 /**
  * The SuluContentBundle uses static methods on its interfaces to allow for accessing class related information
@@ -35,6 +38,9 @@ class MockWrapper
      */
     protected $instance;
 
+    /**
+     * @param ObjectProphecy<ContentRichEntityInterface>|ObjectProphecy<DimensionContentInterface>|ObjectProphecy<TemplateInterface> $configuredMock
+     */
     public function __construct(ObjectProphecy $configuredMock)
     {
         $this->instance = $configuredMock->reveal();

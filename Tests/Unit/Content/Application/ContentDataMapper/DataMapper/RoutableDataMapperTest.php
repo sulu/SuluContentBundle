@@ -61,6 +61,9 @@ class RoutableDataMapperTest extends TestCase
         return new RoutableDataMapper($factory, $routeGenerator, $routeManager, $conflictResolver, $structureDefaultTypes, $resourceKeyMappings);
     }
 
+    /**
+     * @param ObjectProphecy<DimensionContentInterface> $routableMock
+     */
     protected function wrapRoutableMock(ObjectProphecy $routableMock): RoutableInterface
     {
         return new class($routableMock) extends MockWrapper implements

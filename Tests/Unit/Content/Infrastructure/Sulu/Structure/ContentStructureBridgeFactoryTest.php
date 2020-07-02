@@ -36,6 +36,9 @@ class ContentStructureBridgeFactoryTest extends TestCase
         );
     }
 
+    /**
+     * @param ObjectProphecy<TemplateInterface> $templateMock
+     */
     protected function wrapTemplateMock(ObjectProphecy $templateMock): TemplateInterface
     {
         return new class($templateMock) extends MockWrapper implements

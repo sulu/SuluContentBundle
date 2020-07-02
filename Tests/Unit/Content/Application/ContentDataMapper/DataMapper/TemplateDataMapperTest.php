@@ -36,6 +36,9 @@ class TemplateDataMapperTest extends TestCase
         return new TemplateDataMapper($structureMetadataFactory, $structureDefaultTypes);
     }
 
+    /**
+     * @param ObjectProphecy<DimensionContentInterface> $tempplateMock
+     */
     protected function wrapTemplateMock(ObjectProphecy $tempplateMock): TemplateInterface
     {
         return new class($tempplateMock) extends MockWrapper implements
