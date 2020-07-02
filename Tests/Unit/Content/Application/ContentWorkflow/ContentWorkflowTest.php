@@ -50,6 +50,7 @@ class ContentWorkflowTest extends TestCase
 
     /**
      * @param ObjectProphecy<DimensionContentInterface> $workflowMock
+     *
      * @return DimensionContentInterface&WorkflowInterface
      */
     protected function wrapWorkflowMock(ObjectProphecy $workflowMock)
