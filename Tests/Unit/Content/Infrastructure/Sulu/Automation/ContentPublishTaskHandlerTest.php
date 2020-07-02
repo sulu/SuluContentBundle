@@ -24,7 +24,7 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Automation\ContentPublishTaskHandler;
 use Sulu\Bundle\PageBundle\Document\PageDocument;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ContentPublishTaskHandlerTest extends TestCase
 {

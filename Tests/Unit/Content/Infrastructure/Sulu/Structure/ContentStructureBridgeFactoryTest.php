@@ -15,6 +15,7 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Infrastructure\Sulu\Struc
 
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Structure\ContentStructureBridge;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Structure\ContentStructureBridgeFactory;
@@ -36,6 +37,9 @@ class ContentStructureBridgeFactoryTest extends TestCase
         );
     }
 
+    /**
+     * @param ObjectProphecy<TemplateInterface> $templateMock
+     */
     protected function wrapTemplateMock(ObjectProphecy $templateMock): TemplateInterface
     {
         return new class($templateMock) extends MockWrapper implements

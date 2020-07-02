@@ -20,7 +20,7 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentManager\ContentManagerI
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ContentPublishTaskHandler implements AutomationTaskHandlerInterface
 {

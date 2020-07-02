@@ -76,7 +76,7 @@ class ExampleControllerTest extends BaseTestCase
         $this->assertHttpStatusCode(200, $response);
         $content = $response->getContent();
         $this->assertIsString($content);
-        $this->assertStringContainsString('EXAMPLE DEFAULT TEMPLATE', $content);
+        $this->assertStringContainsString('EXAMPLE 2 TEMPLATE', $content);
 
         return $id;
     }
