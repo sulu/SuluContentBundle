@@ -151,7 +151,7 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
         }
 
         if (!empty($websiteCategories = $filters['websiteCategories'] ?? [])) {
-            $websiteCategoryOperator = (string) ($filters['websiteCategoryOperator'] ?? 'OR');
+            $websiteCategoryOperator = (string) ($filters['websiteCategoriesOperator'] ?? 'OR');
 
             $parameters = array_merge(
                 $parameters,
@@ -169,7 +169,7 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
         }
 
         if (!empty($websiteTags = $filters['websiteTags'] ?? [])) {
-            $websiteTagOperator = (string) ($filters['websiteTagOperator'] ?? 'OR');
+            $websiteTagOperator = (string) ($filters['websiteTagsOperator'] ?? 'OR');
 
             $parameters = array_merge(
                 $parameters,
