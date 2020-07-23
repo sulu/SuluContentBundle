@@ -42,7 +42,7 @@ class RoutableNormalizerTest extends TestCase
 
         $this->assertSame(
             [
-                'routableId',
+                'resourceId',
             ],
             $normalizer->getIgnoredAttributes($object->reveal())
         );

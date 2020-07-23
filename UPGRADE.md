@@ -2,6 +2,11 @@
 
 ## dev-master
 
+### Rename getRoutableId method of RoutableInterface to getResourceId
+
+The `getRoutableId` method of the `RoutableInterface` was renamed to `getResourceId`. This makes the naming consistent 
+with the `getResourceKey` method of the `RoutableInterface` and the `DimensionContentInterface`.
+
 ### Add contentRichEntityClass parameter to getDefaultToolbarActions method of ContentViewBuilderFactory
 
 The `getDefaultToolbarActions` method of the `ContentViewBuilderFactory` has a required `contentRichEntityClass` parameter

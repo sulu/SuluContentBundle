@@ -20,7 +20,7 @@ trait RoutableTrait
         return $this->getDimension()->getLocale();
     }
 
-    public function getRoutableId()
+    public function getResourceId()
     {
         return $this->getContentRichEntity()->getId();
     }
