@@ -22,10 +22,10 @@ trait RoutableTrait
 
     public function getResourceId()
     {
-        return $this->getContentRichEntity()->getId();
+        return $this->getResource()->getId();
     }
 
     abstract public function getDimension(): DimensionInterface;
 
-    abstract public function getContentRichEntity(): ContentRichEntityInterface;
+    abstract public function getResource(): ContentRichEntityInterface;
 }

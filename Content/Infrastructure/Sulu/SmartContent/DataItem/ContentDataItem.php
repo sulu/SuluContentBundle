@@ -32,7 +32,7 @@ class ContentDataItem extends ArrayAccessItem implements ItemInterface, PublishI
     public function __construct(DimensionContentInterface $dimensionContent, array $data)
     {
         parent::__construct(
-            $dimensionContent->getContentRichEntity()->getId(),
+            $dimensionContent->getResource()->getId(),
             $data,
             $dimensionContent
         );

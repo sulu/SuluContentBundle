@@ -40,11 +40,11 @@ class RoutableTraitTest extends TestCase
             /**
              * @var ContentRichEntityInterface
              */
-            private $contentRichEntity;
+            private $resource;
 
-            public function __construct(ContentRichEntityInterface $contentRichEntity, DimensionInterface $dimension)
+            public function __construct(ContentRichEntityInterface $resource, DimensionInterface $dimension)
             {
-                $this->contentRichEntity = $contentRichEntity;
+                $this->resource = $resource;
                 $this->dimension = $dimension;
             }
 
@@ -58,9 +58,9 @@ class RoutableTraitTest extends TestCase
                 return $this->dimension;
             }
 
-            public function getContentRichEntity(): ContentRichEntityInterface
+            public function getResource(): ContentRichEntityInterface
             {
-                return $this->contentRichEntity;
+                return $this->resource;
             }
         };
     }

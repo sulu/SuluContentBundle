@@ -92,7 +92,7 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
      */
     public function getId($object)
     {
-        return $object->getContentRichEntity()->getId();
+        return $object->getResource()->getId();
     }
 
     /**
@@ -129,7 +129,7 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
     public function serialize($object)
     {
         return json_encode([
-            'id' => $object->getContentRichEntity()->getId(),
+            'id' => $object->getResource()->getId(),
             'locale' => $object->getDimension()->getLocale(),
         ]) ?: '[]';
     }

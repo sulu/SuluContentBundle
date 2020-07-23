@@ -322,7 +322,7 @@ class ContentViewBuilderFactoryTest extends TestCase
                         return 'mock-resource-key';
                     }
 
-                    public function getContentRichEntity(): ContentRichEntityInterface
+                    public function getResource(): ContentRichEntityInterface
                     {
                         throw new \RuntimeException('Should not be called while executing tests.');
                     }
@@ -339,7 +339,7 @@ class ContentViewBuilderFactoryTest extends TestCase
                     use SeoTrait;
                     use ExcerptTrait;
 
-                    public function getContentRichEntity(): ContentRichEntityInterface
+                    public function getResource(): ContentRichEntityInterface
                     {
                         throw new \RuntimeException('Should not be called while executing tests.');
                     }
@@ -369,7 +369,7 @@ class ContentViewBuilderFactoryTest extends TestCase
                     use SeoTrait;
                     use ExcerptTrait;
 
-                    public function getContentRichEntity(): ContentRichEntityInterface
+                    public function getResource(): ContentRichEntityInterface
                     {
                         throw new \RuntimeException('Should not be called while executing tests.');
                     }

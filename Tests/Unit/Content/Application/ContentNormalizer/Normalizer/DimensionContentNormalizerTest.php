@@ -43,7 +43,7 @@ class DimensionContentNormalizerTest extends TestCase
         $object = $this->prophesize(DimensionContentInterface::class);
 
         $this->assertSame(
-            ['id', 'merged', 'dimension', 'contentRichEntity'],
+            ['id', 'merged', 'dimension', 'resource'],
             $normalizer->getIgnoredAttributes($object->reveal())
         );
     }
@@ -68,15 +68,15 @@ class DimensionContentNormalizerTest extends TestCase
     {
         $normalizer = $this->createDimensionContentNormalizerInstance();
 
-        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
-        $contentRichEntity->getId()->willReturn('content-id-123');
+        $resource = $this->prophesize(ContentRichEntityInterface::class);
+        $resource->getId()->willReturn('content-id-123');
 
         $dimension = $this->prophesize(DimensionInterface::class);
         $dimension->getLocale()->willReturn('en');
         $dimension->getStage()->willReturn('live');
 
         $object = $this->prophesize(DimensionContentInterface::class);
-        $object->getContentRichEntity()->willReturn($contentRichEntity->reveal());
+        $object->getResource()->willReturn($resource->reveal());
         $object->getDimension()->willReturn($dimension->reveal());
 
         $data = [

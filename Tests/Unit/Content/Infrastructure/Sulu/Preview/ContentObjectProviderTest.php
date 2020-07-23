@@ -163,7 +163,7 @@ class ContentObjectProviderTest extends TestCase
         $contentRichEntity->getId()->willReturn($id);
 
         $dimensionContent = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent->getContentRichEntity()->willReturn($contentRichEntity->reveal());
+        $dimensionContent->getResource()->willReturn($contentRichEntity->reveal());
 
         $actualId = (string) $this->contentObjectProvider->getId($dimensionContent->reveal());
 
@@ -224,7 +224,7 @@ class ContentObjectProviderTest extends TestCase
         $dimension->getLocale()->willReturn('en');
 
         $dimensionContent = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent->getContentRichEntity()->willReturn($contentRichEntity->reveal());
+        $dimensionContent->getResource()->willReturn($contentRichEntity->reveal());
         $dimensionContent->getDimension()->willReturn($dimension->reveal());
 
         $serializedObject = json_encode([

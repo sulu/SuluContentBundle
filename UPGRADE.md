@@ -2,6 +2,12 @@
 
 ## dev-master
 
+### Rename getContentRichEntity method of DimensionContentInterface to getResource
+
+The `getContentRichEntity` method of the `DimensionContentInterface` was renamed to `getResource`. 
+This makes the naming consistent with the `getResourceKey` method of the `DimensionContentInterface` and 
+the `getResourceId` method of the `RoutableInterface`.
+
 ### Rename getRoutableId method of RoutableInterface to getResourceId
 
 The `getRoutableId` method of the `RoutableInterface` was renamed to `getResourceId`. This makes the naming consistent 

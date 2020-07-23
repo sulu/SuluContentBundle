@@ -66,11 +66,11 @@ class ContentNormalizerTest extends TestCase
             /**
              * @var ContentRichEntityInterface
              */
-            protected $contentRichEntity;
+            protected $resource;
 
-            public function __construct(ContentRichEntityInterface $contentRichEntity, DimensionInterface $dimension)
+            public function __construct(ContentRichEntityInterface $resource, DimensionInterface $dimension)
             {
-                $this->contentRichEntity = $contentRichEntity;
+                $this->resource = $resource;
                 $this->dimension = $dimension;
             }
 
@@ -79,9 +79,9 @@ class ContentNormalizerTest extends TestCase
                 throw new \RuntimeException('Should not be called while executing tests.');
             }
 
-            public function getContentRichEntity(): ContentRichEntityInterface
+            public function getResource(): ContentRichEntityInterface
             {
-                return $this->contentRichEntity;
+                return $this->resource;
             }
         };
 
@@ -113,11 +113,11 @@ class ContentNormalizerTest extends TestCase
             /**
              * @var ContentRichEntityInterface
              */
-            protected $contentRichEntity;
+            protected $resource;
 
-            public function __construct(ContentRichEntityInterface $contentRichEntity, DimensionInterface $dimension)
+            public function __construct(ContentRichEntityInterface $resource, DimensionInterface $dimension)
             {
-                $this->contentRichEntity = $contentRichEntity;
+                $this->resource = $resource;
                 $this->dimension = $dimension;
             }
 
@@ -131,9 +131,9 @@ class ContentNormalizerTest extends TestCase
                 throw new \RuntimeException('Should not be called while executing tests.');
             }
 
-            public function getContentRichEntity(): ContentRichEntityInterface
+            public function getResource(): ContentRichEntityInterface
             {
-                return $this->contentRichEntity;
+                return $this->resource;
             }
         };
 
