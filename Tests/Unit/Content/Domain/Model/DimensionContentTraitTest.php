@@ -37,7 +37,7 @@ class DimensionContentTraitTest extends TestCase
                 throw new \RuntimeException('Should not be called while executing tests.');
             }
 
-            public function getContentRichEntity(): ContentRichEntityInterface
+            public function getResource(): ContentRichEntityInterface
             {
                 throw new \RuntimeException('Should not be called while executing tests.');
             }

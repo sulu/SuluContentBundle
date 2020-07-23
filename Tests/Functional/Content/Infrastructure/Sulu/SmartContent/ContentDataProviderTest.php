@@ -85,7 +85,7 @@ class ContentDataProviderTest extends BaseTestCase
             'title' => 'example without categories without tags',
             'excerptCategories' => [],
             'excerptTags' => [],
-        ], 'en')->getContentRichEntity();
+        ], 'en')->getResource();
         static::publishExample($example1->getId(), 'en');
         static::modifyExample($example1->getId(), [
             'title' => 'example without categories without tags',
@@ -112,7 +112,7 @@ class ContentDataProviderTest extends BaseTestCase
                 static::$categoryFoo->getId(),
             ],
             'excerptTags' => [],
-        ], 'en')->getContentRichEntity();
+        ], 'en')->getResource();
         static::publishExample($example2->getId(), 'en');
         static::modifyExample($example2->getId(), [
             'title' => 'example with some categories without tags unpublished',
@@ -131,7 +131,7 @@ class ContentDataProviderTest extends BaseTestCase
                 static::$categoryBaz->getId(),
             ],
             'excerptTags' => [],
-        ], 'en')->getContentRichEntity();
+        ], 'en')->getResource();
         static::publishExample($example3->getId(), 'en');
         static::modifyExample($example3->getId(), [
             'title' => 'example with all categories without tags',
@@ -151,7 +151,7 @@ class ContentDataProviderTest extends BaseTestCase
             'excerptTags' => [
                 'tagA',
             ],
-        ], 'en')->getContentRichEntity();
+        ], 'en')->getResource();
         static::publishExample($example4->getId(), 'en');
         static::modifyExample($example4->getId(), [
             'title' => 'example without categories with some tags',
@@ -171,7 +171,7 @@ class ContentDataProviderTest extends BaseTestCase
                 'tagB',
                 'tagC',
             ],
-        ], 'en')->getContentRichEntity();
+        ], 'en')->getResource();
         static::publishExample($example5->getId(), 'en');
         static::modifyExample($example5->getId(), [
             'title' => 'example without categories with all tags',
@@ -193,7 +193,7 @@ class ContentDataProviderTest extends BaseTestCase
             'excerptTags' => [
                 'tagB',
             ],
-        ], 'en')->getContentRichEntity();
+        ], 'en')->getResource();
         static::publishExample($example6->getId(), 'en');
         static::modifyExample($example6->getId(), [
             'title' => 'example with some categories with some tags',
@@ -219,7 +219,7 @@ class ContentDataProviderTest extends BaseTestCase
                 'tagB',
                 'tagC',
             ],
-        ], 'en')->getContentRichEntity();
+        ], 'en')->getResource();
         static::publishExample($example7->getId(), 'en');
         static::modifyExample($example7->getId(), [
             'title' => 'example with all categories with all tags',

@@ -33,9 +33,9 @@ trait DimensionContentMockWrapperTrait
         return $this->instance->getDimension();
     }
 
-    public function getContentRichEntity(): ContentRichEntityInterface
+    public function getResource(): ContentRichEntityInterface
     {
-        return $this->instance->getContentRichEntity();
+        return $this->instance->getResource();
     }
 
     public function isMerged(): bool

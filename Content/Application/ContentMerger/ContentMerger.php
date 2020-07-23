@@ -44,7 +44,7 @@ class ContentMerger implements ContentMergerInterface
 
         $mostSpecificDimensionContent = $dimensionContentCollectionArray[$lastKey];
         $mostSpecificDimension = $mostSpecificDimensionContent->getDimension();
-        $contentRichEntity = $mostSpecificDimensionContent->getContentRichEntity();
+        $contentRichEntity = $mostSpecificDimensionContent->getResource();
 
         $mergedDimensionContent = $contentRichEntity->createDimensionContent($mostSpecificDimension);
         $mergedDimensionContent->markAsMerged();

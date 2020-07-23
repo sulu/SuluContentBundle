@@ -42,28 +42,28 @@ class ContentSitemapProviderTest extends BaseTestCase
         parent::setUpBeforeClass();
 
         // Example 1 (both locales, both published)
-        $example1 = static::createExample(['title' => 'example-1'], 'en')->getContentRichEntity();
+        $example1 = static::createExample(['title' => 'example-1'], 'en')->getResource();
         static::publishExample($example1->getId(), 'en');
 
         static::modifyExample($example1->getId(), ['title' => 'beispiel-1'], 'de');
         static::publishExample($example1->getId(), 'de');
 
         // Example 2 (only en, published)
-        $example2 = static::createExample(['title' => 'example-2'], 'en')->getContentRichEntity();
+        $example2 = static::createExample(['title' => 'example-2'], 'en')->getResource();
         static::publishExample($example2->getId(), 'en');
 
         // Example 3 (both locales, only en published)
-        $example3 = static::createExample(['title' => 'example-3'], 'en')->getContentRichEntity();
+        $example3 = static::createExample(['title' => 'example-3'], 'en')->getResource();
         static::publishExample($example3->getId(), 'en');
 
         static::modifyExample($example3->getId(), ['title' => 'beispiel-3'], 'de');
 
         // Example 4 (only de, published)
-        $example4 = static::createExample(['title' => 'beispiel-4'], 'de')->getContentRichEntity();
+        $example4 = static::createExample(['title' => 'beispiel-4'], 'de')->getResource();
         static::publishExample($example4->getId(), 'de');
 
         // Example 5 (only en, not published)
-        $example5 = static::createExample(['title' => 'example-5'], 'en')->getContentRichEntity();
+        $example5 = static::createExample(['title' => 'example-5'], 'en')->getResource();
     }
 
     public function setUp(): void

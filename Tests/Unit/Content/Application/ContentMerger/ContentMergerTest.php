@@ -51,12 +51,12 @@ class ContentMergerTest extends TestCase
 
         $mostSpecificDimension = $this->prophesize(DimensionInterface::class);
 
-        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
-        $contentRichEntity->createDimensionContent($mostSpecificDimension->reveal())
+        $resource = $this->prophesize(ContentRichEntityInterface::class);
+        $resource->createDimensionContent($mostSpecificDimension->reveal())
             ->willReturn($mergedDimensionContent->reveal());
 
         $dimensionContent3->getDimension()->willReturn($mostSpecificDimension->reveal());
-        $dimensionContent3->getContentRichEntity()->willReturn($contentRichEntity->reveal());
+        $dimensionContent3->getResource()->willReturn($resource->reveal());
 
         $merger1->merge($mergedDimensionContent->reveal(), $dimensionContent1->reveal())->shouldBeCalled();
         $merger2->merge($mergedDimensionContent->reveal(), $dimensionContent1->reveal())->shouldBeCalled();

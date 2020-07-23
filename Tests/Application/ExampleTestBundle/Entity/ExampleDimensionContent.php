@@ -66,7 +66,7 @@ class ExampleDimensionContent implements DimensionContentInterface, ExcerptInter
         return $this->id;
     }
 
-    public function getContentRichEntity(): ContentRichEntityInterface
+    public function getResource(): ContentRichEntityInterface
     {
         return $this->example;
     }

@@ -47,7 +47,7 @@ class ContentTeaserProviderTest extends BaseTestCase
             'article' => 'example-1-article',
             'excerptTitle' => 'example-1-excerpt-title',
             'excerptDescription' => 'example-1-excerpt-description',
-        ], 'en')->getContentRichEntity();
+        ], 'en')->getResource();
         static::publishExample($example1->getId(), 'en');
 
         static::modifyExample($example1->getId(), [
@@ -60,13 +60,13 @@ class ContentTeaserProviderTest extends BaseTestCase
         static::$exampleIds[] = $example1->getId();
 
         // Example 2 (only en, published)
-        $example2 = static::createExample(['title' => 'example-2'], 'en')->getContentRichEntity();
+        $example2 = static::createExample(['title' => 'example-2'], 'en')->getResource();
         static::publishExample($example2->getId(), 'en');
 
         static::$exampleIds[] = $example2->getId();
 
         // Example 3 (both locales, only en published)
-        $example3 = static::createExample(['title' => 'example-3'], 'en')->getContentRichEntity();
+        $example3 = static::createExample(['title' => 'example-3'], 'en')->getResource();
         static::publishExample($example3->getId(), 'en');
 
         static::modifyExample($example3->getId(), ['title' => 'beispiel-3'], 'de');
@@ -74,13 +74,13 @@ class ContentTeaserProviderTest extends BaseTestCase
         static::$exampleIds[] = $example3->getId();
 
         // Example 4 (only de, published)
-        $example4 = static::createExample(['title' => 'beispiel-4'], 'de')->getContentRichEntity();
+        $example4 = static::createExample(['title' => 'beispiel-4'], 'de')->getResource();
         static::publishExample($example4->getId(), 'de');
 
         static::$exampleIds[] = $example4->getId();
 
         // Example 5 (only en, not published)
-        $example5 = static::createExample(['title' => 'example-5'], 'en')->getContentRichEntity();
+        $example5 = static::createExample(['title' => 'example-5'], 'en')->getResource();
 
         static::$exampleIds[] = $example5->getId();
     }

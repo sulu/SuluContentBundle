@@ -119,7 +119,7 @@ class ContentDataProvider extends BaseDataProvider
      */
     protected function getIdForItem($dimensionContent)
     {
-        return $dimensionContent->getContentRichEntity()->getId();
+        return $dimensionContent->getResource()->getId();
     }
 
     /**
