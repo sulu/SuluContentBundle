@@ -38,11 +38,6 @@ class Example implements ContentRichEntityInterface
         return $this->id;
     }
 
-    public static function getResourceKey(): string
-    {
-        return self::RESOURCE_KEY;
-    }
-
     public function createDimensionContent(DimensionInterface $dimension): DimensionContentInterface
     {
         return new ExampleDimensionContent($this, $dimension);

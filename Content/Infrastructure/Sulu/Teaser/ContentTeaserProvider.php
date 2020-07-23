@@ -297,12 +297,9 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
 
     protected function getResourceKey(): string
     {
-        $resourceKey = $this->contentRichEntityClass::getResourceKey();
+        $classMetadata = $this->entityManager->getClassMetadata($this->contentRichEntityClass);
+        $dimensionContentClass = $classMetadata->getAssociationMapping('dimensionContents')['targetEntity'];
 
-        if (!$resourceKey) {
-            throw new \RuntimeException(sprintf('Error while calling "%s".', $this->contentRichEntityClass . '::getResourceKey'));
-        }
-
-        return $resourceKey;
+        return $dimensionContentClass::getResourceKey();
     }
 }

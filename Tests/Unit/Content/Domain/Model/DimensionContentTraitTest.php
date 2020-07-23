@@ -32,6 +32,11 @@ class DimensionContentTraitTest extends TestCase
                 $this->dimension = $dimension;
             }
 
+            public static function getResourceKey(): string
+            {
+                throw new \RuntimeException('Should not be called while executing tests.');
+            }
+
             public function getContentRichEntity(): ContentRichEntityInterface
             {
                 throw new \RuntimeException('Should not be called while executing tests.');

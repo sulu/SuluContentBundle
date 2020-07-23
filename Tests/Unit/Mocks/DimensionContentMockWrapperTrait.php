@@ -23,6 +23,11 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
  */
 trait DimensionContentMockWrapperTrait
 {
+    public static function getResourceKey(): string
+    {
+        return 'mock-resource-key';
+    }
+
     public function getDimension(): DimensionInterface
     {
         return $this->instance->getDimension();

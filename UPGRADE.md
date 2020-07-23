@@ -7,6 +7,11 @@
 The `getDefaultToolbarActions` method of the `ContentViewBuilderFactory` has a required `contentRichEntityClass` parameter
 now. The parameter is used for determining the correct toolbar actions based on the implemented interfaces.
 
+### Move static getResourceKey method from ContentRichEntityInterface to DimensionContentInterface
+
+The static `getResourceKey` method was moved from the `ContentRichEntityInterface` to the `DimensionContentInterface`.
+This makes it consistent with the `getTemplateType` method and the `getWorkflowName` method .
+
 ### Refactor RoutableInterface to use configured schema for route generation
 
 The bundle now uses the `route_schema` that is configured via `sulu_route.mappings` for generating the route for an

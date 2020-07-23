@@ -17,8 +17,6 @@ use Doctrine\Common\Collections\Collection;
 
 interface ContentRichEntityInterface
 {
-    public static function getResourceKey(): string;
-
     /**
      * @return mixed
      */

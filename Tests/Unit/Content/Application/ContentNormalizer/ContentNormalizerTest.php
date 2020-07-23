@@ -74,6 +74,11 @@ class ContentNormalizerTest extends TestCase
                 $this->dimension = $dimension;
             }
 
+            public static function getResourceKey(): string
+            {
+                throw new \RuntimeException('Should not be called while executing tests.');
+            }
+
             public function getContentRichEntity(): ContentRichEntityInterface
             {
                 return $this->contentRichEntity;
@@ -116,9 +121,9 @@ class ContentNormalizerTest extends TestCase
                 $this->dimension = $dimension;
             }
 
-            public function getResourceKey(): string
+            public static function getResourceKey(): string
             {
-                return 'resource_key';
+                throw new \RuntimeException('Should not be called while executing tests.');
             }
 
             public static function getTemplateType(): string
@@ -187,7 +192,6 @@ class ContentNormalizerTest extends TestCase
             'locale' => 'de',
             'published' => '2020-02-02T12:30:00+00:00',
             'publishedState' => false,
-            'resourceKey' => 'resource_key',
             'seoCanonicalUrl' => 'https://caninical.localhost/',
             'seoDescription' => 'Seo Description',
             'seoHideInSitemap' => true,
