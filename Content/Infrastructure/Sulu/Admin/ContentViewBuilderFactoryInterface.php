@@ -20,9 +20,13 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 interface ContentViewBuilderFactoryInterface
 {
     /**
+     * @param class-string<ContentRichEntityInterface> $contentRichEntityClass
+     *
      * @return array<string, ToolbarAction>
      */
-    public function getDefaultToolbarActions(): array;
+    public function getDefaultToolbarActions(
+        string $contentRichEntityClass
+    ): array;
 
     /**
      * @param class-string<ContentRichEntityInterface> $contentRichEntityClass

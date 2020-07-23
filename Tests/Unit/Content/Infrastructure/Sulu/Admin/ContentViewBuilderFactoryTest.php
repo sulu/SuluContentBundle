@@ -22,6 +22,16 @@ use Sulu\Bundle\AdminBundle\Admin\View\ViewBuilderFactory;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\ContentDataMapperInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentTrait;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptTrait;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoTrait;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateTrait;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowTrait;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Admin\ContentViewBuilderFactory;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Admin\ContentViewBuilderFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Preview\ContentObjectProvider;
@@ -254,11 +264,11 @@ class ContentViewBuilderFactoryTest extends TestCase
 
     /**
      * @param mixed[] $permissions
-     * @param mixed[] $expectedTypes
+     * @param mixed[] $expectedToolbarActions
      *
      * @dataProvider getSecurityContextData
      */
-    public function testCreateViewsWithSecurityContext(array $permissions, array $expectedTypes): void
+    public function testCreateViewsWithSecurityContext(array $permissions, array $expectedToolbarActions): void
     {
         $securityChecker = $this->prophesize(SecurityCheckerInterface::class);
 
@@ -283,15 +293,126 @@ class ContentViewBuilderFactoryTest extends TestCase
             'test_context'
         );
 
-        $this->assertCount(\count($expectedTypes), $views);
+        $this->assertCount(\count($expectedToolbarActions), $views);
 
         foreach ($views as $index => $viewBuilder) {
             $toolbarActions = $viewBuilder->getView()->getOption('toolbarActions');
+            $toolbarActionTypes = array_map(function ($toolbarAction) {
+                return $toolbarAction->getType();
+            }, $toolbarActions);
 
-            $this->assertCount(\count($expectedTypes[$index]), $toolbarActions);
-            foreach ($expectedTypes[$index] as $action => $type) {
-                $this->assertSame($type, $toolbarActions[$action]->getType());
-            }
+            $this->assertSame($expectedToolbarActions[$index], $toolbarActionTypes);
+        }
+    }
+
+    /**
+     * @return mixed[]
+     */
+    public function getContentRichEntityClassData(): array
+    {
+        return [
+            [
+                new class() implements DimensionContentInterface, SeoInterface, ExcerptInterface {
+                    use DimensionContentTrait;
+                    use SeoTrait;
+                    use ExcerptTrait;
+
+                    public function getContentRichEntity(): ContentRichEntityInterface
+                    {
+                        throw new \RuntimeException('Should not be called while executing tests.');
+                    }
+                },
+                [
+                    ['sulu_admin.save'],
+                    ['sulu_admin.save'],
+                ],
+            ],
+            [
+                new class() implements DimensionContentInterface, TemplateInterface, SeoInterface, ExcerptInterface {
+                    use DimensionContentTrait;
+                    use TemplateTrait;
+                    use SeoTrait;
+                    use ExcerptTrait;
+
+                    public function getContentRichEntity(): ContentRichEntityInterface
+                    {
+                        throw new \RuntimeException('Should not be called while executing tests.');
+                    }
+
+                    public static function getTemplateType(): string
+                    {
+                        return 'mock-template-type';
+                    }
+                },
+                [
+                    ['sulu_admin.save', 'sulu_admin.type', 'sulu_admin.delete'],
+                    ['sulu_admin.save', 'sulu_admin.type', 'sulu_admin.delete'],
+                    ['sulu_admin.save'],
+                    ['sulu_admin.save'],
+                ],
+            ],
+            [
+                new class() implements DimensionContentInterface, TemplateInterface, WorkflowInterface, SeoInterface, ExcerptInterface {
+                    use DimensionContentTrait;
+                    use TemplateTrait;
+                    use WorkflowTrait;
+                    use SeoTrait;
+                    use ExcerptTrait;
+
+                    public function getContentRichEntity(): ContentRichEntityInterface
+                    {
+                        throw new \RuntimeException('Should not be called while executing tests.');
+                    }
+
+                    public static function getTemplateType(): string
+                    {
+                        return 'mock-template-type';
+                    }
+                },
+                [
+                    ['sulu_admin.save_with_publishing', 'sulu_admin.type', 'sulu_admin.delete', 'sulu_admin.dropdown'],
+                    ['sulu_admin.save_with_publishing', 'sulu_admin.type', 'sulu_admin.delete', 'sulu_admin.dropdown'],
+                    ['sulu_admin.save_with_publishing'],
+                    ['sulu_admin.save_with_publishing'],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @param mixed[] $expectedToolbarActions
+     *
+     * @dataProvider getContentRichEntityClassData
+     */
+    public function testCreateViewsWithContentRichEntityClass(DimensionContentInterface $dimensionContentObject, array $expectedToolbarActions): void
+    {
+        $securityChecker = $this->prophesize(SecurityCheckerInterface::class);
+
+        $entityManager = $this->prophesize(EntityManagerInterface::class);
+        $classMetadata = $this->prophesize(ClassMetadata::class);
+        $classMetadata->getAssociationMapping('dimensionContents')->willReturn(
+            ['targetEntity' => \get_class($dimensionContentObject)]
+        );
+
+        $entityManager->getClassMetadata(Example::class)->willReturn($classMetadata->reveal());
+
+        $contentViewBuilder = $this->createContentViewBuilder($entityManager->reveal(), $securityChecker->reveal());
+
+        $views = $contentViewBuilder->createViews(
+            Example::class,
+            'edit_parent_key',
+            'add_parent_key'
+        );
+
+        $this->assertCount(\count($expectedToolbarActions), $views);
+
+        foreach ($views as $index => $viewBuilder) {
+            $toolbarActions = $viewBuilder->getView()->getOption('toolbarActions');
+            $toolbarActionTypes = array_map(function ($toolbarAction) {
+                return $toolbarAction->getType();
+            }, $toolbarActions);
+
+            $this->assertSame($expectedToolbarActions[$index], $toolbarActionTypes);
         }
     }
 }
