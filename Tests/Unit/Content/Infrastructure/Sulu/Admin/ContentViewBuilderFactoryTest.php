@@ -317,6 +317,11 @@ class ContentViewBuilderFactoryTest extends TestCase
                     use SeoTrait;
                     use ExcerptTrait;
 
+                    public static function getResourceKey(): string
+                    {
+                        return 'mock-resource-key';
+                    }
+
                     public function getContentRichEntity(): ContentRichEntityInterface
                     {
                         throw new \RuntimeException('Should not be called while executing tests.');
@@ -343,6 +348,11 @@ class ContentViewBuilderFactoryTest extends TestCase
                     {
                         return 'mock-template-type';
                     }
+
+                    public static function getResourceKey(): string
+                    {
+                        return 'mock-resource-key';
+                    }
                 },
                 [
                     ['sulu_admin.save', 'sulu_admin.type', 'sulu_admin.delete'],
@@ -367,6 +377,11 @@ class ContentViewBuilderFactoryTest extends TestCase
                     public static function getTemplateType(): string
                     {
                         return 'mock-template-type';
+                    }
+
+                    public static function getResourceKey(): string
+                    {
+                        return 'mock-resource-key';
                     }
                 },
                 [

@@ -14,11 +14,11 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Traits;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Ferrandini\Urlizer;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentManager\ContentManagerInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleDimensionContent;
+use Symfony\Component\String\Slugger\AsciiSlugger;
 
 trait ModifyExampleTrait
 {
@@ -37,7 +37,7 @@ trait ModifyExampleTrait
         $defaultData = [
             'template' => $template,
             'title' => $title,
-            'url' => '/' . Urlizer::urlize($title),
+            'url' => '/' . (new AsciiSlugger())->slug($title),
             'article' => '<p>Test article</p>',
         ];
 
