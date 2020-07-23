@@ -25,9 +25,9 @@ trait RoutableMockWrapperTrait
         return 'mock-resource-key';
     }
 
-    public function getRoutableId()
+    public function getResourceId()
     {
-        return $this->instance->getRoutableId();
+        return $this->instance->getResourceId();
     }
 
     public function getLocale(): ?string

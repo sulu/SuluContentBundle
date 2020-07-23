@@ -33,7 +33,7 @@ class RoutableNormalizer implements NormalizerInterface
         }
 
         return [
-            'routableId',
+            'resourceId',
         ];
     }
 }
