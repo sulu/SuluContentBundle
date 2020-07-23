@@ -4,7 +4,7 @@
 
 ### Add contentRichEntityClass parameter to getDefaultToolbarActions method of ContentViewBuilderFactory
 
-The `getDefaultToolbarActions` method of the `contentRichEntityClass` has a required `contentRichEntityClass` parameter
+The `getDefaultToolbarActions` method of the `ContentViewBuilderFactory` has a required `contentRichEntityClass` parameter
 now. The parameter is used for determining the correct toolbar actions based on the implemented interfaces.
 
 ### Refactor RoutableInterface to use configured schema for route generation
