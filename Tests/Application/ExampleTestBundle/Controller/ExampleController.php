@@ -17,8 +17,10 @@ use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\ViewHandlerInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentIndexer\ContentIndexerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentManager\ContentManagerInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleDimensionContent;
@@ -58,6 +60,11 @@ class ExampleController extends AbstractRestController implements ClassResourceI
     private $contentManager;
 
     /**
+     * @var ContentIndexerInterface
+     */
+    private $contentIndexer;
+
+    /**
      * @var EntityManagerInterface
      */
     private $entityManager;
@@ -69,12 +76,14 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         DoctrineListBuilderFactoryInterface $listBuilderFactory,
         RestHelperInterface $restHelper,
         ContentManagerInterface $contentManager,
+        ContentIndexerInterface $contentIndexer,
         EntityManagerInterface $entityManager
     ) {
         $this->fieldDescriptorFactory = $fieldDescriptorFactory;
         $this->listBuilderFactory = $listBuilderFactory;
         $this->restHelper = $restHelper;
         $this->contentManager = $contentManager;
+        $this->contentIndexer = $contentIndexer;
         $this->entityManager = $entityManager;
 
         parent::__construct($viewHandler, $tokenStorage);
@@ -144,7 +153,15 @@ class ExampleController extends AbstractRestController implements ClassResourceI
             );
 
             $this->entityManager->flush();
+
+            // Index live dimension content
+            $this->contentIndexer->index($example, array_merge($dimensionAttributes, [
+                'stage' => DimensionInterface::STAGE_LIVE,
+            ]));
         }
+
+        // Index draft dimension content
+        $this->contentIndexer->indexDimensionContent($dimensionContent);
 
         return $this->handleView($this->view($this->normalize($example, $dimensionContent), 201));
     }
@@ -169,11 +186,17 @@ class ExampleController extends AbstractRestController implements ClassResourceI
 
         switch ($action) {
             case 'unpublish':
+                // Deindex live dimension content
+                $this->contentIndexer->deindex($example, array_merge($dimensionAttributes, [
+                    'stage' => DimensionInterface::STAGE_LIVE,
+                ]));
+
                 $dimensionContent = $this->contentManager->applyTransition(
                     $example,
                     $dimensionAttributes,
                     WorkflowInterface::WORKFLOW_TRANSITION_UNPUBLISH
                 );
+
                 $this->entityManager->flush();
 
                 return $this->handleView($this->view($this->normalize($example, $dimensionContent)));
@@ -183,7 +206,11 @@ class ExampleController extends AbstractRestController implements ClassResourceI
                     $dimensionAttributes,
                     WorkflowInterface::WORKFLOW_TRANSITION_REMOVE_DRAFT
                 );
+
                 $this->entityManager->flush();
+
+                // Index draft dimension content
+                $this->contentIndexer->indexDimensionContent($dimensionContent);
 
                 return $this->handleView($this->view($this->normalize($example, $dimensionContent)));
             default:
@@ -226,7 +253,15 @@ class ExampleController extends AbstractRestController implements ClassResourceI
             );
 
             $this->entityManager->flush();
+
+            // Index live dimension content
+            $this->contentIndexer->index($example, array_merge($dimensionAttributes, [
+                'stage' => DimensionInterface::STAGE_LIVE,
+            ]));
         }
+
+        // Index draft dimension content
+        $this->contentIndexer->indexDimensionContent($dimensionContent);
 
         return $this->handleView($this->view($this->normalize($example, $dimensionContent)));
     }
@@ -236,8 +271,12 @@ class ExampleController extends AbstractRestController implements ClassResourceI
      */
     public function deleteAction(int $id): Response
     {
+        // Remove all documents with given id from index
+        $this->contentIndexer->delete(Example::RESOURCE_KEY, $id);
+
         /** @var Example $example */
         $example = $this->entityManager->getReference(Example::class, $id);
+
         $this->entityManager->remove($example);
         $this->entityManager->flush();
 

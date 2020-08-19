@@ -78,8 +78,10 @@ class PublishTransitionSubscriber implements EventSubscriberInterface
 
     public static function getSubscribedEvents(): array
     {
+        $eventName = 'workflow.content_workflow.transition.' . WorkflowInterface::WORKFLOW_TRANSITION_PUBLISH;
+
         return [
-            'workflow.content_workflow.transition.publish' => 'onPublish',
+            $eventName => 'onPublish',
         ];
     }
 }

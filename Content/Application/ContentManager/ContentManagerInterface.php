@@ -53,4 +53,19 @@ interface ContentManagerInterface
         array $dimensionAttributes,
         string $transitionName
     ): DimensionContentInterface;
+
+    /**
+     * @param mixed[] $dimensionAttributes
+     */
+    public function index(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes): void;
+
+    /**
+     * @param mixed[] $dimensionAttributes
+     */
+    public function deindex(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes): void;
+
+    /**
+     * @param mixed $id
+     */
+    public function deleteFromIndex(string $resourceKey, $id): void;
 }
