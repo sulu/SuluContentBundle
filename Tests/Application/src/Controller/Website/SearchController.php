@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of Sulu.
+ *
+ * (c) Sulu GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace Sulu\Bundle\ContentBundle\Tests\Application\Controller\Website;
 
 use Massive\Bundle\SearchBundle\Search\SearchManagerInterface;
@@ -66,15 +75,15 @@ class SearchController
         $webspace = $this->requestAnalyzer->getWebspace();
 
         $queryString = '';
-        if (\strlen($query) < 3) {
+        if (\mb_strlen($query) < 3) {
             $queryString .= '+("' . self::escapeDoubleQuotes($query) . '") ';
         } else {
-            $queryValues = \explode(' ', $query);
+            $queryValues = explode(' ', $query);
             foreach ($queryValues as $queryValue) {
-                if (\strlen($queryValue) > 2) {
+                if (\mb_strlen($queryValue) > 2) {
                     $queryString .= '+("' . self::escapeDoubleQuotes($queryValue) . '" OR ' .
-                        \preg_replace('/([^\pL\s\d])/u', '?', $queryValue) . '* OR ' .
-                        \preg_replace('/([^\pL\s\d])/u', '', $queryValue) . '~) ';
+                        preg_replace('/([^\pL\s\d])/u', '?', $queryValue) . '* OR ' .
+                        preg_replace('/([^\pL\s\d])/u', '', $queryValue) . '~) ';
                 } else {
                     $queryString .= '+("' . self::escapeDoubleQuotes($queryValue) . '") ';
                 }
@@ -124,6 +133,6 @@ class SearchController
      */
     private static function escapeDoubleQuotes($query)
     {
-        return \str_replace('"', '\\"', $query);
+        return str_replace('"', '\\"', $query);
     }
 }

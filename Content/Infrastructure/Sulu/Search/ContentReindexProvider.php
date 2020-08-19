@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of Sulu.
+ *
+ * (c) Sulu GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Search;
 
 use Doctrine\ORM\EntityManagerInterface;
@@ -136,7 +145,7 @@ class ContentReindexProvider implements LocalizedReindexProviderInterface
     {
         $interfaces = class_implements($this->getDimensionContentClass());
 
-        if ($interfaces && in_array(WorkflowInterface::class, $interfaces, true)
+        if ($interfaces && \in_array(WorkflowInterface::class, $interfaces, true)
             && SuluKernel::CONTEXT_WEBSITE === $this->context) {
             return DimensionInterface::STAGE_LIVE;
         }

@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of Sulu.
+ *
+ * (c) Sulu GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentIndexer;
 
 use Massive\Bundle\SearchBundle\Search\QueryHit;
@@ -115,9 +124,9 @@ class ContentIndexer implements ContentIndexerInterface
      */
     private function getIndexes(string $resourceKey): array
     {
-        return \array_filter(
+        return array_filter(
             $this->searchManager->getIndexNames(),
-            function($index) use ($resourceKey) {
+            function ($index) use ($resourceKey) {
                 return $resourceKey === $index || $resourceKey . '_published' === $index;
             }
         );
