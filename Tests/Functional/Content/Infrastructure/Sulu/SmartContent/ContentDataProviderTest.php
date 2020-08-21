@@ -451,7 +451,7 @@ class ContentDataProviderTest extends BaseTestCase
                         static::$categoryBar->getId(),
                         static::$categoryBaz->getId(),
                     ],
-                    'websiteCategoryOperator' => 'OR',
+                    'websiteCategoriesOperator' => 'OR',
                 ],
                 2,
                 false,
@@ -465,10 +465,13 @@ class ContentDataProviderTest extends BaseTestCase
                 [
                     'categories' => [
                         static::$categoryFoo->getId(),
+                    ],
+                    'websiteCategories' => [
                         static::$categoryBar->getId(),
                         static::$categoryBaz->getId(),
                     ],
                     'categoryOperator' => 'AND',
+                    'websiteCategoriesOperator' => 'AND',
                 ],
                 2,
                 false,
@@ -483,9 +486,12 @@ class ContentDataProviderTest extends BaseTestCase
                     'tags' => [
                         static::$tagA,
                         static::$tagB,
+                    ],
+                    'websiteTags' => [
                         static::$tagC,
                     ],
                     'tagOperator' => 'AND',
+                    'websiteTagsOperator' => 'AND',
                 ],
                 2,
                 false,
