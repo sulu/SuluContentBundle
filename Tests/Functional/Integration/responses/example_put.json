@@ -1,5 +1,7 @@
 {
     "article": "<p>Test Article 2</p>",
+    "content": null,
+    "description": null,
     "excerptCategories": [],
     "excerptDescription": "Excerpt Description 2",
     "excerptIcon": null,
@@ -11,6 +13,7 @@
     ],
     "excerptTitle": "Excerpt Title 2",
     "id": "@integer@",
+    "image": null,
     "locale": "en",
     "published": null,
     "publishedState": false,
