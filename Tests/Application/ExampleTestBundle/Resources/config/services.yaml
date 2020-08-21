@@ -1,13 +1,4 @@
 services:
-    # default configuration for services in *this* file
-    _defaults:
-        autowire: true      # Automatically injects dependencies in your services.
-        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
-        bind:
-            $entityManager: '@doctrine.orm.entity_manager'
-            $searchMetadataFactory: '@massive_search.factory_default'
-            $structureFactory: '@sulu_page.structure.factory'
-
     example_test.example_admin:
         class: Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Admin\ExampleAdmin
         arguments:
@@ -80,14 +71,19 @@ services:
     example_test.example_reindex_provider:
         class: Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Search\ContentReindexProvider
         arguments:
-            $context: '%sulu.context%'
-            $contentRichEntityClass: Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example
+            - '@doctrine.orm.entity_manager'
+            - '@sulu_content.content_resolver'
+            - '%sulu.context%'
+            - Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example
         tags:
             - {name: 'massive_search.reindex.provider', id: 'example'}
 
     example_test.example_search_metadata_provider:
         class: Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Search\ContentSearchMetadataProvider
         arguments:
-            $contentRichEntityClass: Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example
+            - '@doctrine.orm.entity_manager'
+            - '@massive_search.factory_default'
+            - '@sulu_page.structure.factory'
+            - Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example
         tags:
             - 'massive_search.metadata.provider'
