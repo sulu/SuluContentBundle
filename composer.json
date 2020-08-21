@@ -14,6 +14,7 @@
         "php": "^7.2",
         "doctrine/doctrine-bundle": "^1.10 || ^2.0",
         "friendsofsymfony/rest-bundle": "^2.6 || ^3.0",
+        "massive/search-bundle": "^2.3",
         "ramsey/uuid": "^3.8",
         "sulu/sulu": "^2.0.4",
         "symfony/config": "^4.3 || ^5.0",

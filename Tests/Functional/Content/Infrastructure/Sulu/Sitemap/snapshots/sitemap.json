@@ -15,6 +15,17 @@
         }
     },
     {
+        "locale": "de",
+        "defaultLocale": "de",
+        "loc": "https://localhost/beispiel-4",
+        "alternateLinks": {
+            "de": {
+                "locale": "de",
+                "href": "https://localhost/beispiel-4"
+            }
+        }
+    },
+    {
         "locale": "en",
         "defaultLocale": "en",
         "loc": "https://localhost/en/example-2",
@@ -33,17 +44,6 @@
             "en": {
                 "locale": "en",
                 "href": "https://localhost/en/example-3"
-            }
-        }
-    },
-    {
-        "locale": "de",
-        "defaultLocale": "de",
-        "loc": "https://localhost/beispiel-4",
-        "alternateLinks": {
-            "de": {
-                "locale": "de",
-                "href": "https://localhost/beispiel-4"
             }
         }
     }

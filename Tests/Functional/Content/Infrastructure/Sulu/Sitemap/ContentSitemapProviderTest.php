@@ -108,18 +108,28 @@ class ContentSitemapProviderTest extends BaseTestCase
      */
     private function mapSitemapEntries(array $sitemapEntries): array
     {
-        return array_map(function (SitemapUrl $sitemapUrl) {
-            return [
-                'locale' => $sitemapUrl->getLocale(),
-                'defaultLocale' => $sitemapUrl->getDefaultLocale(),
-                'loc' => $sitemapUrl->getLoc(),
-                'alternateLinks' => array_map(function (SitemapAlternateLink $alternateLink) {
-                    return [
-                        'locale' => $alternateLink->getLocale(),
-                        'href' => $alternateLink->getHref(),
-                    ];
-                }, $sitemapUrl->getAlternateLinks()),
-            ];
-        }, $sitemapEntries);
+        usort(
+            $sitemapEntries,
+            function (SitemapUrl $a, SitemapUrl $b) {
+                return strcmp($a->getLoc(), $b->getLoc());
+            }
+        );
+
+        return array_map(
+            function (SitemapUrl $sitemapUrl) {
+                return [
+                    'locale' => $sitemapUrl->getLocale(),
+                    'defaultLocale' => $sitemapUrl->getDefaultLocale(),
+                    'loc' => $sitemapUrl->getLoc(),
+                    'alternateLinks' => array_map(function (SitemapAlternateLink $alternateLink) {
+                        return [
+                            'locale' => $alternateLink->getLocale(),
+                            'href' => $alternateLink->getHref(),
+                        ];
+                    }, $sitemapUrl->getAlternateLinks()),
+                ];
+            },
+            $sitemapEntries
+        );
     }
 }
