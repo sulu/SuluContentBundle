@@ -15,6 +15,7 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentManage
 
 use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentCopier\ContentCopierInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentIndexer\ContentIndexerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentManager\ContentManager;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentManager\ContentManagerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\ContentNormalizerInterface;
@@ -23,6 +24,7 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolve
 use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\ContentWorkflowInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 
 class ContentManagerTest extends TestCase
 {
@@ -31,9 +33,17 @@ class ContentManagerTest extends TestCase
         ContentPersisterInterface $contentPersister,
         ContentNormalizerInterface $contentNormalizer,
         ContentCopierInterface $contentCopier,
-        ContentWorkflowInterface $contentWorkflow
+        ContentWorkflowInterface $contentWorkflow,
+        ContentIndexerInterface $contentIndexer
     ): ContentManagerInterface {
-        return new ContentManager($contentResolver, $contentPersister, $contentNormalizer, $contentCopier, $contentWorkflow);
+        return new ContentManager(
+            $contentResolver,
+            $contentPersister,
+            $contentNormalizer,
+            $contentCopier,
+            $contentWorkflow,
+            $contentIndexer
+        );
     }
 
     public function testResolve(): void
@@ -47,13 +57,15 @@ class ContentManagerTest extends TestCase
         $contentNormalizer = $this->prophesize(ContentNormalizerInterface::class);
         $contentCopier = $this->prophesize(ContentCopierInterface::class);
         $contentWorkflow = $this->prophesize(ContentWorkflowInterface::class);
+        $contentIndexer = $this->prophesize(ContentIndexerInterface::class);
 
         $contentManager = $this->createContentManagerInstance(
             $contentResolver->reveal(),
             $contentPersister->reveal(),
             $contentNormalizer->reveal(),
             $contentCopier->reveal(),
-            $contentWorkflow->reveal()
+            $contentWorkflow->reveal(),
+            $contentIndexer->reveal()
         );
 
         $contentResolver->resolve($contentRichEntity->reveal(), $dimensionAttributes)
@@ -78,13 +90,15 @@ class ContentManagerTest extends TestCase
         $contentNormalizer = $this->prophesize(ContentNormalizerInterface::class);
         $contentCopier = $this->prophesize(ContentCopierInterface::class);
         $contentWorkflow = $this->prophesize(ContentWorkflowInterface::class);
+        $contentIndexer = $this->prophesize(ContentIndexerInterface::class);
 
         $contentManager = $this->createContentManagerInstance(
             $contentResolver->reveal(),
             $contentPersister->reveal(),
             $contentNormalizer->reveal(),
             $contentCopier->reveal(),
-            $contentWorkflow->reveal()
+            $contentWorkflow->reveal(),
+            $contentIndexer->reveal()
         );
 
         $contentPersister->persist($contentRichEntity->reveal(), $data, $dimensionAttributes)
@@ -106,13 +120,15 @@ class ContentManagerTest extends TestCase
         $contentNormalizer = $this->prophesize(ContentNormalizerInterface::class);
         $contentCopier = $this->prophesize(ContentCopierInterface::class);
         $contentWorkflow = $this->prophesize(ContentWorkflowInterface::class);
+        $contentIndexer = $this->prophesize(ContentIndexerInterface::class);
 
         $contentManager = $this->createContentManagerInstance(
             $contentResolver->reveal(),
             $contentPersister->reveal(),
             $contentNormalizer->reveal(),
             $contentCopier->reveal(),
-            $contentWorkflow->reveal()
+            $contentWorkflow->reveal(),
+            $contentIndexer->reveal()
         );
 
         $contentNormalizer->normalize($dimensionContent->reveal())
@@ -139,13 +155,15 @@ class ContentManagerTest extends TestCase
         $contentNormalizer = $this->prophesize(ContentNormalizerInterface::class);
         $contentCopier = $this->prophesize(ContentCopierInterface::class);
         $contentWorkflow = $this->prophesize(ContentWorkflowInterface::class);
+        $contentIndexer = $this->prophesize(ContentIndexerInterface::class);
 
         $contentManager = $this->createContentManagerInstance(
             $contentResolver->reveal(),
             $contentPersister->reveal(),
             $contentNormalizer->reveal(),
             $contentCopier->reveal(),
-            $contentWorkflow->reveal()
+            $contentWorkflow->reveal(),
+            $contentIndexer->reveal()
         );
 
         $contentCopier->copy(
@@ -181,13 +199,15 @@ class ContentManagerTest extends TestCase
         $contentNormalizer = $this->prophesize(ContentNormalizerInterface::class);
         $contentCopier = $this->prophesize(ContentCopierInterface::class);
         $contentWorkflow = $this->prophesize(ContentWorkflowInterface::class);
+        $contentIndexer = $this->prophesize(ContentIndexerInterface::class);
 
         $contentManager = $this->createContentManagerInstance(
             $contentResolver->reveal(),
             $contentPersister->reveal(),
             $contentNormalizer->reveal(),
             $contentCopier->reveal(),
-            $contentWorkflow->reveal()
+            $contentWorkflow->reveal(),
+            $contentIndexer->reveal()
         );
 
         $contentWorkflow->apply(
@@ -205,6 +225,112 @@ class ContentManagerTest extends TestCase
                 $dimensionAttributes,
                 $transitionName
             )
+        );
+    }
+
+    public function testIndex(): void
+    {
+        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+
+        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
+        $dimensionAttributes = ['locale' => 'en', 'stage' => DimensionInterface::STAGE_LIVE];
+
+        $contentResolver = $this->prophesize(ContentResolverInterface::class);
+        $contentPersister = $this->prophesize(ContentPersisterInterface::class);
+        $contentNormalizer = $this->prophesize(ContentNormalizerInterface::class);
+        $contentCopier = $this->prophesize(ContentCopierInterface::class);
+        $contentWorkflow = $this->prophesize(ContentWorkflowInterface::class);
+        $contentIndexer = $this->prophesize(ContentIndexerInterface::class);
+
+        $contentManager = $this->createContentManagerInstance(
+            $contentResolver->reveal(),
+            $contentPersister->reveal(),
+            $contentNormalizer->reveal(),
+            $contentCopier->reveal(),
+            $contentWorkflow->reveal(),
+            $contentIndexer->reveal()
+        );
+
+        $contentIndexer->index(
+            $contentRichEntity->reveal(),
+            $dimensionAttributes
+        )
+            ->willReturn($dimensionContent->reveal())
+            ->shouldBeCalled();
+
+        $this->assertSame(
+            $dimensionContent->reveal(),
+            $contentManager->index(
+                $contentRichEntity->reveal(),
+                $dimensionAttributes
+            )
+        );
+    }
+
+    public function testDeindex(): void
+    {
+        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+
+        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
+        $dimensionAttributes = ['locale' => 'en', 'stage' => DimensionInterface::STAGE_LIVE];
+
+        $contentResolver = $this->prophesize(ContentResolverInterface::class);
+        $contentPersister = $this->prophesize(ContentPersisterInterface::class);
+        $contentNormalizer = $this->prophesize(ContentNormalizerInterface::class);
+        $contentCopier = $this->prophesize(ContentCopierInterface::class);
+        $contentWorkflow = $this->prophesize(ContentWorkflowInterface::class);
+        $contentIndexer = $this->prophesize(ContentIndexerInterface::class);
+
+        $contentManager = $this->createContentManagerInstance(
+            $contentResolver->reveal(),
+            $contentPersister->reveal(),
+            $contentNormalizer->reveal(),
+            $contentCopier->reveal(),
+            $contentWorkflow->reveal(),
+            $contentIndexer->reveal()
+        );
+
+        $contentIndexer->deindex(
+            $contentRichEntity->reveal(),
+            $dimensionAttributes
+        )
+            ->willReturn($dimensionContent->reveal())
+            ->shouldBeCalled();
+
+        $this->assertSame(
+            $dimensionContent->reveal(),
+            $contentManager->deindex(
+                $contentRichEntity->reveal(),
+                $dimensionAttributes
+            )
+        );
+    }
+
+    public function testDeleteFromIndex(): void
+    {
+        $resourceKey = 'examples';
+        $resourceId = '123';
+
+        $contentResolver = $this->prophesize(ContentResolverInterface::class);
+        $contentPersister = $this->prophesize(ContentPersisterInterface::class);
+        $contentNormalizer = $this->prophesize(ContentNormalizerInterface::class);
+        $contentCopier = $this->prophesize(ContentCopierInterface::class);
+        $contentWorkflow = $this->prophesize(ContentWorkflowInterface::class);
+        $contentIndexer = $this->prophesize(ContentIndexerInterface::class);
+
+        $contentManager = $this->createContentManagerInstance(
+            $contentResolver->reveal(),
+            $contentPersister->reveal(),
+            $contentNormalizer->reveal(),
+            $contentCopier->reveal(),
+            $contentWorkflow->reveal(),
+            $contentIndexer->reveal()
+        );
+
+        $contentIndexer->delete($resourceKey, $resourceId)->shouldBeCalled();
+        $contentManager->deleteFromIndex(
+            $resourceKey,
+            $resourceId
         );
     }
 }

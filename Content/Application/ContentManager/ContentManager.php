@@ -107,14 +107,14 @@ class ContentManager implements ContentManagerInterface
         return $this->contentWorkflow->apply($contentRichEntity, $dimensionAttributes, $transitionName);
     }
 
-    public function index(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes): void
+    public function index(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes): DimensionContentInterface
     {
-        $this->contentIndexer->index($contentRichEntity, $dimensionAttributes);
+        return $this->contentIndexer->index($contentRichEntity, $dimensionAttributes);
     }
 
-    public function deindex(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes): void
+    public function deindex(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes): DimensionContentInterface
     {
-        $this->contentIndexer->deindex($contentRichEntity, $dimensionAttributes);
+        return $this->contentIndexer->deindex($contentRichEntity, $dimensionAttributes);
     }
 
     public function deleteFromIndex(string $resourceKey, $id): void

@@ -26,6 +26,7 @@
             </params>
 
             <tag name="sulu.rlp.part"/>
+            <tag name="sulu.search.field" role="title"/>
         </property>
 
         <property name="url" type="route">
@@ -35,6 +36,7 @@
             </meta>
 
             <tag name="sulu.rlp"/>
+            <tag name="sulu.search.field" role="url"/>
         </property>
 
         <property name="article" type="text_editor">
@@ -42,6 +44,8 @@
                 <title lang="en">Article</title>
                 <title lang="de">Artikel</title>
             </meta>
+
+            <tag name="sulu.search.field" type="string"/>
         </property>
     </properties>
 </template>

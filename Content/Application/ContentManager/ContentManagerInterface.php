@@ -57,12 +57,12 @@ interface ContentManagerInterface
     /**
      * @param mixed[] $dimensionAttributes
      */
-    public function index(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes): void;
+    public function index(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes): DimensionContentInterface;
 
     /**
      * @param mixed[] $dimensionAttributes
      */
-    public function deindex(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes): void;
+    public function deindex(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes): DimensionContentInterface;
 
     /**
      * @param mixed $id

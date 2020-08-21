@@ -16,6 +16,7 @@ namespace Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Search;
 use Doctrine\ORM\EntityManagerInterface;
 use Massive\Bundle\SearchBundle\Search\Reindex\LocalizedReindexProviderInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolverInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
@@ -75,7 +76,7 @@ class ContentReindexProvider implements LocalizedReindexProviderInterface
         return $queryBuilder->getQuery()->execute();
     }
 
-    public function cleanUp($classFqn)
+    public function cleanUp($classFqn): void
     {
         $this->entityManager->clear();
     }
@@ -89,6 +90,9 @@ class ContentReindexProvider implements LocalizedReindexProviderInterface
         return $queryBuilder->getQuery()->getSingleScalarResult();
     }
 
+    /**
+     * @return string[]
+     */
     public function getClassFqns()
     {
         return [$this->getDimensionContentClass()];
@@ -114,9 +118,12 @@ class ContentReindexProvider implements LocalizedReindexProviderInterface
                 }
             )->getValues();
 
-        return array_filter(array_unique($locales));
+        return array_values(array_filter(array_unique($locales)));
     }
 
+    /**
+     * @return object|DimensionContentInterface|null
+     */
     public function translateObject($object, $locale)
     {
         if (!$object instanceof ContentRichEntityInterface) {
@@ -125,13 +132,17 @@ class ContentReindexProvider implements LocalizedReindexProviderInterface
 
         $stage = $this->getWorkflowStage();
 
-        $dimensionContent = $this->contentResolver->resolve(
-            $object,
-            [
-                'locale' => $locale,
-                'stage' => $stage,
-            ]
-        );
+        try {
+            $dimensionContent = $this->contentResolver->resolve(
+                $object,
+                [
+                    'locale' => $locale,
+                    'stage' => $stage,
+                ]
+            );
+        } catch (ContentNotFoundException $e) {
+            return null;
+        }
 
         if ($stage !== $dimensionContent->getDimension()->getStage()
             || $locale !== $dimensionContent->getDimension()->getLocale()) {

@@ -82,6 +82,27 @@ class ExampleTestExtension extends Extension implements PrependExtensionInterfac
                 ]
             );
         }
+
+        if ($container->hasExtension('sulu_search')) {
+            $suluSearchConfigs = $container->getExtensionConfig('sulu_search');
+
+            foreach ($suluSearchConfigs as $suluSearchConfig) {
+                if (isset($suluSearchConfig['website']['indexes'])) {
+                    $container->prependExtensionConfig(
+                        'sulu_search',
+                        [
+                            'website' => [
+                                'indexes' => [
+                                    Example::RESOURCE_KEY => Example::RESOURCE_KEY . '_published',
+                                ],
+                            ],
+                        ]
+                    );
+
+                    break;
+                }
+            }
+        }
     }
 
     public function load(array $configs, ContainerBuilder $container): void

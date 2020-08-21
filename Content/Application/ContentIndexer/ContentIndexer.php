@@ -38,15 +38,13 @@ class ContentIndexer implements ContentIndexerInterface
         $this->contentResolver = $contentResolver;
     }
 
-    public function index(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes): void
+    public function index(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes): DimensionContentInterface
     {
         $dimensionContent = $this->loadDimensionContent($contentRichEntity, $dimensionAttributes);
 
-        if (null === $dimensionContent) {
-            return;
-        }
-
         $this->indexDimensionContent($dimensionContent);
+
+        return $dimensionContent;
     }
 
     public function indexDimensionContent(DimensionContentInterface $dimensionContent): void
@@ -58,15 +56,13 @@ class ContentIndexer implements ContentIndexerInterface
         $this->searchManager->index($dimensionContent);
     }
 
-    public function deindex(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes): void
+    public function deindex(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes): DimensionContentInterface
     {
         $dimensionContent = $this->loadDimensionContent($contentRichEntity, $dimensionAttributes);
 
-        if (null === $dimensionContent) {
-            return;
-        }
-
         $this->deindexDimensionContent($dimensionContent);
+
+        return $dimensionContent;
     }
 
     public function deindexDimensionContent(DimensionContentInterface $dimensionContent): void
@@ -97,23 +93,19 @@ class ContentIndexer implements ContentIndexerInterface
     private function loadDimensionContent(
         ContentRichEntityInterface $contentRichEntity,
         array $dimensionAttributes
-    ): ?DimensionContentInterface {
+    ): DimensionContentInterface {
         $locale = $dimensionAttributes['locale'] ?? null;
         $stage = $dimensionAttributes['stage'] ?? null;
 
         if (null === $locale || null === $stage) {
-            return null;
+            throw new ContentNotFoundException($contentRichEntity, $dimensionAttributes);
         }
 
-        try {
-            $dimensionContent = $this->contentResolver->resolve($contentRichEntity, $dimensionAttributes);
-        } catch (ContentNotFoundException $e) {
-            return null;
-        }
+        $dimensionContent = $this->contentResolver->resolve($contentRichEntity, $dimensionAttributes);
 
         if ($locale !== $dimensionContent->getDimension()->getLocale()
             || $stage !== $dimensionContent->getDimension()->getStage()) {
-            return null;
+            throw new ContentNotFoundException($contentRichEntity, $dimensionAttributes);
         }
 
         return $dimensionContent;
@@ -126,8 +118,8 @@ class ContentIndexer implements ContentIndexerInterface
     {
         return array_filter(
             $this->searchManager->getIndexNames(),
-            function ($index) use ($resourceKey) {
-                return $resourceKey === $index || $resourceKey . '_published' === $index;
+            function ($indexName) use ($resourceKey) {
+                return $resourceKey === $indexName || $resourceKey . '_published' === $indexName;
             }
         );
     }

@@ -21,6 +21,7 @@ use Massive\Bundle\SearchBundle\Search\Metadata\ComplexMetadata;
 use Massive\Bundle\SearchBundle\Search\Metadata\Field\Expression;
 use Massive\Bundle\SearchBundle\Search\Metadata\IndexMetadata;
 use Massive\Bundle\SearchBundle\Search\Metadata\ProviderInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
@@ -72,6 +73,9 @@ class ContentSearchMetadataProvider implements ProviderInterface
      */
     private $dimensionContentClass = null;
 
+    /**
+     * @param class-string<ContentRichEntityInterface> $contentRichEntityClass
+     */
     public function __construct(
         EntityManagerInterface $entityManager,
         Factory $searchMetadataFactory,
@@ -84,7 +88,7 @@ class ContentSearchMetadataProvider implements ProviderInterface
         $this->contentRichEntityClass = $contentRichEntityClass;
     }
 
-    public function getMetadataForObject($object)
+    public function getMetadataForObject($object): ?ClassMetadata
     {
         $dimensionContentClass = $this->getDimensionContentClass();
 
@@ -110,26 +114,31 @@ class ContentSearchMetadataProvider implements ProviderInterface
         return $this->getMetadata($dimensionContentClass, $structureMetadata);
     }
 
-    public function getAllMetadata()
+    public function getAllMetadata(): array
     {
-        /** @var DimensionContentInterface&string $dimensionContentClass */
+        /** @var class-string<TemplateInterface> $dimensionContentClass */
         $dimensionContentClass = $this->getDimensionContentClass();
 
+        if (!is_a($dimensionContentClass, TemplateInterface::class, true)) {
+            return [];
+        }
+
         $metadata = [];
-        foreach ($this->structureFactory->getStructures($dimensionContentClass::getResourceKey()) as $structure) {
-            $metadata[] = $this->getMetadata($this->getDimensionContentClass(), $structure);
+        foreach ($this->structureFactory->getStructures($dimensionContentClass::getTemplateType()) as $structure) {
+            $metadata[] = $this->getMetadata($dimensionContentClass, $structure);
         }
 
         return $metadata;
     }
 
-    /**
-     * @return ClassMetadata|null
-     */
-    public function getMetadataForDocument(Document $document)
+    public function getMetadataForDocument(Document $document): ?ClassMetadata
     {
-        /** @var TemplateInterface&string $dimensionContentClass */
+        /** @var class-string<TemplateInterface> $dimensionContentClass */
         $dimensionContentClass = $this->getDimensionContentClass();
+
+        if (!is_a($dimensionContentClass, TemplateInterface::class, true)) {
+            return null;
+        }
 
         if (!$document->hasField(self::FIELD_TEMPLATE_KEY) || $dimensionContentClass !== $document->getClass()) {
             return null;
@@ -157,10 +166,18 @@ class ContentSearchMetadataProvider implements ProviderInterface
         $indexMeta->setIdField($this->searchMetadataFactory->createMetadataField('resourceId'));
         $indexMeta->setLocaleField($this->searchMetadataFactory->createMetadataField('locale'));
 
-        /** @var DimensionContentInterface&string $dimensionContentClass */
+        /** @var class-string<DimensionContentInterface> $dimensionContentClass */
         $dimensionContentClass = $this->getDimensionContentClass();
 
-        $indexMeta->setIndexName($this->createIndexNameField($dimensionContentClass::getResourceKey()));
+        if (!is_a($dimensionContentClass, DimensionContentInterface::class, true)) {
+            throw new \RuntimeException(
+                sprintf('$dimensionContentClass needs to be of type "%s"', DimensionContentInterface::class)
+            );
+        }
+
+        /** @var string $expression */
+        $expression = $this->createIndexNameField($dimensionContentClass::getResourceKey());
+        $indexMeta->setIndexName($expression);
 
         $indexMeta->addFieldMapping(
             self::FIELD_TEMPLATE_KEY,
