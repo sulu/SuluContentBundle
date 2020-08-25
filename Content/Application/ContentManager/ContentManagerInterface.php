@@ -60,12 +60,8 @@ interface ContentManagerInterface
     public function index(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes): DimensionContentInterface;
 
     /**
+     * @param mixed $id
      * @param mixed[] $dimensionAttributes
      */
-    public function deindex(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes): DimensionContentInterface;
-
-    /**
-     * @param mixed $id
-     */
-    public function deleteFromIndex(string $resourceKey, $id): void;
+    public function deindex(string $resourceKey, $id, array $dimensionAttributes = []): void;
 }

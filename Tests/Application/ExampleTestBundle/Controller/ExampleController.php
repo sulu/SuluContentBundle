@@ -181,16 +181,10 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         }
 
         $dimensionAttributes = $this->getDimensionAttributes($request); // ["locale" => "en", "stage" => "draft"]
-
         $action = $request->query->get('action');
 
         switch ($action) {
             case 'unpublish':
-                // Deindex live dimension content
-                $this->contentIndexer->deindex($example, array_merge($dimensionAttributes, [
-                    'stage' => DimensionInterface::STAGE_LIVE,
-                ]));
-
                 $dimensionContent = $this->contentManager->applyTransition(
                     $example,
                     $dimensionAttributes,
@@ -198,6 +192,12 @@ class ExampleController extends AbstractRestController implements ClassResourceI
                 );
 
                 $this->entityManager->flush();
+
+                // Deindex live dimension content
+                $this->contentIndexer->deindex(Example::RESOURCE_KEY, $id, array_merge(
+                    $dimensionAttributes,
+                    ['stage' => DimensionInterface::STAGE_LIVE]
+                ));
 
                 return $this->handleView($this->view($this->normalize($example, $dimensionContent)));
             case 'remove-draft':
@@ -271,14 +271,14 @@ class ExampleController extends AbstractRestController implements ClassResourceI
      */
     public function deleteAction(int $id): Response
     {
-        // Remove all documents with given id from index
-        $this->contentIndexer->delete(Example::RESOURCE_KEY, $id);
-
         /** @var Example $example */
         $example = $this->entityManager->getReference(Example::class, $id);
 
         $this->entityManager->remove($example);
         $this->entityManager->flush();
+
+        // Remove all documents with given id from index
+        $this->contentIndexer->deindex(Example::RESOURCE_KEY, $id);
 
         return new Response('', 204);
     }

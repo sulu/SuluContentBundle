@@ -15,9 +15,11 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentIndexe
 
 use Massive\Bundle\SearchBundle\Search\Document;
 use Massive\Bundle\SearchBundle\Search\QueryHit;
+use Massive\Bundle\SearchBundle\Search\SearchManager;
 use Massive\Bundle\SearchBundle\Search\SearchManagerInterface;
 use Massive\Bundle\SearchBundle\Search\SearchQueryBuilder;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Argument;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentIndexer\ContentIndexer;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentIndexer\ContentIndexerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolverInterface;
@@ -32,6 +34,8 @@ class ContentIndexerTest extends TestCase
         SearchManagerInterface $searchManager,
         ContentResolverInterface $contentResolver
     ): ContentIndexerInterface {
+        /** @var SearchManager $searchManager */
+
         return new ContentIndexer($searchManager, $contentResolver);
     }
 
@@ -137,26 +141,37 @@ class ContentIndexerTest extends TestCase
             $contentResolver->reveal()
         );
 
-        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
+        $resourceKey = 'examples';
+        $resourceId = '123';
         $dimensionAttributes = ['locale' => 'en', 'stage' => DimensionInterface::STAGE_DRAFT];
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent->isMerged()->willReturn(true);
-        $contentResolver->resolve($contentRichEntity->reveal(), $dimensionAttributes)
-            ->willReturn($dimensionContent->reveal());
-        $dimension = $this->prophesize(DimensionInterface::class);
-        $dimension->getLocale()->willReturn('en');
-        $dimension->getStage()->willReturn(DimensionInterface::STAGE_DRAFT);
-        $dimensionContent->getDimension()->willReturn($dimension->reveal());
 
-        $searchManager->deindex($dimensionContent->reveal())->shouldBeCalled();
+        $searchManager->getIndexNames()->willReturn([
+            'massive_page_example-en-i18n' => 'page_example',
+            'massive_page_example_published-en-i18n' => 'page_example_published',
+            'massive_examples-en-i18n' => 'examples',
+            'massive_examples_published-en-i18n' => 'examples_published',
+            'massive_contact' => 'contact',
+        ]);
 
-        $this->assertSame(
-            $dimensionContent->reveal(),
-            $contentIndexer->deindex($contentRichEntity->reveal(), $dimensionAttributes)
-        );
+        $document = $this->prophesize(Document::class);
+        $document->getLocale()->willReturn('en');
+        $queryHit = $this->prophesize(QueryHit::class);
+        $queryHit->getDocument()->willReturn($document->reveal());
+
+        $searchQueryBuilder = $this->prophesize(SearchQueryBuilder::class);
+        $searchQueryBuilder->indexes([
+            'massive_examples-en-i18n' => 'examples',
+        ])->willReturn($searchQueryBuilder->reveal());
+        $searchQueryBuilder->locale('en')->willReturn($searchQueryBuilder->reveal());
+        $searchQueryBuilder->execute()->willReturn([$queryHit->reveal()]);
+        $searchManager->createSearch('__id:"123"')->willReturn($searchQueryBuilder->reveal());
+
+        $searchManager->deindex($document->reveal(), 'en')->shouldBeCalled();
+
+        $contentIndexer->deindex($resourceKey, $resourceId, $dimensionAttributes);
     }
 
-    public function testDeindexContentNotFound(): void
+    public function testDeindexLive(): void
     {
         $searchManager = $this->prophesize(SearchManagerInterface::class);
         $contentResolver = $this->prophesize(ContentResolverInterface::class);
@@ -166,17 +181,37 @@ class ContentIndexerTest extends TestCase
             $contentResolver->reveal()
         );
 
-        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
-        $dimensionAttributes = ['locale' => 'en', 'stage' => DimensionInterface::STAGE_DRAFT];
-        $contentResolver->resolve($contentRichEntity->reveal(), $dimensionAttributes)
-            ->willThrow(ContentNotFoundException::class);
+        $resourceKey = 'examples';
+        $resourceId = '123';
+        $dimensionAttributes = ['locale' => 'en', 'stage' => DimensionInterface::STAGE_LIVE];
 
-        $this->expectException(ContentNotFoundException::class);
+        $searchManager->getIndexNames()->willReturn([
+            'massive_page_example-en-i18n' => 'page_example',
+            'massive_page_example_published-en-i18n' => 'page_example_published',
+            'massive_examples-en-i18n' => 'examples',
+            'massive_examples_published-en-i18n' => 'examples_published',
+            'massive_contact' => 'contact',
+        ]);
 
-        $contentIndexer->deindex($contentRichEntity->reveal(), $dimensionAttributes);
+        $document = $this->prophesize(Document::class);
+        $document->getLocale()->willReturn('en');
+        $queryHit = $this->prophesize(QueryHit::class);
+        $queryHit->getDocument()->willReturn($document->reveal());
+
+        $searchQueryBuilder = $this->prophesize(SearchQueryBuilder::class);
+        $searchQueryBuilder->indexes([
+            'massive_examples_published-en-i18n' => 'examples_published',
+        ])->willReturn($searchQueryBuilder->reveal());
+        $searchQueryBuilder->locale('en')->willReturn($searchQueryBuilder->reveal());
+        $searchQueryBuilder->execute()->willReturn([$queryHit->reveal()]);
+        $searchManager->createSearch('__id:"123"')->willReturn($searchQueryBuilder->reveal());
+
+        $searchManager->deindex($document->reveal(), 'en')->shouldBeCalled();
+
+        $contentIndexer->deindex($resourceKey, $resourceId, $dimensionAttributes);
     }
 
-    public function testDeindexWrongLocale(): void
+    public function testDeindexNoStage(): void
     {
         $searchManager = $this->prophesize(SearchManagerInterface::class);
         $contentResolver = $this->prophesize(ContentResolverInterface::class);
@@ -186,22 +221,43 @@ class ContentIndexerTest extends TestCase
             $contentResolver->reveal()
         );
 
-        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
-        $dimensionAttributes = ['locale' => 'en', 'stage' => DimensionInterface::STAGE_DRAFT];
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
-        $contentResolver->resolve($contentRichEntity->reveal(), $dimensionAttributes)
-            ->willReturn($dimensionContent->reveal());
-        $dimension = $this->prophesize(DimensionInterface::class);
-        $dimension->getLocale()->willReturn(null);
-        $dimension->getStage()->willReturn(DimensionInterface::STAGE_DRAFT);
-        $dimensionContent->getDimension()->willReturn($dimension->reveal());
+        $resourceKey = 'examples';
+        $resourceId = '123';
+        $dimensionAttributes = ['locale' => 'en'];
 
-        $this->expectException(ContentNotFoundException::class);
+        $searchManager->getIndexNames()->willReturn([
+            'massive_page_example-en-i18n' => 'page_example',
+            'massive_page_example_published-en-i18n' => 'page_example_published',
+            'massive_examples-en-i18n' => 'examples',
+            'massive_examples_published-en-i18n' => 'examples_published',
+            'massive_contact' => 'contact',
+        ]);
 
-        $contentIndexer->deindex($contentRichEntity->reveal(), $dimensionAttributes);
+        $document1 = $this->prophesize(Document::class);
+        $document1->getLocale()->willReturn('en');
+        $queryHit1 = $this->prophesize(QueryHit::class);
+        $queryHit1->getDocument()->willReturn($document1->reveal());
+        $document2 = $this->prophesize(Document::class);
+        $document2->getLocale()->willReturn('en');
+        $queryHit2 = $this->prophesize(QueryHit::class);
+        $queryHit2->getDocument()->willReturn($document2->reveal());
+
+        $searchQueryBuilder = $this->prophesize(SearchQueryBuilder::class);
+        $searchQueryBuilder->indexes([
+            'massive_examples-en-i18n' => 'examples',
+            'massive_examples_published-en-i18n' => 'examples_published',
+        ])->willReturn($searchQueryBuilder->reveal());
+        $searchQueryBuilder->locale('en')->willReturn($searchQueryBuilder->reveal());
+        $searchQueryBuilder->execute()->willReturn([$queryHit1->reveal(), $queryHit2->reveal()]);
+        $searchManager->createSearch('__id:"123"')->willReturn($searchQueryBuilder->reveal());
+
+        $searchManager->deindex($document1->reveal(), 'en')->shouldBeCalled();
+        $searchManager->deindex($document2->reveal(), 'en')->shouldBeCalled();
+
+        $contentIndexer->deindex($resourceKey, $resourceId, $dimensionAttributes);
     }
 
-    public function testDeindexInvalidDimensionAttributes(): void
+    public function testDeindexNoLocale(): void
     {
         $searchManager = $this->prophesize(SearchManagerInterface::class);
         $contentResolver = $this->prophesize(ContentResolverInterface::class);
@@ -211,12 +267,96 @@ class ContentIndexerTest extends TestCase
             $contentResolver->reveal()
         );
 
-        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
-        $dimensionAttributes = ['locale' => 'de'];
+        $resourceKey = 'examples';
+        $resourceId = '123';
+        $dimensionAttributes = ['stage' => DimensionInterface::STAGE_LIVE];
 
-        $this->expectException(ContentNotFoundException::class);
+        $searchManager->getIndexNames()->willReturn([
+            'massive_page_example-en-i18n' => 'page_example',
+            'massive_page_example_published-en-i18n' => 'page_example_published',
+            'massive_examples-en-i18n' => 'examples',
+            'massive_examples_published-en-i18n' => 'examples_published',
+            'massive_examples-de-i18n' => 'examples',
+            'massive_examples_published-de-i18n' => 'examples_published',
+            'massive_contact' => 'contact',
+        ]);
 
-        $contentIndexer->deindex($contentRichEntity->reveal(), $dimensionAttributes);
+        $document1 = $this->prophesize(Document::class);
+        $document1->getLocale()->willReturn('en');
+        $queryHit1 = $this->prophesize(QueryHit::class);
+        $queryHit1->getDocument()->willReturn($document1->reveal());
+        $document2 = $this->prophesize(Document::class);
+        $document2->getLocale()->willReturn('de');
+        $queryHit2 = $this->prophesize(QueryHit::class);
+        $queryHit2->getDocument()->willReturn($document2->reveal());
+
+        $searchQueryBuilder = $this->prophesize(SearchQueryBuilder::class);
+        $searchQueryBuilder->indexes([
+            'massive_examples_published-en-i18n' => 'examples_published',
+            'massive_examples_published-de-i18n' => 'examples_published',
+        ])->willReturn($searchQueryBuilder->reveal());
+        $searchQueryBuilder->locale(Argument::any())->shouldNotBeCalled();
+        $searchQueryBuilder->execute()->willReturn([$queryHit1->reveal(), $queryHit2->reveal()]);
+        $searchManager->createSearch('__id:"123"')->willReturn($searchQueryBuilder->reveal());
+
+        $searchManager->deindex($document1->reveal(), 'en')->shouldBeCalled();
+        $searchManager->deindex($document2->reveal(), 'de')->shouldBeCalled();
+
+        $contentIndexer->deindex($resourceKey, $resourceId, $dimensionAttributes);
+    }
+
+    public function testDeindexWithoutDimensionAttributes(): void
+    {
+        $searchManager = $this->prophesize(SearchManagerInterface::class);
+        $contentResolver = $this->prophesize(ContentResolverInterface::class);
+
+        $contentIndexer = $this->createContentIndexerInstance(
+            $searchManager->reveal(),
+            $contentResolver->reveal()
+        );
+
+        $resourceKey = 'examples';
+        $resourceId = '123';
+
+        $searchManager->getIndexNames()->willReturn([
+            'massive_page_example-en-i18n' => 'page_example',
+            'massive_page_example_published-en-i18n' => 'page_example_published',
+            'massive_examples-de-i18n' => 'examples',
+            'massive_examples_published-de-i18n' => 'examples_published',
+            'massive_examples-en-i18n' => 'examples',
+            'massive_examples_published-en-i18n' => 'examples_published',
+            'massive_contact' => 'contact',
+        ]);
+
+        $document1 = $this->prophesize(Document::class);
+        $document1->getLocale()->willReturn('en');
+        $queryHit1 = $this->prophesize(QueryHit::class);
+        $queryHit1->getDocument()->willReturn($document1->reveal());
+        $document2 = $this->prophesize(Document::class);
+        $document2->getLocale()->willReturn('de');
+        $queryHit2 = $this->prophesize(QueryHit::class);
+        $queryHit2->getDocument()->willReturn($document2->reveal());
+        $document3 = $this->prophesize(Document::class);
+        $document3->getLocale()->willReturn('en');
+        $queryHit3 = $this->prophesize(QueryHit::class);
+        $queryHit3->getDocument()->willReturn($document3->reveal());
+
+        $searchQueryBuilder = $this->prophesize(SearchQueryBuilder::class);
+        $searchQueryBuilder->indexes([
+            'massive_examples-de-i18n' => 'examples',
+            'massive_examples_published-de-i18n' => 'examples_published',
+            'massive_examples-en-i18n' => 'examples',
+            'massive_examples_published-en-i18n' => 'examples_published',
+        ])->willReturn($searchQueryBuilder->reveal());
+        $searchQueryBuilder->locale(Argument::any())->shouldNotBeCalled();
+        $searchQueryBuilder->execute()->willReturn([$queryHit1->reveal(), $queryHit2->reveal(), $queryHit3->reveal()]);
+        $searchManager->createSearch('__id:"123"')->willReturn($searchQueryBuilder->reveal());
+
+        $searchManager->deindex($document1->reveal(), 'en')->shouldBeCalled();
+        $searchManager->deindex($document2->reveal(), 'de')->shouldBeCalled();
+        $searchManager->deindex($document3->reveal(), 'en')->shouldBeCalled();
+
+        $contentIndexer->deindex($resourceKey, $resourceId);
     }
 
     public function testIndexDimensionContent(): void
@@ -265,10 +405,13 @@ class ContentIndexerTest extends TestCase
             $contentResolver->reveal()
         );
 
+        $dimension = $this->prophesize(DimensionInterface::class);
+        $dimension->getLocale()->willReturn('en');
         $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent->getDimension()->willReturn($dimension->reveal());
         $dimensionContent->isMerged()->willReturn(true);
 
-        $searchManager->deindex($dimensionContent->reveal())->shouldBeCalled();
+        $searchManager->deindex($dimensionContent->reveal(), 'en')->shouldBeCalled();
 
         $contentIndexer->deindexDimensionContent($dimensionContent->reveal());
     }
@@ -289,47 +432,5 @@ class ContentIndexerTest extends TestCase
         $searchManager->deindex($dimensionContent->reveal())->shouldNotBeCalled();
 
         $contentIndexer->deindexDimensionContent($dimensionContent->reveal());
-    }
-
-    public function testDelete(): void
-    {
-        $searchManager = $this->prophesize(SearchManagerInterface::class);
-        $contentResolver = $this->prophesize(ContentResolverInterface::class);
-
-        $contentIndexer = $this->createContentIndexerInstance(
-            $searchManager->reveal(),
-            $contentResolver->reveal()
-        );
-
-        $resourceKey = 'examples';
-        $resourceId = '123';
-
-        $searchManager->getIndexNames()->willReturn([
-            'massive_page_example-en-i18n' => 'page_example',
-            'massive_page_example_published-en-i18n' => 'page_example_published',
-            'massive_examples-en-i18n' => 'examples',
-            'massive_examples_published-en-i18n' => 'examples_published',
-            'massive_contact' => 'contact',
-        ]);
-
-        $document1 = $this->prophesize(Document::class);
-        $queryHit1 = $this->prophesize(QueryHit::class);
-        $queryHit1->getDocument()->willReturn($document1->reveal());
-        $document2 = $this->prophesize(Document::class);
-        $queryHit2 = $this->prophesize(QueryHit::class);
-        $queryHit2->getDocument()->willReturn($document2->reveal());
-
-        $searchQueryBuilder = $this->prophesize(SearchQueryBuilder::class);
-        $searchQueryBuilder->indexes([
-            'massive_examples-en-i18n' => 'examples',
-            'massive_examples_published-en-i18n' => 'examples_published',
-        ])->willReturn($searchQueryBuilder->reveal());
-        $searchQueryBuilder->execute()->willReturn([$queryHit1->reveal(), $queryHit2->reveal()]);
-        $searchManager->createSearch('__id:"123"')->willReturn($searchQueryBuilder->reveal());
-
-        $searchManager->deindex($document1->reveal())->shouldBeCalled();
-        $searchManager->deindex($document2->reveal())->shouldBeCalled();
-
-        $contentIndexer->delete($resourceKey, $resourceId);
     }
 }

@@ -269,9 +269,8 @@ class ContentManagerTest extends TestCase
 
     public function testDeindex(): void
     {
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
-
-        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
+        $resourceKey = 'examples';
+        $resourceId = '123';
         $dimensionAttributes = ['locale' => 'en', 'stage' => DimensionInterface::STAGE_LIVE];
 
         $contentResolver = $this->prophesize(ContentResolverInterface::class);
@@ -290,23 +289,15 @@ class ContentManagerTest extends TestCase
             $contentIndexer->reveal()
         );
 
-        $contentIndexer->deindex(
-            $contentRichEntity->reveal(),
+        $contentIndexer->deindex($resourceKey, $resourceId, $dimensionAttributes)->shouldBeCalled();
+        $contentManager->deindex(
+            $resourceKey,
+            $resourceId,
             $dimensionAttributes
-        )
-            ->willReturn($dimensionContent->reveal())
-            ->shouldBeCalled();
-
-        $this->assertSame(
-            $dimensionContent->reveal(),
-            $contentManager->deindex(
-                $contentRichEntity->reveal(),
-                $dimensionAttributes
-            )
         );
     }
 
-    public function testDeleteFromIndex(): void
+    public function testDeindexWithoutDimensionAttributes(): void
     {
         $resourceKey = 'examples';
         $resourceId = '123';
@@ -327,8 +318,8 @@ class ContentManagerTest extends TestCase
             $contentIndexer->reveal()
         );
 
-        $contentIndexer->delete($resourceKey, $resourceId)->shouldBeCalled();
-        $contentManager->deleteFromIndex(
+        $contentIndexer->deindex($resourceKey, $resourceId, [])->shouldBeCalled();
+        $contentManager->deindex(
             $resourceKey,
             $resourceId
         );

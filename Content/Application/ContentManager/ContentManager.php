@@ -112,13 +112,8 @@ class ContentManager implements ContentManagerInterface
         return $this->contentIndexer->index($contentRichEntity, $dimensionAttributes);
     }
 
-    public function deindex(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes): DimensionContentInterface
+    public function deindex(string $resourceKey, $id, array $dimensionAttributes = []): void
     {
-        return $this->contentIndexer->deindex($contentRichEntity, $dimensionAttributes);
-    }
-
-    public function deleteFromIndex(string $resourceKey, $id): void
-    {
-        $this->contentIndexer->delete($resourceKey, $id);
+        $this->contentIndexer->deindex($resourceKey, $id, $dimensionAttributes);
     }
 }

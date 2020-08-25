@@ -14,16 +14,18 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentIndexer;
 
 use Massive\Bundle\SearchBundle\Search\QueryHit;
+use Massive\Bundle\SearchBundle\Search\SearchManager;
 use Massive\Bundle\SearchBundle\Search\SearchManagerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 
 class ContentIndexer implements ContentIndexerInterface
 {
     /**
-     * @var SearchManagerInterface
+     * @var SearchManager
      */
     private $searchManager;
 
@@ -32,6 +34,9 @@ class ContentIndexer implements ContentIndexerInterface
      */
     private $contentResolver;
 
+    /**
+     * @param SearchManager $searchManager
+     */
     public function __construct(SearchManagerInterface $searchManager, ContentResolverInterface $contentResolver)
     {
         $this->searchManager = $searchManager;
@@ -56,13 +61,25 @@ class ContentIndexer implements ContentIndexerInterface
         $this->searchManager->index($dimensionContent);
     }
 
-    public function deindex(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes): DimensionContentInterface
+    public function deindex(string $resourceKey, $id, array $dimensionAttributes = []): void
     {
-        $dimensionContent = $this->loadDimensionContent($contentRichEntity, $dimensionAttributes);
+        $locale = $dimensionAttributes['locale'] ?? null;
+        $stage = $dimensionAttributes['stage'] ?? null;
 
-        $this->deindexDimensionContent($dimensionContent);
+        $search = $this->searchManager->createSearch(sprintf('__id:"%s"', $id))
+            ->indexes($this->getIndexes($resourceKey, $stage));
 
-        return $dimensionContent;
+        if ($locale) {
+            $search->locale($locale);
+        }
+
+        $searchResult = $search->execute();
+
+        /** @var QueryHit $hit */
+        foreach ($searchResult as $hit) {
+            $document = $hit->getDocument();
+            $this->searchManager->deindex($document, $document->getLocale());
+        }
     }
 
     public function deindexDimensionContent(DimensionContentInterface $dimensionContent): void
@@ -71,20 +88,7 @@ class ContentIndexer implements ContentIndexerInterface
             return;
         }
 
-        $this->searchManager->deindex($dimensionContent);
-    }
-
-    public function delete(string $resourceKey, $id): void
-    {
-        $searchResult = $this->searchManager
-            ->createSearch(sprintf('__id:"%s"', $id))
-            ->indexes($this->getIndexes($resourceKey))
-            ->execute();
-
-        /** @var QueryHit $hit */
-        foreach ($searchResult as $hit) {
-            $this->searchManager->deindex($hit->getDocument());
-        }
+        $this->searchManager->deindex($dimensionContent, $dimensionContent->getDimension()->getLocale());
     }
 
     /**
@@ -114,12 +118,24 @@ class ContentIndexer implements ContentIndexerInterface
     /**
      * @return string[]
      */
-    private function getIndexes(string $resourceKey): array
+    private function getIndexes(string $resourceKey, ?string $stage): array
     {
         return array_filter(
             $this->searchManager->getIndexNames(),
-            function ($indexName) use ($resourceKey) {
-                return $resourceKey === $indexName || $resourceKey . '_published' === $indexName;
+            function ($indexName) use ($resourceKey, $stage) {
+                if (null === $stage) {
+                    return $resourceKey === $indexName || $resourceKey . '_published' === $indexName;
+                }
+
+                if (DimensionInterface::STAGE_DRAFT === $stage) {
+                    return $resourceKey === $indexName;
+                }
+
+                if (DimensionInterface::STAGE_LIVE === $stage) {
+                    return $resourceKey . '_published' === $indexName;
+                }
+
+                return false;
             }
         );
     }

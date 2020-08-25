@@ -26,14 +26,10 @@ interface ContentIndexerInterface
     public function indexDimensionContent(DimensionContentInterface $dimensionContent): void;
 
     /**
+     * @param mixed $id
      * @param mixed[] $dimensionAttributes
      */
-    public function deindex(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes): DimensionContentInterface;
+    public function deindex(string $resourceKey, $id, array $dimensionAttributes = []): void;
 
     public function deindexDimensionContent(DimensionContentInterface $dimensionContent): void;
-
-    /**
-     * @param mixed $id
-     */
-    public function delete(string $resourceKey, $id): void;
 }

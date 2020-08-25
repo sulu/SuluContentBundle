@@ -158,7 +158,7 @@ class ContentSearchMetadataProvider implements ProviderInterface
         return $this->getMetadata($dimensionContentClass, $structureMetadata);
     }
 
-    protected function getMetadata(string $className, StructureMetadata $structureMetadata): ClassMetadata
+    private function getMetadata(string $className, StructureMetadata $structureMetadata): ClassMetadata
     {
         $classMetadata = $this->searchMetadataFactory->createClassMetadata($className);
 
@@ -238,7 +238,7 @@ class ContentSearchMetadataProvider implements ProviderInterface
                                         '[' . $componentProperty->getName() . ']'
                                     ),
                                     'aggregate' => true,
-                                    'indexed' => false,
+                                    'indexed' => isset($tagAttributes['index']) && 'indexed' === $tagAttributes['index'],
                                 ]
                             );
                         }
@@ -351,7 +351,7 @@ class ContentSearchMetadataProvider implements ProviderInterface
                     'type' => isset($tagAttributes['type']) ? $tagAttributes['type'] : 'string',
                     'field' => $this->getContentField($property),
                     'aggregate' => true,
-                    'indexed' => false,
+                    'indexed' => isset($tagAttributes['index']) && 'indexed' === $tagAttributes['index'],
                 ]
             );
         }
