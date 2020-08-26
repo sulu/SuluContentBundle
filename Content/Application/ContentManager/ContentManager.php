@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentManager;
 
 use Sulu\Bundle\ContentBundle\Content\Application\ContentCopier\ContentCopierInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentIndexer\ContentIndexerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\ContentNormalizerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersisterInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolverInterface;
@@ -48,18 +49,25 @@ class ContentManager implements ContentManagerInterface
      */
     private $contentWorkflow;
 
+    /**
+     * @var ContentIndexerInterface
+     */
+    private $contentIndexer;
+
     public function __construct(
         ContentResolverInterface $contentResolver,
         ContentPersisterInterface $contentPersister,
         ContentNormalizerInterface $contentNormalizer,
         ContentCopierInterface $contentCopier,
-        ContentWorkflowInterface $contentWorkflow
+        ContentWorkflowInterface $contentWorkflow,
+        ContentIndexerInterface $contentIndexer
     ) {
         $this->contentResolver = $contentResolver;
         $this->contentPersister = $contentPersister;
         $this->contentNormalizer = $contentNormalizer;
         $this->contentCopier = $contentCopier;
         $this->contentWorkflow = $contentWorkflow;
+        $this->contentIndexer = $contentIndexer;
     }
 
     public function resolve(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes): DimensionContentInterface
@@ -97,5 +105,15 @@ class ContentManager implements ContentManagerInterface
         string $transitionName
     ): DimensionContentInterface {
         return $this->contentWorkflow->apply($contentRichEntity, $dimensionAttributes, $transitionName);
+    }
+
+    public function index(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes): DimensionContentInterface
+    {
+        return $this->contentIndexer->index($contentRichEntity, $dimensionAttributes);
+    }
+
+    public function deindex(string $resourceKey, $id, array $dimensionAttributes = []): void
+    {
+        $this->contentIndexer->deindex($resourceKey, $id, $dimensionAttributes);
     }
 }

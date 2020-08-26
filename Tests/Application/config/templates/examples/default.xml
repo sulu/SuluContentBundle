@@ -26,6 +26,7 @@
             </params>
 
             <tag name="sulu.rlp.part"/>
+            <tag name="sulu.search.field" role="title"/>
         </property>
 
         <property name="url" type="route">
@@ -35,6 +36,25 @@
             </meta>
 
             <tag name="sulu.rlp"/>
+            <tag name="sulu.search.field" role="url"/>
+        </property>
+
+        <property name="description" type="text_area">
+            <meta>
+                <title lang="en">Description</title>
+                <title lang="de">Beschreibung</title>
+            </meta>
+
+            <tag name="sulu.search.field" role="description"/>
+        </property>
+
+        <property name="image" type="single_media_selection">
+            <meta>
+                <title lang="en">Image</title>
+                <title lang="de">Bild</title>
+            </meta>
+
+            <tag name="sulu.search.field" role="image"/>
         </property>
 
         <property name="article" type="text_editor">
@@ -42,6 +62,53 @@
                 <title lang="en">Article</title>
                 <title lang="de">Artikel</title>
             </meta>
+
+            <tag name="sulu.search.field" type="string"/>
         </property>
+
+        <block name="content" default-type="text">
+            <meta>
+                <title lang="en">Content</title>
+                <title lang="de">Inhalt</title>
+            </meta>
+
+            <types>
+                <type name="heading">
+                    <meta>
+                        <title lang="en">Heading</title>
+                        <title lang="de">Überschrift</title>
+                    </meta>
+
+                    <properties>
+                        <property name="heading" type="text_line">
+                            <meta>
+                                <title lang="en">Heading</title>
+                                <title lang="de">Überschrift</title>
+                            </meta>
+
+                            <tag name="sulu.search.field" type="string"/>
+                        </property>
+                    </properties>
+                </type>
+
+                <type name="text">
+                    <meta>
+                        <title lang="en">Text</title>
+                        <title lang="de">Text</title>
+                    </meta>
+
+                    <properties>
+                        <property name="text" type="text_editor">
+                            <meta>
+                                <title lang="en">Text</title>
+                                <title lang="de">Text</title>
+                            </meta>
+
+                            <tag name="sulu.search.field" type="string"/>
+                        </property>
+                    </properties>
+                </type>
+            </types>
+        </block>
     </properties>
 </template>

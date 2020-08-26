@@ -22,6 +22,10 @@
         <default-template type="page">default-2</default-template>
     </default-templates>
 
+    <templates>
+        <template type="search">search/search</template>
+    </templates>
+
     <navigation>
         <contexts>
             <context key="main">

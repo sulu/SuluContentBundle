@@ -74,13 +74,34 @@ class ExampleTestExtension extends Extension implements PrependExtensionInterfac
                         Example::class => [
                             'generator' => 'schema',
                             'options' => [
-                                'route_schema' => '/{object.getName()}',
+                                'route_schema' => '/{object["title"]}',
                             ],
                             'resource_key' => Example::RESOURCE_KEY,
                         ],
                     ],
                 ]
             );
+        }
+
+        if ($container->hasExtension('sulu_search')) {
+            $suluSearchConfigs = $container->getExtensionConfig('sulu_search');
+
+            foreach ($suluSearchConfigs as $suluSearchConfig) {
+                if (isset($suluSearchConfig['website']['indexes'])) {
+                    $container->prependExtensionConfig(
+                        'sulu_search',
+                        [
+                            'website' => [
+                                'indexes' => [
+                                    Example::RESOURCE_KEY => Example::RESOURCE_KEY . '_published',
+                                ],
+                            ],
+                        ]
+                    );
+
+                    break;
+                }
+            }
         }
     }
 
