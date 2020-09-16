@@ -40,7 +40,9 @@ class ContentMetadataInspectorTest extends TestCase
 
         $entityManager->getClassMetadata(Example::class)->willReturn($classMetadata->reveal());
 
-        $contentMetadataInspector = $this->createContentMetadataInspectorTestInstance($entityManager);
+        $contentMetadataInspector = $this->createContentMetadataInspectorTestInstance(
+            $entityManager->reveal()
+        );
 
         $dimensionContentClass = $contentMetadataInspector->getDimensionContentClass(Example::class);
 

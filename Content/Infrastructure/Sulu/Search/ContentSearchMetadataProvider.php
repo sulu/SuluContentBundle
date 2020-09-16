@@ -21,6 +21,7 @@ use Massive\Bundle\SearchBundle\Search\Metadata\Field\Expression;
 use Massive\Bundle\SearchBundle\Search\Metadata\IndexMetadata;
 use Massive\Bundle\SearchBundle\Search\Metadata\ProviderInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentMetadataInspector\ContentMetadataInspectorInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
