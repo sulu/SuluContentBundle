@@ -54,7 +54,7 @@ class DimensionContentRepository implements DimensionContentRepositoryInterface
             ->select('dimensionContent')
             ->addSelect('dimension')
             ->innerJoin('dimensionContent.dimension', 'dimension')
-            ->innerJoin('dimensionContent.' . $mappingPropertyy, 'content')
+            ->innerJoin('dimensionContent.' . $mappingProperty, 'content')
             ->where('content.id = :id')
             ->setParameter('id', $contentRichEntity->getId());
 
