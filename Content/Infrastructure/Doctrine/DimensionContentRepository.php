@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Content\Infrastructure\Doctrine;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentAssociationMapper\ContentAssociationMapperInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentMetadataInspector\ContentMetadataInspectorInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollection;
@@ -30,30 +30,31 @@ class DimensionContentRepository implements DimensionContentRepositoryInterface
     private $entityManager;
     
     /**
-     * @var ContentAssociationMapperInterface
+     * @var ContentMetadataInspectorInterface
      */
-    private $contentAssociationMapper;
+    private $contentMetadataInspector;
 
     public function __construct(
         EntityManagerInterface $entityManager,
-        ContentAssociationMapperInterface $contentAssociationMapper
+        ContentMetadataInspectorInterface $contentMetadataInspector
     ) {
         $this->entityManager = $entityManager;
-        $this->contentAssociationMapper = $contentAssociationMapper;
+        $this->contentMetadataInspector = $contentMetadataInspector;
     }
 
     public function load(
         ContentRichEntityInterface $contentRichEntity,
         DimensionCollectionInterface $dimensionCollection
     ): DimensionContentCollectionInterface {
-        $dimensionContentClass = $this->contentAssociationMapper->getDimensionContentClass(\get_class($contentRichEntity));
-
+        $dimensionContentClass = $this->contentMetadataInspector->getDimensionContentClass(\get_class($contentRichEntity));
+        $mappingProperty = $this->contentMetadataInspector->getDimensionContentMappingProperty(\get_class($contentRichEntity));
+        
         $queryBuilder = $this->entityManager->createQueryBuilder()
             ->from($dimensionContentClass, 'dimensionContent')
             ->select('dimensionContent')
             ->addSelect('dimension')
             ->innerJoin('dimensionContent.dimension', 'dimension')
-            ->innerJoin('dimensionContent.content', 'content')
+            ->innerJoin('dimensionContent.' . $mappingPropertyy, 'content')
             ->where('content.id = :id')
             ->setParameter('id', $contentRichEntity->getId());
 

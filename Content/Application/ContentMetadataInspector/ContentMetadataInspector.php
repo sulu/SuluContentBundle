@@ -11,11 +11,11 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Content\Application\ContentAssociationMapper;
+namespace Sulu\Bundle\ContentBundle\Content\Application\ContentMetadataInspector;
 
 use Doctrine\ORM\EntityManagerInterface;
 
-class ContentAssociationMapper implements ContentAssociationMapperInterface
+class ContentMetadataInspector implements ContentMetadataInspectorInterface
 {
     /**
      * @var EntityManagerInterface
@@ -37,5 +37,18 @@ class ContentAssociationMapper implements ContentAssociationMapperInterface
         $associationMapping = $classMetadata->getAssociationMapping('dimensionContents');
 
         return $associationMapping['targetEntity'];
+    }
+    
+    /**
+     * @param class-string<ContentRichEntityInterface> $contentRichEntityClass
+     *
+     * @return string
+     */
+    public function getDimensionContentMappingProperty(string $contentRichEntityClass): string
+    {
+        $classMetadata = $this->entityManager->getClassMetadata($contentRichEntityClass);
+        $associationMapping = $classMetadata->getAssociationMapping('dimensionContents');
+
+        return $associationMapping['mappedBy'];
     }
 }

@@ -15,7 +15,7 @@ namespace Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Search;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Massive\Bundle\SearchBundle\Search\Reindex\LocalizedReindexProviderInterface;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentAssociationMapper\ContentAssociationMapperInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentMetadataInspector\ContentMetadataInspectorInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
@@ -32,9 +32,9 @@ class ContentReindexProvider implements LocalizedReindexProviderInterface
     private $entityManager;
     
     /**
-     * @var ContentAssociationMapperInterface
+     * @var ContentMetadataInspectorInterface
      */
-    private $contentAssociationMapper;
+    private $contentMetadataInspector;
     
     /**
      * @var ContentResolverInterface
@@ -61,13 +61,13 @@ class ContentReindexProvider implements LocalizedReindexProviderInterface
      */
     public function __construct(
         EntityManagerInterface $entityManager,
-        ContentAssociationMapperInterface $contentAssociationMapper,
+        ContentMetadataInspectorInterface $contentMetadataInspector,
         ContentResolverInterface $contentResolver,
         string $context,
         string $contentRichEntityClass
     ) {
         $this->entityManager = $entityManager;
-        $this->contentAssociationMapper = $contentAssociationMapper;
+        $this->contentMetadataInspector = $contentMetadataInspector;
         $this->contentResolver = $contentResolver;
         $this->context = $context;
         $this->contentRichEntityClass = $contentRichEntityClass;
@@ -181,7 +181,7 @@ class ContentReindexProvider implements LocalizedReindexProviderInterface
             return $this->dimensionContentClass;
         }
 
-        $this->dimensionContentClass = $this->contentAssociationMapper->getDimensionContentClass($this->contentRichEntityClass);
+        $this->dimensionContentClass = $this->contentMetadataInspector->getDimensionContentClass($this->contentRichEntityClass);
 
         return $this->dimensionContentClass;
     }

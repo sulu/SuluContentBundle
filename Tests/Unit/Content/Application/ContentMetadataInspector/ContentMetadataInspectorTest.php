@@ -11,21 +11,22 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentAssociationMapper;
+namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentMetadataInspector;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use PHPUnit\Framework\TestCase;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentAssociationMapper\ContentAssociationMapperInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentMetadataInspector\ContentMetadataInspectorInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentMetadataInspector\ContentMetadataInspector;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleDimensionContent;
 
-class ContentAssociationMapperTest extends TestCase
+class ContentMetadataInspectorTest extends TestCase
 {
-    protected function createContentAssociationMapperTestInstance(
+    protected function createContentMetadataInspectorTestInstance(
         EntityManagerInterface $entityManager
-    ): ContentAssociationMapperInterface {
-        return new \Sulu\Bundle\ContentBundle\Content\Application\ContentAssociationMapper(
+    ): ContentMetadataInspectorInterface {
+        return new ContentMetadataInspector(
             $entityManager
         );
     }
@@ -39,9 +40,9 @@ class ContentAssociationMapperTest extends TestCase
 
         $entityManager->getClassMetadata(Example::class)->willReturn($classMetadata->reveal());
 
-        $contentAssociationManager = $this->createContentAssociationMapperTestInstance($entityManager);
+        $contentMetadataInspector = $this->createContentMetadataInspectorTestInstance($entityManager);
         
-        $dimensionContentClass = $contentAssociationManager->getDimensionContentClass(Example::class);
+        $dimensionContentClass = $contentMetadataInspector->getDimensionContentClass(Example::class);
         
         $this->assertSame(ExampleDimensionContent::class, $dimensionContentClass);
     }

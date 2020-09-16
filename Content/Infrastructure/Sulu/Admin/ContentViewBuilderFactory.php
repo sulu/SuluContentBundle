@@ -19,7 +19,7 @@ use Sulu\Bundle\AdminBundle\Admin\View\PreviewFormViewBuilderInterface;
 use Sulu\Bundle\AdminBundle\Admin\View\ToolbarAction;
 use Sulu\Bundle\AdminBundle\Admin\View\ViewBuilderFactoryInterface;
 use Sulu\Bundle\AdminBundle\Admin\View\ViewBuilderInterface;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentAssociationMapper\ContentAssociationMapperInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentMetadataInspector\ContentMetadataInspectorInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
@@ -41,9 +41,9 @@ class ContentViewBuilderFactory implements ContentViewBuilderFactoryInterface
     private $objectProviderRegistry;
 
     /**
-     * @var ContentAssociationMapperInterface
+     * @var ContentMetadataInspectorInterface
      */
-    private $contentAssociationMapper;
+    private $contentMetadataInspector;
 
     /**
      * @var SecurityCheckerInterface
@@ -53,19 +53,19 @@ class ContentViewBuilderFactory implements ContentViewBuilderFactoryInterface
     public function __construct(
         ViewBuilderFactoryInterface $viewBuilderFactory,
         PreviewObjectProviderRegistryInterface $objectProviderRegistry,
-        ContentAssociationMapperInterface $contentAssociationMapper,
+        ContentMetadataInspectorInterface $contentMetadataInspector,
         SecurityCheckerInterface $securityChecker
     ) {
         $this->viewBuilderFactory = $viewBuilderFactory;
         $this->objectProviderRegistry = $objectProviderRegistry;
-        $this->contentAssociationMapper = $contentAssociationMapper;
+        $this->contentMetadataInspector = $contentMetadataInspector;
         $this->securityChecker = $securityChecker;
     }
 
     public function getDefaultToolbarActions(
         string $contentRichEntityClass
     ): array {
-        $dimensionContentClass = $this->contentAssociationMapper->getDimensionContentClass($contentRichEntityClass);
+        $dimensionContentClass = $this->contentMetadataInspector->getDimensionContentClass($contentRichEntityClass);
 
         $toolbarActions = [];
 
@@ -130,7 +130,7 @@ class ContentViewBuilderFactory implements ContentViewBuilderFactoryInterface
         ?string $securityContext = null,
         ?array $toolbarActions = null
     ): array {
-        $dimensionContentClass = $this->contentAssociationMapper->getDimensionContentClass($contentRichEntityClass);
+        $dimensionContentClass = $this->contentMetadataInspector->getDimensionContentClass($contentRichEntityClass);
 
         $resourceKey = $dimensionContentClass::getResourceKey();
         $previewEnabled = $this->objectProviderRegistry->hasPreviewObjectProvider($resourceKey);

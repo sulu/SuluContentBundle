@@ -11,9 +11,9 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Content\Application\ContentAssociationMapper;
+namespace Sulu\Bundle\ContentBundle\Content\Application\ContentMetadataInspector;
 
-interface ContentAssociationMapperInterface
+interface ContentMetadataInspectorInterface
 {
     /**
      * @param class-string<ContentRichEntityInterface> $contentRichEntityClass
@@ -21,4 +21,11 @@ interface ContentAssociationMapperInterface
      * @return class-string<DimensionContentInterface>
      */
     public function getDimensionContentClass(string $contentRichEntityClass): string;
+    
+    /**
+     * @param class-string<ContentRichEntityInterface> $contentRichEntityClass
+     *
+     * @return string
+     */
+    public function getDimensionContentMappingProperty(string $contentRichEntityClass): string;
 }
