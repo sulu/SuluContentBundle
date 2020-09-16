@@ -22,10 +22,11 @@ class ContentMetadataInspector implements ContentMetadataInspectorInterface
      */
     private $entityManager;
 
-    function __construct(EntityManagerInterface $entityManager) {
+    public function __construct(EntityManagerInterface $entityManager)
+    {
         $this->entityManager = $entityManager;
     }
-    
+
     /**
      * @param class-string<ContentRichEntityInterface> $contentRichEntityClass
      *
@@ -38,11 +39,9 @@ class ContentMetadataInspector implements ContentMetadataInspectorInterface
 
         return $associationMapping['targetEntity'];
     }
-    
+
     /**
      * @param class-string<ContentRichEntityInterface> $contentRichEntityClass
-     *
-     * @return string
      */
     public function getDimensionContentMappingProperty(string $contentRichEntityClass): string
     {

@@ -16,8 +16,8 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentMetada
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use PHPUnit\Framework\TestCase;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentMetadataInspector\ContentMetadataInspectorInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentMetadataInspector\ContentMetadataInspector;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentMetadataInspector\ContentMetadataInspectorInterface;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleDimensionContent;
 
@@ -41,9 +41,9 @@ class ContentMetadataInspectorTest extends TestCase
         $entityManager->getClassMetadata(Example::class)->willReturn($classMetadata->reveal());
 
         $contentMetadataInspector = $this->createContentMetadataInspectorTestInstance($entityManager);
-        
+
         $dimensionContentClass = $contentMetadataInspector->getDimensionContentClass(Example::class);
-        
+
         $this->assertSame(ExampleDimensionContent::class, $dimensionContentClass);
     }
 }

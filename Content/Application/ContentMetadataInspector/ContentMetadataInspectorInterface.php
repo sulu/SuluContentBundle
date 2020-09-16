@@ -21,11 +21,9 @@ interface ContentMetadataInspectorInterface
      * @return class-string<DimensionContentInterface>
      */
     public function getDimensionContentClass(string $contentRichEntityClass): string;
-    
+
     /**
      * @param class-string<ContentRichEntityInterface> $contentRichEntityClass
-     *
-     * @return string
      */
     public function getDimensionContentMappingProperty(string $contentRichEntityClass): string;
 }

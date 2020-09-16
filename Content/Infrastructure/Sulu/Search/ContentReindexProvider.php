@@ -30,12 +30,12 @@ class ContentReindexProvider implements LocalizedReindexProviderInterface
      * @var EntityManagerInterface
      */
     private $entityManager;
-    
+
     /**
      * @var ContentMetadataInspectorInterface
      */
     private $contentMetadataInspector;
-    
+
     /**
      * @var ContentResolverInterface
      */

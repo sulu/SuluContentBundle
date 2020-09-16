@@ -51,7 +51,7 @@ class ContentSearchMetadataProvider implements ProviderInterface
      * @var ContentMetadataInspectorInterface
      */
     private $contentMetadataInspector;
-    
+
     /**
      * @var Factory
      */
