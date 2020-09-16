@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Teaser;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentAssociationMapper\ContentAssociationMapperInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentManager\ContentManagerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\ContentWorkflowInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
@@ -41,6 +42,11 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
     protected $entityManager;
 
     /**
+     * @var ContentAssociationMapperInterface
+     */
+    private $contentAssociationMapper;
+
+    /**
      * @var StructureMetadataFactoryInterface
      */
     protected $metadataFactory;
@@ -56,11 +62,13 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
     public function __construct(
         ContentManagerInterface $contentManager,
         EntityManagerInterface $entityManager,
+        ContentAssociationMapperInterface $contentAssociationMapper,
         StructureMetadataFactoryInterface $metadataFactory,
         string $contentRichEntityClass
     ) {
         $this->contentManager = $contentManager;
         $this->entityManager = $entityManager;
+        $this->contentAssociationMapper = $contentAssociationMapper;
         $this->metadataFactory = $metadataFactory;
         $this->contentRichEntityClass = $contentRichEntityClass;
     }
@@ -297,8 +305,7 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
 
     protected function getResourceKey(): string
     {
-        $classMetadata = $this->entityManager->getClassMetadata($this->contentRichEntityClass);
-        $dimensionContentClass = $classMetadata->getAssociationMapping('dimensionContents')['targetEntity'];
+        $dimensionContentClass = $this->contentAssociationMapper->getDimensionContentClass($this->contentRichEntityClass);
 
         return $dimensionContentClass::getResourceKey();
     }
