@@ -81,7 +81,7 @@ class ContentPublishTaskHandler implements AutomationTaskHandlerInterface
             return;
         }
 
-        /** @var class-string $class */
+        /** @var class-string<ContentRichEntityInterface> $class */
         $class = $workload['class'];
         $repository = $this->entityManager->getRepository($class);
 
