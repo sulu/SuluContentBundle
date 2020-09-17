@@ -34,7 +34,7 @@ class ContentPublishTaskHandlerTest extends TestCase
     private $entityManager;
 
     /**
-     * @var ObjectRepository|ObjectProphecy
+     * @var ObjectRepository<ContentRichEntityInterface>|ObjectProphecy
      */
     private $repository;
 
@@ -57,7 +57,7 @@ class ContentPublishTaskHandlerTest extends TestCase
         parent::setUp();
 
         $this->entityManager = $this->prophesize(EntityManagerInterface::class);
-        $this->repository = $this->prophesize(ObjectRepository::class);
+        $this->repository = $this->prophesize(ObjectRepository::class); // @phpstan-ignore-line
         $this->contentManager = $this->prophesize(ContentManagerInterface::class);
         $this->translator = $this->prophesize(TranslatorInterface::class);
 

@@ -19,6 +19,7 @@ use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\ContentWorkflowInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\RouteBundle\Model\RouteInterface;
 use Sulu\Bundle\WebsiteBundle\Sitemap\Sitemap;
@@ -52,12 +53,12 @@ class ContentSitemapProvider implements SitemapProviderInterface
     protected $kernelEnvironment;
 
     /**
-     * @var class-string
+     * @var class-string<ContentRichEntityInterface>
      */
-    protected $contentClass;
+    protected $contentRichEntityClass;
 
     /**
-     * @var class-string
+     * @var class-string<RouteInterface>
      */
     protected $routeClass;
 
@@ -68,21 +69,21 @@ class ContentSitemapProvider implements SitemapProviderInterface
 
     /**
      * @param string $kernelEnvironment Inject parameter "kernel.environment" here
-     * @param class-string $contentClass Classname that is used in the route table
-     * @param class-string $routeClass
+     * @param class-string<ContentRichEntityInterface> $contentRichEntityClass Classname that is used in the route table
+     * @param class-string<RouteInterface> $routeClass
      */
     public function __construct(
         EntityManagerInterface $entityManager,
         WebspaceManagerInterface $webspaceManager,
         string $kernelEnvironment,
-        string $contentClass,
+        string $contentRichEntityClass,
         string $routeClass,
         string $alias
     ) {
         $this->entityManager = $entityManager;
         $this->webspaceManager = $webspaceManager;
         $this->kernelEnvironment = $kernelEnvironment;
-        $this->contentClass = $contentClass;
+        $this->contentRichEntityClass = $contentRichEntityClass;
         $this->routeClass = $routeClass;
         $this->alias = $alias;
     }
@@ -206,7 +207,7 @@ class ContentSitemapProvider implements SitemapProviderInterface
         $queryBuilder = $this->entityManager->createQueryBuilder();
 
         return $queryBuilder
-            ->from($this->contentClass, self::CONTENT_RICH_ENTITY_ALIAS)
+            ->from($this->contentRichEntityClass, self::CONTENT_RICH_ENTITY_ALIAS)
             ->innerJoin(self::CONTENT_RICH_ENTITY_ALIAS . '.dimensionContents', self::LOCALIZED_DIMENSION_CONTENT_ALIAS)
             ->innerJoin(self::LOCALIZED_DIMENSION_CONTENT_ALIAS . '.dimension', self::LOCALIZED_DIMENSION_ALIAS)
             ->innerJoin($this->routeClass, self::ROUTE_ALIAS, Join::WITH, self::ROUTE_ALIAS . '.entityId = ' . self::CONTENT_RICH_ENTITY_ALIAS . '.' . $this->getEntityIdField())
@@ -216,7 +217,7 @@ class ContentSitemapProvider implements SitemapProviderInterface
             ->andWhere(self::ROUTE_ALIAS . '.locale = ' . self::LOCALIZED_DIMENSION_ALIAS . '.locale')
             ->setParameters([
                 'stage' => DimensionInterface::STAGE_LIVE,
-                'entityClass' => $this->contentClass,
+                'entityClass' => $this->contentRichEntityClass,
                 'history' => false,
             ]);
     }
