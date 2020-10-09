@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Search;
 
-use Doctrine\ORM\EntityManagerInterface;
 use Massive\Bundle\SearchBundle\Search\Document;
 use Massive\Bundle\SearchBundle\Search\Factory;
 use Massive\Bundle\SearchBundle\Search\Metadata\ClassMetadata;
@@ -21,6 +20,7 @@ use Massive\Bundle\SearchBundle\Search\Metadata\ComplexMetadata;
 use Massive\Bundle\SearchBundle\Search\Metadata\Field\Expression;
 use Massive\Bundle\SearchBundle\Search\Metadata\IndexMetadata;
 use Massive\Bundle\SearchBundle\Search\Metadata\ProviderInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentMetadataInspector\ContentMetadataInspectorInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
@@ -49,9 +49,9 @@ class ContentSearchMetadataProvider implements ProviderInterface
     ];
 
     /**
-     * @var EntityManagerInterface
+     * @var ContentMetadataInspectorInterface
      */
-    private $entityManager;
+    private $contentMetadataInspector;
 
     /**
      * @var Factory
@@ -77,12 +77,12 @@ class ContentSearchMetadataProvider implements ProviderInterface
      * @param class-string<ContentRichEntityInterface> $contentRichEntityClass
      */
     public function __construct(
-        EntityManagerInterface $entityManager,
+        ContentMetadataInspectorInterface $contentMetadataInspector,
         Factory $searchMetadataFactory,
         StructureMetadataFactoryInterface $structureFactory,
         string $contentRichEntityClass
     ) {
-        $this->entityManager = $entityManager;
+        $this->contentMetadataInspector = $contentMetadataInspector;
         $this->searchMetadataFactory = $searchMetadataFactory;
         $this->structureFactory = $structureFactory;
         $this->contentRichEntityClass = $contentRichEntityClass;
@@ -366,9 +366,7 @@ class ContentSearchMetadataProvider implements ProviderInterface
             return $this->dimensionContentClass;
         }
 
-        $classMetadata = $this->entityManager->getClassMetadata($this->contentRichEntityClass);
-        $associationMapping = $classMetadata->getAssociationMapping('dimensionContents');
-        $this->dimensionContentClass = $associationMapping['targetEntity'];
+        $this->dimensionContentClass = $this->contentMetadataInspector->getDimensionContentClass($this->contentRichEntityClass);
 
         return $this->dimensionContentClass;
     }

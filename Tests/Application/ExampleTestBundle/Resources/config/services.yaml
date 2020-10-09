@@ -44,6 +44,7 @@ services:
         arguments:
             - '@sulu_content.content_manager'
             - '@doctrine.orm.entity_manager'
+            - '@sulu_content.content_metadata_inspector'
             - '@sulu_page.structure.factory'
             - '@translator'
         tags:
@@ -72,6 +73,7 @@ services:
         class: Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Search\ContentReindexProvider
         arguments:
             - '@doctrine.orm.entity_manager'
+            - '@sulu_content.content_metadata_inspector'
             - '@sulu_content.content_resolver'
             - '%sulu.context%'
             - Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example
@@ -81,7 +83,7 @@ services:
     example_test.example_search_metadata_provider:
         class: Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Search\ContentSearchMetadataProvider
         arguments:
-            - '@doctrine.orm.entity_manager'
+            - '@sulu_content.content_metadata_inspector'
             - '@massive_search.factory_default'
             - '@sulu_page.structure.factory'
             - Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example

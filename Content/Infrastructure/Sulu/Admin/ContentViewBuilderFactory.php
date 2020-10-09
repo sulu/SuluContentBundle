@@ -13,15 +13,13 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Admin;
 
-use Doctrine\ORM\EntityManagerInterface;
 use Sulu\Bundle\AdminBundle\Admin\View\DropdownToolbarAction;
 use Sulu\Bundle\AdminBundle\Admin\View\FormViewBuilderInterface;
 use Sulu\Bundle\AdminBundle\Admin\View\PreviewFormViewBuilderInterface;
 use Sulu\Bundle\AdminBundle\Admin\View\ToolbarAction;
 use Sulu\Bundle\AdminBundle\Admin\View\ViewBuilderFactoryInterface;
 use Sulu\Bundle\AdminBundle\Admin\View\ViewBuilderInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentMetadataInspector\ContentMetadataInspectorInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
@@ -43,9 +41,9 @@ class ContentViewBuilderFactory implements ContentViewBuilderFactoryInterface
     private $objectProviderRegistry;
 
     /**
-     * @var EntityManagerInterface
+     * @var ContentMetadataInspectorInterface
      */
-    private $entityManager;
+    private $contentMetadataInspector;
 
     /**
      * @var SecurityCheckerInterface
@@ -55,19 +53,19 @@ class ContentViewBuilderFactory implements ContentViewBuilderFactoryInterface
     public function __construct(
         ViewBuilderFactoryInterface $viewBuilderFactory,
         PreviewObjectProviderRegistryInterface $objectProviderRegistry,
-        EntityManagerInterface $entityManager,
+        ContentMetadataInspectorInterface $contentMetadataInspector,
         SecurityCheckerInterface $securityChecker
     ) {
         $this->viewBuilderFactory = $viewBuilderFactory;
         $this->objectProviderRegistry = $objectProviderRegistry;
-        $this->entityManager = $entityManager;
+        $this->contentMetadataInspector = $contentMetadataInspector;
         $this->securityChecker = $securityChecker;
     }
 
     public function getDefaultToolbarActions(
         string $contentRichEntityClass
     ): array {
-        $dimensionContentClass = $this->getDimensionContentClass($contentRichEntityClass);
+        $dimensionContentClass = $this->contentMetadataInspector->getDimensionContentClass($contentRichEntityClass);
 
         $toolbarActions = [];
 
@@ -132,7 +130,7 @@ class ContentViewBuilderFactory implements ContentViewBuilderFactoryInterface
         ?string $securityContext = null,
         ?array $toolbarActions = null
     ): array {
-        $dimensionContentClass = $this->getDimensionContentClass($contentRichEntityClass);
+        $dimensionContentClass = $this->contentMetadataInspector->getDimensionContentClass($contentRichEntityClass);
 
         $resourceKey = $dimensionContentClass::getResourceKey();
         $previewEnabled = $this->objectProviderRegistry->hasPreviewObjectProvider($resourceKey);
@@ -290,18 +288,5 @@ class ContentViewBuilderFactory implements ContentViewBuilderFactoryInterface
         }
 
         return $this->securityChecker->hasPermission($securityContext, $permissionType);
-    }
-
-    /**
-     * @param class-string<ContentRichEntityInterface> $contentRichEntityClass
-     *
-     * @return class-string<DimensionContentInterface>
-     */
-    private function getDimensionContentClass(string $contentRichEntityClass): string
-    {
-        $classMetadata = $this->entityManager->getClassMetadata($contentRichEntityClass);
-        $associationMapping = $classMetadata->getAssociationMapping('dimensionContents');
-
-        return $associationMapping['targetEntity'];
     }
 }

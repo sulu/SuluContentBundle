@@ -14,12 +14,12 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Infrastructure\Sulu\Admin;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Mapping\ClassMetadata;
 use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\AdminBundle\Admin\View\FormViewBuilderInterface;
 use Sulu\Bundle\AdminBundle\Admin\View\PreviewFormViewBuilderInterface;
 use Sulu\Bundle\AdminBundle\Admin\View\ViewBuilderFactory;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\ContentDataMapperInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentMetadataInspector\ContentMetadataInspectorInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
@@ -46,7 +46,7 @@ use Sulu\Component\Security\Authorization\SecurityCheckerInterface;
 class ContentViewBuilderFactoryTest extends TestCase
 {
     protected function createContentViewBuilder(
-        EntityManagerInterface $entityManager,
+        ContentMetadataInspectorInterface $contentMetadataInspector,
         SecurityCheckerInterface $securityChecker,
         PreviewObjectProviderRegistryInterface $previewObjectProviderRegistry = null
     ): ContentViewBuilderFactoryInterface {
@@ -57,7 +57,7 @@ class ContentViewBuilderFactoryTest extends TestCase
         return new ContentViewBuilderFactory(
             new ViewBuilderFactory(),
             $previewObjectProviderRegistry,
-            $entityManager,
+            $contentMetadataInspector,
             $securityChecker
         );
     }
@@ -91,14 +91,11 @@ class ContentViewBuilderFactoryTest extends TestCase
     {
         $securityChecker = $this->prophesize(SecurityCheckerInterface::class);
 
-        $entityManager = $this->prophesize(EntityManagerInterface::class);
-        $classMetadata = $this->prophesize(ClassMetadata::class);
-        $classMetadata->getAssociationMapping('dimensionContents')
-            ->willReturn(['targetEntity' => ExampleDimensionContent::class]);
+        $contentMetadataInspector = $this->prophesize(ContentMetadataInspectorInterface::class);
+        $contentMetadataInspector->getDimensionContentClass(Example::class)
+            ->willReturn(ExampleDimensionContent::class);
 
-        $entityManager->getClassMetadata(Example::class)->willReturn($classMetadata->reveal());
-
-        $contentViewBuilder = $this->createContentViewBuilder($entityManager->reveal(), $securityChecker->reveal());
+        $contentViewBuilder = $this->createContentViewBuilder($contentMetadataInspector->reveal(), $securityChecker->reveal());
 
         $views = $contentViewBuilder->createViews(Example::class, 'edit_parent_key');
 
@@ -142,11 +139,9 @@ class ContentViewBuilderFactoryTest extends TestCase
         $securityChecker = $this->prophesize(SecurityCheckerInterface::class);
 
         $entityManager = $this->prophesize(EntityManagerInterface::class);
-        $classMetadata = $this->prophesize(ClassMetadata::class);
-        $classMetadata->getAssociationMapping('dimensionContents')
-            ->willReturn(['targetEntity' => ExampleDimensionContent::class]);
-
-        $entityManager->getClassMetadata(Example::class)->willReturn($classMetadata->reveal());
+        $contentMetadataInspector = $this->prophesize(ContentMetadataInspectorInterface::class);
+        $contentMetadataInspector->getDimensionContentClass(Example::class)
+            ->willReturn(ExampleDimensionContent::class);
 
         $contentResolver = $this->prophesize(ContentResolverInterface::class);
         $contentDataMapper = $this->prophesize(ContentDataMapperInterface::class);
@@ -161,7 +156,7 @@ class ContentViewBuilderFactoryTest extends TestCase
         $previewObjectProviders = ['examples' => $contentObjectProvider];
         $previewObjectProviderRegistry = $this->createPreviewObjectProviderRegistry($previewObjectProviders);
         $contentViewBuilder = $this->createContentViewBuilder(
-            $entityManager->reveal(),
+            $contentMetadataInspector->reveal(),
             $securityChecker->reveal(),
             $previewObjectProviderRegistry
         );
@@ -273,14 +268,11 @@ class ContentViewBuilderFactoryTest extends TestCase
         $securityChecker = $this->prophesize(SecurityCheckerInterface::class);
 
         $entityManager = $this->prophesize(EntityManagerInterface::class);
-        $classMetadata = $this->prophesize(ClassMetadata::class);
-        $classMetadata->getAssociationMapping('dimensionContents')->willReturn(
-                ['targetEntity' => ExampleDimensionContent::class]
-            );
+        $contentMetadataInspector = $this->prophesize(ContentMetadataInspectorInterface::class);
+        $contentMetadataInspector->getDimensionContentClass(Example::class)
+            ->willReturn(ExampleDimensionContent::class);
 
-        $entityManager->getClassMetadata(Example::class)->willReturn($classMetadata->reveal());
-
-        $contentViewBuilder = $this->createContentViewBuilder($entityManager->reveal(), $securityChecker->reveal());
+        $contentViewBuilder = $this->createContentViewBuilder($contentMetadataInspector->reveal(), $securityChecker->reveal());
 
         foreach ($permissions as $permissionType => $permission) {
             $securityChecker->hasPermission('test_context', $permissionType)->willReturn($permission);
@@ -403,15 +395,11 @@ class ContentViewBuilderFactoryTest extends TestCase
     {
         $securityChecker = $this->prophesize(SecurityCheckerInterface::class);
 
-        $entityManager = $this->prophesize(EntityManagerInterface::class);
-        $classMetadata = $this->prophesize(ClassMetadata::class);
-        $classMetadata->getAssociationMapping('dimensionContents')->willReturn(
-            ['targetEntity' => \get_class($dimensionContentObject)]
-        );
+        $contentMetadataInspector = $this->prophesize(ContentMetadataInspectorInterface::class);
+        $contentMetadataInspector->getDimensionContentClass(Example::class)
+            ->willReturn(\get_class($dimensionContentObject));
 
-        $entityManager->getClassMetadata(Example::class)->willReturn($classMetadata->reveal());
-
-        $contentViewBuilder = $this->createContentViewBuilder($entityManager->reveal(), $securityChecker->reveal());
+        $contentViewBuilder = $this->createContentViewBuilder($contentMetadataInspector->reveal(), $securityChecker->reveal());
 
         $views = $contentViewBuilder->createViews(
             Example::class,
