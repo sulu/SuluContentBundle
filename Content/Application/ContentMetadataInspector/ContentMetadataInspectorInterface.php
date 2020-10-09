@@ -28,5 +28,5 @@ interface ContentMetadataInspectorInterface
     /**
      * @param class-string<ContentRichEntityInterface> $contentRichEntityClass
      */
-    public function getDimensionContentMappingProperty(string $contentRichEntityClass): string;
+    public function getDimensionContentPropertyName(string $contentRichEntityClass): string;
 }

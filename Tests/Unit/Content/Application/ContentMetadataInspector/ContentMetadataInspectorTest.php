@@ -48,4 +48,22 @@ class ContentMetadataInspectorTest extends TestCase
 
         $this->assertSame(ExampleDimensionContent::class, $dimensionContentClass);
     }
+
+    public function testGetDimensionContentPropertyName(): void
+    {
+        $entityManager = $this->prophesize(EntityManagerInterface::class);
+        $classMetadata = $this->prophesize(ClassMetadata::class);
+        $classMetadata->getAssociationMapping('dimensionContents')
+            ->willReturn(['mappedBy' => 'example']);
+
+        $entityManager->getClassMetadata(Example::class)->willReturn($classMetadata->reveal());
+
+        $contentMetadataInspector = $this->createContentMetadataInspectorTestInstance(
+            $entityManager->reveal()
+        );
+
+        $dimensionContentClass = $contentMetadataInspector->getDimensionContentPropertyName(Example::class);
+
+        $this->assertSame('example', $dimensionContentClass);
+    }
 }
