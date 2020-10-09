@@ -47,7 +47,7 @@ class DimensionContentRepository implements DimensionContentRepositoryInterface
         DimensionCollectionInterface $dimensionCollection
     ): DimensionContentCollectionInterface {
         $dimensionContentClass = $this->contentMetadataInspector->getDimensionContentClass(\get_class($contentRichEntity));
-        $mappingProperty = $this->contentMetadataInspector->getDimensionContentMappingProperty(\get_class($contentRichEntity));
+        $mappingProperty = $this->contentMetadataInspector->getDimensionContentPropertyName(\get_class($contentRichEntity));
 
         $queryBuilder = $this->entityManager->createQueryBuilder()
             ->from($dimensionContentClass, 'dimensionContent')

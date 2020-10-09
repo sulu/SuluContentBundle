@@ -35,7 +35,7 @@ class ContentMetadataInspector implements ContentMetadataInspectorInterface
         return $associationMapping['targetEntity'];
     }
 
-    public function getDimensionContentMappingProperty(string $contentRichEntityClass): string
+    public function getDimensionContentPropertyName(string $contentRichEntityClass): string
     {
         $classMetadata = $this->entityManager->getClassMetadata($contentRichEntityClass);
         $associationMapping = $classMetadata->getAssociationMapping('dimensionContents');
