@@ -1,6 +1,6 @@
 # Upgrade
 
-## dev-master
+## 0.4.0
 
 ### Rename getContentRichEntity method of DimensionContentInterface to getResource
 
