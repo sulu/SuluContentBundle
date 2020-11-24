@@ -74,13 +74,13 @@ class SuluContentExtensionTest extends AbstractExtensionTestCase
             'objects' => [
                 'dimension' => [
                     'model' => 'TestModel',
-                    'repository' => 'TestRepository',
+                    'repository' => 'Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\TestRepository',
                 ],
             ],
         ]);
 
         $this->assertContainerBuilderHasParameter('sulu.model.dimension.class', 'TestModel');
-        $this->assertContainerBuilderHasService('sulu.repository.dimension', 'TestRepository');
+        $this->assertContainerBuilderHasService('sulu.repository.dimension', 'Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\TestRepository');
     }
 
     public function testPrepend(): void
