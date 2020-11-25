@@ -236,6 +236,12 @@ class ContentDataProviderTest extends BaseTestCase
         ], 'de');
         static::publishExample($example7->getId(), 'de');
 
+        // Example 8
+        $example8 = static::createExample([
+            'title' => 'example with non default template',
+        ], 'en', 'example-2')->getResource();
+        static::publishExample($example8->getId(), 'en');
+
         list(static::$tagA, static::$tagB, static::$tagC) = static::getContainer()->get('sulu_tag.tag_manager')->resolveTagNames(['tagA', 'tagB', 'tagC']);
     }
 
@@ -346,7 +352,7 @@ class ContentDataProviderTest extends BaseTestCase
                 null,
                 null,
                 [],
-                7,
+                8,
                 false,
             ],
             [
@@ -517,6 +523,35 @@ class ContentDataProviderTest extends BaseTestCase
                     'tagOperator' => 'AND',
                 ],
                 1,
+                false,
+            ],
+            [
+                'withOneType',
+                'en',
+                null,
+                null,
+                null,
+                [
+                    'types' => [
+                        'example-2',
+                    ],
+                ],
+                1,
+                false,
+            ],
+            [
+                'withAllTypes',
+                'en',
+                null,
+                null,
+                null,
+                [
+                    'types' => [
+                        'default',
+                        'example-2',
+                    ],
+                ],
+                8,
                 false,
             ],
         ];

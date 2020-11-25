@@ -58,6 +58,15 @@
     },
     {
         "id": "@integer@",
+        "excerptCategories": [],
+        "excerptTags": [],
+        "published": "@string@.isDateTime()",
+        "publishedState": true,
+        "title": "example with non default template",
+        "url": "/example-with-non-default-template"
+    },
+    {
+        "id": "@integer@",
         "excerptCategories": [
             "@integer@",
             "@integer@",

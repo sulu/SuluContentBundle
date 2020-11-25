@@ -177,6 +177,13 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
             );
         }
 
+        if (!empty($types = $filters['types'] ?? [])) {
+            $parameters = array_merge(
+                $parameters,
+                $this->addTypeFilter($queryBuilder, $types, 'adminTypes')
+            );
+        }
+
         if ($targetGroupId = $filters['targetGroupId'] ?? null) {
             $parameters = array_merge(
                 $parameters,
@@ -187,13 +194,19 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
         if ($dataSource = $filters['dataSource'] ?? null) {
             $includeSubFolders = (bool) ($filters['includeSubFolders'] ?? false);
 
-            $parameters = array_merge($parameters, $this->addDatasourceFilter($queryBuilder, (string) $dataSource, $includeSubFolders, 'datasource'));
+            $parameters = array_merge(
+                $parameters,
+                $this->addDatasourceFilter($queryBuilder, (string) $dataSource, $includeSubFolders, 'datasource')
+            );
         }
 
         if ($sortColumn = $filters['sortBy'] ?? null) {
             $sortMethod = (string) ($filters['sortMethod'] ?? 'asc');
 
-            $parameters = array_merge($parameters, $this->setSortBy($queryBuilder, (string) $sortColumn, $sortMethod));
+            $parameters = array_merge(
+                $parameters,
+                $this->setSortBy($queryBuilder, (string) $sortColumn, $sortMethod)
+            );
         }
 
         $query = $queryBuilder->getQuery();
@@ -282,6 +295,20 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
             mb_strtolower($tagOperator),
             $alias
         );
+    }
+
+    /**
+     * Extension point to filter for types.
+     *
+     * @param mixed[] $types
+     *
+     * @return array<string, mixed> parameters for query
+     */
+    protected function addTypeFilter(QueryBuilder $queryBuilder, array $types, string $alias): array
+    {
+        $queryBuilder->andWhere(static::LOCALIZED_DIMENSION_CONTENT_ALIAS . ".templateKey IN ('" . implode("','", $types) . "')");
+
+        return [];
     }
 
     /**

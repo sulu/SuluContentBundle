@@ -29,6 +29,7 @@ use Sulu\Bundle\ContentBundle\Content\Infrastructure\Doctrine\DimensionRepositor
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Doctrine\MetadataLoader;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Admin\ContentViewBuilderFactoryInterface;
 use Sulu\Bundle\ContentBundle\DependencyInjection\SuluContentExtension;
+use Sulu\Component\Persistence\Repository\ORM\EntityRepository;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class SuluContentExtensionTest extends AbstractExtensionTestCase
@@ -74,13 +75,13 @@ class SuluContentExtensionTest extends AbstractExtensionTestCase
             'objects' => [
                 'dimension' => [
                     'model' => 'TestModel',
-                    'repository' => 'TestRepository',
+                    'repository' => EntityRepository::class,
                 ],
             ],
         ]);
 
         $this->assertContainerBuilderHasParameter('sulu.model.dimension.class', 'TestModel');
-        $this->assertContainerBuilderHasService('sulu.repository.dimension', 'TestRepository');
+        $this->assertContainerBuilderHasService('sulu.repository.dimension', EntityRepository::class);
     }
 
     public function testPrepend(): void
