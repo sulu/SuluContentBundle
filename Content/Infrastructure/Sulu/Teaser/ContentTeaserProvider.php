@@ -78,6 +78,7 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
         $this->contentMetadataInspector = $contentMetadataInspector;
         $this->metadataFactory = $metadataFactory;
         $this->contentRichEntityClass = $contentRichEntityClass;
+        $this->showDrafts = $showDrafts;
     }
 
     /**
