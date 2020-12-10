@@ -113,7 +113,7 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
                     $dimension = $resolvedDimensionContent->getDimension();
 
                     if ($stage !== $dimension->getStage() || $locale !== $dimension->getLocale()) {
-                        return null;
+                        return null; // @codeCoverageIgnore
                     }
 
                     return $resolvedDimensionContent;
