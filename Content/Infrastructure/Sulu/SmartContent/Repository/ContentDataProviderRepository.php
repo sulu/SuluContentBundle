@@ -209,9 +209,8 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
             );
         }
 
-        $query = $queryBuilder->getQuery();
         foreach ($parameters as $parameter => $value) {
-            $query->setParameter($parameter, $value);
+            $queryBuilder->setParameter($parameter, $value);
         }
 
         if (null !== $page && $pageSize > 0) {
@@ -226,14 +225,14 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
                 return [];
             }
 
-            $query->setMaxResults($maxResults);
-            $query->setFirstResult($pageOffset);
+            $queryBuilder->setMaxResults($maxResults);
+            $queryBuilder->setFirstResult($pageOffset);
         } elseif (null !== $limit) {
-            $query->setMaxResults($limit);
+            $queryBuilder->setMaxResults($limit);
         }
 
         return array_unique(
-            array_column($query->getScalarResult(), 'id')
+            array_column($queryBuilder->getQuery()->getScalarResult(), 'id')
         );
     }
 
