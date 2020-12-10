@@ -61,7 +61,7 @@ class ExampleControllerTest extends BaseTestCase
             'excerptCategories' => [],
             'excerptIcon' => null,
             'excerptMedia' => null,
-        ]));
+        ]) ?: null);
 
         $response = $this->client->getResponse();
         $content = json_decode((string) $response->getContent(), true);
@@ -127,7 +127,7 @@ class ExampleControllerTest extends BaseTestCase
             'excerptCategories' => [],
             'excerptIcon' => null,
             'excerptMedia' => null,
-        ]));
+        ]) ?: null);
 
         $response = $this->client->getResponse();
 
@@ -181,7 +181,7 @@ class ExampleControllerTest extends BaseTestCase
             'excerptCategories' => [],
             'excerptIcon' => null,
             'excerptMedia' => null,
-        ]));
+        ]) ?: null);
 
         $response = $this->client->getResponse();
 
