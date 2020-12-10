@@ -41,8 +41,7 @@ class TemplateDataMapperTest extends TestCase
      */
     protected function wrapTemplateMock(ObjectProphecy $tempplateMock): TemplateInterface
     {
-        return new class($tempplateMock) extends MockWrapper implements
-            TemplateInterface {
+        return new class($tempplateMock) extends MockWrapper implements TemplateInterface {
             use TemplateMockWrapperTrait;
         };
     }

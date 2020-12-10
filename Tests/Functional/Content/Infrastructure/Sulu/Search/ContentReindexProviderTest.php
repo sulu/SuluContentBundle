@@ -63,7 +63,7 @@ class ContentReindexProviderTest extends BaseTestCase
         static::$example2 = static::createExample(['title' => 'example-2'], 'en')->getResource();
     }
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->contentManager = $this->getContainer()->get('sulu_content.content_manager');
         $this->reindexProvider = $this->getContainer()->get('example_test.example_reindex_provider');

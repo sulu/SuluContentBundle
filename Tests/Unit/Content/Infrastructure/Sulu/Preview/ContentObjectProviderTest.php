@@ -52,7 +52,7 @@ class ContentObjectProviderTest extends TestCase
      */
     private $contentObjectProvider;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->entityManager = $this->prophesize(EntityManagerInterface::class);
         $this->contentResolver = $this->prophesize(ContentResolverInterface::class);

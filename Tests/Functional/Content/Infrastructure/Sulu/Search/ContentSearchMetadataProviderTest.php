@@ -58,7 +58,7 @@ class ContentSearchMetadataProviderTest extends BaseTestCase
         static::$example1 = static::createExample(['title' => 'example-1'], 'en')->getResource();
     }
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->contentManager = $this->getContainer()->get('sulu_content.content_manager');
         $this->objectToDocumentConverter = $this->getContainer()->get('massive_search.object_to_document_converter');

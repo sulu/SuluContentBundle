@@ -104,7 +104,7 @@ class SuluContentExtensionTest extends AbstractExtensionTestCase
                         'SuluContentBundleDimension' => [
                             'type' => 'xml',
                             'prefix' => 'Sulu\Bundle\ContentBundle\Content\Domain\Model',
-                            'dir' => \dirname(\dirname(\dirname(__DIR__))) . '/Resources/config/doctrine/Dimension',
+                            'dir' => \dirname(__DIR__, 3) . '/Resources/config/doctrine/Dimension',
                             'alias' => 'SuluDirectoryBundle',
                             'is_bundle' => false,
                             'mapping' => true,
@@ -118,7 +118,7 @@ class SuluContentExtensionTest extends AbstractExtensionTestCase
             [
                 'forms' => [
                     'directories' => [
-                        \dirname(\dirname(\dirname(__DIR__))) . '/Resources/config/forms',
+                        \dirname(__DIR__, 3) . '/Resources/config/forms',
                     ],
                 ],
             ],

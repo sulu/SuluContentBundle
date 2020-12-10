@@ -90,7 +90,7 @@ class ContentTeaserProviderTest extends BaseTestCase
         static::$exampleIds[] = $example5->getId();
     }
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->exampleTeaserProvider = $this->getContainer()->get('example_test.example_teaser_provider');
     }

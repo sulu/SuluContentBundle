@@ -105,10 +105,10 @@ class ContentNormalizerTest extends TestCase
         $object = new class($contentRichEntityMock->reveal(), $dimensionMock->reveal()) implements DimensionContentInterface, ExcerptInterface, SeoInterface, TemplateInterface, WorkflowInterface, RoutableInterface {
             use DimensionContentTrait;
             use ExcerptTrait;
+            use RoutableTrait;
             use SeoTrait;
             use TemplateTrait;
             use WorkflowTrait;
-            use RoutableTrait;
 
             /**
              * @var ContentRichEntityInterface

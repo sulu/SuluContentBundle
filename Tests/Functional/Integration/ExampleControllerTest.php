@@ -28,7 +28,7 @@ class ExampleControllerTest extends BaseTestCase
      */
     protected $client;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->client = $this->createAuthenticatedClient(
             [],
@@ -41,7 +41,7 @@ class ExampleControllerTest extends BaseTestCase
         self::purgeDatabase();
         self::initPhpcr();
 
-        $this->client->request('POST', '/admin/api/examples?locale=en&action=publish', [], [], [], \json_encode([
+        $this->client->request('POST', '/admin/api/examples?locale=en&action=publish', [], [], [], json_encode([
             'template' => 'example-2',
             'title' => 'Test Example',
             'url' => '/my-example',
@@ -108,7 +108,7 @@ class ExampleControllerTest extends BaseTestCase
     {
         self::purgeDatabase();
 
-        $this->client->request('POST', '/admin/api/examples?locale=en', [], [], [], \json_encode([
+        $this->client->request('POST', '/admin/api/examples?locale=en', [], [], [], json_encode([
             'template' => 'example-2',
             'title' => 'Test Example',
             'url' => '/my-example',
@@ -162,7 +162,7 @@ class ExampleControllerTest extends BaseTestCase
      */
     public function testPut(int $id): void
     {
-        $this->client->request('PUT', '/admin/api/examples/' . $id . '?locale=en', [], [], [], \json_encode([
+        $this->client->request('PUT', '/admin/api/examples/' . $id . '?locale=en', [], [], [], json_encode([
             'template' => 'default',
             'title' => 'Test Example 2',
             'url' => '/my-example-2',
