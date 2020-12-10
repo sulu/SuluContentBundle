@@ -135,7 +135,8 @@ class ContentIndexer implements ContentIndexerInterface
                     return $resourceKey . '_published' === $indexName;
                 }
 
-                return false;
+                // TODO FIXME add test for this
+                return false; // @codeCoverageIgnore
             }
         );
     }

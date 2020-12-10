@@ -30,7 +30,10 @@ class ExampleControllerTest extends BaseTestCase
 
     public function setUp(): void
     {
-        $this->client = $this->createAuthenticatedClient();
+        $this->client = $this->createAuthenticatedClient(
+            [],
+            ['CONTENT_TYPE' => 'application/json', 'HTTP_ACCEPT' => 'application/json']
+        );
     }
 
     public function testPostPublish(): int
@@ -38,7 +41,7 @@ class ExampleControllerTest extends BaseTestCase
         self::purgeDatabase();
         self::initPhpcr();
 
-        $this->client->request('POST', '/admin/api/examples?locale=en&action=publish', [
+        $this->client->request('POST', '/admin/api/examples?locale=en&action=publish', [], [], [], \json_encode([
             'template' => 'example-2',
             'title' => 'Test Example',
             'url' => '/my-example',
@@ -58,7 +61,7 @@ class ExampleControllerTest extends BaseTestCase
             'excerptCategories' => [],
             'excerptIcon' => null,
             'excerptMedia' => null,
-        ]);
+        ]));
 
         $response = $this->client->getResponse();
         $content = json_decode((string) $response->getContent(), true);
@@ -105,7 +108,7 @@ class ExampleControllerTest extends BaseTestCase
     {
         self::purgeDatabase();
 
-        $this->client->request('POST', '/admin/api/examples?locale=en', [
+        $this->client->request('POST', '/admin/api/examples?locale=en', [], [], [], \json_encode([
             'template' => 'example-2',
             'title' => 'Test Example',
             'url' => '/my-example',
@@ -124,7 +127,7 @@ class ExampleControllerTest extends BaseTestCase
             'excerptCategories' => [],
             'excerptIcon' => null,
             'excerptMedia' => null,
-        ]);
+        ]));
 
         $response = $this->client->getResponse();
 
@@ -159,7 +162,7 @@ class ExampleControllerTest extends BaseTestCase
      */
     public function testPut(int $id): void
     {
-        $this->client->request('PUT', '/admin/api/examples/' . $id . '?locale=en', [
+        $this->client->request('PUT', '/admin/api/examples/' . $id . '?locale=en', [], [], [], \json_encode([
             'template' => 'default',
             'title' => 'Test Example 2',
             'url' => '/my-example-2',
@@ -178,7 +181,7 @@ class ExampleControllerTest extends BaseTestCase
             'excerptCategories' => [],
             'excerptIcon' => null,
             'excerptMedia' => null,
-        ]);
+        ]));
 
         $response = $this->client->getResponse();
 

@@ -6,7 +6,7 @@
         "url": "/example-1",
         "title": "example-1-excerpt-title",
         "description": "example-1-article",
-        "moreText": null,
+        "moreText": "example-1-more",
         "mediaId": null,
         "attributes": []
     },
@@ -16,7 +16,7 @@
         "locale": "en",
         "url": "/example-2",
         "title": "example-2",
-        "description": "Test article",
+        "description": null,
         "moreText": null,
         "mediaId": null,
         "attributes": []

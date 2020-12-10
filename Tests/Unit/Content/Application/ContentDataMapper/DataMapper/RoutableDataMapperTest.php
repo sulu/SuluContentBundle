@@ -128,10 +128,12 @@ class RoutableDataMapperTest extends TestCase
     public function testMapNoTemplateInterface(): void
     {
         $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('LocalizedObject needs to extend the TemplateInterface');
 
         $data = [];
 
         $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent->willImplement(RoutableInterface::class);
         $localizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
         $localizedDimensionContent->willImplement(RoutableInterface::class);
 
@@ -144,7 +146,6 @@ class RoutableDataMapperTest extends TestCase
         $routeManager->createOrUpdateByAttributes(Argument::cetera())->shouldNotBeCalled();
         $conflictResolver->resolve(Argument::cetera())->shouldNotBeCalled();
         $localizedDimensionContent->getResourceId()->shouldNotBeCalled();
-        $localizedDimensionContent->setTemplateData(Argument::cetera())->shouldNotBeCalled();
 
         $mapper = $this->createRouteDataMapperInstance(
             $factory->reveal(),

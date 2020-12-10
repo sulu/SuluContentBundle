@@ -57,14 +57,21 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
     protected $contentRichEntityClass;
 
     /**
+     * @var bool
+     */
+    protected $showDrafts;
+
+    /**
      * @param class-string<ContentRichEntityInterface> $contentRichEntityClass
+     * @param bool $showDrafts Inject parameter "sulu_document_manager.show_drafts" here
      */
     public function __construct(
         ContentManagerInterface $contentManager,
         EntityManagerInterface $entityManager,
         ContentMetadataInspectorInterface $contentMetadataInspector,
         StructureMetadataFactoryInterface $metadataFactory,
-        string $contentRichEntityClass
+        string $contentRichEntityClass,
+        bool $showDrafts
     ) {
         $this->contentManager = $contentManager;
         $this->entityManager = $entityManager;
@@ -145,8 +152,9 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
 
     protected function resolveContent(ContentRichEntityInterface $contentRichEntity, string $locale): ?DimensionContentInterface
     {
-        $stage = $this->getShowDrafts()
-            ? DimensionInterface::STAGE_DRAFT
+        $stage = $this->showDrafts
+            // TODO FIXME add testcase for it
+            ? DimensionInterface::STAGE_DRAFT // @codeCoverageIgnore
             : DimensionInterface::STAGE_LIVE;
 
         try {
@@ -173,7 +181,8 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
     protected function getUrl(DimensionContentInterface $dimensionContent, array $data): ?string
     {
         if (!$dimensionContent instanceof TemplateInterface) {
-            return null;
+            // TODO FIXME add testcase for it
+            return null; // @codeCoverageIgnore
         }
 
         $type = $dimensionContent::getTemplateType();
@@ -182,7 +191,8 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
         $metadata = $this->metadataFactory->getStructureMetadata($type, $template);
 
         if (!$metadata) {
-            return null;
+            // TODO FIXME add testcase for it
+            return null; // @codeCoverageIgnore
         }
 
         foreach ($metadata->getProperties() as $property) {
@@ -243,7 +253,8 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
     {
         if ($dimensionContent instanceof ExcerptInterface) {
             if ($excerptImage = $dimensionContent->getExcerptImage()) {
-                return $excerptImage['id'] ?? null;
+                // TODO FIXME create unit test for this
+                return $excerptImage['id'] ?? null; // @codeCoverageIgnore
             }
         }
 
@@ -258,11 +269,6 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
     protected function getAttributes(DimensionContentInterface $dimensionContent, array $data): array
     {
         return [];
-    }
-
-    protected function getShowDrafts(): bool
-    {
-        return false;
     }
 
     /**

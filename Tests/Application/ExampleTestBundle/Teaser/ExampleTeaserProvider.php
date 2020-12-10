@@ -35,9 +35,10 @@ class ExampleTeaserProvider extends ContentTeaserProvider
         EntityManagerInterface $entityManager,
         ContentMetadataInspectorInterface $contentMetadataInspector,
         StructureMetadataFactoryInterface $metadataFactory,
-        TranslatorInterface $translator
+        TranslatorInterface $translator,
+        bool $showDrafts
     ) {
-        parent::__construct($contentManager, $entityManager, $contentMetadataInspector, $metadataFactory, Example::class);
+        parent::__construct($contentManager, $entityManager, $contentMetadataInspector, $metadataFactory, Example::class, $showDrafts);
 
         $this->translator = $translator;
     }

@@ -113,6 +113,7 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
                     $dimension = $resolvedDimensionContent->getDimension();
 
                     if ($stage !== $dimension->getStage() || $locale !== $dimension->getLocale()) {
+                        // TODO FIXME add test or remove this as it should be handled by the ids query
                         return null; // @codeCoverageIgnore
                     }
 
@@ -185,19 +186,23 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
         }
 
         if ($targetGroupId = $filters['targetGroupId'] ?? null) {
+            // @codeCoverageIgnoreStart TODO FIXME add testcase for this
             $parameters = array_merge(
                 $parameters,
                 $this->addTargetGroupFilter($queryBuilder, $targetGroupId, 'targetGroupId')
             );
+            // @codeCoverageIgnoreEnd
         }
 
         if ($dataSource = $filters['dataSource'] ?? null) {
+            // @codeCoverageIgnoreStart TODO FIXME add testcase for this
             $includeSubFolders = (bool) ($filters['includeSubFolders'] ?? false);
 
             $parameters = array_merge(
                 $parameters,
                 $this->addDatasourceFilter($queryBuilder, (string) $dataSource, $includeSubFolders, 'datasource')
             );
+            // @codeCoverageIgnoreEnd
         }
 
         if ($sortColumn = $filters['sortBy'] ?? null) {
@@ -257,7 +262,9 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
      */
     protected function getTargetGroupRelationFieldName(QueryBuilder $queryBuilder): string
     {
+        // @codeCoverageIgnoreStart TODO FIXME add testcase for this
         return self::LOCALIZED_DIMENSION_CONTENT_ALIAS . '.targetGroups';
+        // @codeCoverageIgnoreEnd
     }
 
     /**
@@ -319,6 +326,7 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
      */
     protected function addTargetGroupFilter(QueryBuilder $queryBuilder, $targetGroupId, string $alias): array
     {
+        // @codeCoverageIgnoreStart TODO FIXME add testcase for this
         return $this->appendRelation(
             $queryBuilder,
             $this->getTargetGroupRelationFieldName($queryBuilder),
@@ -326,6 +334,7 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
             'and',
             $alias
         );
+        // @codeCoverageIgnoreEnd
     }
 
     /**
@@ -335,7 +344,9 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
      */
     protected function addDatasourceFilter(QueryBuilder $queryBuilder, string $datasource, bool $includeSubFolders, string $alias): array
     {
+        // @codeCoverageIgnoreStart TODO FIXME add testcase for this
         return [];
+        // @codeCoverageIgnoreEnd
     }
 
     /**
@@ -374,7 +385,9 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
      */
     protected function setSortByJoins(QueryBuilder $queryBuilder): array
     {
+        // @codeCoverageIgnoreStart TODO FIXME add testcase for this
         return [];
+        // @codeCoverageIgnoreEnd
     }
 
     /**
