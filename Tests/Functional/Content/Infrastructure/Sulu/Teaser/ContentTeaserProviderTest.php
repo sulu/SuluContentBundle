@@ -13,15 +13,18 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Tests\Functional\Content\Infrastructure\Sulu\Teaser;
 
+use Sulu\Bundle\ContentBundle\Content\Application\ContentManager\ContentManagerInterface;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Teaser\ExampleTeaserProvider;
-use Sulu\Bundle\ContentBundle\Tests\Functional\BaseTestCase;
+use Sulu\Bundle\ContentBundle\Tests\Traits\AssertSnapshotTrait;
 use Sulu\Bundle\ContentBundle\Tests\Traits\CreateExampleTrait;
 use Sulu\Bundle\ContentBundle\Tests\Traits\ModifyExampleTrait;
 use Sulu\Bundle\ContentBundle\Tests\Traits\PublishExampleTrait;
 use Sulu\Bundle\PageBundle\Teaser\Teaser;
+use Sulu\Bundle\TestBundle\Testing\WebsiteTestCase;
 
-class ContentTeaserProviderTest extends BaseTestCase
+class ContentTeaserProviderTest extends WebsiteTestCase
 {
+    use AssertSnapshotTrait;
     use CreateExampleTrait;
     use ModifyExampleTrait;
     use PublishExampleTrait;
@@ -152,5 +155,10 @@ class ContentTeaserProviderTest extends BaseTestCase
                 'attributes' => $teaser->getAttributes(),
             ];
         }, $teasers);
+    }
+
+    protected static function getContentManager(): ContentManagerInterface
+    {
+        return static::getContainer()->get('sulu_content.content_manager');
     }
 }
