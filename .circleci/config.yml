@@ -52,18 +52,18 @@ jobs:
         steps:
             - checkout
             - run: composer config -g cache-dir "$(pwd)/.composer-cache"
+            - run: composer config platform.php "7.2.25"
             - restore_cache:
                   keys:
-                      - v9-composer-cache-{{ checksum "composer.json" }}
-                      - v9-composer-cache-
-            - run: composer config platform.php "7.2.25"
+                      - v10-composer-cache-{{ checksum "composer.json" }}
+                      - v10-composer-cache-
             - run: composer install -n --prefer-dist --no-scripts
             - run: composer phpunit -- install
             - run: curl --show-error --silent https://getcomposer.org/installer | php
             - save_cache:
                   paths:
                       - .composer-cache
-                  key: v9-composer-cache-{{ checksum "composer.json" }}
+                  key: v10-composer-cache-{{ checksum "composer.json" }}
             - persist_to_workspace:
                   root: .
                   paths:
