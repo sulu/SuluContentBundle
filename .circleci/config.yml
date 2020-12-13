@@ -16,7 +16,6 @@ commands:
             - run:
                   name: Enable PCOV, disable Xdebug
                   command: |
-                      pecl install pcov
                       docker-php-ext-enable pcov
                       rm /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini || true
 
@@ -86,6 +85,7 @@ jobs:
             - run: php composer.phar info
             - run: php composer.phar bootstrap-test-environment
             - run: php composer.phar lint
+
     test:
         docker:
             - image: sulu/php:7.4-cli
@@ -98,7 +98,7 @@ jobs:
             - checkout
             - attach_workspace:
                   at: .
-            #- enable_php_pcov
+            - enable_php_pcov
             - disable_php_memory_limit
             - run: php -m
             - run: php composer.phar bootstrap-test-environment
@@ -120,7 +120,7 @@ jobs:
             - checkout
             - attach_workspace:
                   at: .
-            #- enable_php_pcov
+            - enable_php_pcov
             - disable_php_memory_limit
             - run: php composer.phar test-coverage-checker
 

@@ -99,10 +99,10 @@ class ContentSearchMetadataProviderTest extends BaseTestCase
         $allMetadata = $this->searchMetadataProvider->getAllMetadata();
 
         $this->assertIsArray($allMetadata);
-        $this->assertCount(2, $allMetadata);
         foreach ($allMetadata as $metadata) {
             $this->assertInstanceOf(ClassMetadata::class, $metadata);
         }
+        $this->assertCount(3, $allMetadata);
     }
 
     public function testGetMetadataForDocument(): void
