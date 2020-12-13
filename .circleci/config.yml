@@ -52,7 +52,7 @@ jobs:
         steps:
             - checkout
             - run: composer config -g cache-dir "$(pwd)/.composer-cache"
-            - run: composer config platform.php "7.2.25"
+            - run: composer config platform.php "7.4.12"
             - restore_cache:
                   keys:
                       - v10-composer-cache-{{ checksum "composer.json" }}
@@ -72,7 +72,7 @@ jobs:
                       - composer.lock
     lint:
         docker:
-            - image: sulu/php:7.2-cli
+            - image: sulu/php:7.4-cli
             - image: mysql:5.7
               environment:
                   MYSQL_ROOT_PASSWORD: root
@@ -82,13 +82,13 @@ jobs:
             - checkout
             - attach_workspace:
                   at: .
-            - run: php composer.phar config platform.php "7.2.25"
+            - run: php composer.phar config platform.php "7.4.12"
             - run: php composer.phar info
             - run: php composer.phar bootstrap-test-environment
             - run: php composer.phar lint
     test:
         docker:
-            - image: sulu/php:7.2-cli
+            - image: sulu/php:7.4-cli
             - image: mysql:5.7
               environment:
                   MYSQL_ROOT_PASSWORD: root
@@ -98,7 +98,7 @@ jobs:
             - checkout
             - attach_workspace:
                   at: .
-            - enable_php_pcov
+            #- enable_php_pcov
             - disable_php_memory_limit
             - run: php -m
             - run: php composer.phar bootstrap-test-environment
@@ -114,19 +114,19 @@ jobs:
 
     test-coverage:
         docker:
-            - image: sulu/php:7.2-cli
+            - image: sulu/php:7.4-cli
         environment: *environment_variables
         steps:
             - checkout
             - attach_workspace:
                   at: .
-            - enable_php_pcov
+            #- enable_php_pcov
             - disable_php_memory_limit
             - run: php composer.phar test-coverage-checker
 
     coverage-all-upload:
         docker:
-            - image: sulu/php:7.2-cli
+            - image: sulu/php:7.4-cli
         environment: *environment_variables
         steps:
             - checkout
