@@ -13,15 +13,18 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Tests\Functional\Content\Infrastructure\Sulu\Teaser;
 
+use Sulu\Bundle\ContentBundle\Content\Application\ContentManager\ContentManagerInterface;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Teaser\ExampleTeaserProvider;
-use Sulu\Bundle\ContentBundle\Tests\Functional\BaseTestCase;
+use Sulu\Bundle\ContentBundle\Tests\Traits\AssertSnapshotTrait;
 use Sulu\Bundle\ContentBundle\Tests\Traits\CreateExampleTrait;
 use Sulu\Bundle\ContentBundle\Tests\Traits\ModifyExampleTrait;
 use Sulu\Bundle\ContentBundle\Tests\Traits\PublishExampleTrait;
 use Sulu\Bundle\PageBundle\Teaser\Teaser;
+use Sulu\Bundle\TestBundle\Testing\WebsiteTestCase;
 
-class ContentTeaserProviderTest extends BaseTestCase
+class ContentTeaserProviderTest extends WebsiteTestCase
 {
+    use AssertSnapshotTrait;
     use CreateExampleTrait;
     use ModifyExampleTrait;
     use PublishExampleTrait;
@@ -36,6 +39,11 @@ class ContentTeaserProviderTest extends BaseTestCase
      */
     private static $exampleIds = [];
 
+    /**
+     * @var mixed
+     */
+    private static $exampleIdNoRoute;
+
     public static function setUpBeforeClass(): void
     {
         static::purgeDatabase();
@@ -47,20 +55,21 @@ class ContentTeaserProviderTest extends BaseTestCase
             'article' => 'example-1-article',
             'excerptTitle' => 'example-1-excerpt-title',
             'excerptDescription' => 'example-1-excerpt-description',
+            'excerptMore' => 'example-1-more',
         ], 'en')->getResource();
         static::publishExample($example1->getId(), 'en');
 
         static::modifyExample($example1->getId(), [
             'title' => 'beispiel-1',
             'article' => null,
-            'excerptDescription' => 'beispiel-1-excerpt-description',
+            'excerptDescription' => 'example-1-excerpt-auszug',
         ], 'de');
         static::publishExample($example1->getId(), 'de');
 
         static::$exampleIds[] = $example1->getId();
 
         // Example 2 (only en, published)
-        $example2 = static::createExample(['title' => 'example-2'], 'en')->getResource();
+        $example2 = static::createExample(['title' => 'example-2', 'article' => null], 'en')->getResource();
         static::publishExample($example2->getId(), 'en');
 
         static::$exampleIds[] = $example2->getId();
@@ -81,13 +90,19 @@ class ContentTeaserProviderTest extends BaseTestCase
 
         // Example 5 (only en, not published)
         $example5 = static::createExample(['title' => 'example-5'], 'en')->getResource();
-
         static::$exampleIds[] = $example5->getId();
     }
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->exampleTeaserProvider = $this->getContainer()->get('example_test.example_teaser_provider');
+    }
+
+    public function testEmpty(): void
+    {
+        $teasers = $this->exampleTeaserProvider->find([], 'de');
+
+        $this->assertCount(0, $teasers);
     }
 
     public function testFindDE(): void
@@ -106,6 +121,18 @@ class ContentTeaserProviderTest extends BaseTestCase
         $teasers = $this->mapTeasers($teasers);
 
         $this->assertArraySnapshot('teasers_en.json', $teasers);
+    }
+
+    public function testFindENNoRoute(): void
+    {
+        $example6 = static::createExample(['title' => 'example-6'], 'en', 'no-route')->getResource();
+        static::publishExample($example6->getId(), 'en');
+
+        $teasers = $this->exampleTeaserProvider->find([$example6->getId()], 'en');
+
+        $teasers = $this->mapTeasers($teasers);
+
+        $this->assertArraySnapshot('teasers_en_no_route.json', $teasers);
     }
 
     /**
@@ -128,5 +155,10 @@ class ContentTeaserProviderTest extends BaseTestCase
                 'attributes' => $teaser->getAttributes(),
             ];
         }, $teasers);
+    }
+
+    protected static function getContentManager(): ContentManagerInterface
+    {
+        return static::getContainer()->get('sulu_content.content_manager');
     }
 }

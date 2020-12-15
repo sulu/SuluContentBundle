@@ -47,6 +47,7 @@ services:
             - '@sulu_content.content_metadata_inspector'
             - '@sulu_page.structure.factory'
             - '@translator'
+            - '%sulu_document_manager.show_drafts%'
         tags:
             - { name: sulu.teaser.provider, alias: examples }
 

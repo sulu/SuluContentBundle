@@ -20,7 +20,7 @@ use Sulu\Bundle\TagBundle\Tag\TagRepositoryInterface;
 
 class TagFactoryTest extends BaseTestCase
 {
-    public function setUp(): void
+    protected function setUp(): void
     {
         self::bootKernel();
         self::purgeDatabase();

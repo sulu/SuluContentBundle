@@ -27,11 +27,11 @@ use Sulu\Component\SmartContent\DataProviderResult;
 
 class ContentDataProviderTest extends BaseTestCase
 {
+    use CreateCategoryTrait;
     use CreateExampleTrait;
+    use ModifyCategoryTrait;
     use ModifyExampleTrait;
     use PublishExampleTrait;
-    use CreateCategoryTrait;
-    use ModifyCategoryTrait;
 
     /**
      * @var ContentDataProvider
@@ -245,7 +245,7 @@ class ContentDataProviderTest extends BaseTestCase
         list(static::$tagA, static::$tagB, static::$tagC) = static::getContainer()->get('sulu_tag.tag_manager')->resolveTagNames(['tagA', 'tagB', 'tagC']);
     }
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->contentDataProvider = $this->getContainer()->get('example_test.example_data_provider');
     }

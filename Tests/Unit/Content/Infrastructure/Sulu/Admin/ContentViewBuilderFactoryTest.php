@@ -306,8 +306,8 @@ class ContentViewBuilderFactoryTest extends TestCase
             [
                 new class() implements DimensionContentInterface, SeoInterface, ExcerptInterface {
                     use DimensionContentTrait;
-                    use SeoTrait;
                     use ExcerptTrait;
+                    use SeoTrait;
 
                     public static function getResourceKey(): string
                     {
@@ -327,9 +327,9 @@ class ContentViewBuilderFactoryTest extends TestCase
             [
                 new class() implements DimensionContentInterface, TemplateInterface, SeoInterface, ExcerptInterface {
                     use DimensionContentTrait;
-                    use TemplateTrait;
-                    use SeoTrait;
                     use ExcerptTrait;
+                    use SeoTrait;
+                    use TemplateTrait;
 
                     public function getResource(): ContentRichEntityInterface
                     {
@@ -356,10 +356,10 @@ class ContentViewBuilderFactoryTest extends TestCase
             [
                 new class() implements DimensionContentInterface, TemplateInterface, WorkflowInterface, SeoInterface, ExcerptInterface {
                     use DimensionContentTrait;
+                    use ExcerptTrait;
+                    use SeoTrait;
                     use TemplateTrait;
                     use WorkflowTrait;
-                    use SeoTrait;
-                    use ExcerptTrait;
 
                     public function getResource(): ContentRichEntityInterface
                     {

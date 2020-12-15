@@ -50,7 +50,7 @@ class DimensionRepositoryTest extends BaseTestCase
         static::purgeData();
     }
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         self::bootKernel();
         self::$entityManager = self::$container->get('doctrine.orm.entity_manager');

@@ -66,7 +66,7 @@ class ContentSitemapProviderTest extends BaseTestCase
         $example5 = static::createExample(['title' => 'example-5'], 'en')->getResource();
     }
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->contentSitemapProvider = $this->getContainer()->get('example_test.example_sitemap_provider');
     }

@@ -19,7 +19,7 @@ use Sulu\Bundle\ContentBundle\Tests\Functional\BaseTestCase;
 
 class CategoryFactoryTest extends BaseTestCase
 {
-    public function setUp(): void
+    protected function setUp(): void
     {
         self::bootKernel();
         self::purgeDatabase();

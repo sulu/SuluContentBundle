@@ -32,12 +32,12 @@ class ExampleDimensionContent implements DimensionContentInterface, ExcerptInter
 {
     use DimensionContentTrait;
     use ExcerptTrait;
+    use RoutableTrait;
     use SeoTrait;
     use TemplateTrait {
         getTemplateData as parentGetTemplateData;
         setTemplateData as parentSetTemplateData;
     }
-    use RoutableTrait;
     use WorkflowTrait;
 
     /**

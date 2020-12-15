@@ -58,7 +58,7 @@ class ContentSearchMetadataProviderTest extends BaseTestCase
         static::$example1 = static::createExample(['title' => 'example-1'], 'en')->getResource();
     }
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->contentManager = $this->getContainer()->get('sulu_content.content_manager');
         $this->objectToDocumentConverter = $this->getContainer()->get('massive_search.object_to_document_converter');
@@ -99,10 +99,10 @@ class ContentSearchMetadataProviderTest extends BaseTestCase
         $allMetadata = $this->searchMetadataProvider->getAllMetadata();
 
         $this->assertIsArray($allMetadata);
-        $this->assertCount(2, $allMetadata);
         foreach ($allMetadata as $metadata) {
             $this->assertInstanceOf(ClassMetadata::class, $metadata);
         }
+        $this->assertCount(3, $allMetadata);
     }
 
     public function testGetMetadataForDocument(): void
