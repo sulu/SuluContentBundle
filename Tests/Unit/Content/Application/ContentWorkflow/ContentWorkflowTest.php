@@ -23,13 +23,11 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\UnavailableContentTransitionException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\UnknownContentTransitionException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollection;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollection;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionContentRepositoryInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionRepositoryInterface;
+use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleDimensionContent;
 use Sulu\Bundle\ContentBundle\Tests\Unit\Mocks\DimensionContentMockWrapperTrait;
 use Sulu\Bundle\ContentBundle\Tests\Unit\Mocks\MockWrapper;
 use Sulu\Bundle\ContentBundle\Tests\Unit\Mocks\WorkflowMockWrapperTrait;
@@ -37,12 +35,10 @@ use Sulu\Bundle\ContentBundle\Tests\Unit\Mocks\WorkflowMockWrapperTrait;
 class ContentWorkflowTest extends TestCase
 {
     protected function createContentWorkflowInstance(
-        DimensionRepositoryInterface $dimensionRepository,
         DimensionContentRepositoryInterface $dimensionContentRepository,
         ContentMergerInterface $contentMerger
     ): ContentWorkflowInterface {
         return new ContentWorkflow(
-            $dimensionRepository,
             $dimensionContentRepository,
             $contentMerger
         );
@@ -65,6 +61,14 @@ class ContentWorkflowTest extends TestCase
             {
                 return 'content_workflow';
             }
+
+            public static function getDefaultAttributes(): array
+            {
+                return [
+                    'locale' => null,
+                    'stage' => 'draft',
+                ];
+            }
         };
     }
 
@@ -72,12 +76,10 @@ class ContentWorkflowTest extends TestCase
     {
         $this->expectException(\RuntimeException::class);
 
-        $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
         $dimensionContentRepository = $this->prophesize(DimensionContentRepositoryInterface::class);
         $contentMerger = $this->prophesize(ContentMergerInterface::class);
 
         $contentWorkflow = $this->createContentWorkflowInstance(
-            $dimensionRepository->reveal(),
             $dimensionContentRepository->reveal(),
             $contentMerger->reveal()
         );
@@ -86,19 +88,12 @@ class ContentWorkflowTest extends TestCase
         $dimensionAttributes = ['locale' => 'de', 'stage' => 'draft'];
         $transitionName = 'request_for_review';
 
-        $dimension1 = new Dimension('123-456', []);
-        $dimension2 = new Dimension('456-789', $dimensionAttributes);
-
-        $dimensionCollection = new DimensionCollection($dimensionAttributes, [$dimension1, $dimension2]);
-
-        $dimensionRepository->findByAttributes($dimensionAttributes)
-            ->willReturn($dimensionCollection)
-            ->shouldBeCalled();
-
         $dimensionContent1 = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent1->getDimension()->willReturn($dimension1);
+        $dimensionContent1->getStage()->willReturn('stage');
+        $dimensionContent1->getLocale()->willReturn(null);
         $dimensionContent2 = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent2->getDimension()->willReturn($dimension2);
+        $dimensionContent1->getStage()->willReturn('stage');
+        $dimensionContent1->getLocale()->willReturn('de');
 
         $this->expectExceptionMessage(sprintf(
             'Expected "%s" but "%s" given.',
@@ -109,9 +104,9 @@ class ContentWorkflowTest extends TestCase
         $dimensionContentCollection = new DimensionContentCollection([
             $dimensionContent1->reveal(),
             $dimensionContent2->reveal(),
-        ], $dimensionCollection);
+        ], $dimensionAttributes, ExampleDimensionContent::class);
 
-        $dimensionContentRepository->load($contentRichEntity->reveal(), $dimensionCollection)
+        $dimensionContentRepository->load($contentRichEntity->reveal(), $dimensionAttributes)
             ->willReturn($dimensionContentCollection)
             ->shouldBeCalled();
 
@@ -126,12 +121,10 @@ class ContentWorkflowTest extends TestCase
     {
         $this->expectException(ContentNotFoundException::class);
 
-        $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
         $dimensionContentRepository = $this->prophesize(DimensionContentRepositoryInterface::class);
         $contentMerger = $this->prophesize(ContentMergerInterface::class);
 
         $contentWorkflow = $this->createContentWorkflowInstance(
-            $dimensionRepository->reveal(),
             $dimensionContentRepository->reveal(),
             $contentMerger->reveal()
         );
@@ -140,55 +133,16 @@ class ContentWorkflowTest extends TestCase
         $dimensionAttributes = ['locale' => 'de', 'stage' => 'draft'];
         $transitionName = 'request_for_review';
 
-        $dimension1 = new Dimension('123-456', []);
-        $dimension2 = new Dimension('456-789', $dimensionAttributes);
-
-        $dimensionCollection = new DimensionCollection($dimensionAttributes, [$dimension1, $dimension2]);
-
-        $dimensionRepository->findByAttributes($dimensionAttributes)
-            ->willReturn($dimensionCollection)
-            ->shouldBeCalled();
-
         $dimensionContent1 = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent1->getDimension()->willReturn($dimension1);
+        $dimensionContent1->getLocale()->willReturn(null);
+        $dimensionContent1->getStage()->willReturn('draft');
 
         $dimensionContentCollection = new DimensionContentCollection([
             $dimensionContent1->reveal(),
-        ], $dimensionCollection);
+        ], $dimensionAttributes, ExampleDimensionContent::class);
 
-        $dimensionContentRepository->load($contentRichEntity->reveal(), $dimensionCollection)
+        $dimensionContentRepository->load($contentRichEntity->reveal(), $dimensionAttributes)
             ->willReturn($dimensionContentCollection)
-            ->shouldBeCalled();
-
-        $contentWorkflow->apply(
-            $contentRichEntity->reveal(),
-            $dimensionAttributes,
-            $transitionName
-        );
-    }
-
-    public function testTransitionNoDimensions(): void
-    {
-        $this->expectException(ContentNotFoundException::class);
-
-        $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
-        $dimensionContentRepository = $this->prophesize(DimensionContentRepositoryInterface::class);
-        $contentMerger = $this->prophesize(ContentMergerInterface::class);
-
-        $contentWorkflow = $this->createContentWorkflowInstance(
-            $dimensionRepository->reveal(),
-            $dimensionContentRepository->reveal(),
-            $contentMerger->reveal()
-        );
-
-        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
-        $dimensionAttributes = ['locale' => 'de', 'stage' => 'draft'];
-        $transitionName = 'request_for_review';
-
-        $dimensionCollection = new DimensionCollection($dimensionAttributes, []);
-
-        $dimensionRepository->findByAttributes($dimensionAttributes)
-            ->willReturn($dimensionCollection)
             ->shouldBeCalled();
 
         $contentWorkflow->apply(
@@ -205,12 +159,10 @@ class ContentWorkflowTest extends TestCase
             'Transition "not-exist-transition" is not defined for workflow "content_workflow".'
         );
 
-        $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
         $dimensionContentRepository = $this->prophesize(DimensionContentRepositoryInterface::class);
         $contentMerger = $this->prophesize(ContentMergerInterface::class);
 
         $contentWorkflow = $this->createContentWorkflowInstance(
-            $dimensionRepository->reveal(),
             $dimensionContentRepository->reveal(),
             $contentMerger->reveal()
         );
@@ -218,22 +170,15 @@ class ContentWorkflowTest extends TestCase
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
         $dimensionAttributes = ['locale' => 'de', 'stage' => 'draft'];
 
-        $dimension1 = new Dimension('123-456', []);
-        $dimension2 = new Dimension('456-789', $dimensionAttributes);
-
-        $dimensionCollection = new DimensionCollection($dimensionAttributes, [$dimension1, $dimension2]);
-
-        $dimensionRepository->findByAttributes($dimensionAttributes)
-            ->willReturn($dimensionCollection)
-            ->shouldBeCalled();
-
         $dimensionContent1 = $this->prophesize(DimensionContentInterface::class);
         $dimensionContent1->willImplement(WorkflowInterface::class);
-        $dimensionContent1->getDimension()->willReturn($dimension1);
+        $dimensionContent1->getLocale()->willReturn(null);
+        $dimensionContent1->getStage()->willReturn('draft');
 
         $dimensionContent2 = $this->prophesize(DimensionContentInterface::class);
         $dimensionContent2->willImplement(WorkflowInterface::class);
-        $dimensionContent2->getDimension()->willReturn($dimension2);
+        $dimensionContent2->getLocale()->willReturn('de');
+        $dimensionContent2->getStage()->willReturn('draft');
 
         $dimensionContent2->getWorkflowPlace()
             ->willReturn('unpublished')
@@ -242,9 +187,9 @@ class ContentWorkflowTest extends TestCase
         $dimensionContentCollection = new DimensionContentCollection([
             $this->wrapWorkflowMock($dimensionContent1),
             $this->wrapWorkflowMock($dimensionContent2),
-        ], $dimensionCollection);
+        ], $dimensionAttributes, ExampleDimensionContent::class);
 
-        $dimensionContentRepository->load($contentRichEntity->reveal(), $dimensionCollection)
+        $dimensionContentRepository->load($contentRichEntity->reveal(), $dimensionAttributes)
             ->willReturn($dimensionContentCollection)
             ->shouldBeCalled();
 
@@ -267,12 +212,10 @@ class ContentWorkflowTest extends TestCase
             $this->expectException(UnavailableContentTransitionException::class);
         }
 
-        $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
         $dimensionContentRepository = $this->prophesize(DimensionContentRepositoryInterface::class);
         $contentMerger = $this->prophesize(ContentMergerInterface::class);
 
         $contentWorkflow = $this->createContentWorkflowInstance(
-            $dimensionRepository->reveal(),
             $dimensionContentRepository->reveal(),
             $contentMerger->reveal()
         );
@@ -280,21 +223,14 @@ class ContentWorkflowTest extends TestCase
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
         $dimensionAttributes = ['locale' => 'de', 'stage' => 'draft'];
 
-        $dimension1 = new Dimension('123-456', []);
-        $dimension2 = new Dimension('456-789', $dimensionAttributes);
-
-        $dimensionCollection = new DimensionCollection($dimensionAttributes, [$dimension1, $dimension2]);
-
-        $dimensionRepository->findByAttributes($dimensionAttributes)
-            ->willReturn($dimensionCollection)
-            ->shouldBeCalled();
-
         $dimensionContent1 = $this->prophesize(DimensionContentInterface::class);
         $dimensionContent1->willImplement(WorkflowInterface::class);
-        $dimensionContent1->getDimension()->willReturn($dimension1);
+        $dimensionContent1->getLocale()->willReturn(null);
+        $dimensionContent1->getStage()->willReturn('draft');
         $dimensionContent2 = $this->prophesize(DimensionContentInterface::class);
         $dimensionContent2->willImplement(WorkflowInterface::class);
-        $dimensionContent2->getDimension()->willReturn($dimension2);
+        $dimensionContent2->getLocale()->willReturn('de');
+        $dimensionContent2->getStage()->willReturn('draft');
 
         $dimensionContent2->getWorkflowPlace()
             ->willReturn($currentPlace)
@@ -308,9 +244,9 @@ class ContentWorkflowTest extends TestCase
         $dimensionContentCollection = new DimensionContentCollection([
             $this->wrapWorkflowMock($dimensionContent1),
             $this->wrapWorkflowMock($dimensionContent2),
-        ], $dimensionCollection);
+        ], $dimensionAttributes, ExampleDimensionContent::class);
 
-        $dimensionContentRepository->load($contentRichEntity->reveal(), $dimensionCollection)
+        $dimensionContentRepository->load($contentRichEntity->reveal(), $dimensionAttributes)
             ->willReturn($dimensionContentCollection)
             ->shouldBeCalled();
 

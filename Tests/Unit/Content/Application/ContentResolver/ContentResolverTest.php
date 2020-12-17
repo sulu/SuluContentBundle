@@ -19,24 +19,19 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentMerger\ContentMergerInt
 use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolver;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollection;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollection;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionContentRepositoryInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionRepositoryInterface;
+use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
+use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleDimensionContent;
 
 class ContentResolverTest extends TestCase
 {
     protected function createContentResolverInstance(
-        DimensionRepositoryInterface $dimensionRepository,
         DimensionContentRepositoryInterface $dimensionContentRepository,
         ContentMergerInterface $contentMerger
     ): ContentResolverInterface {
         return new ContentResolver(
-            $dimensionRepository,
             $dimensionContentRepository,
             $contentMerger
         );
@@ -44,115 +39,85 @@ class ContentResolverTest extends TestCase
 
     public function testResolve(): void
     {
-        $dimension1 = $this->prophesize(DimensionInterface::class);
-        $dimension1->getId()->willReturn('123-456');
-        $dimension2 = $this->prophesize(DimensionInterface::class);
-        $dimension2->getId()->willReturn('456-789');
+        $example = new Example();
 
-        $dimensionContent1 = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent1->getDimension()->willReturn($dimension1->reveal());
-        $dimensionContent2 = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent2->getDimension()->willReturn($dimension2->reveal());
-
-        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
+        $dimensionContent1 = new ExampleDimensionContent($example);
+        $dimensionContent1->setStage(DimensionContentInterface::STAGE_DRAFT);
+        $dimensionContent1->setLocale(null);
+        $dimensionContent2 = new ExampleDimensionContent($example);
+        $dimensionContent2->setStage(DimensionContentInterface::STAGE_DRAFT);
+        $dimensionContent2->setLocale(null);
 
         $attributes = [
             'locale' => 'de',
         ];
 
-        $dimension1 = new Dimension('123-456', ['locale' => null]);
-        $dimension2 = new Dimension('456-789', ['locale' => 'de']);
-        $dimensionCollection = new DimensionCollection($attributes, [$dimension1, $dimension2]);
+        $expectedAttributes = [
+            'locale' => 'de',
+            'stage' => DimensionContentInterface::STAGE_DRAFT,
+        ];
 
-        $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
-        $dimensionRepository->findByAttributes($attributes)->willReturn($dimensionCollection)->shouldBeCalled();
-
-        $dimensionContentCollection = new DimensionContentCollection([
-            $dimensionContent1->reveal(),
-            $dimensionContent2->reveal(),
-        ], new DimensionCollection($attributes, [$dimension1, $dimension2]));
+        $dimensionContentCollection = new DimensionContentCollection(
+            [
+                $dimensionContent1,
+                $dimensionContent2,
+            ],
+            $expectedAttributes,
+            ExampleDimensionContent::class
+        );
 
         $dimensionContentRepository = $this->prophesize(DimensionContentRepositoryInterface::class);
-        $dimensionContentRepository->load($contentRichEntity->reveal(), $dimensionCollection)->willReturn($dimensionContentCollection);
+        $dimensionContentRepository->load($example, $attributes)
+            ->willReturn($dimensionContentCollection)
+            ->shouldBeCalled();
+
         $mergedDimensionContent = $this->prophesize(DimensionContentInterface::class);
+
         $contentMerger = $this->prophesize(ContentMergerInterface::class);
-        $contentMerger->merge($dimensionContentCollection)->willReturn($mergedDimensionContent->reveal())->shouldBeCalled();
+        $contentMerger->merge($dimensionContentCollection)
+            ->willReturn($mergedDimensionContent->reveal())
+            ->shouldBeCalled();
 
         $contentResolver = $this->createContentResolverInstance(
-            $dimensionRepository->reveal(),
             $dimensionContentRepository->reveal(),
             $contentMerger->reveal()
         );
 
-        $this->assertSame($mergedDimensionContent->reveal(), $contentResolver->resolve($contentRichEntity->reveal(), $attributes));
-    }
-
-    public function testResolveDimensionNotFound(): void
-    {
-        $this->expectException(ContentNotFoundException::class);
-
-        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
-
-        $attributes = [
-            'locale' => 'de',
-        ];
-
-        $dimensionCollection = new DimensionCollection($attributes, []);
-
-        $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
-        $dimensionRepository->findByAttributes($attributes)->willReturn($dimensionCollection)->shouldBeCalled();
-
-        $dimensionContentRepository = $this->prophesize(DimensionContentRepositoryInterface::class);
-        $contentMerger = $this->prophesize(ContentMergerInterface::class);
-
-        $contentResolver = $this->createContentResolverInstance(
-            $dimensionRepository->reveal(),
-            $dimensionContentRepository->reveal(),
-            $contentMerger->reveal()
-        );
-
-        $contentResolver->resolve($contentRichEntity->reveal(), $attributes);
+        $this->assertSame($mergedDimensionContent->reveal(), $contentResolver->resolve($example, $attributes));
     }
 
     public function testResolveNotFound(): void
     {
         $this->expectException(ContentNotFoundException::class);
 
-        $dimension1 = $this->prophesize(DimensionInterface::class);
-        $dimension1->getId()->willReturn('123-456');
-        $dimension2 = $this->prophesize(DimensionInterface::class);
-        $dimension2->getId()->willReturn('456-789');
-
-        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
+        $example = new Example();
 
         $attributes = [
             'locale' => 'de',
         ];
 
-        $dimension1 = new Dimension('123-456', ['locale' => null]);
-        $dimension2 = new Dimension('456-789', ['locale' => 'de']);
-        $dimensionCollection = new DimensionCollection($attributes, [$dimension1, $dimension2]);
-
-        $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
-        $dimensionRepository->findByAttributes($attributes)->willReturn($dimensionCollection)->shouldBeCalled();
+        $expectedAttributes = [
+            'locale' => 'de',
+            'stage' => DimensionContentInterface::STAGE_DRAFT,
+        ];
 
         $dimensionContentCollection = new DimensionContentCollection(
             [],
-            new DimensionCollection($attributes, [$dimension1, $dimension2])
+            $expectedAttributes,
+            ExampleDimensionContent::class
         );
 
         $dimensionContentRepository = $this->prophesize(DimensionContentRepositoryInterface::class);
-        $dimensionContentRepository->load($contentRichEntity->reveal(), $dimensionCollection)->willReturn($dimensionContentCollection);
+        $dimensionContentRepository->load($example, $attributes)->willReturn($dimensionContentCollection);
 
         $contentMerger = $this->prophesize(ContentMergerInterface::class);
         $contentMerger->merge($dimensionContentCollection)->willReturn(Argument::cetera())->shouldNotBeCalled();
 
         $contentResolver = $this->createContentResolverInstance(
-            $dimensionRepository->reveal(),
             $dimensionContentRepository->reveal(),
             $contentMerger->reveal()
         );
 
-        $contentResolver->resolve($contentRichEntity->reveal(), $attributes);
+        $contentResolver->resolve($example, $attributes);
     }
 }

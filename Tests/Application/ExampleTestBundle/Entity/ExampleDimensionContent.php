@@ -16,7 +16,6 @@ namespace Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentTrait;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptTrait;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\RoutableInterface;
@@ -55,10 +54,9 @@ class ExampleDimensionContent implements DimensionContentInterface, ExcerptInter
      */
     protected $title;
 
-    public function __construct(Example $example, DimensionInterface $dimension)
+    public function __construct(Example $example)
     {
         $this->example = $example;
-        $this->dimension = $dimension;
     }
 
     public function getId(): int

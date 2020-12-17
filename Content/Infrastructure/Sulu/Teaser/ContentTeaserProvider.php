@@ -20,7 +20,6 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\ContentWorkflo
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Bundle\PageBundle\Teaser\Provider\TeaserProviderInterface;
@@ -155,8 +154,8 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
     {
         $stage = $this->showDrafts
             // TODO FIXME add testcase for it
-            ? DimensionInterface::STAGE_DRAFT // @codeCoverageIgnore
-            : DimensionInterface::STAGE_LIVE;
+            ? DimensionContentInterface::STAGE_DRAFT // @codeCoverageIgnore
+            : DimensionContentInterface::STAGE_LIVE;
 
         try {
             $resolvedDimensionContent = $this->contentManager->resolve($contentRichEntity, [
@@ -167,9 +166,7 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
             return null;
         }
 
-        $dimension = $resolvedDimensionContent->getDimension();
-
-        if ($stage !== $dimension->getStage() || $locale !== $dimension->getLocale()) {
+        if ($stage !== $resolvedDimensionContent->getStage() || $locale !== $resolvedDimensionContent->getLocale()) {
             return null;
         }
 

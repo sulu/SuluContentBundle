@@ -23,6 +23,7 @@
         "symfony/http-foundation": "^4.3 || ^5.0",
         "symfony/http-kernel": "^4.3 || ^5.0",
         "symfony/options-resolver": "^4.3 || ^5.0",
+        "symfony/property-access": "^4.3 || ^5.0",
         "symfony/security-core": "^4.3 || ^5.0",
         "symfony/serializer": "^4.3 || ^5.0",
         "symfony/translation-contracts": "^1.0 || ^2.0",
@@ -94,6 +95,20 @@
             "@phpunit"
         ],
         "phpunit": "vendor/bin/simple-phpunit",
+        "test-coverage": "@phpunit --coverage-php Tests/reports/coverage.php --coverage-html Tests/reports/html --log-junit Tests/reports/unit/junit.xml",
+        "test-coverage-checker": [
+            "@php vendor/bin/code-coverage-checker \"Tests/reports/coverage.php\" \"line\" \"100.00\" \"Content\" \"DependencyInjection\""
+        ],
+        "test-unit": "@phpunit Tests/Unit",
+        "test-unit-coverage": "@phpunit Tests/Unit --coverage-php Tests/reports/coverage.php --coverage-html Tests/reports/html --log-junit Tests/reports/unit/junit.xml",
+        "test-unit-coverage-checker": "@php Tests/coverage-checker.php \"line\" \"100.00\" \"Content/Domain\"",
+        "test-functional": "@phpunit Tests/Functional --log-junit Tests/reports/functional/junit.xml",
+        "lint-composer": "@composer validate --strict",
+        "lint-yaml": "Tests/Application/bin/adminconsole lint:yaml Resources/config Tests/Application/config",
+        "lint-twig": "Tests/Application/bin/adminconsole lint:twig Tests/Application/templates",
+        "lint-container": "Tests/Application/bin/adminconsole lint:container",
+        "lint-schema": "Tests/Application/bin/adminconsole doctrine:schema:validate",
+        "deptract": "vendor/bin/deptrac",
         "phpstan": [
             "Tests/Application/bin/adminconsole cache:warmup --env dev",
             "@test install",

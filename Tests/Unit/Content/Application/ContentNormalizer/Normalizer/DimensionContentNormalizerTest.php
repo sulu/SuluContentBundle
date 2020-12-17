@@ -17,7 +17,6 @@ use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Normalizer\DimensionContentNormalizer;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 
 class DimensionContentNormalizerTest extends TestCase
 {
@@ -71,13 +70,10 @@ class DimensionContentNormalizerTest extends TestCase
         $resource = $this->prophesize(ContentRichEntityInterface::class);
         $resource->getId()->willReturn('content-id-123');
 
-        $dimension = $this->prophesize(DimensionInterface::class);
-        $dimension->getLocale()->willReturn('en');
-        $dimension->getStage()->willReturn('live');
-
         $object = $this->prophesize(DimensionContentInterface::class);
         $object->getResource()->willReturn($resource->reveal());
-        $object->getDimension()->willReturn($dimension->reveal());
+        $object->getLocale()->willReturn('en');
+        $object->getStage()->willReturn('live');
 
         $data = [
             'property1' => 'value-1',

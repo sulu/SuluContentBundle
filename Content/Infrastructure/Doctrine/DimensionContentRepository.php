@@ -13,10 +13,11 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Infrastructure\Doctrine;
 
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\QueryBuilder;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentMetadataInspector\ContentMetadataInspectorInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollection;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
@@ -44,7 +45,7 @@ class DimensionContentRepository implements DimensionContentRepositoryInterface
 
     public function load(
         ContentRichEntityInterface $contentRichEntity,
-        DimensionCollectionInterface $dimensionCollection
+        array $dimensionAttributes = []
     ): DimensionContentCollectionInterface {
         $dimensionContentClass = $this->contentMetadataInspector->getDimensionContentClass(\get_class($contentRichEntity));
         $mappingProperty = $this->contentMetadataInspector->getDimensionContentPropertyName(\get_class($contentRichEntity));
@@ -52,28 +53,76 @@ class DimensionContentRepository implements DimensionContentRepositoryInterface
         $queryBuilder = $this->entityManager->createQueryBuilder()
             ->from($dimensionContentClass, 'dimensionContent')
             ->select('dimensionContent')
-            ->addSelect('dimension')
-            ->innerJoin('dimensionContent.dimension', 'dimension')
             ->innerJoin('dimensionContent.' . $mappingProperty, 'content')
             ->where('content.id = :id')
             ->setParameter('id', $contentRichEntity->getId());
 
-        $dimensionIds = $dimensionCollection->getDimensionIds();
-
-        $queryBuilder->andWhere($queryBuilder->expr()->in('dimension.id', $dimensionIds));
+        $attributes = $this->getAttributes($dimensionContentClass, $dimensionAttributes);
+        $queryBuilder->addCriteria($this->getAttributesCriteria('dimensionContent', $attributes));
+        $this->addSortBy($queryBuilder, $attributes);
 
         /** @var DimensionContentInterface[] $dimensionContents */
-        $dimensionContents = [];
+        $dimensionContents = $queryBuilder->getQuery()->getResult();
 
-        // Sort DimensionContents to reflect order of $dimensionCollection to merge them in the correct order later
-        /** @var DimensionContentInterface $dimensionContent */
-        foreach ($queryBuilder->getQuery()->getResult() as $dimensionContent) {
-            $position = array_search($dimensionContent->getDimension()->getId(), $dimensionIds, true);
-            $dimensionContents[$position] = $dimensionContent;
+        return new DimensionContentCollection(
+            $dimensionContents,
+            $attributes,
+            $dimensionContentClass
+        );
+    }
+
+    /**
+     * Less specific should be returned first to merge correctly.
+     *
+     * @param mixed[] $attributes
+     */
+    private function addSortBy(QueryBuilder $queryBuilder, array $attributes): void
+    {
+        foreach ($attributes as $key => $value) {
+            $queryBuilder->addOrderBy('dimensionContent.' . $key);
+        }
+    }
+
+    /**
+     * @param mixed[] $attributes
+     */
+    private function getAttributesCriteria(string $alias, array $attributes): Criteria
+    {
+        $criteria = Criteria::create();
+
+        foreach ($attributes as $key => $value) {
+            $fieldName = $alias . '.' . $key;
+            $expr = $criteria->expr()->isNull($fieldName);
+
+            if (null !== $value) {
+                $eqExpr = $criteria->expr()->eq($fieldName, $value);
+                $expr = $criteria->expr()->orX($expr, $eqExpr);
+            }
+
+            $criteria->andWhere($expr);
         }
 
-        ksort($dimensionContents);
+        return $criteria;
+    }
 
-        return new DimensionContentCollection($dimensionContents, $dimensionCollection);
+    /**
+     * @param class-string<DimensionContentInterface> $className
+     * @param mixed[] $attributes
+     *
+     * @return mixed[]
+     */
+    private function getAttributes(string $className, array $attributes): array
+    {
+        $defaultValues = \call_user_func([$className, 'getDefaultAttributes']);
+
+        // Ignore any key which is is which has no default values
+        $attributes = array_intersect_key($attributes, $defaultValues);
+
+        $attributes = array_merge(
+            $defaultValues,
+            $attributes
+        );
+
+        return $attributes;
     }
 }

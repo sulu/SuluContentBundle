@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Content\Domain\Model;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Criteria;
 
 /**
  * @implements \IteratorAggregate<DimensionContentInterface>
@@ -21,7 +22,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 class DimensionContentCollection implements \IteratorAggregate, DimensionContentCollectionInterface
 {
     /**
-     * @var DimensionContentInterface[]
+     * @var ArrayCollection<int, DimensionContentInterface>
      */
     private $dimensionContents;
 
@@ -36,33 +37,54 @@ class DimensionContentCollection implements \IteratorAggregate, DimensionContent
     private $localizedDimensionContent;
 
     /**
+     * @var mixed[]
+     */
+    private $dimensionAttributes;
+
+    /**
+     * @var class-string<DimensionContentInterface>
+     */
+    private $dimensionContentClass;
+
+    /**
+     * @var mixed[]
+     */
+    private $defaultDimensionAttributes;
+
+    /**
      * DimensionContentCollection constructor.
      *
      * @param DimensionContentInterface[] $dimensionContents
+     * @param mixed[] $dimensionAttributes
+     * @param class-string<DimensionContentInterface> $dimensionContentClass
      */
-    public function __construct(array $dimensionContents, DimensionCollectionInterface $dimensionCollection)
+    public function __construct(
+        array $dimensionContents,
+        array $dimensionAttributes,
+        string $dimensionContentClass
+    ) {
+        $this->dimensionContents = new ArrayCollection($dimensionContents);
+        $this->dimensionContentClass = $dimensionContentClass;
+        $this->defaultDimensionAttributes = \call_user_func([$dimensionContentClass, 'getDefaultAttributes']);
+
+        $this->unlocalizedDimensionContent = $this->dimensionContents->filter(
+            function (DimensionContentInterface $dimensionContent) {
+                return null === $dimensionContent->getLocale();
+            }
+        )->first() ?: null;
+
+        $this->localizedDimensionContent = $this->dimensionContents->filter(
+            function (DimensionContentInterface $dimensionContent) {
+                return null !== $dimensionContent->getLocale();
+            }
+        )->first() ?: null;
+
+        $this->dimensionAttributes = $dimensionAttributes;
+    }
+
+    public function getDimensionContentClass(): string
     {
-        $dimensionContentArrayCollection = new ArrayCollection($dimensionContents);
-
-        $unlocalizedDimension = $dimensionCollection->getUnlocalizedDimension();
-        if ($unlocalizedDimension) {
-            $this->unlocalizedDimensionContent = $dimensionContentArrayCollection->filter(
-                function (DimensionContentInterface $dimensionContent) use ($unlocalizedDimension) {
-                    return $dimensionContent->getDimension()->getId() === $unlocalizedDimension->getId();
-                }
-            )->first() ?: null;
-        }
-
-        $localizedDimension = $dimensionCollection->getLocalizedDimension();
-        if ($localizedDimension) {
-            $this->localizedDimensionContent = $dimensionContentArrayCollection->filter(
-                function (DimensionContentInterface $dimensionContent) use ($localizedDimension) {
-                    return $dimensionContent->getDimension()->getId() === $localizedDimension->getId();
-                }
-            )->first() ?: null;
-        }
-
-        $this->dimensionContents = array_values($dimensionContents);
+        return $this->dimensionContentClass;
     }
 
     public function getUnlocalizedDimensionContent(): ?DimensionContentInterface
@@ -75,9 +97,32 @@ class DimensionContentCollection implements \IteratorAggregate, DimensionContent
         return $this->localizedDimensionContent;
     }
 
+    public function getDimensionContent(array $dimensionAttributes): ?DimensionContentInterface
+    {
+        $dimensionAttributes = array_merge($this->defaultDimensionAttributes, $dimensionAttributes);
+
+        $criteria = Criteria::create();
+        foreach ($dimensionAttributes as $key => $value) {
+            if (null === $value) {
+                $expr = $criteria->expr()->isNull($key);
+            } else {
+                $expr = $criteria->expr()->eq($key, $value);
+            }
+
+            $criteria->andWhere($expr);
+        }
+
+        return $this->dimensionContents->matching($criteria)->first() ?: null;
+    }
+
+    public function getDimensionAttributes(): array
+    {
+        return $this->dimensionAttributes;
+    }
+
     public function getIterator()
     {
-        return new \ArrayIterator($this->dimensionContents);
+        return $this->dimensionContents;
     }
 
     public function count(): int

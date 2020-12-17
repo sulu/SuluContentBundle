@@ -18,7 +18,6 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\ContentWorkflo
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Workflow\Event\TransitionEvent;
@@ -67,7 +66,7 @@ class PublishTransitionSubscriber implements EventSubscriberInterface
             throw new \RuntimeException('No "contentRichEntity" given.');
         }
 
-        $dimensionAttributes['stage'] = DimensionInterface::STAGE_LIVE;
+        $dimensionAttributes['stage'] = DimensionContentInterface::STAGE_LIVE;
 
         $this->contentCopier->copyFromDimensionContentCollection(
             $dimensionContentCollection,

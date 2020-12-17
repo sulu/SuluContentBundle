@@ -26,43 +26,10 @@ class ConfigurationTest extends TestCase
         return new Configuration();
     }
 
-    public function testObjects(): void
+    public function testIsEmpty(): void
     {
         $this->assertConfigurationIsValid([
-            'sulu_content' => [
-                'objects' => [
-                    'dimension' => [
-                        'model' => 'TestModel',
-                        'repository' => 'TestRepository',
-                    ],
-                ],
-            ],
-        ]);
-    }
-
-    public function testObjectsOnlyModel(): void
-    {
-        $this->assertConfigurationIsValid([
-            'sulu_content' => [
-                'objects' => [
-                    'dimension' => [
-                        'model' => 'TestModel',
-                    ],
-                ],
-            ],
-        ]);
-    }
-
-    public function testObjectsOnlyRepository(): void
-    {
-        $this->assertConfigurationIsValid([
-            'sulu_content' => [
-                'objects' => [
-                    'dimension' => [
-                        'repository' => 'TestRepository',
-                    ],
-                ],
-            ],
+            'sulu_content' => [],
         ]);
     }
 }

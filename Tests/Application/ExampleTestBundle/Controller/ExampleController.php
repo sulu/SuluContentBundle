@@ -20,7 +20,6 @@ use FOS\RestBundle\View\ViewHandlerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentIndexer\ContentIndexerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentManager\ContentManagerInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleDimensionContent;
@@ -156,7 +155,7 @@ class ExampleController extends AbstractRestController implements ClassResourceI
 
             // Index live dimension content
             $this->contentIndexer->index($example, array_merge($dimensionAttributes, [
-                'stage' => DimensionInterface::STAGE_LIVE,
+                'stage' => DimensionContentInterface::STAGE_LIVE,
             ]));
         }
 
@@ -196,7 +195,7 @@ class ExampleController extends AbstractRestController implements ClassResourceI
                 // Deindex live dimension content
                 $this->contentIndexer->deindex(Example::RESOURCE_KEY, $id, array_merge(
                     $dimensionAttributes,
-                    ['stage' => DimensionInterface::STAGE_LIVE]
+                    ['stage' => DimensionContentInterface::STAGE_LIVE]
                 ));
 
                 return $this->handleView($this->view($this->normalize($example, $dimensionContent)));
@@ -256,7 +255,7 @@ class ExampleController extends AbstractRestController implements ClassResourceI
 
             // Index live dimension content
             $this->contentIndexer->index($example, array_merge($dimensionAttributes, [
-                'stage' => DimensionInterface::STAGE_LIVE,
+                'stage' => DimensionContentInterface::STAGE_LIVE,
             ]));
         }
 

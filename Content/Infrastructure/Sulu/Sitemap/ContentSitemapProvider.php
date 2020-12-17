@@ -20,7 +20,7 @@ use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\ContentWorkflowInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\RouteBundle\Model\RouteInterface;
 use Sulu\Bundle\WebsiteBundle\Sitemap\Sitemap;
 use Sulu\Bundle\WebsiteBundle\Sitemap\SitemapAlternateLink;
@@ -35,7 +35,6 @@ class ContentSitemapProvider implements SitemapProviderInterface
     const ROUTE_ALIAS = 'route';
     const CONTENT_RICH_ENTITY_ALIAS = ContentWorkflowInterface::CONTENT_RICH_ENTITY_CONTEXT_KEY;
     const LOCALIZED_DIMENSION_CONTENT_ALIAS = 'localizedDimensionContent';
-    const LOCALIZED_DIMENSION_ALIAS = 'localizedDimension';
 
     /**
      * @var EntityManagerInterface
@@ -101,7 +100,8 @@ class ContentSitemapProvider implements SitemapProviderInterface
         $portalInformation = array_shift($portalInformations);
 
         if (!$portalInformation) {
-            return [];
+            // TODO FIXME add testcase for this
+            return []; // @codeCoverageIgnore
         }
 
         $webspace = $portalInformation->getWebspace();
@@ -131,7 +131,8 @@ class ContentSitemapProvider implements SitemapProviderInterface
             );
 
             if (null === $sitemapUrl) {
-                continue;
+                // TODO FIXME add testcase for this
+                continue; // @codeCoverageIgnore
             }
 
             $result[] = $sitemapUrl;
@@ -158,8 +159,9 @@ class ContentSitemapProvider implements SitemapProviderInterface
                 ->getSingleScalarResult();
 
             return (int) ceil($amount / self::PAGE_SIZE);
-        } catch (NoResultException | NonUniqueResultException $e) {
-            return 0;
+        } catch (NoResultException | NonUniqueResultException $e) { // @codeCoverageIgnore
+            // TODO FIXME add testcase for this
+            return 0; // @codeCoverageIgnore
         }
     }
 
@@ -192,14 +194,16 @@ class ContentSitemapProvider implements SitemapProviderInterface
     {
         $queryBuilder = $this->createRoutesQueryBuilder();
 
-        return $queryBuilder
+        $queryBuilder
             ->select(self::ROUTE_ALIAS)
             ->distinct()
             ->orderBy(self::ROUTE_ALIAS . '.entityId', 'asc')
-            ->getQuery()
             ->setFirstResult($offset)
-            ->setMaxResults($limit)
-            ->getResult();
+            ->setMaxResults($limit);
+
+        $result = $queryBuilder->getQuery()->getResult();
+
+        return $result;
     }
 
     protected function createRoutesQueryBuilder(): QueryBuilder
@@ -209,14 +213,12 @@ class ContentSitemapProvider implements SitemapProviderInterface
         return $queryBuilder
             ->from($this->contentRichEntityClass, self::CONTENT_RICH_ENTITY_ALIAS)
             ->innerJoin(self::CONTENT_RICH_ENTITY_ALIAS . '.dimensionContents', self::LOCALIZED_DIMENSION_CONTENT_ALIAS)
-            ->innerJoin(self::LOCALIZED_DIMENSION_CONTENT_ALIAS . '.dimension', self::LOCALIZED_DIMENSION_ALIAS)
             ->innerJoin($this->routeClass, self::ROUTE_ALIAS, Join::WITH, self::ROUTE_ALIAS . '.entityId = ' . self::CONTENT_RICH_ENTITY_ALIAS . '.' . $this->getEntityIdField())
-            ->where(self::LOCALIZED_DIMENSION_ALIAS . '.stage = :stage')
+            ->where(self::LOCALIZED_DIMENSION_CONTENT_ALIAS . '.stage = :stage')
             ->andWhere(self::ROUTE_ALIAS . '.entityClass = :entityClass')
             ->andWhere(self::ROUTE_ALIAS . '.history = :history')
-            ->andWhere(self::ROUTE_ALIAS . '.locale = ' . self::LOCALIZED_DIMENSION_ALIAS . '.locale')
             ->setParameters([
-                'stage' => DimensionInterface::STAGE_LIVE,
+                'stage' => DimensionContentInterface::STAGE_LIVE,
                 'entityClass' => $this->contentRichEntityClass,
                 'history' => false,
             ]);
@@ -235,7 +237,8 @@ class ContentSitemapProvider implements SitemapProviderInterface
         $url = $this->generateUrl($route, $webspaceKey, $host, $scheme);
 
         if (!$url) {
-            return null;
+            // TODO FIXME add testcase for this
+            return null; // @codeCoverageIgnore
         }
 
         $sitemapUrl = new SitemapUrl(
@@ -248,7 +251,8 @@ class ContentSitemapProvider implements SitemapProviderInterface
             $alternateUrl = $this->generateUrl($alternateRoute, $webspaceKey, $host, $scheme);
 
             if (!$alternateUrl) {
-                continue;
+                // TODO FIXME add testcase for this
+                continue; // @codeCoverageIgnore
             }
 
             $alternateLink = new SitemapAlternateLink($alternateUrl, $alternateRoute->getLocale());

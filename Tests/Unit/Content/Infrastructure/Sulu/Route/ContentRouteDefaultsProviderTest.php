@@ -22,7 +22,6 @@ use Prophecy\Argument;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Route\ContentRouteDefaultsProvider;
@@ -86,12 +85,8 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
         $resolvedDimensionContent = $this->prophesize(TemplateInterface::class);
         $resolvedDimensionContent->willImplement(DimensionContentInterface::class);
-
-        $dimension = new Dimension('123-456', [
-            'locale' => 'en',
-            'stage' => 'live',
-        ]);
-        $resolvedDimensionContent->getDimension()->willReturn($dimension);
+        $resolvedDimensionContent->getLocale()->willReturn('en');
+        $resolvedDimensionContent->getStage()->willReturn('live');
 
         $queryBuilder = $this->prophesize(QueryBuilder::class);
         $query = $this->prophesize(AbstractQuery::class);
@@ -194,12 +189,8 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
         $resolvedDimensionContent = $this->prophesize(TemplateInterface::class);
         $resolvedDimensionContent->willImplement(DimensionContentInterface::class);
-
-        $dimension = new Dimension('123-456', [
-            'locale' => 'en',
-            'stage' => 'live',
-        ]);
-        $resolvedDimensionContent->getDimension()->willReturn($dimension);
+        $resolvedDimensionContent->getLocale()->willReturn('en');
+        $resolvedDimensionContent->getStage()->willReturn('live');
 
         $queryBuilder = $this->prophesize(QueryBuilder::class);
         $query = $this->prophesize(AbstractQuery::class);
@@ -235,11 +226,8 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
         $resolvedDimensionContent = $this->prophesize(TemplateInterface::class);
         $resolvedDimensionContent->willImplement(DimensionContentInterface::class);
-
-        $dimension = new Dimension('123-456', [
-            'stage' => 'live',
-        ]);
-        $resolvedDimensionContent->getDimension()->willReturn($dimension);
+        $resolvedDimensionContent->getLocale()->willReturn(null);
+        $resolvedDimensionContent->getStage()->willReturn('live');
 
         $queryBuilder = $this->prophesize(QueryBuilder::class);
         $query = $this->prophesize(AbstractQuery::class);

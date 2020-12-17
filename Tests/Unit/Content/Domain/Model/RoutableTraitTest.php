@@ -15,7 +15,6 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Domain\Model;
 
 use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\RoutableInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\RoutableTrait;
 
@@ -26,26 +25,17 @@ class RoutableTraitTest extends TestCase
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
         $contentRichEntity->getId()->willReturn('content-id-123');
 
-        $dimension = $this->prophesize(DimensionInterface::class);
-        $dimension->getLocale()->willReturn('en');
-
-        return new class($contentRichEntity->reveal(), $dimension->reveal()) implements RoutableInterface {
+        return new class($contentRichEntity->reveal()) implements RoutableInterface {
             use RoutableTrait;
-
-            /**
-             * @var DimensionInterface
-             */
-            private $dimension;
 
             /**
              * @var ContentRichEntityInterface
              */
             private $resource;
 
-            public function __construct(ContentRichEntityInterface $resource, DimensionInterface $dimension)
+            public function __construct(ContentRichEntityInterface $resource)
             {
                 $this->resource = $resource;
-                $this->dimension = $dimension;
             }
 
             public static function getResourceKey(): string
@@ -53,9 +43,9 @@ class RoutableTraitTest extends TestCase
                 throw new \RuntimeException('Should not be called while executing tests.');
             }
 
-            public function getDimension(): DimensionInterface
+            public function getLocale(): string
             {
-                return $this->dimension;
+                return 'en';
             }
 
             public function getResource(): ContentRichEntityInterface

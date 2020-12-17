@@ -15,17 +15,10 @@ namespace Sulu\Bundle\ContentBundle\Content\Domain\Model;
 
 trait RoutableTrait
 {
-    public function getLocale(): ?string
-    {
-        return $this->getDimension()->getLocale();
-    }
-
     public function getResourceId()
     {
         return $this->getResource()->getId();
     }
-
-    abstract public function getDimension(): DimensionInterface;
 
     abstract public function getResource(): ContentRichEntityInterface;
 }

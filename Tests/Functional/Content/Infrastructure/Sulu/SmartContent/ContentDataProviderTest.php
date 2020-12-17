@@ -18,9 +18,7 @@ use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\SmartContent\Provider\
 use Sulu\Bundle\ContentBundle\Tests\Functional\BaseTestCase;
 use Sulu\Bundle\ContentBundle\Tests\Traits\CreateCategoryTrait;
 use Sulu\Bundle\ContentBundle\Tests\Traits\CreateExampleTrait;
-use Sulu\Bundle\ContentBundle\Tests\Traits\ModifyCategoryTrait;
-use Sulu\Bundle\ContentBundle\Tests\Traits\ModifyExampleTrait;
-use Sulu\Bundle\ContentBundle\Tests\Traits\PublishExampleTrait;
+use Sulu\Bundle\ContentBundle\Tests\Traits\CreateTagTrait;
 use Sulu\Bundle\TagBundle\Tag\TagInterface;
 use Sulu\Component\SmartContent\ArrayAccessItem;
 use Sulu\Component\SmartContent\DataProviderResult;
@@ -29,9 +27,7 @@ class ContentDataProviderTest extends BaseTestCase
 {
     use CreateCategoryTrait;
     use CreateExampleTrait;
-    use ModifyCategoryTrait;
-    use ModifyExampleTrait;
-    use PublishExampleTrait;
+    use CreateTagTrait;
 
     /**
      * @var ContentDataProvider
@@ -73,176 +69,211 @@ class ContentDataProviderTest extends BaseTestCase
         static::purgeDatabase();
         parent::setUpBeforeClass();
 
-        static::$categoryFoo = static::createCategory('Foo', 'en');
-        static::modifyCategory(static::$categoryFoo->getId(), 'Foo DE', 'de');
+        static::$categoryFoo = static::createCategory([
+            'en' => [
+                'title' => 'Foo',
+            ],
+            'de' => [
+                'title' => 'Foo DE',
+            ],
+        ]);
 
-        static::$categoryBar = static::createCategory('Bar', 'en');
+        static::$categoryBar = static::createCategory([
+            'en' => [
+                'title' => 'Bar',
+            ],
+        ]);
 
-        static::$categoryBaz = static::createCategory('Baz', 'de');
+        static::$categoryBaz = static::createCategory([
+            'de' => [
+                'title' => 'Baz',
+            ],
+        ]);
+
+        static::$tagA = static::createTag([
+            'name' => 'tagA',
+        ]);
+
+        static::$tagB = static::createTag([
+            'name' => 'tagB',
+        ]);
+
+        static::$tagC = static::createTag([
+            'name' => 'tagC',
+        ]);
+
+        static::getEntityManager()->flush();
 
         // Example 1
         $example1 = static::createExample([
-            'title' => 'example without categories without tags',
-            'excerptCategories' => [],
-            'excerptTags' => [],
-        ], 'en')->getResource();
-        static::publishExample($example1->getId(), 'en');
-        static::modifyExample($example1->getId(), [
-            'title' => 'example without categories without tags',
-            'excerptCategories' => [],
-            'excerptTags' => [],
-        ], 'de');
-        static::publishExample($example1->getId(), 'de');
-        static::modifyExample($example1->getId(), [
-            'title' => 'example without categories without tags draft',
-            'excerptCategories' => [
-                static::$categoryFoo->getId(),
-                static::$categoryBar->getId(),
+            'en' => [
+                'title' => 'example without categories without tags',
+                'published' => true,
             ],
-            'excerptTags' => [
-                'tagB',
-                'tagC',
+            'de' => [
+                'title' => 'example without categories without tags',
+                'draft' => [
+                    'title' => 'example without categories without tags draft',
+                    'excerptCategories' => [
+                        static::$categoryFoo->getId(),
+                        static::$categoryBar->getId(),
+                    ],
+                    'excerptTags' => [
+                        static::$tagB->getId(),
+                        static::$tagC->getId(),
+                    ],
+                ],
+                'published' => true,
             ],
-        ], 'de');
+        ]);
 
         // Example 2
         $example2 = static::createExample([
-            'title' => 'example with some categories without tags',
-            'excerptCategories' => [
-                static::$categoryFoo->getId(),
+            'en' => [
+                'title' => 'example with some categories without tags',
+                'excerptCategories' => [
+                    static::$categoryFoo->getId(),
+                ],
+                'published' => true,
             ],
-            'excerptTags' => [],
-        ], 'en')->getResource();
-        static::publishExample($example2->getId(), 'en');
-        static::modifyExample($example2->getId(), [
-            'title' => 'example with some categories without tags unpublished',
-            'excerptCategories' => [
-                static::$categoryFoo->getId(),
+            'de' => [
+                'title' => 'example with some categories without tags unpublished',
+                'excerptCategories' => [
+                    static::$categoryFoo->getId(),
+                ],
+                'excerptTags' => [],
             ],
-            'excerptTags' => [],
-        ], 'de');
+        ]);
 
         // Example 3
         $example3 = static::createExample([
-            'title' => 'example with all categories without tags',
-            'excerptCategories' => [
-                static::$categoryFoo->getId(),
-                static::$categoryBar->getId(),
-                static::$categoryBaz->getId(),
+            'en' => [
+                'title' => 'example with all categories without tags',
+                'excerptCategories' => [
+                    static::$categoryFoo->getId(),
+                    static::$categoryBar->getId(),
+                    static::$categoryBaz->getId(),
+                ],
+                'published' => true,
             ],
-            'excerptTags' => [],
-        ], 'en')->getResource();
-        static::publishExample($example3->getId(), 'en');
-        static::modifyExample($example3->getId(), [
-            'title' => 'example with all categories without tags',
-            'excerptCategories' => [
-                static::$categoryFoo->getId(),
-                static::$categoryBar->getId(),
-                static::$categoryBaz->getId(),
+            'de' => [
+                'title' => 'example with all categories without tags',
+                'excerptCategories' => [
+                    static::$categoryFoo->getId(),
+                    static::$categoryBar->getId(),
+                    static::$categoryBaz->getId(),
+                ],
+                'excerptTags' => [],
+                'published' => true,
             ],
-            'excerptTags' => [],
-        ], 'de');
-        static::publishExample($example3->getId(), 'de');
+        ]);
 
         // Example 4
         $example4 = static::createExample([
-            'title' => 'example without categories with some tags',
-            'excerptCategories' => [],
-            'excerptTags' => [
-                'tagA',
+            'en' => [
+                'title' => 'example without categories with some tags',
+                'excerptTags' => [
+                    static::$tagA->getId(),
+                ],
+                'published' => true,
             ],
-        ], 'en')->getResource();
-        static::publishExample($example4->getId(), 'en');
-        static::modifyExample($example4->getId(), [
-            'title' => 'example without categories with some tags',
-            'excerptCategories' => [],
-            'excerptTags' => [
-                'tagA',
+            'de' => [
+                'title' => 'example without categories with some tags',
+                'excerptTags' => [
+                    static::$tagA->getId(),
+                ],
+                'published' => true,
             ],
-        ], 'de');
-        static::publishExample($example4->getId(), 'de');
+        ]);
 
         // Example 5
         $example5 = static::createExample([
-            'title' => 'example without categories with all tags',
-            'excerptCategories' => [],
-            'excerptTags' => [
-                'tagA',
-                'tagB',
-                'tagC',
+            'en' => [
+                'title' => 'example without categories with all tags',
+                'excerptTags' => [
+                    static::$tagA->getId(),
+                    static::$tagB->getId(),
+                    static::$tagC->getId(),
+                ],
+                'published' => true,
             ],
-        ], 'en')->getResource();
-        static::publishExample($example5->getId(), 'en');
-        static::modifyExample($example5->getId(), [
-            'title' => 'example without categories with all tags',
-            'excerptCategories' => [],
-            'excerptTags' => [
-                'tagA',
-                'tagB',
-                'tagC',
+            'de' => [
+                'title' => 'example without categories with all tags',
+                'excerptTags' => [
+                    static::$tagA->getId(),
+                    static::$tagB->getId(),
+                    static::$tagC->getId(),
+                ],
+                'published' => true,
             ],
-        ], 'de');
-        static::publishExample($example5->getId(), 'de');
+        ]);
 
         // Example 6
         $example6 = static::createExample([
-            'title' => 'example with some categories with some tags',
-            'excerptCategories' => [
-                static::$categoryBar->getId(),
+            'en' => [
+                'title' => 'example with some categories with some tags',
+                'excerptCategories' => [
+                    static::$categoryBar->getId(),
+                ],
+                'excerptTags' => [
+                    static::$tagB->getId(),
+                ],
+                'published' => true,
             ],
-            'excerptTags' => [
-                'tagB',
+            'de' => [
+                'title' => 'example with some categories with some tags',
+                'excerptCategories' => [
+                    static::$categoryBar->getId(),
+                ],
+                'excerptTags' => [
+                    static::$tagB->getId(),
+                ],
+                'published' => true,
             ],
-        ], 'en')->getResource();
-        static::publishExample($example6->getId(), 'en');
-        static::modifyExample($example6->getId(), [
-            'title' => 'example with some categories with some tags',
-            'excerptCategories' => [
-                static::$categoryBar->getId(),
-            ],
-            'excerptTags' => [
-                'tagB',
-            ],
-        ], 'de');
-        static::publishExample($example6->getId(), 'de');
+        ]);
 
         // Example 7
         $example7 = static::createExample([
-            'title' => 'example with all categories with all tags',
-            'excerptCategories' => [
-                static::$categoryFoo->getId(),
-                static::$categoryBar->getId(),
-                static::$categoryBaz->getId(),
+            'en' => [
+                'title' => 'example with all categories with all tags',
+                'excerptCategories' => [
+                    static::$categoryFoo->getId(),
+                    static::$categoryBar->getId(),
+                    static::$categoryBaz->getId(),
+                ],
+                'excerptTags' => [
+                    static::$tagA->getId(),
+                    static::$tagB->getId(),
+                    static::$tagC->getId(),
+                ],
+                'published' => true,
             ],
-            'excerptTags' => [
-                'tagA',
-                'tagB',
-                'tagC',
+            'de' => [
+                'title' => 'example with all categories with all tags',
+                'excerptCategories' => [
+                    static::$categoryFoo->getId(),
+                    static::$categoryBar->getId(),
+                    static::$categoryBaz->getId(),
+                ],
+                'excerptTags' => [
+                    static::$tagA->getId(),
+                    static::$tagB->getId(),
+                    static::$tagC->getId(),
+                ],
+                'published' => true,
             ],
-        ], 'en')->getResource();
-        static::publishExample($example7->getId(), 'en');
-        static::modifyExample($example7->getId(), [
-            'title' => 'example with all categories with all tags',
-            'excerptCategories' => [
-                static::$categoryFoo->getId(),
-                static::$categoryBar->getId(),
-                static::$categoryBaz->getId(),
-            ],
-            'excerptTags' => [
-                'tagA',
-                'tagB',
-                'tagC',
-            ],
-        ], 'de');
-        static::publishExample($example7->getId(), 'de');
+        ]);
 
         // Example 8
-        $example8 = static::createExample([
-            'title' => 'example with non default template',
-        ], 'en', 'example-2')->getResource();
-        static::publishExample($example8->getId(), 'en');
+        static::createExample([
+            'en' => [
+                'title' => 'example with non default template',
+                'template' => 'example-2',
+                'published' => true,
+            ],
+        ]);
 
-        list(static::$tagA, static::$tagB, static::$tagC) = static::getContainer()->get('sulu_tag.tag_manager')->resolveTagNames(['tagA', 'tagB', 'tagC']);
+        static::getEntityManager()->flush();
     }
 
     protected function setUp(): void

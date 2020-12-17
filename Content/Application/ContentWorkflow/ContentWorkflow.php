@@ -21,7 +21,6 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionContentRepositoryInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionRepositoryInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Workflow\DefinitionBuilder;
@@ -36,11 +35,6 @@ use Symfony\Component\Workflow\WorkflowInterface as SymfonyWorkflowInterface;
 
 class ContentWorkflow implements ContentWorkflowInterface
 {
-    /**
-     * @var DimensionRepositoryInterface
-     */
-    private $dimensionRepository;
-
     /**
      * @var DimensionContentRepositoryInterface
      */
@@ -62,13 +56,11 @@ class ContentWorkflow implements ContentWorkflowInterface
     private $workflowRegistry;
 
     public function __construct(
-        DimensionRepositoryInterface $dimensionRepository,
         DimensionContentRepositoryInterface $dimensionContentRepository,
         ContentMergerInterface $contentMerger,
         ?Registry $workflowRegistry = null,
         ?EventDispatcherInterface $eventDispatcher = null
     ) {
-        $this->dimensionRepository = $dimensionRepository;
         $this->dimensionContentRepository = $dimensionContentRepository;
         $this->contentMerger = $contentMerger;
         $this->eventDispatcher = $eventDispatcher ?: new EventDispatcher();
@@ -93,13 +85,8 @@ class ContentWorkflow implements ContentWorkflowInterface
          * TODO: maybe throw an exception here if the $dimensionAttributes contain another stage than 'STAGE_DRAFT'
          */
 
-        $dimensionCollection = $this->dimensionRepository->findByAttributes($dimensionAttributes);
-
-        if (0 === \count($dimensionCollection)) {
-            throw new ContentNotFoundException($contentRichEntity, $dimensionAttributes);
-        }
-
-        $dimensionContentCollection = $this->dimensionContentRepository->load($contentRichEntity, $dimensionCollection);
+        $dimensionContentCollection = $this->dimensionContentRepository->load($contentRichEntity, $dimensionAttributes);
+        $dimensionAttributes = $dimensionContentCollection->getDimensionAttributes();
 
         $localizedDimensionContent = $dimensionContentCollection->getLocalizedDimensionContent();
 

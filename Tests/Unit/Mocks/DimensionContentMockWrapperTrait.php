@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Mocks;
 
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 
 /**
  * Trait for composing a class that wraps a DimensionContentInterface mock.
@@ -28,9 +27,24 @@ trait DimensionContentMockWrapperTrait
         return 'mock-resource-key';
     }
 
-    public function getDimension(): DimensionInterface
+    public function getLocale(): ?string
     {
-        return $this->instance->getDimension();
+        return $this->instance->getLocale();
+    }
+
+    public function setLocale(?string $locale): void
+    {
+        $this->instance->setLocale($locale);
+    }
+
+    public function getStage(): string
+    {
+        return $this->instance->getStage();
+    }
+
+    public function setStage(?string $stage): void
+    {
+        $this->instance->setStage($stage);
     }
 
     public function getResource(): ContentRichEntityInterface

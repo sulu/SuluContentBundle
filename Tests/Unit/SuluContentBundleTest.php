@@ -15,7 +15,6 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\ContentBundle\SuluContentBundle;
-use Sulu\Bundle\PersistenceBundle\DependencyInjection\Compiler\ResolveTargetEntitiesPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class SuluContentBundleTest extends TestCase
@@ -30,17 +29,15 @@ class SuluContentBundleTest extends TestCase
         $bundle = $this->getContentBundle();
         $containerBuilder = new ContainerBuilder();
 
+        $passConfig = $containerBuilder->getCompiler()->getPassConfig();
+        $beforeCount = \count($passConfig->getPasses());
+
         $bundle->build($containerBuilder);
         $passConfig = $containerBuilder->getCompiler()->getPassConfig();
-        $compilerPass = null;
-        foreach ($passConfig->getPasses() as $pass) {
-            if ($pass instanceof ResolveTargetEntitiesPass) {
-                $compilerPass = $pass;
 
-                break;
-            }
-        }
-
-        $this->assertInstanceOf(ResolveTargetEntitiesPass::class, $compilerPass);
+        $this->assertSame(
+            0,
+            \count($passConfig->getPasses()) - $beforeCount
+        );
     }
 }

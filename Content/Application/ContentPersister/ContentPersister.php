@@ -14,18 +14,12 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentPersister;
 
 use Sulu\Bundle\ContentBundle\Content\Application\ContentMerger\ContentMergerInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Factory\DimensionCollectionFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\DimensionContentCollectionFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 
 class ContentPersister implements ContentPersisterInterface
 {
-    /**
-     * @var DimensionCollectionFactoryInterface
-     */
-    private $dimensionCollectionFactory;
-
     /**
      * @var DimensionContentCollectionFactoryInterface
      */
@@ -37,11 +31,9 @@ class ContentPersister implements ContentPersisterInterface
     private $contentMerger;
 
     public function __construct(
-        DimensionCollectionFactoryInterface $dimensionCollectionFactory,
         DimensionContentCollectionFactoryInterface $dimensionContentCollectionFactory,
         ContentMergerInterface $contentMerger
     ) {
-        $this->dimensionCollectionFactory = $dimensionCollectionFactory;
         $this->dimensionContentCollectionFactory = $dimensionContentCollectionFactory;
         $this->contentMerger = $contentMerger;
     }
@@ -56,10 +48,9 @@ class ContentPersister implements ContentPersisterInterface
          * TODO: maybe throw an exception here if the $dimensionAttributes contain another stage than 'STAGE_DRAFT'
          */
 
-        $dimensionCollection = $this->dimensionCollectionFactory->create($dimensionAttributes);
         $dimensionContentCollection = $this->dimensionContentCollectionFactory->create(
             $contentRichEntity,
-            $dimensionCollection,
+            $dimensionAttributes,
             $data
         );
 

@@ -15,13 +15,27 @@ namespace Sulu\Bundle\ContentBundle\Content\Domain\Model;
 
 interface DimensionContentInterface
 {
+    const STAGE_DRAFT = 'draft';
+    const STAGE_LIVE = 'live';
+
     public static function getResourceKey(): string;
 
-    public function getDimension(): DimensionInterface;
+    public function getLocale(): ?string;
+
+    public function setLocale(?string $locale): void;
+
+    public function getStage(): string;
+
+    public function setStage(string $stage): void;
 
     public function getResource(): ContentRichEntityInterface;
 
     public function isMerged(): bool;
 
     public function markAsMerged(): void;
+
+    /**
+     * @return mixed[]
+     */
+    public static function getDefaultAttributes(): array;
 }

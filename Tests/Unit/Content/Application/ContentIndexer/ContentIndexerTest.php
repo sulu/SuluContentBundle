@@ -26,7 +26,6 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolve
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 
 class ContentIndexerTest extends TestCase
 {
@@ -50,15 +49,13 @@ class ContentIndexerTest extends TestCase
         );
 
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
-        $dimensionAttributes = ['locale' => 'en', 'stage' => DimensionInterface::STAGE_DRAFT];
+        $dimensionAttributes = ['locale' => 'en', 'stage' => DimensionContentInterface::STAGE_DRAFT];
         $dimensionContent = $this->prophesize(DimensionContentInterface::class);
         $dimensionContent->isMerged()->willReturn(true);
         $contentResolver->resolve($contentRichEntity->reveal(), $dimensionAttributes)
             ->willReturn($dimensionContent->reveal());
-        $dimension = $this->prophesize(DimensionInterface::class);
-        $dimension->getLocale()->willReturn('en');
-        $dimension->getStage()->willReturn(DimensionInterface::STAGE_DRAFT);
-        $dimensionContent->getDimension()->willReturn($dimension->reveal());
+        $dimensionContent->getLocale()->willReturn('en');
+        $dimensionContent->getStage()->willReturn(DimensionContentInterface::STAGE_DRAFT);
 
         $searchManager->index($dimensionContent->reveal())->shouldBeCalled();
 
@@ -79,7 +76,7 @@ class ContentIndexerTest extends TestCase
         );
 
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
-        $dimensionAttributes = ['locale' => 'en', 'stage' => DimensionInterface::STAGE_DRAFT];
+        $dimensionAttributes = ['locale' => 'en', 'stage' => DimensionContentInterface::STAGE_DRAFT];
         $contentResolver->resolve($contentRichEntity->reveal(), $dimensionAttributes)
             ->willThrow(ContentNotFoundException::class);
 
@@ -99,14 +96,12 @@ class ContentIndexerTest extends TestCase
         );
 
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
-        $dimensionAttributes = ['locale' => 'en', 'stage' => DimensionInterface::STAGE_DRAFT];
+        $dimensionAttributes = ['locale' => 'en', 'stage' => DimensionContentInterface::STAGE_DRAFT];
         $dimensionContent = $this->prophesize(DimensionContentInterface::class);
         $contentResolver->resolve($contentRichEntity->reveal(), $dimensionAttributes)
             ->willReturn($dimensionContent->reveal());
-        $dimension = $this->prophesize(DimensionInterface::class);
-        $dimension->getLocale()->willReturn(null);
-        $dimension->getStage()->willReturn(DimensionInterface::STAGE_DRAFT);
-        $dimensionContent->getDimension()->willReturn($dimension->reveal());
+        $dimensionContent->getLocale()->willReturn(null);
+        $dimensionContent->getStage()->willReturn(DimensionContentInterface::STAGE_DRAFT);
 
         $this->expectException(ContentNotFoundException::class);
 
@@ -143,7 +138,7 @@ class ContentIndexerTest extends TestCase
 
         $resourceKey = 'examples';
         $resourceId = '123';
-        $dimensionAttributes = ['locale' => 'en', 'stage' => DimensionInterface::STAGE_DRAFT];
+        $dimensionAttributes = ['locale' => 'en', 'stage' => DimensionContentInterface::STAGE_DRAFT];
 
         $searchManager->getIndexNames()->willReturn([
             'massive_page_example-en-i18n' => 'page_example',
@@ -183,7 +178,7 @@ class ContentIndexerTest extends TestCase
 
         $resourceKey = 'examples';
         $resourceId = '123';
-        $dimensionAttributes = ['locale' => 'en', 'stage' => DimensionInterface::STAGE_LIVE];
+        $dimensionAttributes = ['locale' => 'en', 'stage' => DimensionContentInterface::STAGE_LIVE];
 
         $searchManager->getIndexNames()->willReturn([
             'massive_page_example-en-i18n' => 'page_example',
@@ -269,7 +264,7 @@ class ContentIndexerTest extends TestCase
 
         $resourceKey = 'examples';
         $resourceId = '123';
-        $dimensionAttributes = ['stage' => DimensionInterface::STAGE_LIVE];
+        $dimensionAttributes = ['stage' => DimensionContentInterface::STAGE_LIVE];
 
         $searchManager->getIndexNames()->willReturn([
             'massive_page_example-en-i18n' => 'page_example',
@@ -405,10 +400,8 @@ class ContentIndexerTest extends TestCase
             $contentResolver->reveal()
         );
 
-        $dimension = $this->prophesize(DimensionInterface::class);
-        $dimension->getLocale()->willReturn('en');
         $dimensionContent = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent->getDimension()->willReturn($dimension->reveal());
+        $dimensionContent->getLocale()->willReturn('en');
         $dimensionContent->isMerged()->willReturn(true);
 
         $searchManager->deindex($dimensionContent->reveal(), 'en')->shouldBeCalled();

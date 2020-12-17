@@ -20,7 +20,6 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolve
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Bundle\PreviewBundle\Preview\Object\PreviewObjectProviderInterface;
 
@@ -130,7 +129,7 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
     {
         return json_encode([
             'id' => $object->getResource()->getId(),
-            'locale' => $object->getDimension()->getLocale(),
+            'locale' => $object->getLocale(),
         ]) ?: '[]';
     }
 
@@ -161,7 +160,7 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
                 $contentRichEntity,
                 [
                     'locale' => $locale,
-                    'stage' => DimensionInterface::STAGE_DRAFT,
+                    'stage' => DimensionContentInterface::STAGE_DRAFT,
                 ]
             );
 

@@ -20,7 +20,6 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolve
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 
 class ContentIndexer implements ContentIndexerInterface
 {
@@ -88,7 +87,7 @@ class ContentIndexer implements ContentIndexerInterface
             return;
         }
 
-        $this->searchManager->deindex($dimensionContent, $dimensionContent->getDimension()->getLocale());
+        $this->searchManager->deindex($dimensionContent, $dimensionContent->getLocale());
     }
 
     /**
@@ -107,8 +106,8 @@ class ContentIndexer implements ContentIndexerInterface
 
         $dimensionContent = $this->contentResolver->resolve($contentRichEntity, $dimensionAttributes);
 
-        if ($locale !== $dimensionContent->getDimension()->getLocale()
-            || $stage !== $dimensionContent->getDimension()->getStage()) {
+        if ($locale !== $dimensionContent->getLocale()
+            || $stage !== $dimensionContent->getStage()) {
             throw new ContentNotFoundException($contentRichEntity, $dimensionAttributes);
         }
 
@@ -127,11 +126,11 @@ class ContentIndexer implements ContentIndexerInterface
                     return $resourceKey === $indexName || $resourceKey . '_published' === $indexName;
                 }
 
-                if (DimensionInterface::STAGE_DRAFT === $stage) {
+                if (DimensionContentInterface::STAGE_DRAFT === $stage) {
                     return $resourceKey === $indexName;
                 }
 
-                if (DimensionInterface::STAGE_LIVE === $stage) {
+                if (DimensionContentInterface::STAGE_LIVE === $stage) {
                     return $resourceKey . '_published' === $indexName;
                 }
 

@@ -141,7 +141,8 @@ class RoutableDataMapper implements DataMapperInterface
         }
 
         if (null === $entityClass || null === $routeSchema) {
-            return;
+            // TODO FIXME add test case for this
+            return; // @codeCoverageIgnore
         }
 
         $routePath = $data[$name] ?? null;

@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\DataMapper;
 
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 
 class WorkflowDataMapper implements DataMapperInterface
@@ -60,7 +59,7 @@ class WorkflowDataMapper implements DataMapperInterface
         // see: https://github.com/sulu/SuluContentBundle/issues/92
 
         if (!$object instanceof DimensionContentInterface
-            || DimensionInterface::STAGE_DRAFT !== $object->getDimension()->getStage()) {
+            || DimensionContentInterface::STAGE_DRAFT !== $object->getStage()) {
             return;
         }
 
@@ -79,7 +78,7 @@ class WorkflowDataMapper implements DataMapperInterface
         // therefore we only want to copy the published property from the draft to the live dimension
 
         if (!$object instanceof DimensionContentInterface
-            || DimensionInterface::STAGE_LIVE !== $object->getDimension()->getStage()) {
+            || DimensionContentInterface::STAGE_LIVE !== $object->getStage()) {
             return;
         }
 

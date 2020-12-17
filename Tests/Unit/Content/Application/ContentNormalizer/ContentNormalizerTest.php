@@ -25,7 +25,6 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Normalizer\W
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentTrait;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptTrait;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\RoutableInterface;
@@ -56,11 +55,7 @@ class ContentNormalizerTest extends TestCase
         $contentRichEntityMock = $this->prophesize(ContentRichEntityInterface::class);
         $contentRichEntityMock->getId()->willReturn(5);
 
-        $dimensionMock = $this->prophesize(DimensionInterface::class);
-        $dimensionMock->getLocale()->willReturn('de');
-        $dimensionMock->getStage()->willReturn('live');
-
-        $object = new class($contentRichEntityMock->reveal(), $dimensionMock->reveal()) implements DimensionContentInterface {
+        $object = new class($contentRichEntityMock->reveal()) implements DimensionContentInterface {
             use DimensionContentTrait;
 
             /**
@@ -68,10 +63,11 @@ class ContentNormalizerTest extends TestCase
              */
             protected $resource;
 
-            public function __construct(ContentRichEntityInterface $resource, DimensionInterface $dimension)
+            public function __construct(ContentRichEntityInterface $resource)
             {
                 $this->resource = $resource;
-                $this->dimension = $dimension;
+                $this->locale = 'de';
+                $this->stage = 'live';
             }
 
             public static function getResourceKey(): string
@@ -98,11 +94,7 @@ class ContentNormalizerTest extends TestCase
         $contentRichEntityMock = $this->prophesize(ContentRichEntityInterface::class);
         $contentRichEntityMock->getId()->willReturn(5);
 
-        $dimensionMock = $this->prophesize(DimensionInterface::class);
-        $dimensionMock->getLocale()->willReturn('de');
-        $dimensionMock->getStage()->willReturn('live');
-
-        $object = new class($contentRichEntityMock->reveal(), $dimensionMock->reveal()) implements DimensionContentInterface, ExcerptInterface, SeoInterface, TemplateInterface, WorkflowInterface, RoutableInterface {
+        $object = new class($contentRichEntityMock->reveal()) implements DimensionContentInterface, ExcerptInterface, SeoInterface, TemplateInterface, WorkflowInterface, RoutableInterface {
             use DimensionContentTrait;
             use ExcerptTrait;
             use RoutableTrait;
@@ -115,10 +107,11 @@ class ContentNormalizerTest extends TestCase
              */
             protected $resource;
 
-            public function __construct(ContentRichEntityInterface $resource, DimensionInterface $dimension)
+            public function __construct(ContentRichEntityInterface $resource)
             {
                 $this->resource = $resource;
-                $this->dimension = $dimension;
+                $this->locale = 'de';
+                $this->stage = 'live';
             }
 
             public static function getResourceKey(): string

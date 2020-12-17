@@ -38,8 +38,8 @@ class DimensionContentNormalizer implements NormalizerInterface
         }
 
         $normalizedData['id'] = $object->getResource()->getId();
-        $normalizedData['locale'] = $object->getDimension()->getLocale();
-        $normalizedData['stage'] = $object->getDimension()->getStage();
+        $normalizedData['locale'] = $object->getLocale();
+        $normalizedData['stage'] = $object->getStage();
 
         return $normalizedData;
     }

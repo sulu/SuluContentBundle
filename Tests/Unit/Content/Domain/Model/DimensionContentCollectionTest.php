@@ -14,46 +14,39 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Domain\Model;
 
 use PHPUnit\Framework\TestCase;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollection;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollection;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
+use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleDimensionContent;
 
 class DimensionContentCollectionTest extends TestCase
 {
     /**
      * @param DimensionContentInterface[] $dimensionContents
+     * @param mixed[] $dimensionAttributes
      */
     protected function createDimensionContentCollectionInstance(
         array $dimensionContents,
-        DimensionCollectionInterface $dimensionCollection
+        array $dimensionAttributes
     ): DimensionContentCollectionInterface {
-        return new DimensionContentCollection($dimensionContents, $dimensionCollection);
+        return new DimensionContentCollection($dimensionContents, $dimensionAttributes, ExampleDimensionContent::class);
     }
 
     public function testGetUnlocalizedDimension(): void
     {
-        $dimension1 = new Dimension('123-456');
-        $dimension2 = new Dimension('456-789', ['locale' => 'de']);
         $dimensionContent1 = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent1->getDimension()->willReturn($dimension1);
+        $dimensionContent1->getLocale()->willReturn(null);
+        $dimensionContent1->getStage()->willReturn('draft');
         $dimensionContent2 = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent2->getDimension()->willReturn($dimension2);
+        $dimensionContent2->getLocale()->willReturn('de');
+        $dimensionContent2->getStage()->willReturn('draft');
 
-        $dimensionCollection = new DimensionCollection(
-            ['locale' => 'de'],
-            [
-                $dimension1,
-                $dimension2,
-            ]
-        );
+        $attributes = ['locale' => 'de'];
 
         $dimensionContentCollection = $this->createDimensionContentCollectionInstance([
             $dimensionContent1->reveal(),
             $dimensionContent2->reveal(),
-        ], $dimensionCollection);
+        ], $attributes);
 
         $this->assertSame(
             $dimensionContent1->reveal(),
@@ -63,25 +56,19 @@ class DimensionContentCollectionTest extends TestCase
 
     public function testGetLocalizedDimension(): void
     {
-        $dimension1 = new Dimension('123-456');
-        $dimension2 = new Dimension('456-789', ['locale' => 'de']);
         $dimensionContent1 = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent1->getDimension()->willReturn($dimension1);
+        $dimensionContent1->getLocale()->willReturn(null);
+        $dimensionContent1->getStage()->willReturn('draft');
         $dimensionContent2 = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent2->getDimension()->willReturn($dimension2);
+        $dimensionContent2->getLocale()->willReturn('de');
+        $dimensionContent2->getStage()->willReturn('draft');
 
-        $dimensionCollection = new DimensionCollection(
-            ['locale' => 'de'],
-            [
-                $dimension1,
-                $dimension2,
-            ]
-        );
+        $attributes = ['locale' => 'de'];
 
         $dimensionContentCollection = $this->createDimensionContentCollectionInstance([
             $dimensionContent1->reveal(),
             $dimensionContent2->reveal(),
-        ], $dimensionCollection);
+        ], $attributes);
 
         $this->assertSame(
             $dimensionContent2->reveal(),
@@ -91,54 +78,129 @@ class DimensionContentCollectionTest extends TestCase
 
     public function testCount(): void
     {
-        $dimension1 = new Dimension('123-456');
-        $dimension2 = new Dimension('456-789', ['locale' => 'de']);
         $dimensionContent1 = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent1->getDimension()->willReturn($dimension1);
+        $dimensionContent1->getLocale()->willReturn(null);
+        $dimensionContent1->getStage()->willReturn('draft');
         $dimensionContent2 = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent2->getDimension()->willReturn($dimension2);
+        $dimensionContent2->getLocale()->willReturn('de');
+        $dimensionContent2->getStage()->willReturn('draft');
 
-        $dimensionCollection = new DimensionCollection(
-            ['locale' => 'de'],
-            [
-                $dimension1,
-                $dimension2,
-            ]
-        );
+        $attributes = ['locale' => 'de'];
 
         $dimensionContentCollection = $this->createDimensionContentCollectionInstance([
             $dimensionContent1->reveal(),
             $dimensionContent2->reveal(),
-        ], $dimensionCollection);
+        ], $attributes);
 
         $this->assertCount(2, $dimensionContentCollection);
+        $this->assertSame(2, \count($dimensionContentCollection)); // @phpstan-ignore-line
+        $this->assertSame(2, $dimensionContentCollection->count()); // @phpstan-ignore-line
     }
 
     public function testIterator(): void
     {
-        $dimension1 = new Dimension('123-456');
-        $dimension2 = new Dimension('456-789', ['locale' => 'de']);
         $dimensionContent1 = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent1->getDimension()->willReturn($dimension1);
+        $dimensionContent1->getLocale()->willReturn(null);
+        $dimensionContent1->getStage()->willReturn('draft');
         $dimensionContent2 = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent2->getDimension()->willReturn($dimension2);
+        $dimensionContent2->getLocale()->willReturn('de');
+        $dimensionContent2->getStage()->willReturn('draft');
 
-        $dimensionCollection = new DimensionCollection(
-            ['locale' => 'de'],
-            [
-                $dimension1,
-                $dimension2,
-            ]
-        );
+        $attributes = ['locale' => 'de'];
 
         $dimensionContentCollection = $this->createDimensionContentCollectionInstance([
             $dimensionContent1->reveal(),
             $dimensionContent2->reveal(),
-        ], $dimensionCollection);
+        ], $attributes);
 
         $this->assertSame([
             $dimensionContent1->reveal(),
             $dimensionContent2->reveal(),
         ], iterator_to_array($dimensionContentCollection));
+    }
+
+    public function testGetDimensionContentClass(): void
+    {
+        $dimensionContent1 = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent1->getLocale()->willReturn(null);
+        $dimensionContent1->getStage()->willReturn('draft');
+        $dimensionContent2 = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent2->getLocale()->willReturn('de');
+        $dimensionContent2->getStage()->willReturn('draft');
+
+        $attributes = ['locale' => 'de'];
+
+        $dimensionContentCollection = $this->createDimensionContentCollectionInstance([
+            $dimensionContent1->reveal(),
+            $dimensionContent2->reveal(),
+        ], $attributes);
+
+        $this->assertSame(
+            ExampleDimensionContent::class,
+            $dimensionContentCollection->getDimensionContentClass()
+        );
+    }
+
+    public function testGetDimensionAttributes(): void
+    {
+        $dimensionContent1 = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent1->getLocale()->willReturn(null);
+        $dimensionContent1->getStage()->willReturn('draft');
+        $dimensionContent2 = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent2->getLocale()->willReturn('de');
+        $dimensionContent2->getStage()->willReturn('draft');
+
+        $attributes = ['locale' => 'de'];
+
+        $dimensionContentCollection = $this->createDimensionContentCollectionInstance([
+            $dimensionContent1->reveal(),
+            $dimensionContent2->reveal(),
+        ], $attributes);
+
+        $this->assertSame(
+            $attributes,
+            $dimensionContentCollection->getDimensionAttributes()
+        );
+    }
+
+    public function testGetDimensionContent(): void
+    {
+        $dimensionContent1 = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent1->getLocale()->willReturn(null);
+        $dimensionContent1->getStage()->willReturn('draft');
+        $dimensionContent2 = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent2->getLocale()->willReturn('de');
+        $dimensionContent2->getStage()->willReturn('draft');
+
+        $attributes = ['locale' => 'de'];
+
+        $dimensionContentCollection = $this->createDimensionContentCollectionInstance([
+            $dimensionContent1->reveal(),
+            $dimensionContent2->reveal(),
+        ], $attributes);
+
+        $this->assertSame(
+            $dimensionContent2->reveal(),
+            $dimensionContentCollection->getDimensionContent($attributes)
+        );
+    }
+
+    public function testGetDimensionContentNotExist(): void
+    {
+        $dimensionContent1 = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent1->getLocale()->willReturn(null);
+        $dimensionContent1->getStage()->willReturn('draft');
+        $dimensionContent2 = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent2->getLocale()->willReturn('de');
+        $dimensionContent2->getStage()->willReturn('draft');
+
+        $attributes = ['locale' => 'de'];
+
+        $dimensionContentCollection = $this->createDimensionContentCollectionInstance([
+            $dimensionContent1->reveal(),
+            $dimensionContent2->reveal(),
+        ], $attributes);
+
+        $this->assertNull($dimensionContentCollection->getDimensionContent(['locale' => 'en']));
     }
 }
