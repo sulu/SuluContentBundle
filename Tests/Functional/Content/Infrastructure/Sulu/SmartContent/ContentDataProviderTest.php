@@ -15,16 +15,18 @@ namespace Sulu\Bundle\ContentBundle\Tests\Functional\Content\Infrastructure\Sulu
 
 use Sulu\Bundle\CategoryBundle\Entity\CategoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\SmartContent\Provider\ContentDataProvider;
-use Sulu\Bundle\ContentBundle\Tests\Functional\BaseTestCase;
+use Sulu\Bundle\ContentBundle\Tests\Traits\AssertSnapshotTrait;
 use Sulu\Bundle\ContentBundle\Tests\Traits\CreateCategoryTrait;
 use Sulu\Bundle\ContentBundle\Tests\Traits\CreateExampleTrait;
 use Sulu\Bundle\ContentBundle\Tests\Traits\CreateTagTrait;
 use Sulu\Bundle\TagBundle\Tag\TagInterface;
+use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
 use Sulu\Component\SmartContent\ArrayAccessItem;
 use Sulu\Component\SmartContent\DataProviderResult;
 
-class ContentDataProviderTest extends BaseTestCase
+class ContentDataProviderTest extends SuluTestCase
 {
+    use AssertSnapshotTrait;
     use CreateCategoryTrait;
     use CreateExampleTrait;
     use CreateTagTrait;

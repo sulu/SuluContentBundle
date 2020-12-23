@@ -59,7 +59,7 @@ class ContentMerger implements ContentMergerInterface
                 $merger->merge($mergedDimensionContent, $dimensionContent);
             }
 
-            foreach ($dimensionContent::getDefaultAttributes() as $key => $value) {
+            foreach ($dimensionContentCollection->getDimensionAttributes() as $key => $value) {
                 $this->propertyAccessor->setValue(
                     $mergedDimensionContent,
                     $key,

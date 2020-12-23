@@ -14,11 +14,11 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Functional\Content\Infrastructure\Doctrine;
 
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\TagFactoryInterface;
-use Sulu\Bundle\ContentBundle\Tests\Functional\BaseTestCase;
 use Sulu\Bundle\TagBundle\Tag\TagInterface;
 use Sulu\Bundle\TagBundle\Tag\TagRepositoryInterface;
+use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
 
-class TagFactoryTest extends BaseTestCase
+class TagFactoryTest extends SuluTestCase
 {
     protected function setUp(): void
     {

@@ -23,6 +23,6 @@ interface DimensionContentRepositoryInterface
      */
     public function load(
         ContentRichEntityInterface $contentRichEntity,
-        array $dimensionAttributes = []
+        array $dimensionAttributes
     ): DimensionContentCollectionInterface;
 }

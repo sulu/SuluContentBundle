@@ -45,7 +45,7 @@ class DimensionContentRepository implements DimensionContentRepositoryInterface
 
     public function load(
         ContentRichEntityInterface $contentRichEntity,
-        array $dimensionAttributes = []
+        array $dimensionAttributes
     ): DimensionContentCollectionInterface {
         $dimensionContentClass = $this->contentMetadataInspector->getDimensionContentClass(\get_class($contentRichEntity));
         $mappingProperty = $this->contentMetadataInspector->getDimensionContentPropertyName(\get_class($contentRichEntity));
@@ -57,16 +57,16 @@ class DimensionContentRepository implements DimensionContentRepositoryInterface
             ->where('content.id = :id')
             ->setParameter('id', $contentRichEntity->getId());
 
-        $attributes = $this->getAttributes($dimensionContentClass, $dimensionAttributes);
-        $queryBuilder->addCriteria($this->getAttributesCriteria('dimensionContent', $attributes));
-        $this->addSortBy($queryBuilder, $attributes);
+        $effectiveAttributes = $this->getEffectiveAttributes($dimensionContentClass, $dimensionAttributes);
+        $queryBuilder->addCriteria($this->getAttributesCriteria('dimensionContent', $effectiveAttributes));
+        $this->addSortBy($queryBuilder, $effectiveAttributes);
 
         /** @var DimensionContentInterface[] $dimensionContents */
         $dimensionContents = $queryBuilder->getQuery()->getResult();
 
         return new DimensionContentCollection(
             $dimensionContents,
-            $attributes,
+            $effectiveAttributes,
             $dimensionContentClass
         );
     }
@@ -111,9 +111,9 @@ class DimensionContentRepository implements DimensionContentRepositoryInterface
      *
      * @return mixed[]
      */
-    private function getAttributes(string $className, array $attributes): array
+    private function getEffectiveAttributes(string $className, array $attributes): array
     {
-        $defaultValues = \call_user_func([$className, 'getDefaultAttributes']);
+        $defaultValues = $className::getDefaultAttributes();
 
         // Ignore any key which is is which has no default values
         $attributes = array_intersect_key($attributes, $defaultValues);

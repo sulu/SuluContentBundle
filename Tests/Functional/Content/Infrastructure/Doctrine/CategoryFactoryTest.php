@@ -15,9 +15,9 @@ namespace Sulu\Bundle\ContentBundle\Tests\Functional\Content\Infrastructure\Doct
 
 use Sulu\Bundle\CategoryBundle\Entity\CategoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\CategoryFactoryInterface;
-use Sulu\Bundle\ContentBundle\Tests\Functional\BaseTestCase;
+use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
 
-class CategoryFactoryTest extends BaseTestCase
+class CategoryFactoryTest extends SuluTestCase
 {
     protected function setUp(): void
     {
