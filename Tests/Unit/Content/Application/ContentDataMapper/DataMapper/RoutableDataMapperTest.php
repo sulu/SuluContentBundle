@@ -66,7 +66,8 @@ class RoutableDataMapperTest extends TestCase
      */
     protected function wrapRoutableMock(ObjectProphecy $routableMock): RoutableInterface
     {
-        return new class($routableMock) extends MockWrapper implements TemplateInterface,
+        return new class($routableMock) extends MockWrapper implements
+    TemplateInterface,
             RoutableInterface {
             use RoutableMockWrapperTrait;
             use TemplateMockWrapperTrait;

@@ -102,7 +102,7 @@ jobs:
             - disable_php_memory_limit
             - run: php -m
             - run: php composer.phar bootstrap-test-environment
-            - run: php composer.phar test-coverage -- --coverage-clover Tests/reports/clover.xml
+            - run: php composer.phar test -- --coverage-php Tests/reports/coverage.php --coverage-html Tests/reports/html --log-junit Tests/reports/unit/junit.xml --coverage-clover Tests/reports/clover.xml
             - store_artifacts:
                   path: Tests/reports/html
             - store_test_results:
@@ -112,7 +112,7 @@ jobs:
                   paths:
                       - Tests/reports
 
-    test-coverage:
+    check-coverage:
         docker:
             - image: sulu/php:7.4-cli
         environment: *environment_variables
@@ -122,7 +122,8 @@ jobs:
                   at: .
             - enable_php_pcov
             - disable_php_memory_limit
-            - run: php composer.phar test-coverage-checker
+            - run: php vendor/bin/code-coverage-checker "Tests/reports/coverage.php" "line" "99.00" "Content/Domain" "Content/Application"
+            - run: php vendor/bin/code-coverage-checker "Tests/reports/coverage.php" "line" "94.00" "Content/Infrastructure" "DependencyInjection"
 
     coverage-all-upload:
         docker:
