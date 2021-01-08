@@ -121,8 +121,8 @@ class ContentDataProviderTest extends SuluTestCase
                         static::$categoryBar->getId(),
                     ],
                     'excerptTags' => [
-                        static::$tagB->getId(),
-                        static::$tagC->getId(),
+                        static::$tagB->getName(),
+                        static::$tagC->getName(),
                     ],
                 ],
                 'published' => true,
@@ -175,14 +175,14 @@ class ContentDataProviderTest extends SuluTestCase
             'en' => [
                 'title' => 'example without categories with some tags',
                 'excerptTags' => [
-                    static::$tagA->getId(),
+                    static::$tagA->getName(),
                 ],
                 'published' => true,
             ],
             'de' => [
                 'title' => 'example without categories with some tags',
                 'excerptTags' => [
-                    static::$tagA->getId(),
+                    static::$tagA->getName(),
                 ],
                 'published' => true,
             ],
@@ -193,18 +193,18 @@ class ContentDataProviderTest extends SuluTestCase
             'en' => [
                 'title' => 'example without categories with all tags',
                 'excerptTags' => [
-                    static::$tagA->getId(),
-                    static::$tagB->getId(),
-                    static::$tagC->getId(),
+                    static::$tagA->getName(),
+                    static::$tagB->getName(),
+                    static::$tagC->getName(),
                 ],
                 'published' => true,
             ],
             'de' => [
                 'title' => 'example without categories with all tags',
                 'excerptTags' => [
-                    static::$tagA->getId(),
-                    static::$tagB->getId(),
-                    static::$tagC->getId(),
+                    static::$tagA->getName(),
+                    static::$tagB->getName(),
+                    static::$tagC->getName(),
                 ],
                 'published' => true,
             ],
@@ -218,7 +218,7 @@ class ContentDataProviderTest extends SuluTestCase
                     static::$categoryBar->getId(),
                 ],
                 'excerptTags' => [
-                    static::$tagB->getId(),
+                    static::$tagB->getName(),
                 ],
                 'published' => true,
             ],
@@ -228,7 +228,7 @@ class ContentDataProviderTest extends SuluTestCase
                     static::$categoryBar->getId(),
                 ],
                 'excerptTags' => [
-                    static::$tagB->getId(),
+                    static::$tagB->getName(),
                 ],
                 'published' => true,
             ],
@@ -244,9 +244,9 @@ class ContentDataProviderTest extends SuluTestCase
                     static::$categoryBaz->getId(),
                 ],
                 'excerptTags' => [
-                    static::$tagA->getId(),
-                    static::$tagB->getId(),
-                    static::$tagC->getId(),
+                    static::$tagA->getName(),
+                    static::$tagB->getName(),
+                    static::$tagC->getName(),
                 ],
                 'published' => true,
             ],
@@ -258,9 +258,9 @@ class ContentDataProviderTest extends SuluTestCase
                     static::$categoryBaz->getId(),
                 ],
                 'excerptTags' => [
-                    static::$tagA->getId(),
-                    static::$tagB->getId(),
-                    static::$tagC->getId(),
+                    static::$tagA->getName(),
+                    static::$tagB->getName(),
+                    static::$tagC->getName(),
                 ],
                 'published' => true,
             ],
