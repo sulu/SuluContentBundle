@@ -22,7 +22,7 @@ parameters:
     doctrine:
         objectManagerLoader: Tests/phpstan/object-manager.php
     bootstrapFiles:
-        - vendor/bin/.phpunit/phpunit-8-0/vendor/autoload.php
+        - vendor/bin/.phpunit/phpunit-8.5-0/vendor/autoload.php
     ignoreErrors:
         - message: "#^Method Sulu\\\\Bundle\\\\ContentBundle\\\\Content\\\\Infrastructure\\\\Sulu\\\\Structure\\\\ContentDocument\\:\\:getStructure\\(\\) should return Sulu\\\\Component\\\\Content\\\\Document\\\\Structure\\\\StructureInterface but returns null\\.$#"
           count: 1
