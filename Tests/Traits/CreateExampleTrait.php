@@ -65,13 +65,20 @@ trait CreateExampleTrait
             return $data;
         };
 
+        // the following is always defined see also: https://github.com/phpstan/phpstan/issues/4343
+        /** @var ExampleDimensionContent $draftUnlocalizedDimension */
+        $draftUnlocalizedDimension = null;
+
         if (\count($dataSet)) {
             $draftUnlocalizedDimension = new ExampleDimensionContent($example);
             $example->addDimensionContent($draftUnlocalizedDimension);
             $entityManager->persist($draftUnlocalizedDimension);
         }
 
+        /** @var ExampleDimensionContent $liveUnlocalizedDimension */
+        $liveUnlocalizedDimension = null;
         $createdPublishedUnlocalizedDimension = false;
+
         foreach ($dataSet as $locale => $data) {
             $published = $data['published'] ?? false;
             unset($data['published']);
@@ -80,7 +87,7 @@ trait CreateExampleTrait
             $draft = $data['draft'] ?? null;
             unset($data['draft']);
 
-            // create localized live dimension
+            // create localized draft dimension
             $draftLocalizedDimension = new ExampleDimensionContent($example);
             $draftLocalizedDimension->setLocale($locale);
             $example->addDimensionContent($draftLocalizedDimension);
@@ -94,7 +101,6 @@ trait CreateExampleTrait
             }
 
             if ($published) {
-                // create unlocalized live dimension
                 if (!$createdPublishedUnlocalizedDimension) {
                     // create localized live dimension
                     $liveUnlocalizedDimension = new ExampleDimensionContent($example);
