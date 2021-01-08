@@ -14,7 +14,7 @@ this data need to be migrated into your own entity.
 
 ```sql
 # Create stage and locale fields
-ALTER TABLE test_example_dimension_contents ADD stage VARCHAR(16) DEFAULT NULL, ADD locale VARCHAR(5) DEFAULT NULL;
+ALTER TABLE test_example_dimension_contents ADD stage VARCHAR(16) DEFAULT NULL, ADD locale VARCHAR(7) DEFAULT NULL;
 
 # Migrate data to new fields
 UPDATE test_example_dimension_contents myContentDimension
