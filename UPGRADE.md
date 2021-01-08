@@ -2,74 +2,6 @@
 
 ## 0.5.0
 
-<<<<<<< HEAD
-### ContentTeaserProvider constructor changed
-
-The constructor of the `ContentTeaserProvider` requires like the `ContentDataProviderRepository` the `show_drafts` 
-parameter. In this case also the `getShowDrafts` was removed from the `ContentTeaserProvider` class.
-
-**before**:
-
-```yaml
-    example_test.example_teaser_provider:
-        class: Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Teaser\ExampleTeaserProvider
-        public: true
-        arguments:
-            - '@sulu_content.content_manager'
-            - '@doctrine.orm.entity_manager'
-            - '@sulu_content.content_metadata_inspector'
-            - '@sulu_page.structure.factory'
-            - '@translator'
-            - '%sulu_document_manager.show_drafts%'
-        tags:
-            - { name: sulu.teaser.provider, alias: examples }
-```
-
-```php
-    public function __construct(
-        ContentManagerInterface $contentManager,
-        EntityManagerInterface $entityManager,
-        ContentMetadataInspectorInterface $contentMetadataInspector,
-        StructureMetadataFactoryInterface $metadataFactory,
-        TranslatorInterface $translator
-    ) {
-        parent::__construct($contentManager, $entityManager, $contentMetadataInspector, $metadataFactory, Example::class);
-
-        $this->translator = $translator;
-    }
-```
-
-**after**:
-
-```yaml
-    example_test.example_teaser_provider:
-        class: Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Teaser\ExampleTeaserProvider
-        public: true
-        arguments:
-            - '@sulu_content.content_manager'
-            - '@doctrine.orm.entity_manager'
-            - '@sulu_content.content_metadata_inspector'
-            - '@sulu_page.structure.factory'
-            - '@translator'
-            - '%sulu_document_manager.show_drafts%' # this was added
-        tags:
-            - { name: sulu.teaser.provider, alias: examples }
-```
-
-```php
-    public function __construct(
-        ContentManagerInterface $contentManager,
-        EntityManagerInterface $entityManager,
-        ContentMetadataInspectorInterface $contentMetadataInspector,
-        StructureMetadataFactoryInterface $metadataFactory,
-        TranslatorInterface $translator,
-        bool $showDrafts // this was added
-    ) {
-        parent::__construct($contentManager, $entityManager, $contentMetadataInspector, $metadataFactory, Example::class, $showDrafts); // this was added
-
-        $this->translator = $translator;
-    }
-=======
 ### Dimension Entity was removed
 
 The `Dimension` entity was removed because it had no additional value and did make things
@@ -182,7 +114,74 @@ If you use the dimension data to be listed in your list you need to change it th
         </property>
     </properties>
 </list>
->>>>>>> 1ac7236... Remove dimension entity
+```
+
+### ContentTeaserProvider constructor changed
+
+The constructor of the `ContentTeaserProvider` requires like the `ContentDataProviderRepository` the `show_drafts` 
+parameter. In this case also the `getShowDrafts` was removed from the `ContentTeaserProvider` class.
+
+**before**:
+
+```yaml
+    example_test.example_teaser_provider:
+        class: Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Teaser\ExampleTeaserProvider
+        public: true
+        arguments:
+            - '@sulu_content.content_manager'
+            - '@doctrine.orm.entity_manager'
+            - '@sulu_content.content_metadata_inspector'
+            - '@sulu_page.structure.factory'
+            - '@translator'
+            - '%sulu_document_manager.show_drafts%'
+        tags:
+            - { name: sulu.teaser.provider, alias: examples }
+```
+
+```php
+    public function __construct(
+        ContentManagerInterface $contentManager,
+        EntityManagerInterface $entityManager,
+        ContentMetadataInspectorInterface $contentMetadataInspector,
+        StructureMetadataFactoryInterface $metadataFactory,
+        TranslatorInterface $translator
+    ) {
+        parent::__construct($contentManager, $entityManager, $contentMetadataInspector, $metadataFactory, Example::class);
+
+        $this->translator = $translator;
+    }
+```
+
+**after**:
+
+```yaml
+    example_test.example_teaser_provider:
+        class: Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Teaser\ExampleTeaserProvider
+        public: true
+        arguments:
+            - '@sulu_content.content_manager'
+            - '@doctrine.orm.entity_manager'
+            - '@sulu_content.content_metadata_inspector'
+            - '@sulu_page.structure.factory'
+            - '@translator'
+            - '%sulu_document_manager.show_drafts%' # this was added
+        tags:
+            - { name: sulu.teaser.provider, alias: examples }
+```
+
+```php
+    public function __construct(
+        ContentManagerInterface $contentManager,
+        EntityManagerInterface $entityManager,
+        ContentMetadataInspectorInterface $contentMetadataInspector,
+        StructureMetadataFactoryInterface $metadataFactory,
+        TranslatorInterface $translator,
+        bool $showDrafts // this was added
+    ) {
+        parent::__construct($contentManager, $entityManager, $contentMetadataInspector, $metadataFactory, Example::class, $showDrafts); // this was added
+
+        $this->translator = $translator;
+    }
 ```
 
 ## 0.4.0
