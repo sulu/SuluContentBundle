@@ -36,7 +36,7 @@ workflows:
             - test:
                   requires:
                       - composer
-            - test-coverage:
+            - check-coverage:
                   requires:
                       - composer
                       - test
