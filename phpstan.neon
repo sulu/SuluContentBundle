@@ -17,12 +17,12 @@ parameters:
         - %currentWorkingDirectory%/Tests/Application/Kernel.php
         - %currentWorkingDirectory%/Tests/Application/var/*
     symfony:
-        container_xml_path: %currentWorkingDirectory%/Tests/Application/var/cache/admin/test/Sulu_Bundle_ContentBundle_Tests_Application_KernelTestDebugContainer.xml
+        container_xml_path: %currentWorkingDirectory%/Tests/Application/var/cache/admin/dev/Sulu_Bundle_ContentBundle_Tests_Application_KernelDevDebugContainer.xml
         console_application_loader: Tests/phpstan/console-application.php
     doctrine:
         objectManagerLoader: Tests/phpstan/object-manager.php
     bootstrapFiles:
-        - vendor/bin/.phpunit/phpunit-8-0/vendor/autoload.php
+        - vendor/bin/.phpunit/phpunit-8.5-0/vendor/autoload.php
     ignoreErrors:
         - message: "#^Method Sulu\\\\Bundle\\\\ContentBundle\\\\Content\\\\Infrastructure\\\\Sulu\\\\Structure\\\\ContentDocument\\:\\:getStructure\\(\\) should return Sulu\\\\Component\\\\Content\\\\Document\\\\Structure\\\\StructureInterface but returns null\\.$#"
           count: 1
