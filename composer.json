@@ -123,9 +123,6 @@
         "deptrac": "vendor/bin/deptrac"
     },
     "extra": {
-        "branch-alias": {
-            "dev-master": "1.0-dev"
-        },
         "public-dir": "Tests/Application/public"
     }
 }
