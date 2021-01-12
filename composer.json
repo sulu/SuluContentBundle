@@ -106,9 +106,6 @@
         "phpunit": "vendor/bin/simple-phpunit"
     },
     "extra": {
-        "branch-alias": {
-            "dev-master": "1.0-dev"
-        },
         "public-dir": "Tests/Application/public"
     }
 }
