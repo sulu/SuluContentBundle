@@ -115,7 +115,7 @@ class DimensionContentRepository implements DimensionContentRepositoryInterface
     {
         $defaultValues = $className::getDefaultAttributes();
 
-        // Ignore any key which is is which has no default values
+        // Ignore keys that are not part of the default attributes
         $attributes = array_intersect_key($attributes, $defaultValues);
 
         $attributes = array_merge(

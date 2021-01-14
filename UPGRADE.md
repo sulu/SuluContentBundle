@@ -7,7 +7,7 @@
 The `Dimension` entity was removed because it had no additional value and did make things
 unnecessary complex.
 
-#### Migrate data into your entity
+#### Migrate data into your DimensionContent entity
 
 As the Dimension Entity did contain locale and stage in which your DimensionContent is saved
 this data need to be migrated into your own entity.
@@ -35,9 +35,9 @@ DROP TABLE cn_dimensions;
 
 TODO provide here a general doctrine migration which support up/down.
 
-#### Update your Content Entities
+#### Update your ContentRichEntity class and DimensionContent class
 
-In your entity you need to change the createDimensionContent method:
+In your "ContentRichEntity" class you need to change the createDimensionContent method:
 
 ```diff
 -    public function createDimensionContent(DimensionInterface $dimension): DimensionContentInterface
@@ -63,11 +63,11 @@ Also the constructor of your "DimensionContent" entity need to be changed:
 
 The `DimensionContentInterface` has the `getDimension` removed and will now directly
 need to provide the `getStage`, `setStage`, `getLocale` and `setLocale` methods.
-This is normally done by the traits provided by the ContentBundle.
+If you are using the traits provided by the ContentBundle, these methods should be added to your entity automatically.
 
 #### Update your list configuration
 
-If you use the dimension data to be listed in your list you need to change it the following way:
+If you use the dimension data in your list configuration, you need to change it the following way:
 
 ```diff
 <?xml version="1.0" ?>

@@ -63,7 +63,7 @@ class ContentMergerTest extends TestCase
         $merger1->merge($mergedDimensionContent->reveal(), $dimensionContent2)->shouldBeCalled();
         $merger2->merge($mergedDimensionContent->reveal(), $dimensionContent2)->shouldBeCalled();
 
-        $mergedDimensionContent->setLocale(null) // TODO FIXME find a way to avoid this call (ExampleControllerTest::testPostTriggerUnpublish) currently files without this
+        $mergedDimensionContent->setLocale(null) // TODO FIXME find a way to avoid this call (ExampleControllerTest::testPostTriggerUnpublish) currently fails without this
             ->shouldBeCalled();
         $mergedDimensionContent->setLocale('en')
             ->shouldBeCalled();
