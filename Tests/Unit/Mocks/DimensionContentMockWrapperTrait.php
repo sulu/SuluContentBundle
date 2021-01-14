@@ -61,4 +61,12 @@ trait DimensionContentMockWrapperTrait
     {
         $this->instance->markAsMerged();
     }
+
+    public static function getDefaultAttributes(): array
+    {
+        return [
+            'locale' => null,
+            'stage' => 'draft',
+        ];
+    }
 }

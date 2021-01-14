@@ -61,14 +61,6 @@ class ContentWorkflowTest extends TestCase
             {
                 return 'content_workflow';
             }
-
-            public static function getDefaultAttributes(): array
-            {
-                return [
-                    'locale' => null,
-                    'stage' => 'draft',
-                ];
-            }
         };
     }
 

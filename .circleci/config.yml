@@ -102,7 +102,7 @@ jobs:
             - disable_php_memory_limit
             - run: php -m
             - run: php composer.phar bootstrap-test-environment
-            - run: php composer.phar test-coverage
+            - run: php composer.phar test-with-coverage
             - store_artifacts:
                   path: Tests/reports/html
             - store_test_results:
@@ -122,7 +122,7 @@ jobs:
                   at: .
             - enable_php_pcov
             - disable_php_memory_limit
-            - run: php composer.phar test-coverage-checker
+            - run: php composer.phar check-coverage
 
     coverage-all-upload:
         docker:

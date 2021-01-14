@@ -88,15 +88,15 @@
             "@lint-yaml",
             "@lint-container",
             "@lint-composer",
-            "@lint-schema",
+            "@lint-doctrine",
             "@deptrac"
         ],
         "test": [
             "@phpunit"
         ],
         "phpunit": "vendor/bin/simple-phpunit",
-        "test-coverage": "@phpunit --coverage-php Tests/reports/coverage.php --coverage-html Tests/reports/html --log-junit Tests/reports/unit/junit.xml --coverage-clover Tests/reports/clover.xml",
-        "test-coverage-checker": [
+        "test-with-coverage": "@phpunit --coverage-php Tests/reports/coverage.php --coverage-html Tests/reports/html --log-junit Tests/reports/unit/junit.xml --coverage-clover Tests/reports/clover.xml",
+        "check-coverage": [
             "@php vendor/bin/code-coverage-checker \"Tests/reports/coverage.php\" \"line\" \"100.00\" \"Content\" \"DependencyInjection\""
         ],
         "deptract": "vendor/bin/deptrac",
@@ -108,7 +108,7 @@
         "php-cs": "vendor/bin/php-cs-fixer fix --verbose --diff --dry-run",
         "php-cs-fix": "vendor/bin/php-cs-fixer fix",
         "lint-composer": "@composer validate --strict",
-        "lint-schema": "Tests/Application/bin/adminconsole doctrine:schema:validate",
+        "lint-doctrine": "Tests/Application/bin/adminconsole doctrine:schema:validate",
         "lint-twig": "Tests/Application/bin/adminconsole lint:twig Tests/Application/templates",
         "lint-yaml": "Tests/Application/bin/adminconsole lint:yaml Resources/config Tests/Application/config",
         "lint-container": [
