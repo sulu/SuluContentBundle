@@ -14,22 +14,21 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Functional\Content\Infrastructure\Sulu\Sitemap;
 
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Sitemap\ContentSitemapProvider;
-use Sulu\Bundle\ContentBundle\Tests\Functional\BaseTestCase;
+use Sulu\Bundle\ContentBundle\Tests\Traits\AssertSnapshotTrait;
 use Sulu\Bundle\ContentBundle\Tests\Traits\CreateExampleTrait;
-use Sulu\Bundle\ContentBundle\Tests\Traits\ModifyExampleTrait;
-use Sulu\Bundle\ContentBundle\Tests\Traits\PublishExampleTrait;
+use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
 use Sulu\Bundle\WebsiteBundle\Sitemap\Sitemap;
 use Sulu\Bundle\WebsiteBundle\Sitemap\SitemapAlternateLink;
 use Sulu\Bundle\WebsiteBundle\Sitemap\SitemapUrl;
 
-class ContentSitemapProviderTest extends BaseTestCase
+class ContentSitemapProviderTest extends SuluTestCase
 {
+    use AssertSnapshotTrait;
+
     const SCHEME = 'https';
     const HOST = 'localhost';
 
     use CreateExampleTrait;
-    use ModifyExampleTrait;
-    use PublishExampleTrait;
 
     /**
      * @var ContentSitemapProvider
@@ -42,28 +41,86 @@ class ContentSitemapProviderTest extends BaseTestCase
         parent::setUpBeforeClass();
 
         // Example 1 (both locales, both published)
-        $example1 = static::createExample(['title' => 'example-1'], 'en')->getResource();
-        static::publishExample($example1->getId(), 'en');
-
-        static::modifyExample($example1->getId(), ['title' => 'beispiel-1'], 'de');
-        static::publishExample($example1->getId(), 'de');
+        $example1 = static::createExample(
+            [
+                'en' => [
+                    'live' => [
+                        'title' => 'example-1',
+                    ],
+                ],
+                'de' => [
+                    'live' => [
+                        'title' => 'beispiel-1',
+                    ],
+                ],
+            ],
+            [
+                'create_route' => true,
+            ]
+        );
 
         // Example 2 (only en, published)
-        $example2 = static::createExample(['title' => 'example-2'], 'en')->getResource();
-        static::publishExample($example2->getId(), 'en');
+        $example2 = static::createExample(
+            [
+                'en' => [
+                    'live' => [
+                        'title' => 'example-2',
+                    ],
+                ],
+            ],
+            [
+                'create_route' => true,
+            ]
+        );
 
         // Example 3 (both locales, only en published)
-        $example3 = static::createExample(['title' => 'example-3'], 'en')->getResource();
-        static::publishExample($example3->getId(), 'en');
-
-        static::modifyExample($example3->getId(), ['title' => 'beispiel-3'], 'de');
+        $example3 = static::createExample(
+            [
+                'en' => [
+                    'live' => [
+                        'title' => 'example-3',
+                    ],
+                ],
+                'de' => [
+                    'draft' => [
+                        'title' => 'beispiel-3',
+                    ],
+                ],
+            ],
+            [
+                'create_route' => true,
+            ]
+        );
 
         // Example 4 (only de, published)
-        $example4 = static::createExample(['title' => 'beispiel-4'], 'de')->getResource();
-        static::publishExample($example4->getId(), 'de');
+        $example4 = static::createExample(
+            [
+                'de' => [
+                    'live' => [
+                        'title' => 'beispiel-4',
+                    ],
+                ],
+            ],
+            [
+                'create_route' => true,
+            ]
+        );
 
         // Example 5 (only en, not published)
-        $example5 = static::createExample(['title' => 'example-5'], 'en')->getResource();
+        $example5 = static::createExample(
+            [
+                'en' => [
+                    'draft' => [
+                        'title' => 'example-5',
+                    ],
+                ],
+            ],
+            [
+                'create_route' => true,
+            ]
+        );
+
+        static::getEntityManager()->flush();
     }
 
     protected function setUp(): void

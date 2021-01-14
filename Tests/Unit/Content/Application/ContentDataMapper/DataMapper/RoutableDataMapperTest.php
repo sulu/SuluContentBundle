@@ -90,6 +90,9 @@ class RoutableDataMapperTest extends TestCase
         $routeManager->createOrUpdateByAttributes(Argument::cetera())->shouldNotBeCalled();
         $conflictResolver->resolve(Argument::cetera())->shouldNotBeCalled();
 
+        $routeGenerator->generate(Argument::cetera())
+            ->shouldNotBeCalled();
+
         $mapper = $this->createRouteDataMapperInstance(
             $factory->reveal(),
             $routeGenerator->reveal(),
@@ -114,6 +117,9 @@ class RoutableDataMapperTest extends TestCase
         $factory->getStructureMetadata(Argument::cetera())->shouldNotBeCalled();
         $routeManager->createOrUpdateByAttributes(Argument::cetera())->shouldNotBeCalled();
         $conflictResolver->resolve(Argument::cetera())->shouldNotBeCalled();
+
+        $routeGenerator->generate(Argument::cetera())
+            ->shouldNotBeCalled();
 
         $mapper = $this->createRouteDataMapperInstance(
             $factory->reveal(),
@@ -147,6 +153,9 @@ class RoutableDataMapperTest extends TestCase
         $conflictResolver->resolve(Argument::cetera())->shouldNotBeCalled();
         $localizedDimensionContent->getResourceId()->shouldNotBeCalled();
 
+        $routeGenerator->generate(Argument::cetera())
+            ->shouldNotBeCalled();
+
         $mapper = $this->createRouteDataMapperInstance(
             $factory->reveal(),
             $routeGenerator->reveal(),
@@ -178,6 +187,9 @@ class RoutableDataMapperTest extends TestCase
         $conflictResolver->resolve(Argument::cetera())->shouldNotBeCalled();
         $localizedDimensionContent->getResourceId()->shouldNotBeCalled();
         $localizedDimensionContent->setTemplateData(Argument::cetera())->shouldNotBeCalled();
+
+        $routeGenerator->generate(Argument::cetera())
+            ->shouldNotBeCalled();
 
         $mapper = $this->createRouteDataMapperInstance(
             $factory->reveal(),
@@ -214,6 +226,9 @@ class RoutableDataMapperTest extends TestCase
         $localizedDimensionContent->setTemplateData(Argument::cetera())->shouldNotBeCalled();
 
         $factory->getStructureMetadata('mock-template-type', 'default')->willReturn(null)->shouldBeCalled();
+
+        $routeGenerator->generate(Argument::cetera())
+            ->shouldNotBeCalled();
 
         $mapper = $this->createRouteDataMapperInstance(
             $factory->reveal(),
@@ -260,6 +275,9 @@ class RoutableDataMapperTest extends TestCase
         $localizedDimensionContent->getLocale()->willReturn('de');
         $factory->getStructureMetadata('mock-template-type', 'default')->willReturn($metadata->reveal())->shouldBeCalled();
 
+        $routeGenerator->generate(Argument::cetera())
+            ->shouldNotBeCalled();
+
         $mapper = $this->createRouteDataMapperInstance(
             $factory->reveal(),
             $routeGenerator->reveal(),
@@ -305,6 +323,9 @@ class RoutableDataMapperTest extends TestCase
         $localizedDimensionContent->getTemplateData()->willReturn(['url' => '/test']);
         $localizedDimensionContent->getLocale()->willReturn('de');
         $factory->getStructureMetadata('mock-template-type', 'default')->willReturn($metadata->reveal())->shouldBeCalled();
+
+        $routeGenerator->generate(Argument::cetera())
+            ->shouldNotBeCalled();
 
         $mapper = $this->createRouteDataMapperInstance(
             $factory->reveal(),

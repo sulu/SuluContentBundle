@@ -13,15 +13,13 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Tests\Functional\Content\Infrastructure\Doctrine;
 
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollection;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionContentRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleDimensionContent;
-use Sulu\Bundle\ContentBundle\Tests\Functional\BaseTestCase;
+use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
 
-class DimensionContentRepositoryTest extends BaseTestCase
+class DimensionContentRepositoryTest extends SuluTestCase
 {
     protected function setUp(): void
     {
@@ -36,28 +34,20 @@ class DimensionContentRepositoryTest extends BaseTestCase
 
     public function testLoadExistAll(): void
     {
-        $attributes = ['locale' => 'de'];
-
-        $dimension1 = $this->createDimension('123-456', []);
-        $dimension2 = $this->createDimension('456-789', ['locale' => 'de']);
-        $dimension3 = $this->createDimension('789-456', ['locale' => 'en']);
-
+        // prepare database
         $contentRichEntity = $this->createContentRichEntity();
-        $dimensionContent1 = $this->createContentDimension($contentRichEntity, $dimension1);
-        $dimensionContent2 = $this->createContentDimension($contentRichEntity, $dimension2);
-        $this->createContentDimension($contentRichEntity, $dimension3);
-
-        $dimensionCollection = new DimensionCollection($attributes, [
-            $dimension1,
-            $dimension2,
-        ]);
+        $dimensionContent1 = $this->createContentDimension($contentRichEntity, []);
+        $dimensionContent2 = $this->createContentDimension($contentRichEntity, ['locale' => 'de']);
+        $this->createContentDimension($contentRichEntity, ['locale' => 'en']);
 
         $this->getEntityManager()->flush();
         $this->getEntityManager()->clear();
 
+        // test functionality
         $dimensionContentRepository = $this->createContentDimensionRepository();
-        $dimensionContentCollection = $dimensionContentRepository->load($contentRichEntity, $dimensionCollection);
+        $dimensionContentCollection = $dimensionContentRepository->load($contentRichEntity, ['locale' => 'de']);
 
+        // assert result
         $this->assertCount(2, $dimensionContentCollection);
 
         $this->assertSame([
@@ -70,25 +60,18 @@ class DimensionContentRepositoryTest extends BaseTestCase
 
     public function testLoadOneNotExist(): void
     {
-        $attributes = ['locale' => 'de'];
-
-        $dimension1 = $this->createDimension('123-456', []);
-        $dimension2 = $this->createDimension('456-789', ['locale' => 'de']);
-
+        // prepare database
         $contentRichEntity = $this->createContentRichEntity();
-        $dimensionContent1 = $this->createContentDimension($contentRichEntity, $dimension1);
-
-        $dimensionCollection = new DimensionCollection($attributes, [
-            $dimension1,
-            $dimension2,
-        ]);
+        $dimensionContent1 = $this->createContentDimension($contentRichEntity);
 
         $this->getEntityManager()->flush();
         $this->getEntityManager()->clear();
 
+        // test functionality
         $dimensionContentRepository = $this->createContentDimensionRepository();
-        $dimensionContentCollection = $dimensionContentRepository->load($contentRichEntity, $dimensionCollection);
+        $dimensionContentCollection = $dimensionContentRepository->load($contentRichEntity, ['locale' => 'de']);
 
+        // assert result
         $this->assertCount(1, $dimensionContentCollection);
 
         $this->assertSame([
@@ -100,27 +83,20 @@ class DimensionContentRepositoryTest extends BaseTestCase
 
     public function testLoadExistOrderedDifferent(): void
     {
-        $attributes = ['locale' => 'de'];
-
-        $dimension1 = $this->createDimension('123-456', []);
-        $dimension2 = $this->createDimension('456-789', ['locale' => 'de']);
-
+        // prepare database
         $contentRichEntity = $this->createContentRichEntity();
         // First create the dimension 2 to test if its still the last dimension
-        $dimensionContent2 = $this->createContentDimension($contentRichEntity, $dimension2);
-        $dimensionContent1 = $this->createContentDimension($contentRichEntity, $dimension1);
-
-        $dimensionCollection = new DimensionCollection($attributes, [
-            $dimension1,
-            $dimension2,
-        ]);
+        $dimensionContent2 = $this->createContentDimension($contentRichEntity, ['locale' => 'de']);
+        $dimensionContent1 = $this->createContentDimension($contentRichEntity);
 
         $this->getEntityManager()->flush();
         $this->getEntityManager()->clear();
 
+        // test functionality
         $dimensionContentRepository = $this->createContentDimensionRepository();
-        $dimensionContentCollection = $dimensionContentRepository->load($contentRichEntity, $dimensionCollection);
+        $dimensionContentCollection = $dimensionContentRepository->load($contentRichEntity, ['locale' => 'de']);
 
+        // assert result
         $this->assertCount(2, $dimensionContentCollection);
 
         $this->assertSame([
@@ -131,17 +107,6 @@ class DimensionContentRepositoryTest extends BaseTestCase
         }, iterator_to_array($dimensionContentCollection)));
     }
 
-    /**
-     * @param mixed[] $attributes
-     */
-    private function createDimension(string $id, array $attributes): DimensionInterface
-    {
-        $dimension = new Dimension($id, $attributes);
-        $this->getEntityManager()->persist($dimension);
-
-        return $dimension;
-    }
-
     private function createContentRichEntity(): Example
     {
         $example = new Example();
@@ -150,9 +115,15 @@ class DimensionContentRepositoryTest extends BaseTestCase
         return $example;
     }
 
-    private function createContentDimension(Example $example, DimensionInterface $dimension): ExampleDimensionContent
+    /**
+     * @param mixed[] $dimensionAttributes
+     */
+    private function createContentDimension(Example $example, array $dimensionAttributes = []): ExampleDimensionContent
     {
-        $exampleDimension = new ExampleDimensionContent($example, $dimension);
+        $exampleDimension = new ExampleDimensionContent($example);
+        $exampleDimension->setStage($dimensionAttributes['stage'] ?? DimensionContentInterface::STAGE_DRAFT);
+        $exampleDimension->setLocale($dimensionAttributes['locale'] ?? null);
+
         $this->getEntityManager()->persist($exampleDimension);
 
         return $exampleDimension;

@@ -2,6 +2,120 @@
 
 ## 0.5.0
 
+### Dimension Entity was removed
+
+The `Dimension` entity was removed because it had no additional value and did make things
+unnecessary complex.
+
+#### Migrate data into your DimensionContent entity
+
+As the Dimension Entity did contain locale and stage in which your DimensionContent is saved
+this data need to be migrated into your own entity.
+
+```sql
+# Create stage and locale fields
+ALTER TABLE test_example_dimension_contents ADD stage VARCHAR(16) DEFAULT NULL, ADD locale VARCHAR(7) DEFAULT NULL;
+
+# Migrate data to new fields
+UPDATE test_example_dimension_contents myContentDimension
+INNER JOIN cn_dimensions dimension ON dimension.no = myContentDimension.dimension_id
+SET myContentDimension.stage = dimension.stage, myContentDimension.locale = dimension.locale;
+
+# Remove nullable from stage field
+ALTER TABLE test_example_dimension_contents CHANGE stage stage VARCHAR(16) NOT NULL;
+
+# Remove dimension relation
+ALTER TABLE test_example_dimension_contents DROP FOREIGN KEY FK_9BFA55B277428AD;
+DROP INDEX IDX_9BFA55B277428AD ON test_example_dimension_contents;
+ALTER TABLE test_example_dimension_contents DROP dimension_id;
+
+# Drop Dimension Table
+DROP TABLE cn_dimensions;
+```
+
+TODO provide here a general doctrine migration which support up/down.
+
+#### Update your ContentRichEntity class and DimensionContent class
+
+In your "ContentRichEntity" class you need to change the createDimensionContent method:
+
+```diff
+-    public function createDimensionContent(DimensionInterface $dimension): DimensionContentInterface
++    public function createDimensionContent(): DimensionContentInterface
+     {
+-        return new ExampleDimensionContent($this, $dimension);
++        $exampleDimensionContent = new ExampleDimensionContent($this);
++
++        return $exampleDimensionContent;
+     }
+```
+
+Also the constructor of your "DimensionContent" entity need to be changed:
+
+```diff
+-    public function __construct(Example $example, DimensionInterface $dimension)
++    public function __construct(Example $example)
+     {
+         $this->example = $example;
+-        $this->dimension = $dimension;
+     }
+```
+
+The `DimensionContentInterface` has the `getDimension` removed and will now directly
+need to provide the `getStage`, `setStage`, `getLocale` and `setLocale` methods.
+If you are using the traits provided by the ContentBundle, these methods should be added to your entity automatically.
+
+#### Update your list configuration
+
+If you use the dimension data in your list configuration, you need to change it the following way:
+
+```diff
+<?xml version="1.0" ?>
+<list xmlns="http://schemas.sulu.io/list-builder/list">
+    <key>examples</key>
+
+-    <joins name="dimensionContent" ref="dimension">
++    <joins name="dimensionContent">
+        <join>
+            <entity-name>dimensionContent</entity-name>
+            <field-name>Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example.dimensionContents</field-name>
+            <method>LEFT</method>
+-            <condition>dimensionContent.dimension = %sulu.model.dimension.class%.no</condition>
++            <condition>dimensionContent.locale = :locale AND dimensionContent.stage = 'draft'</condition>
+        </join>
+    </joins>
+    
+-    <joins name="dimension">
+-        <join>
+-            <entity-name>%sulu.model.dimension.class%</entity-name>
+-            <condition>%sulu.model.dimension.class%.locale = :locale AND %sulu.model.dimension.class%.stage = 'draft'</condition>
++            <condition>dimensionContent.locale = :locale AND dimensionContent.stage = 'draft'</condition>
+-         </join>
+-     </joins>
+
+    <properties>
+        <property name="id" translation="sulu_admin.id">
+            <field-name>id</field-name>
+            <entity-name>Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example</entity-name>
+        </property>
+
+-        <property name="dimensionId" visibility="never">
+-            <field-name>id</field-name>
+-            <entity-name>%sulu.model.dimension.class%</entity-name>
+-
+-            <joins ref="dimension"/>
+-        </property>
+-
+        <property name="title" visibility="yes" translation="sulu_admin.title">
+            <field-name>title</field-name>
+            <entity-name>dimensionContent</entity-name>
+
+            <joins ref="dimensionContent"/>
+        </property>
+    </properties>
+</list>
+```
+
 ### ContentTeaserProvider constructor changed
 
 The constructor of the `ContentTeaserProvider` requires like the `ContentDataProviderRepository` the `show_drafts` 

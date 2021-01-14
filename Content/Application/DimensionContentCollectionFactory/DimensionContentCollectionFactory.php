@@ -18,12 +18,12 @@ use Doctrine\Common\Collections\Collection;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\ContentDataMapperInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\DimensionContentCollectionFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollection;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionContentRepositoryInterface;
+use Symfony\Component\PropertyAccess\PropertyAccessor;
+use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
 class DimensionContentCollectionFactory implements DimensionContentCollectionFactoryInterface
 {
@@ -37,79 +37,88 @@ class DimensionContentCollectionFactory implements DimensionContentCollectionFac
      */
     private $contentDataMapper;
 
+    /**
+     * @var PropertyAccessorInterface
+     */
+    private $propertyAccessor;
+
     public function __construct(
         DimensionContentRepositoryInterface $dimensionContentRepository,
-        ContentDataMapperInterface $contentDataMapper
+        ContentDataMapperInterface $contentDataMapper,
+        PropertyAccessor $propertyAccessor
     ) {
         $this->dimensionContentRepository = $dimensionContentRepository;
         $this->contentDataMapper = $contentDataMapper;
+        $this->propertyAccessor = $propertyAccessor;
     }
 
     public function create(
         ContentRichEntityInterface $contentRichEntity,
-        DimensionCollectionInterface $dimensionCollection,
+        array $dimensionAttributes,
         array $data
     ): DimensionContentCollectionInterface {
-        $dimensionContentCollection = $this->dimensionContentRepository->load($contentRichEntity, $dimensionCollection);
+        $dimensionContentCollection = $this->dimensionContentRepository->load($contentRichEntity, $dimensionAttributes);
+        $dimensionAttributes = $dimensionContentCollection->getDimensionAttributes();
 
-        $localizedDimension = $dimensionCollection->getLocalizedDimension();
-        $unlocalizedDimension = $dimensionCollection->getUnlocalizedDimension();
+        $orderedContentDimensions = iterator_to_array($dimensionContentCollection);
+        $dimensionContents = new ArrayCollection($orderedContentDimensions);
 
-        $dimensionContents = new ArrayCollection(iterator_to_array($dimensionContentCollection));
+        $unlocalizedAttributes = $dimensionAttributes;
+        $unlocalizedAttributes['locale'] = null;
 
-        if (!$unlocalizedDimension) {
-            throw new \RuntimeException('The "$dimensionCollection" should contain atleast a unlocalizedDimension.');
-        }
+        // get or create unlocalized dimension content
+        $unlocalizedDimensionContent = $dimensionContentCollection->getDimensionContent($unlocalizedAttributes);
 
-        $unlocalizedDimensionContent = $this->getOrCreateContentDimension(
-            $contentRichEntity,
-            $dimensionContents,
-            $unlocalizedDimension
-        );
-
-        $localizedDimensionContent = null;
-        if ($localizedDimension) {
-            $localizedDimensionContent = $this->getOrCreateContentDimension(
+        if (!$unlocalizedDimensionContent) {
+            $unlocalizedDimensionContent = $this->createContentDimension(
                 $contentRichEntity,
                 $dimensionContents,
-                $localizedDimension
+                $unlocalizedAttributes
             );
+            $orderedContentDimensions[] = $unlocalizedDimensionContent;
+        }
+
+        $localizedDimensionContent = null;
+        if (isset($dimensionAttributes['locale'])) {
+            // get or create localized dimension content
+            $localizedDimensionContent = $dimensionContentCollection->getDimensionContent($dimensionAttributes);
+
+            if (!$localizedDimensionContent) {
+                $localizedDimensionContent = $this->createContentDimension(
+                    $contentRichEntity,
+                    $dimensionContents,
+                    $dimensionAttributes
+                );
+                $orderedContentDimensions[] = $localizedDimensionContent;
+            }
         }
 
         $this->contentDataMapper->map($data, $unlocalizedDimensionContent, $localizedDimensionContent);
 
-        // Sort correctly ContentDimensions by given dimensionIds to merge them later correctly
-        $orderedContentDimensions = [];
-        foreach ($dimensionCollection as $key => $dimension) {
-            $dimensionContent = $dimensionContents->filter(function (DimensionContentInterface $dimensionContent) use ($dimension) {
-                return $dimensionContent->getDimension()->getId() === $dimension->getId();
-            })->first();
-
-            if ($dimensionContent) {
-                $orderedContentDimensions[$key] = $dimensionContent;
-            }
-        }
-
-        return new DimensionContentCollection($orderedContentDimensions, $dimensionCollection);
+        return new DimensionContentCollection(
+            $orderedContentDimensions,
+            $dimensionAttributes,
+            $dimensionContentCollection->getDimensionContentClass()
+        );
     }
 
     /**
      * @param Collection<int, DimensionContentInterface> $dimensionContents
+     * @param mixed[] $attributes
      */
-    private function getOrCreateContentDimension(
+    private function createContentDimension(
         ContentRichEntityInterface $contentRichEntity,
         Collection $dimensionContents,
-        DimensionInterface $dimension
+        array $attributes
     ): DimensionContentInterface {
-        $dimensionContent = $dimensionContents->filter(function (DimensionContentInterface $dimensionContent) use ($dimension) {
-            return $dimensionContent->getDimension()->getId() === $dimension->getId();
-        })->first();
+        $dimensionContent = $contentRichEntity->createDimensionContent();
 
-        if (!$dimensionContent) {
-            $dimensionContent = $contentRichEntity->createDimensionContent($dimension);
-            $contentRichEntity->addDimensionContent($dimensionContent);
-            $dimensionContents->add($dimensionContent);
+        foreach ($attributes as $attributeName => $attributeValue) {
+            $this->propertyAccessor->setValue($dimensionContent, $attributeName, $attributeValue);
         }
+
+        $contentRichEntity->addDimensionContent($dimensionContent);
+        $dimensionContents->add($dimensionContent);
 
         return $dimensionContent;
     }

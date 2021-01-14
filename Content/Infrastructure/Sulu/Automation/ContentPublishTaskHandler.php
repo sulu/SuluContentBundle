@@ -78,7 +78,8 @@ class ContentPublishTaskHandler implements AutomationTaskHandlerInterface
     public function handle($workload)
     {
         if (!\is_array($workload)) {
-            return;
+            // TODO FIXME add test case for this
+            return; // @codeCoverageIgnore
         }
 
         /** @var class-string<ContentRichEntityInterface> $class */
@@ -88,7 +89,8 @@ class ContentPublishTaskHandler implements AutomationTaskHandlerInterface
         /** @var ContentRichEntityInterface|null $entity */
         $entity = $repository->findOneBy(['id' => $workload['id']]);
         if (null === $entity) {
-            return;
+            // TODO FIXME add test case for this
+            return; // @codeCoverageIgnore
         }
 
         $this->contentManager->applyTransition(

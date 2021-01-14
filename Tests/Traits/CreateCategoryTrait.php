@@ -20,21 +20,26 @@ use Sulu\Bundle\CategoryBundle\Entity\CategoryTranslation;
 
 trait CreateCategoryTrait
 {
-    protected static function createCategory(string $title, string $locale = 'en'): CategoryInterface
+    /**
+     * @param array{de?: mixed, en?: mixed} $dataSet
+     */
+    protected static function createCategory(array $dataSet = []): CategoryInterface
     {
+        $entityManager = static::getEntityManager();
+
         $category = new Category();
-        $category->setDefaultLocale($locale);
 
-        $translation = new CategoryTranslation();
-        $translation->setCategory($category);
-        $translation->setLocale($locale);
-        $translation->setTranslation($title);
+        foreach ($dataSet as $locale => $data) {
+            $category->setDefaultLocale($locale);
+            $translation = new CategoryTranslation();
+            $translation->setCategory($category);
+            $translation->setLocale($locale);
+            $translation->setTranslation($data['title'] ?? null);
+            $category->addTranslation($translation);
+            $entityManager->persist($translation);
+        }
 
-        $category->addTranslation($translation);
-
-        static::getEntityManager()->persist($category);
-        static::getEntityManager()->persist($translation);
-        static::getEntityManager()->flush();
+        $entityManager->persist($category);
 
         return $category;
     }

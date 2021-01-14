@@ -19,7 +19,6 @@ use Doctrine\ORM\QueryBuilder;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentManager\ContentManagerInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Component\SmartContent\Orm\DataProviderRepositoryInterface;
 
 class ContentDataProviderRepository implements DataProviderRepositoryInterface
@@ -27,8 +26,6 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
     const CONTENT_RICH_ENTITY_ALIAS = 'entity';
     const LOCALIZED_DIMENSION_CONTENT_ALIAS = 'localizedContent';
     const UNLOCALIZED_DIMENSION_CONTENT_ALIAS = 'unlocalizedContent';
-    const LOCALIZED_DIMENSION_ALIAS = 'localizedDimension';
-    const UNLOCALIZED_DIMENSION_ALIAS = 'unlocalizedDimension';
 
     /**
      * @var ContentManagerInterface
@@ -99,8 +96,8 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
             array_map(
                 function (ContentRichEntityInterface $contentRichEntity) use ($locale, $showUnpublished) {
                     $stage = $showUnpublished
-                        ? DimensionInterface::STAGE_DRAFT
-                        : DimensionInterface::STAGE_LIVE;
+                        ? DimensionContentInterface::STAGE_DRAFT
+                        : DimensionContentInterface::STAGE_LIVE;
 
                     $resolvedDimensionContent = $this->contentManager->resolve(
                         $contentRichEntity,
@@ -110,10 +107,7 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
                         ]
                     );
 
-                    $dimension = $resolvedDimensionContent->getDimension();
-
-                    if ($stage !== $dimension->getStage() || $locale !== $dimension->getLocale()) {
-                        // TODO FIXME add test or remove this as it should be handled by the ids query
+                    if ($stage !== $resolvedDimensionContent->getStage() || $locale !== $resolvedDimensionContent->getLocale()) {
                         return null; // @codeCoverageIgnore
                     }
 
@@ -186,7 +180,8 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
         }
 
         if ($targetGroupId = $filters['targetGroupId'] ?? null) {
-            // @codeCoverageIgnoreStart TODO FIXME add testcase for this
+            // TODO FIXME add testcase for this
+            // @codeCoverageIgnoreStart
             $parameters = array_merge(
                 $parameters,
                 $this->addTargetGroupFilter($queryBuilder, $targetGroupId, 'targetGroupId')
@@ -195,7 +190,8 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
         }
 
         if ($dataSource = $filters['dataSource'] ?? null) {
-            // @codeCoverageIgnoreStart TODO FIXME add testcase for this
+            // TODO FIXME add testcase for this
+            // @codeCoverageIgnoreStart
             $includeSubFolders = (bool) ($filters['includeSubFolders'] ?? false);
 
             $parameters = array_merge(
@@ -227,7 +223,8 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
             $maxResults = (null !== $limit && $pageSize > $restLimit ? $restLimit : ($pageSize + 1));
 
             if ($maxResults <= 0) {
-                return [];
+                // TODO FIXME add testcase for this
+                return []; // @codeCoverageIgnore
             }
 
             $queryBuilder->setMaxResults($maxResults);
@@ -262,7 +259,8 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
      */
     protected function getTargetGroupRelationFieldName(QueryBuilder $queryBuilder): string
     {
-        // @codeCoverageIgnoreStart TODO FIXME add testcase for this
+        // TODO FIXME add testcase for this
+        // @codeCoverageIgnoreStart
         return self::LOCALIZED_DIMENSION_CONTENT_ALIAS . '.targetGroups';
         // @codeCoverageIgnoreEnd
     }
@@ -326,7 +324,8 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
      */
     protected function addTargetGroupFilter(QueryBuilder $queryBuilder, $targetGroupId, string $alias): array
     {
-        // @codeCoverageIgnoreStart TODO FIXME add testcase for this
+        // TODO FIXME add testcase for this
+        // @codeCoverageIgnoreStart
         return $this->appendRelation(
             $queryBuilder,
             $this->getTargetGroupRelationFieldName($queryBuilder),
@@ -344,7 +343,8 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
      */
     protected function addDatasourceFilter(QueryBuilder $queryBuilder, string $datasource, bool $includeSubFolders, string $alias): array
     {
-        // @codeCoverageIgnoreStart TODO FIXME add testcase for this
+        // TODO FIXME add testcase for this
+        // @codeCoverageIgnoreStart
         return [];
         // @codeCoverageIgnoreEnd
     }
@@ -364,11 +364,13 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
         $alias = self::LOCALIZED_DIMENSION_CONTENT_ALIAS;
 
         if (false !== mb_strpos($sortColumn, '.')) {
-            list($alias, $sortColumn) = explode('.', $sortColumn, 2);
+            // TODO FIXME add testcase for this
+            list($alias, $sortColumn) = explode('.', $sortColumn, 2); // @codeCoverageIgnore
         }
 
         if (!\in_array($alias, $queryBuilder->getAllAliases(), true)) {
-            $parameters = $this->setSortByJoins($queryBuilder);
+            // TODO FIXME add testcase for this
+            $parameters = $this->setSortByJoins($queryBuilder); // @codeCoverageIgnore
         }
 
         $queryBuilder
@@ -385,7 +387,8 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
      */
     protected function setSortByJoins(QueryBuilder $queryBuilder): array
     {
-        // @codeCoverageIgnoreStart TODO FIXME add testcase for this
+        // TODO FIXME add testcase for this
+        // @codeCoverageIgnoreStart
         return [];
         // @codeCoverageIgnoreEnd
     }
@@ -406,7 +409,7 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
                 return $this->appendRelationAnd($queryBuilder, $relation, $values, $alias);
         }
 
-        return [];
+        return []; // @codeCoverageIgnore
     }
 
     /**
@@ -452,21 +455,19 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
     protected function createEntityIdsQueryBuilder(string $locale): QueryBuilder
     {
         $stage = $this->showDrafts
-            ? DimensionInterface::STAGE_DRAFT
-            : DimensionInterface::STAGE_LIVE;
+            ? DimensionContentInterface::STAGE_DRAFT
+            : DimensionContentInterface::STAGE_LIVE;
 
         return $this->entityManager->createQueryBuilder()
             ->select(self::CONTENT_RICH_ENTITY_ALIAS . '.' . $this->getEntityIdentifierFieldName() . ' as id')
             ->distinct()
             ->from($this->contentRichEntityClass, self::CONTENT_RICH_ENTITY_ALIAS)
             ->innerJoin(self::CONTENT_RICH_ENTITY_ALIAS . '.dimensionContents', self::LOCALIZED_DIMENSION_CONTENT_ALIAS)
-            ->innerJoin(self::LOCALIZED_DIMENSION_CONTENT_ALIAS . '.dimension', self::LOCALIZED_DIMENSION_ALIAS)
-            ->andWhere(self::LOCALIZED_DIMENSION_ALIAS . '.stage = (:stage)')
-            ->andWhere(self::LOCALIZED_DIMENSION_ALIAS . '.locale = (:locale)')
+            ->andWhere(self::LOCALIZED_DIMENSION_CONTENT_ALIAS . '.stage = (:stage)')
+            ->andWhere(self::LOCALIZED_DIMENSION_CONTENT_ALIAS . '.locale = (:locale)')
             ->innerJoin(self::CONTENT_RICH_ENTITY_ALIAS . '.dimensionContents', self::UNLOCALIZED_DIMENSION_CONTENT_ALIAS)
-            ->innerJoin(self::UNLOCALIZED_DIMENSION_CONTENT_ALIAS . '.dimension', self::UNLOCALIZED_DIMENSION_ALIAS)
-            ->andWhere(self::UNLOCALIZED_DIMENSION_ALIAS . '.stage = (:stage)')
-            ->andWhere(self::UNLOCALIZED_DIMENSION_ALIAS . '.locale IS NULL')
+            ->andWhere(self::UNLOCALIZED_DIMENSION_CONTENT_ALIAS . '.stage = (:stage)')
+            ->andWhere(self::UNLOCALIZED_DIMENSION_CONTENT_ALIAS . '.locale IS NULL')
             ->setParameter('stage', $stage)
             ->setParameter('locale', $locale);
     }

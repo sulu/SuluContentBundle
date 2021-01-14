@@ -17,18 +17,14 @@ use Massive\Bundle\SearchBundle\Search\Metadata\ClassMetadata;
 use Massive\Bundle\SearchBundle\Search\ObjectToDocumentConverter;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentManager\ContentManagerInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Search\ContentSearchMetadataProvider;
-use Sulu\Bundle\ContentBundle\Tests\Functional\BaseTestCase;
 use Sulu\Bundle\ContentBundle\Tests\Traits\CreateExampleTrait;
-use Sulu\Bundle\ContentBundle\Tests\Traits\ModifyExampleTrait;
-use Sulu\Bundle\ContentBundle\Tests\Traits\PublishExampleTrait;
+use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
 
-class ContentSearchMetadataProviderTest extends BaseTestCase
+class ContentSearchMetadataProviderTest extends SuluTestCase
 {
     use CreateExampleTrait;
-    use ModifyExampleTrait;
-    use PublishExampleTrait;
 
     /**
      * @var ContentManagerInterface
@@ -55,7 +51,15 @@ class ContentSearchMetadataProviderTest extends BaseTestCase
         static::purgeDatabase();
         parent::setUpBeforeClass();
 
-        static::$example1 = static::createExample(['title' => 'example-1'], 'en')->getResource();
+        static::$example1 = static::createExample([
+            'en' => [
+                'draft' => [
+                    'title' => 'example-1',
+                ],
+            ],
+        ]);
+
+        static::getEntityManager()->flush();
     }
 
     protected function setUp(): void
@@ -68,7 +72,7 @@ class ContentSearchMetadataProviderTest extends BaseTestCase
     public function testGetMetadataForObject(): void
     {
         $dimensionContent = $this->contentManager->resolve(static::$example1, [
-            'stage' => DimensionInterface::STAGE_DRAFT,
+            'stage' => DimensionContentInterface::STAGE_DRAFT,
             'locale' => 'en',
         ]);
 
@@ -108,7 +112,7 @@ class ContentSearchMetadataProviderTest extends BaseTestCase
     public function testGetMetadataForDocument(): void
     {
         $dimensionContent = $this->contentManager->resolve(static::$example1, [
-            'stage' => DimensionInterface::STAGE_DRAFT,
+            'stage' => DimensionContentInterface::STAGE_DRAFT,
             'locale' => 'en',
         ]);
 

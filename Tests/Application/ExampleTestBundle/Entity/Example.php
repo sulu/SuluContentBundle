@@ -16,7 +16,6 @@ namespace Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityTrait;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 
 class Example implements ContentRichEntityInterface
 {
@@ -38,8 +37,10 @@ class Example implements ContentRichEntityInterface
         return $this->id;
     }
 
-    public function createDimensionContent(DimensionInterface $dimension): DimensionContentInterface
+    public function createDimensionContent(): DimensionContentInterface
     {
-        return new ExampleDimensionContent($this, $dimension);
+        $exampleDimensionContent = new ExampleDimensionContent($this);
+
+        return $exampleDimensionContent;
     }
 }

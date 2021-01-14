@@ -17,20 +17,13 @@ use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentTrait;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 
 class DimensionContentTraitTest extends TestCase
 {
-    protected function getDimensionContentInstance(
-        DimensionInterface $dimension
-    ): DimensionContentInterface {
-        return new class($dimension) implements DimensionContentInterface {
+    protected function getDimensionContentInstance(): DimensionContentInterface
+    {
+        return new class() implements DimensionContentInterface {
             use DimensionContentTrait;
-
-            public function __construct(DimensionInterface $dimension)
-            {
-                $this->dimension = $dimension;
-            }
 
             public static function getResourceKey(): string
             {
@@ -44,19 +37,34 @@ class DimensionContentTraitTest extends TestCase
         };
     }
 
-    public function testGetDimension(): void
+    public function testGetSetLocale(): void
     {
-        $dimension = $this->prophesize(DimensionInterface::class);
+        $model = $this->getDimensionContentInstance();
+        $this->assertNull($model->getLocale());
+        $model->setLocale('de');
+        $this->assertSame('de', $model->getLocale());
+    }
 
-        $model = $this->getDimensionContentInstance($dimension->reveal());
-        $this->assertSame($dimension->reveal(), $model->getDimension());
+    public function testGetSetStage(): void
+    {
+        $model = $this->getDimensionContentInstance();
+        $this->assertSame('draft', $model->getStage());
+        $model->setStage('live');
+        $this->assertSame('live', $model->getStage());
+    }
+
+    public function testGetDefaultAttributes(): void
+    {
+        $model = $this->getDimensionContentInstance();
+        $this->assertSame([
+            'locale' => null,
+            'stage' => 'draft',
+        ], $model::getDefaultDimensionAttributes());
     }
 
     public function testGetSetIsMerged(): void
     {
-        $dimension = $this->prophesize(DimensionInterface::class);
-
-        $model = $this->getDimensionContentInstance($dimension->reveal());
+        $model = $this->getDimensionContentInstance();
         $this->assertFalse($model->isMerged());
 
         $model->markAsMerged();

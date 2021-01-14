@@ -20,7 +20,6 @@ use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Sulu\Bundle\CategoryBundle\Entity\CategoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
@@ -46,12 +45,8 @@ class MetadataLoader implements EventSubscriber
         $reflection = $metadata->getReflectionClass();
 
         if ($reflection->implementsInterface(DimensionContentInterface::class)) {
-            $this->addManyToOne(
-                $event,
-                $metadata,
-                'dimension',
-                DimensionInterface::class
-            );
+            $this->addField($metadata, 'stage', 'string', ['length' => 16, 'nullable' => false]);
+            $this->addField($metadata, 'locale', 'string', ['length' => 7, 'nullable' => true]);
         }
 
         if ($reflection->implementsInterface(SeoInterface::class)) {
@@ -105,6 +100,9 @@ class MetadataLoader implements EventSubscriber
         }
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     private function addManyToOne(
         LoadClassMetadataEventArgs $event,
         ClassMetadataInfo $metadata,

@@ -24,7 +24,6 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolve
 use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\ContentWorkflowInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 
 class ContentManagerTest extends TestCase
 {
@@ -233,7 +232,7 @@ class ContentManagerTest extends TestCase
         $dimensionContent = $this->prophesize(DimensionContentInterface::class);
 
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
-        $dimensionAttributes = ['locale' => 'en', 'stage' => DimensionInterface::STAGE_LIVE];
+        $dimensionAttributes = ['locale' => 'en', 'stage' => DimensionContentInterface::STAGE_LIVE];
 
         $contentResolver = $this->prophesize(ContentResolverInterface::class);
         $contentPersister = $this->prophesize(ContentPersisterInterface::class);
@@ -271,7 +270,7 @@ class ContentManagerTest extends TestCase
     {
         $resourceKey = 'examples';
         $resourceId = '123';
-        $dimensionAttributes = ['locale' => 'en', 'stage' => DimensionInterface::STAGE_LIVE];
+        $dimensionAttributes = ['locale' => 'en', 'stage' => DimensionContentInterface::STAGE_LIVE];
 
         $contentResolver = $this->prophesize(ContentResolverInterface::class);
         $contentPersister = $this->prophesize(ContentPersisterInterface::class);

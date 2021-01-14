@@ -41,5 +41,6 @@ return PhpCsFixer\Config::create()
         PhpCsFixer\Finder::create()
             ->exclude('vendor')
             ->exclude('cache')
+            ->exclude('Tests/reports/')
             ->in(__DIR__)
     );

@@ -15,7 +15,6 @@ namespace Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\SmartContent\Dat
 
 use JMS\Serializer\Annotation as Serializer;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 use Sulu\Component\SmartContent\ArrayAccessItem;
 use Sulu\Component\SmartContent\ItemInterface;
@@ -68,9 +67,8 @@ class ContentDataItem extends ArrayAccessItem implements ItemInterface, PublishI
     public function getPublished(): ?\DateTimeInterface
     {
         $dimensionContent = $this->getDimensionContent();
-        $dimension = $dimensionContent->getDimension();
 
-        if (null === $dimension->getLocale()) {
+        if (null === $dimensionContent->getLocale()) {
             return null;
         }
 
@@ -87,13 +85,12 @@ class ContentDataItem extends ArrayAccessItem implements ItemInterface, PublishI
     public function getPublishedState(): bool
     {
         $dimensionContent = $this->getDimensionContent();
-        $dimension = $dimensionContent->getDimension();
 
-        if (null === $dimension->getLocale()) {
+        if (null === $dimensionContent->getLocale()) {
             return false;
         }
 
-        if (DimensionInterface::STAGE_LIVE === $dimension->getStage()) {
+        if (DimensionContentInterface::STAGE_LIVE === $dimensionContent->getStage()) {
             return true;
         }
 

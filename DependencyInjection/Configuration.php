@@ -13,8 +13,6 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\DependencyInjection;
 
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
-use Sulu\Bundle\ContentBundle\Content\Infrastructure\Doctrine\DimensionRepository;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -24,22 +22,6 @@ class Configuration implements ConfigurationInterface
     {
         $treeBuilder = new TreeBuilder('sulu_content');
         $rootNode = $treeBuilder->getRootNode();
-
-        $rootNode
-            ->children()
-                ->arrayNode('objects')
-                    ->addDefaultsIfNotSet()
-                    ->children()
-                        ->arrayNode('dimension')
-                            ->addDefaultsIfNotSet()
-                            ->children()
-                                ->scalarNode('model')->defaultValue(Dimension::class)->end()
-                                ->scalarNode('repository')->defaultValue(DimensionRepository::class)->end()
-                            ->end()
-                        ->end()
-                    ->end()
-                ->end()
-            ->end();
 
         return $treeBuilder;
     }

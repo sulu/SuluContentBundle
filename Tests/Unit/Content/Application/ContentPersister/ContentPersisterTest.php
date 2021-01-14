@@ -17,23 +17,19 @@ use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentMerger\ContentMergerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersister;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersisterInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Factory\DimensionCollectionFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\DimensionContentCollectionFactoryInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionCollection;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollection;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
+use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
+use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleDimensionContent;
 
 class ContentPersisterTest extends TestCase
 {
     protected function createContentPersisterInstance(
-        DimensionCollectionFactoryInterface $dimensionCollectionFactory,
         DimensionContentCollectionFactoryInterface $dimensionContentCollectionFactory,
         ContentMergerInterface $contentMerger
     ): ContentPersisterInterface {
         return new ContentPersister(
-            $dimensionCollectionFactory,
             $dimensionContentCollectionFactory,
             $contentMerger
         );
@@ -41,32 +37,32 @@ class ContentPersisterTest extends TestCase
 
     public function testPersist(): void
     {
-        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
         $attributes = [
             'locale' => 'de',
         ];
         $data = [
             'data' => 'value',
         ];
+        $expectedAttributes = [
+            'locale' => 'de',
+            'stage' => DimensionContentInterface::STAGE_DRAFT,
+        ];
 
-        $dimension1 = new Dimension('123-456', ['locale' => 'de']);
-        $dimension2 = new Dimension('456-789', ['locale' => null]);
-        $dimensionCollection = new DimensionCollection($attributes, [$dimension2, $dimension1]);
+        $example = new Example();
+        $dimensionContent1 = new ExampleDimensionContent($example);
+        $dimensionContent1->setLocale(null);
+        $dimensionContent1->setStage(DimensionContentInterface::STAGE_DRAFT);
+        $dimensionContent2 = new ExampleDimensionContent($example);
+        $dimensionContent2->setLocale('de');
+        $dimensionContent2->setStage(DimensionContentInterface::STAGE_DRAFT);
 
-        $dimensionCollectionFactory = $this->prophesize(DimensionCollectionFactoryInterface::class);
-        $dimensionCollectionFactory->create($attributes)->willReturn($dimensionCollection)->shouldBeCalled();
-
-        $dimensionContent1 = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent1->getDimension()->willReturn($dimension1);
-        $dimensionContent2 = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent2->getDimension()->willReturn($dimension2);
         $dimensionContentCollection = new DimensionContentCollection([
-            $dimensionContent1->reveal(),
-            $dimensionContent2->reveal(),
-        ], $dimensionCollection);
+            $dimensionContent1,
+            $dimensionContent2,
+        ], $expectedAttributes, ExampleDimensionContent::class);
 
         $dimensionContentCollectionFactory = $this->prophesize(DimensionContentCollectionFactoryInterface::class);
-        $dimensionContentCollectionFactory->create($contentRichEntity->reveal(), $dimensionCollection, $data)
+        $dimensionContentCollectionFactory->create($example, $attributes, $data)
             ->willReturn($dimensionContentCollection)
             ->shouldBeCalled();
 
@@ -75,14 +71,13 @@ class ContentPersisterTest extends TestCase
         $contentMerger->merge($dimensionContentCollection)->willReturn($mergedDimensionContent->reveal())->shouldBeCalled();
 
         $createContentMessageHandler = $this->createContentPersisterInstance(
-            $dimensionCollectionFactory->reveal(),
             $dimensionContentCollectionFactory->reveal(),
             $contentMerger->reveal()
         );
 
         $this->assertSame(
             $mergedDimensionContent->reveal(),
-            $createContentMessageHandler->persist($contentRichEntity->reveal(), $data, $attributes)
+            $createContentMessageHandler->persist($example, $data, $attributes)
         );
     }
 }

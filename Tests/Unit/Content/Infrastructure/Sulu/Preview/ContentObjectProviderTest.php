@@ -25,7 +25,6 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolve
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Preview\ContentObjectProvider;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
@@ -220,12 +219,10 @@ class ContentObjectProviderTest extends TestCase
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
         $contentRichEntity->getId()->willReturn('123-456');
 
-        $dimension = $this->prophesize(DimensionInterface::class);
-        $dimension->getLocale()->willReturn('en');
-
         $dimensionContent = $this->prophesize(DimensionContentInterface::class);
         $dimensionContent->getResource()->willReturn($contentRichEntity->reveal());
-        $dimensionContent->getDimension()->willReturn($dimension->reveal());
+        $dimensionContent->getLocale()->willReturn('en');
+        $dimensionContent->getStage()->willReturn('draft');
 
         $serializedObject = json_encode([
             'id' => '123-456',

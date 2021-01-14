@@ -16,20 +16,15 @@ namespace Sulu\Bundle\ContentBundle\Tests\Functional\Content\Infrastructure\Sulu
 use Sulu\Bundle\ContentBundle\Content\Application\ContentManager\ContentManagerInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Search\ContentReindexProvider;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleDimensionContent;
-use Sulu\Bundle\ContentBundle\Tests\Functional\BaseTestCase;
 use Sulu\Bundle\ContentBundle\Tests\Traits\CreateExampleTrait;
-use Sulu\Bundle\ContentBundle\Tests\Traits\ModifyExampleTrait;
-use Sulu\Bundle\ContentBundle\Tests\Traits\PublishExampleTrait;
+use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
 use Sulu\Component\HttpKernel\SuluKernel;
 
-class ContentReindexProviderTest extends BaseTestCase
+class ContentReindexProviderTest extends SuluTestCase
 {
     use CreateExampleTrait;
-    use ModifyExampleTrait;
-    use PublishExampleTrait;
 
     /**
      * @var ContentManagerInterface
@@ -54,13 +49,33 @@ class ContentReindexProviderTest extends BaseTestCase
     public static function setUpBeforeClass(): void
     {
         static::purgeDatabase();
-        parent::setUpBeforeClass();
 
-        static::$example1 = static::createExample(['title' => 'example-1'], 'en')->getResource();
-        static::modifyExample(static::$example1->getId(), ['title' => 'beispiel-1'], 'de');
-        static::publishExample(static::$example1->getId(), 'de');
+        static::$example1 = static::createExample(
+            [
+                'en' => [
+                    'draft' => [
+                        'title' => 'example-1',
+                    ],
+                ],
+                'de' => [
+                    'live' => [
+                        'title' => 'beispiel-1',
+                    ],
+                ],
+            ]
+        );
 
-        static::$example2 = static::createExample(['title' => 'example-2'], 'en')->getResource();
+        static::$example2 = static::createExample(
+            [
+                'en' => [
+                    'draft' => [
+                        'title' => 'example-2',
+                    ],
+                ],
+            ]
+        );
+
+        static::getEntityManager()->flush();
     }
 
     protected function setUp(): void
@@ -128,17 +143,18 @@ class ContentReindexProviderTest extends BaseTestCase
 
     public function testTranslateObject(): void
     {
-        $dimensionContent = $this->contentManager->resolve(static::$example1, [
-            'stage' => DimensionInterface::STAGE_DRAFT,
-            'locale' => 'en',
-        ]);
-
         $translatedObject = $this->reindexProvider->translateObject(static::$example1, 'en');
 
         $this->assertInstanceOf(DimensionContentInterface::class, $translatedObject);
+
         $this->assertSame(
-            $dimensionContent->getDimension(),
-            $translatedObject->getDimension()
+            DimensionContentInterface::STAGE_DRAFT,
+            $translatedObject->getStage()
+        );
+
+        $this->assertSame(
+            'en',
+            $translatedObject->getLocale()
         );
     }
 
@@ -149,17 +165,18 @@ class ContentReindexProviderTest extends BaseTestCase
         $property->setAccessible(true);
         $property->setValue($this->reindexProvider, SuluKernel::CONTEXT_WEBSITE);
 
-        $dimensionContent = $this->contentManager->resolve(static::$example1, [
-            'stage' => DimensionInterface::STAGE_LIVE,
-            'locale' => 'de',
-        ]);
-
         $translatedObject = $this->reindexProvider->translateObject(static::$example1, 'de');
 
         $this->assertInstanceOf(DimensionContentInterface::class, $translatedObject);
+
         $this->assertSame(
-            $dimensionContent->getDimension(),
-            $translatedObject->getDimension()
+            DimensionContentInterface::STAGE_LIVE,
+            $translatedObject->getStage()
+        );
+
+        $this->assertSame(
+            'de',
+            $translatedObject->getLocale()
         );
     }
 

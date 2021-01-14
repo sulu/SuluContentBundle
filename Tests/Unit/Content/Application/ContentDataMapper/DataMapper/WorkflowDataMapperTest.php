@@ -17,7 +17,6 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\DataMapper\WorkflowDataMapper;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 
 class WorkflowDataMapperTest extends TestCase
@@ -70,9 +69,7 @@ class WorkflowDataMapperTest extends TestCase
 
         $dimensionContent = $this->prophesize(DimensionContentInterface::class);
         $dimensionContent->willImplement(WorkflowInterface::class);
-        $dimension = $this->prophesize(DimensionInterface::class);
-        $dimension->getStage()->willReturn(DimensionInterface::STAGE_DRAFT);
-        $dimensionContent->getDimension()->willReturn($dimension->reveal());
+        $dimensionContent->getStage()->willReturn(DimensionContentInterface::STAGE_DRAFT);
         $dimensionContent->getWorkflowPlace()->willReturn(null);
 
         $dimensionContent->setWorkflowPlace(WorkflowInterface::WORKFLOW_PLACE_UNPUBLISHED)->shouldBeCalled();
@@ -91,11 +88,8 @@ class WorkflowDataMapperTest extends TestCase
 
         $dimensionContent = $this->prophesize(DimensionContentInterface::class);
         $dimensionContent->willImplement(WorkflowInterface::class);
-        $dimension = $this->prophesize(DimensionInterface::class);
-        $dimension->getStage()->willReturn(DimensionInterface::STAGE_DRAFT);
-        $dimensionContent->getDimension()->willReturn($dimension->reveal());
+        $dimensionContent->getStage()->willReturn(DimensionContentInterface::STAGE_DRAFT);
         $dimensionContent->getWorkflowPlace()->willReturn(WorkflowInterface::WORKFLOW_PLACE_UNPUBLISHED);
-
         $dimensionContent->setWorkflowPlace(Argument::cetera())->shouldNotBeCalled();
         $dimensionContent->setWorkflowPublished(Argument::cetera())->shouldNotBeCalled();
 
@@ -112,10 +106,7 @@ class WorkflowDataMapperTest extends TestCase
 
         $dimensionContent = $this->prophesize(DimensionContentInterface::class);
         $dimensionContent->willImplement(WorkflowInterface::class);
-        $dimension = $this->prophesize(DimensionInterface::class);
-        $dimension->getStage()->willReturn(DimensionInterface::STAGE_LIVE);
-        $dimensionContent->getDimension()->willReturn($dimension->reveal());
-
+        $dimensionContent->getStage()->willReturn(DimensionContentInterface::STAGE_LIVE);
         $dimensionContent->setWorkflowPlace(Argument::cetera())->shouldNotBeCalled();
         $dimensionContent->setWorkflowPublished(Argument::type(\DateTimeInterface::class))->shouldBeCalled();
 
@@ -130,10 +121,7 @@ class WorkflowDataMapperTest extends TestCase
 
         $dimensionContent = $this->prophesize(DimensionContentInterface::class);
         $dimensionContent->willImplement(WorkflowInterface::class);
-        $dimension = $this->prophesize(DimensionInterface::class);
-        $dimension->getStage()->willReturn(DimensionInterface::STAGE_LIVE);
-        $dimensionContent->getDimension()->willReturn($dimension->reveal());
-
+        $dimensionContent->getStage()->willReturn(DimensionContentInterface::STAGE_LIVE);
         $dimensionContent->setWorkflowPlace(Argument::cetera())->shouldNotBeCalled();
         $dimensionContent->setWorkflowPublished(Argument::cetera())->shouldNotBeCalled();
 
@@ -155,9 +143,7 @@ class WorkflowDataMapperTest extends TestCase
 
         $localizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
         $localizedDimensionContent->willImplement(WorkflowInterface::class);
-        $dimension = $this->prophesize(DimensionInterface::class);
-        $dimension->getStage()->willReturn(DimensionInterface::STAGE_DRAFT);
-        $localizedDimensionContent->getDimension()->willReturn($dimension->reveal());
+        $localizedDimensionContent->getStage()->willReturn(DimensionContentInterface::STAGE_DRAFT);
         $localizedDimensionContent->getWorkflowPlace()->willReturn(null);
 
         $dimensionContent->setWorkflowPlace(Argument::cetera())->shouldNotBeCalled();
@@ -182,9 +168,7 @@ class WorkflowDataMapperTest extends TestCase
 
         $localizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
         $localizedDimensionContent->willImplement(WorkflowInterface::class);
-        $dimension = $this->prophesize(DimensionInterface::class);
-        $dimension->getStage()->willReturn(DimensionInterface::STAGE_DRAFT);
-        $localizedDimensionContent->getDimension()->willReturn($dimension->reveal());
+        $localizedDimensionContent->getStage()->willReturn(DimensionContentInterface::STAGE_DRAFT);
         $localizedDimensionContent->getWorkflowPlace()->willReturn(WorkflowInterface::WORKFLOW_PLACE_UNPUBLISHED);
 
         $dimensionContent->setWorkflowPlace(Argument::cetera())->shouldNotBeCalled();
@@ -209,9 +193,7 @@ class WorkflowDataMapperTest extends TestCase
 
         $localizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
         $localizedDimensionContent->willImplement(WorkflowInterface::class);
-        $dimension = $this->prophesize(DimensionInterface::class);
-        $dimension->getStage()->willReturn(DimensionInterface::STAGE_LIVE);
-        $localizedDimensionContent->getDimension()->willReturn($dimension->reveal());
+        $localizedDimensionContent->getStage()->willReturn(DimensionContentInterface::STAGE_LIVE);
 
         $dimensionContent->setWorkflowPlace(Argument::cetera())->shouldNotBeCalled();
         $dimensionContent->setWorkflowPublished(Argument::cetera())->shouldNotBeCalled();
@@ -233,9 +215,7 @@ class WorkflowDataMapperTest extends TestCase
 
         $localizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
         $localizedDimensionContent->willImplement(WorkflowInterface::class);
-        $dimension = $this->prophesize(DimensionInterface::class);
-        $dimension->getStage()->willReturn(DimensionInterface::STAGE_LIVE);
-        $localizedDimensionContent->getDimension()->willReturn($dimension->reveal());
+        $localizedDimensionContent->getStage()->willReturn(DimensionContentInterface::STAGE_LIVE);
 
         $dimensionContent->setWorkflowPlace(Argument::cetera())->shouldNotBeCalled();
         $dimensionContent->setWorkflowPublished(Argument::cetera())->shouldNotBeCalled();

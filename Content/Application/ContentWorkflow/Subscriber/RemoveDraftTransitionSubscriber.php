@@ -17,7 +17,6 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentCopier\ContentCopierInt
 use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\ContentWorkflowInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Workflow\Event\TransitionEvent;
@@ -52,8 +51,8 @@ class RemoveDraftTransitionSubscriber implements EventSubscriberInterface
             throw new \RuntimeException('Transition context must contain "contentRichEntity".');
         }
 
-        $draftDimensionAttributes = array_merge($dimensionAttributes, ['stage' => DimensionInterface::STAGE_DRAFT]);
-        $liveDimensionAttributes = array_merge($dimensionAttributes, ['stage' => DimensionInterface::STAGE_LIVE]);
+        $draftDimensionAttributes = array_merge($dimensionAttributes, ['stage' => DimensionContentInterface::STAGE_DRAFT]);
+        $liveDimensionAttributes = array_merge($dimensionAttributes, ['stage' => DimensionContentInterface::STAGE_LIVE]);
 
         $this->contentCopier->copy(
             $contentRichEntity,

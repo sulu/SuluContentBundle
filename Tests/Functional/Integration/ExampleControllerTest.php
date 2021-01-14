@@ -13,7 +13,8 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Tests\Functional\Integration;
 
-use Sulu\Bundle\ContentBundle\Tests\Functional\BaseTestCase;
+use Sulu\Bundle\ContentBundle\Tests\Traits\AssertSnapshotTrait;
+use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 
 /**
@@ -21,8 +22,10 @@ use Symfony\Bundle\FrameworkBundle\KernelBrowser;
  *
  * @coversNothing
  */
-class ExampleControllerTest extends BaseTestCase
+class ExampleControllerTest extends SuluTestCase
 {
+    use AssertSnapshotTrait;
+
     /**
      * @var KernelBrowser
      */

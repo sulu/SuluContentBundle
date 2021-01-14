@@ -27,7 +27,7 @@ interface ContentRichEntityInterface
      */
     public function getDimensionContents(): Collection;
 
-    public function createDimensionContent(DimensionInterface $dimension): DimensionContentInterface;
+    public function createDimensionContent(): DimensionContentInterface;
 
     public function addDimensionContent(DimensionContentInterface $dimensionContent): void;
 

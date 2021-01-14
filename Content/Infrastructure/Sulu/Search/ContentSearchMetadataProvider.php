@@ -23,7 +23,6 @@ use Massive\Bundle\SearchBundle\Search\Metadata\ProviderInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentMetadataInspector\ContentMetadataInspectorInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
@@ -108,7 +107,8 @@ class ContentSearchMetadataProvider implements ProviderInterface
         );
 
         if (!$structureMetadata) {
-            return null;
+            // TODO FIXME add test case for this
+            return null; // @codeCoverageIgnore
         }
 
         return $this->getMetadata($dimensionContentClass, $structureMetadata);
@@ -120,7 +120,8 @@ class ContentSearchMetadataProvider implements ProviderInterface
         $dimensionContentClass = $this->getDimensionContentClass();
 
         if (!is_a($dimensionContentClass, TemplateInterface::class, true)) {
-            return [];
+            // TODO FIXME add test case for this
+            return [];  // @codeCoverageIgnore
         }
 
         $metadata = [];
@@ -137,11 +138,13 @@ class ContentSearchMetadataProvider implements ProviderInterface
         $dimensionContentClass = $this->getDimensionContentClass();
 
         if (!is_a($dimensionContentClass, TemplateInterface::class, true)) {
-            return null;
+            // TODO FIXME add test case for this
+            return null;  // @codeCoverageIgnore
         }
 
         if (!$document->hasField(self::FIELD_TEMPLATE_KEY) || $dimensionContentClass !== $document->getClass()) {
-            return null;
+            // TODO FIXME add test case for this
+            return null;  // @codeCoverageIgnore
         }
 
         $structureType = $document->getField(self::FIELD_TEMPLATE_KEY)->getValue();
@@ -152,7 +155,8 @@ class ContentSearchMetadataProvider implements ProviderInterface
         );
 
         if (!$structureMetadata) {
-            return null;
+            // TODO FIXME add test case for this
+            return null;  // @codeCoverageIgnore
         }
 
         return $this->getMetadata($dimensionContentClass, $structureMetadata);
@@ -170,9 +174,12 @@ class ContentSearchMetadataProvider implements ProviderInterface
         $dimensionContentClass = $this->getDimensionContentClass();
 
         if (!is_a($dimensionContentClass, DimensionContentInterface::class, true)) {
+            // TODO FIXME add test case for this
+            // @codeCoverageIgnoreStart
             throw new \RuntimeException(
                 sprintf('$dimensionContentClass needs to be of type "%s"', DimensionContentInterface::class)
             );
+            // @codeCoverageIgnoreEnd
         }
 
         /** @var string $expression */
@@ -223,7 +230,8 @@ class ContentSearchMetadataProvider implements ProviderInterface
                 foreach ($property->getComponents() as $component) {
                     foreach ($component->getChildren() as $componentProperty) {
                         if (false === $componentProperty->hasTag(self::SEARCH_FIELD_TAG)) {
-                            continue;
+                            // TODO FIXME add test case for this
+                            continue; // @codeCoverageIgnore
                         }
 
                         $tag = $componentProperty->getTag(self::SEARCH_FIELD_TAG);
@@ -266,7 +274,7 @@ class ContentSearchMetadataProvider implements ProviderInterface
     private function createIndexNameField(string $indexName): Expression
     {
         $expression = '"' . $indexName . '"';
-        $expression .= '~(object.getDimension().getStage() == "' . DimensionInterface::STAGE_LIVE . '" ? "_published" : "")';
+        $expression .= '~(object.getStage() == "' . DimensionContentInterface::STAGE_LIVE . '" ? "_published" : "")';
 
         return new Expression($expression);
     }
@@ -329,9 +337,14 @@ class ContentSearchMetadataProvider implements ProviderInterface
                     );
                     break;
                 case 'image':
+                    // TODO FIXME add test case for this
+                    // @codeCoverageIgnoreStart
                     $metadata->setImageUrlField($this->getContentField($property));
                     break;
+                // @codeCoverageIgnoreEnd
                 default:
+                    // TODO FIXME add test case for this
+                    // @codeCoverageIgnoreStart
                     throw new \InvalidArgumentException(
                         sprintf(
                             'Unknown search field role "%s", role must be one of "%s"',
@@ -339,6 +352,7 @@ class ContentSearchMetadataProvider implements ProviderInterface
                             implode(', ', ['title', 'description', 'image'])
                         )
                     );
+                    // @codeCoverageIgnoreEnd
             }
 
             return;

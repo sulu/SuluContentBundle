@@ -7,9 +7,9 @@
             "@integer@"
         ],
         "excerptTags": [
+            "tagA",
             "tagB",
-            "tagC",
-            "tagA"
+            "tagC"
         ],
         "published": "@string@.isDateTime()",
         "publishedState": true,
@@ -57,9 +57,9 @@
         "id": "@integer@",
         "excerptCategories": [],
         "excerptTags": [
+            "tagA",
             "tagB",
-            "tagC",
-            "tagA"
+            "tagC"
         ],
         "published": "@string@.isDateTime()",
         "publishedState": true,

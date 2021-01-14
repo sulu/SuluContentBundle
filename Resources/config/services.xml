@@ -22,6 +22,7 @@
         <!-- ContentMerger -->
         <service id="sulu_content.content_merger" class="Sulu\Bundle\ContentBundle\Content\Application\ContentMerger\ContentMerger">
             <argument type="tagged" tag="sulu_content.merger"/>
+            <argument type="service" id="property_accessor"/>
         </service>
 
         <service id="Sulu\Bundle\ContentBundle\Content\Application\ContentMerger\ContentMergerInterface" alias="sulu_content.content_merger"/>
@@ -37,15 +38,11 @@
             <argument type="service" id="doctrine.orm.entity_manager"/>
         </service>
 
-        <!-- DimensionCollection Factory -->
-        <service id="sulu_content.dimension_collection_factory" class="Sulu\Bundle\ContentBundle\Content\Application\DimensionCollectionFactory\DimensionCollectionFactory">
-            <argument type="service" id="sulu.repository.dimension"/>
-        </service>
-
         <!-- Content Dimension Factory -->
         <service id="sulu_content.dimension_content_collection_factory" class="Sulu\Bundle\ContentBundle\Content\Application\DimensionContentCollectionFactory\DimensionContentCollectionFactory">
             <argument type="service" id="sulu_content.dimension_content_repository"/>
             <argument type="service" id="sulu_content.content_data_mapper"/>
+            <argument type="service" id="property_accessor"/>
         </service>
 
         <service id="Sulu\Bundle\ContentBundle\Content\Domain\Factory\DimensionContentCollectionFactoryInterface" alias="sulu_content.dimension_content_collection_factory"/>
@@ -90,7 +87,6 @@
 
         <!-- Content Persister -->
         <service id="sulu_content.content_persister" class="Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersister">
-            <argument type="service" id="sulu_content.dimension_collection_factory"/>
             <argument type="service" id="sulu_content.dimension_content_collection_factory"/>
             <argument type="service" id="sulu_content.content_merger"/>
         </service>
@@ -99,7 +95,6 @@
 
         <!-- Content Loader -->
         <service id="sulu_content.content_resolver" class="Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolver">
-            <argument type="service" id="sulu.repository.dimension"/>
             <argument type="service" id="sulu_content.dimension_content_repository"/>
             <argument type="service" id="sulu_content.content_merger"/>
         </service>
@@ -133,7 +128,6 @@
 
         <!-- Content Workflow -->
         <service id="sulu_content.content_workflow" class="Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\ContentWorkflow">
-            <argument type="service" id="sulu.repository.dimension"/>
             <argument type="service" id="sulu_content.dimension_content_repository"/>
             <argument type="service" id="sulu_content.content_merger"/>
             <argument type="service" id="workflow.registry" on-invalid="null"/>
@@ -155,7 +149,6 @@
         </service>
 
         <service id="sulu_content.unpublish_transition_subscriber" class="Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\Subscriber\UnpublishTransitionSubscriber">
-            <argument type="service" id="sulu.repository.dimension"/>
             <argument type="service" id="sulu_content.dimension_content_repository"/>
             <argument type="service" id="doctrine.orm.entity_manager"/>
 

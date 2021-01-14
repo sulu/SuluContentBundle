@@ -23,6 +23,7 @@
         "symfony/http-foundation": "^4.3 || ^5.0",
         "symfony/http-kernel": "^4.3 || ^5.0",
         "symfony/options-resolver": "^4.3 || ^5.0",
+        "symfony/property-access": "^4.3 || ^5.0",
         "symfony/security-core": "^4.3 || ^5.0",
         "symfony/serializer": "^4.3 || ^5.0",
         "symfony/translation-contracts": "^1.0 || ^2.0",
@@ -45,7 +46,7 @@
         "phpstan/phpstan-symfony": "^0.12",
         "phpstan/phpstan-webmozart-assert": "^0.12",
         "sensiolabs-de/deptrac-shim": "^0.6.0",
-        "sulu/automation-bundle": "dev-develop as 2.0.0",
+        "sulu/automation-bundle": "^2.0@dev",
         "symfony/browser-kit": "^4.3 || ^5.0",
         "symfony/console": "^4.3 || ^5.0",
         "symfony/debug": "^4.3",
@@ -87,13 +88,18 @@
             "@lint-yaml",
             "@lint-container",
             "@lint-composer",
-            "@lint-schema",
+            "@lint-doctrine",
             "@deptrac"
         ],
         "test": [
             "@phpunit"
         ],
         "phpunit": "vendor/bin/simple-phpunit",
+        "test-with-coverage": "@phpunit --coverage-php Tests/reports/coverage.php --coverage-html Tests/reports/html --log-junit Tests/reports/unit/junit.xml --coverage-clover Tests/reports/clover.xml",
+        "check-coverage": [
+            "@php vendor/bin/code-coverage-checker \"Tests/reports/coverage.php\" \"line\" \"100.00\" \"Content\" \"DependencyInjection\""
+        ],
+        "deptract": "vendor/bin/deptrac",
         "phpstan": [
             "Tests/Application/bin/adminconsole cache:warmup --env dev",
             "@test install",
@@ -102,6 +108,7 @@
         "php-cs": "vendor/bin/php-cs-fixer fix --verbose --diff --dry-run",
         "php-cs-fix": "vendor/bin/php-cs-fixer fix",
         "lint-composer": "@composer validate --strict",
+        "lint-doctrine": "Tests/Application/bin/adminconsole doctrine:schema:validate",
         "lint-twig": "Tests/Application/bin/adminconsole lint:twig Tests/Application/templates",
         "lint-yaml": "Tests/Application/bin/adminconsole lint:yaml Resources/config Tests/Application/config",
         "lint-container": [

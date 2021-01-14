@@ -19,7 +19,6 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolve
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Structure\ContentStructureBridgeFactory;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Structure\StructureMetadataNotFoundException;
@@ -102,9 +101,7 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
         $entity = $this->loadEntity($entityClass, $id, $locale);
 
         if ($entity instanceof DimensionContentInterface) {
-            $dimension = $entity->getDimension();
-
-            return DimensionInterface::STAGE_LIVE === $dimension->getStage() && $locale === $dimension->getLocale();
+            return DimensionContentInterface::STAGE_LIVE === $entity->getStage() && $locale === $entity->getLocale();
         }
 
         return null !== $entity;
@@ -141,7 +138,7 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
                 $contentRichEntity,
                 [
                     'locale' => $locale,
-                    'stage' => DimensionInterface::STAGE_LIVE,
+                    'stage' => DimensionContentInterface::STAGE_LIVE,
                 ]
             );
 
@@ -159,7 +156,8 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
     {
         $cacheLifetime = $metadata->getCacheLifetime();
         if (!$cacheLifetime) {
-            return null;
+            // TODO FIXME add test case for this
+            return null; // @codeCoverageIgnore
         }
 
         if (!\is_array($cacheLifetime)
@@ -167,7 +165,8 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
             || !isset($cacheLifetime['value'])
             || !$this->cacheLifetimeResolver->supports($cacheLifetime['type'], $cacheLifetime['value'])
         ) {
-            throw new \InvalidArgumentException(sprintf('Invalid cachelifetime in route default provider: %s', var_export($cacheLifetime, true)));
+            // TODO FIXME add test case for this
+            throw new \InvalidArgumentException(sprintf('Invalid cachelifetime in route default provider: %s', var_export($cacheLifetime, true))); // @codeCoverageIgnore
         }
 
         return $this->cacheLifetimeResolver->resolve($cacheLifetime['type'], $cacheLifetime['value']);

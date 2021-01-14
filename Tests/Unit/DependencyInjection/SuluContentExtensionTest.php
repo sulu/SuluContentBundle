@@ -23,13 +23,10 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersis
 use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\ContentWorkflowInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\DimensionContentCollectionFactoryInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\Dimension;
 use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionContentRepositoryInterface;
-use Sulu\Bundle\ContentBundle\Content\Infrastructure\Doctrine\DimensionRepository;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Doctrine\MetadataLoader;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Admin\ContentViewBuilderFactoryInterface;
 use Sulu\Bundle\ContentBundle\DependencyInjection\SuluContentExtension;
-use Sulu\Component\Persistence\Repository\ORM\EntityRepository;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class SuluContentExtensionTest extends AbstractExtensionTestCase
@@ -51,10 +48,6 @@ class SuluContentExtensionTest extends AbstractExtensionTestCase
         $this->load();
         $this->assertContainerBuilderHasService('sulu_content.metadata_loader', MetadataLoader::class);
 
-        // Test persistence bundle registered service and parameters
-        $this->assertContainerBuilderHasService('sulu.repository.dimension', DimensionRepository::class);
-        $this->assertContainerBuilderHasParameter('sulu.model.dimension.class', Dimension::class);
-
         // Main services aliases
         $this->assertContainerBuilderHasAlias(ContentManagerInterface::class, 'sulu_content.content_manager');
         $this->assertContainerBuilderHasAlias(ContentResolverInterface::class, 'sulu_content.content_resolver');
@@ -69,21 +62,6 @@ class SuluContentExtensionTest extends AbstractExtensionTestCase
         $this->assertContainerBuilderHasAlias(DimensionContentRepositoryInterface::class, 'sulu_content.dimension_content_repository');
     }
 
-    public function testLoadObjects(): void
-    {
-        $this->load([
-            'objects' => [
-                'dimension' => [
-                    'model' => 'TestModel',
-                    'repository' => EntityRepository::class,
-                ],
-            ],
-        ]);
-
-        $this->assertContainerBuilderHasParameter('sulu.model.dimension.class', 'TestModel');
-        $this->assertContainerBuilderHasService('sulu.repository.dimension', EntityRepository::class);
-    }
-
     public function testPrepend(): void
     {
         $extension = $this->getExtension();
@@ -96,23 +74,6 @@ class SuluContentExtensionTest extends AbstractExtensionTestCase
         $doctrineExtension = new SuluAdminExtension();
         $containerBuilder->registerExtension($doctrineExtension);
         $extension->prepend($containerBuilder);
-
-        $this->assertSame([
-            [
-                'orm' => [
-                    'mappings' => [
-                        'SuluContentBundleDimension' => [
-                            'type' => 'xml',
-                            'prefix' => 'Sulu\Bundle\ContentBundle\Content\Domain\Model',
-                            'dir' => \dirname(__DIR__, 3) . '/Resources/config/doctrine/Dimension',
-                            'alias' => 'SuluDirectoryBundle',
-                            'is_bundle' => false,
-                            'mapping' => true,
-                        ],
-                    ],
-                ],
-            ],
-        ], $containerBuilder->getExtensionConfig('doctrine'));
 
         $this->assertSame([
             [

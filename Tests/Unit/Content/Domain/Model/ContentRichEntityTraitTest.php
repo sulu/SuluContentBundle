@@ -17,7 +17,6 @@ use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityTrait;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 
 class ContentRichEntityTraitTest extends TestCase
 {
@@ -26,7 +25,7 @@ class ContentRichEntityTraitTest extends TestCase
         return new class() implements ContentRichEntityInterface {
             use ContentRichEntityTrait;
 
-            public function createDimensionContent(DimensionInterface $dimension): DimensionContentInterface
+            public function createDimensionContent(): DimensionContentInterface
             {
                 throw new \RuntimeException('Should not be called while executing tests.');
             }

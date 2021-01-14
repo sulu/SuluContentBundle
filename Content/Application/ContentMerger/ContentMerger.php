@@ -16,6 +16,7 @@ namespace Sulu\Bundle\ContentBundle\Content\Application\ContentMerger;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentMerger\Merger\MergerInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
+use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 class ContentMerger implements ContentMergerInterface
 {
@@ -25,33 +26,45 @@ class ContentMerger implements ContentMergerInterface
     private $mergers;
 
     /**
+     * @var PropertyAccessor
+     */
+    private $propertyAccessor;
+
+    /**
      * @param iterable<MergerInterface> $mergers
      */
-    public function __construct(iterable $mergers)
-    {
+    public function __construct(
+        iterable $mergers,
+        PropertyAccessor $propertyAccessor
+    ) {
         $this->mergers = $mergers;
+        $this->propertyAccessor = $propertyAccessor;
     }
 
     public function merge(DimensionContentCollectionInterface $dimensionContentCollection): DimensionContentInterface
     {
-        if (!$dimensionContentCollection->count()) {
+        $unlocalizedDimensionContent = $dimensionContentCollection->getUnlocalizedDimensionContent();
+
+        if (!$unlocalizedDimensionContent) {
             throw new \RuntimeException('Expected at least one dimensionContent given.');
         }
 
-        /** @var DimensionContentInterface[] $dimensionContentCollectionArray */
-        $dimensionContentCollectionArray = iterator_to_array($dimensionContentCollection);
-        $lastKey = \count($dimensionContentCollectionArray) - 1;
+        $contentRichEntity = $unlocalizedDimensionContent->getResource();
 
-        $mostSpecificDimensionContent = $dimensionContentCollectionArray[$lastKey];
-        $mostSpecificDimension = $mostSpecificDimensionContent->getDimension();
-        $contentRichEntity = $mostSpecificDimensionContent->getResource();
-
-        $mergedDimensionContent = $contentRichEntity->createDimensionContent($mostSpecificDimension);
+        $mergedDimensionContent = $contentRichEntity->createDimensionContent();
         $mergedDimensionContent->markAsMerged();
 
         foreach ($dimensionContentCollection as $dimensionContent) {
             foreach ($this->mergers as $merger) {
                 $merger->merge($mergedDimensionContent, $dimensionContent);
+            }
+
+            foreach ($dimensionContentCollection->getDimensionAttributes() as $key => $value) {
+                $this->propertyAccessor->setValue(
+                    $mergedDimensionContent,
+                    $key,
+                    $this->propertyAccessor->getValue($dimensionContent, $key)
+                );
             }
         }
 

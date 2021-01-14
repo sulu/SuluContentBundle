@@ -23,7 +23,6 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Sulu\Bundle\CategoryBundle\Entity\CategoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
@@ -103,12 +102,6 @@ class MetadataLoaderTest extends TestCase
         $entityManager = $this->prophesize(EntityManager::class);
         $entityManager->getConfiguration()->willReturn($configuration->reveal());
 
-        if (\array_key_exists('dimension', $manyToOneAssociations) && !$manyToOneAssociations['dimension']) {
-            $dimensionClassMetadata = $this->prophesize(ClassMetadata::class);
-            $dimensionClassMetadata->getIdentifierColumnNames()->willReturn(['id'])->shouldBeCalled();
-            $entityManager->getClassMetadata(DimensionInterface::class)->willReturn($dimensionClassMetadata->reveal());
-        }
-
         if (\array_key_exists('excerptTags', $manyToManyAssociations) && !$manyToManyAssociations['excerptTags']) {
             $tagClassMetadata = $this->prophesize(ClassMetadata::class);
             $tagClassMetadata->getIdentifierColumnNames()->willReturn(['id'])->shouldBeCalled();
@@ -135,10 +128,12 @@ class MetadataLoaderTest extends TestCase
             [
                 DimensionContentInterface::class,
             ],
-            [],
+            [
+                'locale' => false,
+                'stage' => false,
+            ],
             [],
             [
-                'dimension' => false,
             ],
         ];
 
@@ -146,10 +141,12 @@ class MetadataLoaderTest extends TestCase
             [
                 DimensionContentInterface::class,
             ],
-            [],
+            [
+                'locale' => true,
+                'stage' => true,
+            ],
             [],
             [
-                'dimension' => true,
             ],
         ];
 

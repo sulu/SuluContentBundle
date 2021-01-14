@@ -26,26 +26,6 @@ class SuluContentExtension extends Extension implements PrependExtensionInterfac
 
     public function prepend(ContainerBuilder $container): void
     {
-        if ($container->hasExtension('doctrine')) {
-            $container->prependExtensionConfig(
-                'doctrine',
-                [
-                    'orm' => [
-                        'mappings' => [
-                            'SuluContentBundleDimension' => [
-                                'type' => 'xml',
-                                'prefix' => 'Sulu\Bundle\ContentBundle\Content\Domain\Model',
-                                'dir' => \dirname(__DIR__) . '/Resources/config/doctrine/Dimension',
-                                'alias' => 'SuluDirectoryBundle',
-                                'is_bundle' => false,
-                                'mapping' => true,
-                            ],
-                        ],
-                    ],
-                ]
-            );
-        }
-
         if ($container->hasExtension('sulu_admin')) {
             $container->prependExtensionConfig(
                 'sulu_admin',
@@ -64,7 +44,6 @@ class SuluContentExtension extends Extension implements PrependExtensionInterfac
     {
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
-        $this->configurePersistence($config['objects'], $container);
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('data-mapper.xml');
@@ -73,7 +52,8 @@ class SuluContentExtension extends Extension implements PrependExtensionInterfac
         $loader->load('services.xml');
 
         if ($container->hasParameter('kernel.bundles')) {
-            // @codeCoverageIgnoreStart TODO FIXME add test here
+            // TODO FIXME add test here
+            // @codeCoverageIgnoreStart
             $bundles = $container->getParameter('kernel.bundles');
 
             if (\array_key_exists('SuluAutomationBundle', $bundles)) {

@@ -21,4 +21,19 @@ interface DimensionContentCollectionInterface extends \Traversable, \Countable
     public function getUnlocalizedDimensionContent(): ?DimensionContentInterface;
 
     public function getLocalizedDimensionContent(): ?DimensionContentInterface;
+
+    /**
+     * @param mixed[] $dimensionAttributes
+     */
+    public function getDimensionContent(array $dimensionAttributes): ?DimensionContentInterface;
+
+    /**
+     * @return class-string<DimensionContentInterface>
+     */
+    public function getDimensionContentClass(): string;
+
+    /**
+     * @return mixed[]
+     */
+    public function getDimensionAttributes(): array;
 }

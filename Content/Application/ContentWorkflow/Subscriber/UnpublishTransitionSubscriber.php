@@ -18,20 +18,13 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\ContentWorkflo
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionContentRepositoryInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionRepositoryInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Workflow\Event\TransitionEvent;
 
 class UnpublishTransitionSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var DimensionRepositoryInterface
-     */
-    private $dimensionRepository;
-
     /**
      * @var DimensionContentRepositoryInterface
      */
@@ -43,11 +36,9 @@ class UnpublishTransitionSubscriber implements EventSubscriberInterface
     protected $entityManager;
 
     public function __construct(
-        DimensionRepositoryInterface $dimensionRepository,
         DimensionContentRepositoryInterface $dimensionContentRepository,
         EntityManagerInterface $entityManager
     ) {
-        $this->dimensionRepository = $dimensionRepository;
         $this->dimensionContentRepository = $dimensionContentRepository;
         $this->entityManager = $entityManager;
     }
@@ -76,14 +67,9 @@ class UnpublishTransitionSubscriber implements EventSubscriberInterface
             throw new \RuntimeException('Transition context must contain "contentRichEntity".');
         }
 
-        $liveDimensionAttributes = array_merge($dimensionAttributes, ['stage' => DimensionInterface::STAGE_LIVE]);
+        $liveDimensionAttributes = array_merge($dimensionAttributes, ['stage' => DimensionContentInterface::STAGE_LIVE]);
 
-        $dimensionCollection = $this->dimensionRepository->findByAttributes($liveDimensionAttributes);
-        if (0 === \count($dimensionCollection)) {
-            throw new ContentNotFoundException($contentRichEntity, $liveDimensionAttributes);
-        }
-
-        $dimensionContentCollection = $this->dimensionContentRepository->load($contentRichEntity, $dimensionCollection);
+        $dimensionContentCollection = $this->dimensionContentRepository->load($contentRichEntity, $liveDimensionAttributes);
         $localizedDimensionContent = $dimensionContentCollection->getLocalizedDimensionContent();
         if (!$localizedDimensionContent) {
             throw new ContentNotFoundException($contentRichEntity, $liveDimensionAttributes);
