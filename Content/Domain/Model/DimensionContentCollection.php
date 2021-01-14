@@ -65,7 +65,7 @@ class DimensionContentCollection implements \IteratorAggregate, DimensionContent
     ) {
         $this->dimensionContents = new ArrayCollection($dimensionContents);
         $this->dimensionContentClass = $dimensionContentClass;
-        $this->defaultDimensionAttributes = $dimensionContentClass::getDefaultAttributes();
+        $this->defaultDimensionAttributes = $dimensionContentClass::getDefaultDimensionAttributes();
 
         $this->unlocalizedDimensionContent = $this->dimensionContents->filter(
             function (DimensionContentInterface $dimensionContent) {

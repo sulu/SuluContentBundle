@@ -37,5 +37,5 @@ interface DimensionContentInterface
     /**
      * @return mixed[]
      */
-    public static function getDefaultAttributes(): array;
+    public static function getDefaultDimensionAttributes(): array;
 }

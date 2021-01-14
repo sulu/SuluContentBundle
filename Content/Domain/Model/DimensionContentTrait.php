@@ -60,7 +60,7 @@ trait DimensionContentTrait
         $this->isMerged = true;
     }
 
-    public static function getDefaultAttributes(): array
+    public static function getDefaultDimensionAttributes(): array
     {
         return [
             'locale' => null,

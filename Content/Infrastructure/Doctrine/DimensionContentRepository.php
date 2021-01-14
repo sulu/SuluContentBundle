@@ -113,7 +113,7 @@ class DimensionContentRepository implements DimensionContentRepositoryInterface
      */
     private function getEffectiveAttributes(string $className, array $attributes): array
     {
-        $defaultValues = $className::getDefaultAttributes();
+        $defaultValues = $className::getDefaultDimensionAttributes();
 
         // Ignore keys that are not part of the default attributes
         $attributes = array_intersect_key($attributes, $defaultValues);

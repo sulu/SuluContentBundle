@@ -62,7 +62,7 @@ trait DimensionContentMockWrapperTrait
         $this->instance->markAsMerged();
     }
 
-    public static function getDefaultAttributes(): array
+    public static function getDefaultDimensionAttributes(): array
     {
         return [
             'locale' => null,

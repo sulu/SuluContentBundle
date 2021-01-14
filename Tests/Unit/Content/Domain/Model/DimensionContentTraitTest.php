@@ -59,7 +59,7 @@ class DimensionContentTraitTest extends TestCase
         $this->assertSame([
             'locale' => null,
             'stage' => 'draft',
-        ], $model::getDefaultAttributes());
+        ], $model::getDefaultDimensionAttributes());
     }
 
     public function testGetSetIsMerged(): void

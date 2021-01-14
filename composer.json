@@ -46,7 +46,7 @@
         "phpstan/phpstan-symfony": "^0.12",
         "phpstan/phpstan-webmozart-assert": "^0.12",
         "sensiolabs-de/deptrac-shim": "^0.6.0",
-        "sulu/automation-bundle": "dev-develop as 2.0.0",
+        "sulu/automation-bundle": "^2.0@dev",
         "symfony/browser-kit": "^4.3 || ^5.0",
         "symfony/console": "^4.3 || ^5.0",
         "symfony/debug": "^4.3",
