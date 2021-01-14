@@ -44,12 +44,14 @@ class ContentSitemapProviderTest extends SuluTestCase
         $example1 = static::createExample(
             [
                 'en' => [
-                    'title' => 'example-1',
-                    'published' => true,
+                    'live' => [
+                        'title' => 'example-1',
+                    ],
                 ],
                 'de' => [
-                    'title' => 'beispiel-1',
-                    'published' => true,
+                    'live' => [
+                        'title' => 'beispiel-1',
+                    ],
                 ],
             ],
             [
@@ -61,8 +63,9 @@ class ContentSitemapProviderTest extends SuluTestCase
         $example2 = static::createExample(
             [
                 'en' => [
-                    'title' => 'example-2',
-                    'published' => true,
+                    'live' => [
+                        'title' => 'example-2',
+                    ],
                 ],
             ],
             [
@@ -74,12 +77,14 @@ class ContentSitemapProviderTest extends SuluTestCase
         $example3 = static::createExample(
             [
                 'en' => [
-                    'title' => 'example-3',
-                    'published' => true,
+                    'live' => [
+                        'title' => 'example-3',
+                    ],
                 ],
                 'de' => [
-                    'title' => 'beispiel-3',
-                    'published' => false,
+                    'draft' => [
+                        'title' => 'beispiel-3',
+                    ],
                 ],
             ],
             [
@@ -91,8 +96,9 @@ class ContentSitemapProviderTest extends SuluTestCase
         $example4 = static::createExample(
             [
                 'de' => [
-                    'title' => 'beispiel-4',
-                    'published' => true,
+                    'live' => [
+                        'title' => 'beispiel-4',
+                    ],
                 ],
             ],
             [
@@ -104,8 +110,9 @@ class ContentSitemapProviderTest extends SuluTestCase
         $example5 = static::createExample(
             [
                 'en' => [
-                    'title' => 'example-5',
-                    'published' => false,
+                    'draft' => [
+                        'title' => 'example-5',
+                    ],
                 ],
             ],
             [

@@ -80,12 +80,9 @@ trait CreateExampleTrait
         $createdPublishedUnlocalizedDimension = false;
 
         foreach ($dataSet as $locale => $data) {
-            $published = $data['published'] ?? false;
-            unset($data['published']);
-
             // draft data
-            $draft = $data['draft'] ?? null;
-            unset($data['draft']);
+            $draftData = $data['draft'] ?? $data['live'];
+            $liveData = $data['live'] ?? null;
 
             // create localized draft dimension
             $draftLocalizedDimension = new ExampleDimensionContent($example);
@@ -94,13 +91,10 @@ trait CreateExampleTrait
             $entityManager->persist($draftLocalizedDimension);
 
             // Map Draft Data
-            $contentDataMapper->map($fillWithdefaultData($draft ?: $data), $draftUnlocalizedDimension, $draftLocalizedDimension);
+            $contentDataMapper->map($fillWithdefaultData($draftData), $draftUnlocalizedDimension, $draftLocalizedDimension);
+            $draftLocalizedDimension->setWorkflowPlace(WorkflowInterface::WORKFLOW_PLACE_DRAFT);
 
-            if ($draft) {
-                $draftLocalizedDimension->setWorkflowPlace(WorkflowInterface::WORKFLOW_PLACE_DRAFT);
-            }
-
-            if ($published) {
+            if ($liveData) {
                 if (!$createdPublishedUnlocalizedDimension) {
                     // create localized live dimension
                     $liveUnlocalizedDimension = new ExampleDimensionContent($example);
@@ -118,7 +112,9 @@ trait CreateExampleTrait
                 $entityManager->persist($liveLocalizedDimension);
 
                 // set published state
-                if (!$draft) {
+                if (isset($data['draft'])) {
+                    $draftLocalizedDimension->setWorkflowPlace(WorkflowInterface::WORKFLOW_PLACE_DRAFT);
+                } else {
                     $draftLocalizedDimension->setWorkflowPlace(WorkflowInterface::WORKFLOW_PLACE_PUBLISHED);
                 }
 
@@ -126,8 +122,8 @@ trait CreateExampleTrait
                 $liveLocalizedDimension->setWorkflowPublished(new \DateTimeImmutable());
 
                 // map data
-                $data['published'] = date('Y-m-d H:i:s');
-                $contentDataMapper->map($fillWithdefaultData($data), $liveUnlocalizedDimension, $liveLocalizedDimension);
+                $liveData['published'] = date('Y-m-d H:i:s');
+                $contentDataMapper->map($fillWithdefaultData($liveData), $liveUnlocalizedDimension, $liveLocalizedDimension);
 
                 if ($options['create_route'] ?? false) {
                     $route = new Route();

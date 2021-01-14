@@ -53,7 +53,9 @@ class ContentSearchMetadataProviderTest extends SuluTestCase
 
         static::$example1 = static::createExample([
             'en' => [
-                'title' => 'example-1',
+                'draft' => [
+                    'title' => 'example-1',
+                ],
             ],
         ]);
 

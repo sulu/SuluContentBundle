@@ -109,11 +109,11 @@ class ContentDataProviderTest extends SuluTestCase
         // Example 1
         $example1 = static::createExample([
             'en' => [
-                'title' => 'example without categories without tags',
-                'published' => true,
+                'live' => [
+                    'title' => 'example without categories without tags',
+                ],
             ],
             'de' => [
-                'title' => 'example without categories without tags',
                 'draft' => [
                     'title' => 'example without categories without tags draft',
                     'excerptCategories' => [
@@ -125,153 +125,169 @@ class ContentDataProviderTest extends SuluTestCase
                         static::$tagC->getName(),
                     ],
                 ],
-                'published' => true,
+                'live' => [
+                    'title' => 'example without categories without tags',
+                ],
             ],
         ]);
 
         // Example 2
         $example2 = static::createExample([
             'en' => [
-                'title' => 'example with some categories without tags',
-                'excerptCategories' => [
-                    static::$categoryFoo->getId(),
+                'live' => [
+                    'title' => 'example with some categories without tags',
+                    'excerptCategories' => [
+                        static::$categoryFoo->getId(),
+                    ],
                 ],
-                'published' => true,
             ],
             'de' => [
-                'title' => 'example with some categories without tags unpublished',
-                'excerptCategories' => [
-                    static::$categoryFoo->getId(),
+                'draft' => [
+                    'title' => 'example with some categories without tags unpublished',
+                    'excerptCategories' => [
+                        static::$categoryFoo->getId(),
+                    ],
+                    'excerptTags' => [],
                 ],
-                'excerptTags' => [],
             ],
         ]);
 
         // Example 3
         $example3 = static::createExample([
             'en' => [
-                'title' => 'example with all categories without tags',
-                'excerptCategories' => [
-                    static::$categoryFoo->getId(),
-                    static::$categoryBar->getId(),
-                    static::$categoryBaz->getId(),
+                'live' => [
+                    'title' => 'example with all categories without tags',
+                    'excerptCategories' => [
+                        static::$categoryFoo->getId(),
+                        static::$categoryBar->getId(),
+                        static::$categoryBaz->getId(),
+                    ],
                 ],
-                'published' => true,
             ],
             'de' => [
-                'title' => 'example with all categories without tags',
-                'excerptCategories' => [
-                    static::$categoryFoo->getId(),
-                    static::$categoryBar->getId(),
-                    static::$categoryBaz->getId(),
+                'live' => [
+                    'title' => 'example with all categories without tags',
+                    'excerptCategories' => [
+                        static::$categoryFoo->getId(),
+                        static::$categoryBar->getId(),
+                        static::$categoryBaz->getId(),
+                    ],
+                    'excerptTags' => [],
                 ],
-                'excerptTags' => [],
-                'published' => true,
             ],
         ]);
 
         // Example 4
         $example4 = static::createExample([
             'en' => [
-                'title' => 'example without categories with some tags',
-                'excerptTags' => [
-                    static::$tagA->getName(),
+                'live' => [
+                    'title' => 'example without categories with some tags',
+                    'excerptTags' => [
+                        static::$tagA->getName(),
+                    ],
                 ],
-                'published' => true,
             ],
             'de' => [
-                'title' => 'example without categories with some tags',
-                'excerptTags' => [
-                    static::$tagA->getName(),
+                'live' => [
+                    'title' => 'example without categories with some tags',
+                    'excerptTags' => [
+                        static::$tagA->getName(),
+                    ],
                 ],
-                'published' => true,
             ],
         ]);
 
         // Example 5
         $example5 = static::createExample([
             'en' => [
-                'title' => 'example without categories with all tags',
-                'excerptTags' => [
-                    static::$tagA->getName(),
-                    static::$tagB->getName(),
-                    static::$tagC->getName(),
+                'live' => [
+                    'title' => 'example without categories with all tags',
+                    'excerptTags' => [
+                        static::$tagA->getName(),
+                        static::$tagB->getName(),
+                        static::$tagC->getName(),
+                    ],
                 ],
-                'published' => true,
             ],
             'de' => [
-                'title' => 'example without categories with all tags',
-                'excerptTags' => [
-                    static::$tagA->getName(),
-                    static::$tagB->getName(),
-                    static::$tagC->getName(),
+                'live' => [
+                    'title' => 'example without categories with all tags',
+                    'excerptTags' => [
+                        static::$tagA->getName(),
+                        static::$tagB->getName(),
+                        static::$tagC->getName(),
+                    ],
                 ],
-                'published' => true,
             ],
         ]);
 
         // Example 6
         $example6 = static::createExample([
             'en' => [
-                'title' => 'example with some categories with some tags',
-                'excerptCategories' => [
-                    static::$categoryBar->getId(),
+                'live' => [
+                    'title' => 'example with some categories with some tags',
+                    'excerptCategories' => [
+                        static::$categoryBar->getId(),
+                    ],
+                    'excerptTags' => [
+                        static::$tagB->getName(),
+                    ],
                 ],
-                'excerptTags' => [
-                    static::$tagB->getName(),
-                ],
-                'published' => true,
             ],
             'de' => [
-                'title' => 'example with some categories with some tags',
-                'excerptCategories' => [
-                    static::$categoryBar->getId(),
+                'live' => [
+                    'title' => 'example with some categories with some tags',
+                    'excerptCategories' => [
+                        static::$categoryBar->getId(),
+                    ],
+                    'excerptTags' => [
+                        static::$tagB->getName(),
+                    ],
                 ],
-                'excerptTags' => [
-                    static::$tagB->getName(),
-                ],
-                'published' => true,
             ],
         ]);
 
         // Example 7
         $example7 = static::createExample([
             'en' => [
-                'title' => 'example with all categories with all tags',
-                'excerptCategories' => [
-                    static::$categoryFoo->getId(),
-                    static::$categoryBar->getId(),
-                    static::$categoryBaz->getId(),
+                'live' => [
+                    'title' => 'example with all categories with all tags',
+                    'excerptCategories' => [
+                        static::$categoryFoo->getId(),
+                        static::$categoryBar->getId(),
+                        static::$categoryBaz->getId(),
+                    ],
+                    'excerptTags' => [
+                        static::$tagA->getName(),
+                        static::$tagB->getName(),
+                        static::$tagC->getName(),
+                    ],
                 ],
-                'excerptTags' => [
-                    static::$tagA->getName(),
-                    static::$tagB->getName(),
-                    static::$tagC->getName(),
-                ],
-                'published' => true,
             ],
             'de' => [
-                'title' => 'example with all categories with all tags',
-                'excerptCategories' => [
-                    static::$categoryFoo->getId(),
-                    static::$categoryBar->getId(),
-                    static::$categoryBaz->getId(),
+                'live' => [
+                    'title' => 'example with all categories with all tags',
+                    'excerptCategories' => [
+                        static::$categoryFoo->getId(),
+                        static::$categoryBar->getId(),
+                        static::$categoryBaz->getId(),
+                    ],
+                    'excerptTags' => [
+                        static::$tagA->getName(),
+                        static::$tagB->getName(),
+                        static::$tagC->getName(),
+                    ],
                 ],
-                'excerptTags' => [
-                    static::$tagA->getName(),
-                    static::$tagB->getName(),
-                    static::$tagC->getName(),
-                ],
-                'published' => true,
             ],
         ]);
 
         // Example 8
         static::createExample([
             'en' => [
-                'title' => 'example with non default template',
-                'template' => 'example-2',
-                'published' => true,
+                'live' => [
+                    'title' => 'example with non default template',
+                    'template' => 'example-2',
+                ],
             ],
         ]);
 

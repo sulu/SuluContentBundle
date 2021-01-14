@@ -53,12 +53,14 @@ class ContentReindexProviderTest extends SuluTestCase
         static::$example1 = static::createExample(
             [
                 'en' => [
-                    'title' => 'example-1',
-                    'published' => false,
+                    'draft' => [
+                        'title' => 'example-1',
+                    ],
                 ],
                 'de' => [
-                    'title' => 'beispiel-1',
-                    'published' => true,
+                    'live' => [
+                        'title' => 'beispiel-1',
+                    ],
                 ],
             ]
         );
@@ -66,7 +68,9 @@ class ContentReindexProviderTest extends SuluTestCase
         static::$example2 = static::createExample(
             [
                 'en' => [
-                    'title' => 'example-2',
+                    'draft' => [
+                        'title' => 'example-2',
+                    ],
                 ],
             ]
         );

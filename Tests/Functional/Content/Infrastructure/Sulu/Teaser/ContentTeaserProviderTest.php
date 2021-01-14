@@ -47,54 +47,63 @@ class ContentTeaserProviderTest extends WebsiteTestCase
         // Example 1 (both locales, both published)
         $example1 = static::createExample([
             'en' => [
-                'title' => 'example-1',
-                'article' => 'example-1-article',
-                'excerptTitle' => 'example-1-excerpt-title',
-                'excerptDescription' => 'example-1-excerpt-description',
-                'excerptMore' => 'example-1-more',
-                'published' => true,
+                'live' => [
+                    'title' => 'example-1',
+                    'article' => 'example-1-article',
+                    'excerptTitle' => 'example-1-excerpt-title',
+                    'excerptDescription' => 'example-1-excerpt-description',
+                    'excerptMore' => 'example-1-more',
+                ],
             ],
             'de' => [
-                'title' => 'beispiel-1',
-                'article' => null,
-                'excerptDescription' => 'example-1-excerpt-auszug',
-                'published' => true,
+                'live' => [
+                    'title' => 'beispiel-1',
+                    'article' => null,
+                    'excerptDescription' => 'example-1-excerpt-auszug',
+                ],
             ],
         ]);
 
         // Example 2 (only en, published)
         $example2 = static::createExample([
             'en' => [
-                'title' => 'example-2',
-                'published' => true,
+                'live' => [
+                    'title' => 'example-2',
+                ],
             ],
         ]);
 
         // Example 3 (both locales, only en published)
         $example3 = static::createExample([
             'en' => [
-                'title' => 'example-3',
-                'article' => '<p>Test article</p>',
-                'published' => true,
+                'live' => [
+                    'title' => 'example-3',
+                    'article' => '<p>Test article</p>',
+                ],
             ],
             'de' => [
-                'title' => 'beispiel-3',
+                'draft' => [
+                    'title' => 'beispiel-3',
+                ],
             ],
         ]);
 
         // Example 4 (only de, published)
         $example4 = static::createExample([
             'de' => [
-                'title' => 'beispiel-4',
-                'published' => true,
-                'article' => '<p>Test article</p>',
+                'live' => [
+                    'title' => 'beispiel-4',
+                    'article' => '<p>Test article</p>',
+                ],
             ],
         ]);
 
         // Example 5 (only en, not published)
         $example5 = static::createExample([
             'en' => [
-                'title' => 'example-5',
+                'draft' => [
+                    'title' => 'example-5',
+                ],
             ],
         ]);
 
@@ -141,9 +150,10 @@ class ContentTeaserProviderTest extends WebsiteTestCase
     {
         $example6 = static::createExample([
             'en' => [
-                'title' => 'example-6',
-                'template' => 'no-route',
-                'published' => true,
+                'live' => [
+                    'title' => 'example-6',
+                    'template' => 'no-route',
+                ],
             ],
         ]);
 
