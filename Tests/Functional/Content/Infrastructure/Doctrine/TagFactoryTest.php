@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Tests\Functional\Content\Infrastructure\Doctrine;
 
+use Sulu\Bundle\ContactBundle\Entity\Contact;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\TagFactoryInterface;
 use Sulu\Bundle\TagBundle\Tag\TagInterface;
 use Sulu\Bundle\TagBundle\Tag\TagRepositoryInterface;
@@ -20,32 +21,17 @@ use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
 
 class TagFactoryTest extends SuluTestCase
 {
+    /**
+     * @var TagFactoryInterface
+     */
+    private $tagFactory;
+
     protected function setUp(): void
     {
         self::bootKernel();
         self::purgeDatabase();
-    }
 
-    /**
-     * @param string[] $existTagNames
-     */
-    protected function createTagFactory(array $existTagNames = []): TagFactoryInterface
-    {
-        /** @var TagRepositoryInterface $tagRepository */
-        $tagRepository = self::$container->get('sulu.repository.tag');
-
-        foreach ($existTagNames as $existTagName) {
-            $existTag = $tagRepository->createNew();
-            $existTag->setName($existTagName);
-            self::getEntityManager()->persist($existTag);
-        }
-
-        if (\count($existTagNames)) {
-            self::getEntityManager()->flush();
-            self::getEntityManager()->clear();
-        }
-
-        return self::$container->get('sulu_content.tag_factory');
+        $this->tagFactory = self::$container->get('sulu_content.tag_factory');
     }
 
     /**
@@ -56,7 +42,9 @@ class TagFactoryTest extends SuluTestCase
      */
     public function testCreate(array $tagNames, array $existTags): void
     {
-        $tagFactory = $this->createTagFactory($existTags);
+        $this->createTags($existTags);
+
+        $tags = $this->tagFactory->create($tagNames);
 
         $this->assertSame(
             $tagNames,
@@ -64,9 +52,37 @@ class TagFactoryTest extends SuluTestCase
                 function (TagInterface $tag) {
                     return $tag->getName();
                 },
-                $tagFactory->create($tagNames)
+                $tags
             )
         );
+    }
+
+    public function testCreateSameTagTwice(): void
+    {
+        $tags1 = $this->tagFactory->create(['Tag 1']);
+        $tags2 = $this->tagFactory->create(['Tag 1']);
+
+        $this->assertSame($tags1, $tags2);
+
+        $this->getEntityManager()->flush();
+    }
+
+    public function testCreateSameTagTwiceWithOtherEntityInUnitOfWork(): void
+    {
+        $this->getEntityManager()->persist($this->createOtherEntity());
+
+        /** @var TagRepositoryInterface $tagRepository */
+        $tagRepository = self::$container->get('sulu.repository.tag');
+        $tag = $tagRepository->createNew();
+        $tag->setName('Other Tag');
+        $this->getEntityManager()->persist($tag);
+
+        $tags1 = $this->tagFactory->create(['Tag 1']);
+        $tags2 = $this->tagFactory->create(['Tag 1']);
+
+        $this->assertSame($tags1, $tags2);
+
+        $this->getEntityManager()->flush();
     }
 
     /**
@@ -100,6 +116,7 @@ class TagFactoryTest extends SuluTestCase
             ],
             [
                 'Exist Tag 1',
+                'Other Exist 3',
             ],
         ];
 
@@ -113,5 +130,34 @@ class TagFactoryTest extends SuluTestCase
                 'Exist Tag 2',
             ],
         ];
+    }
+
+    /**
+     * @param string[] $existTagNames
+     */
+    private function createTags(array $existTagNames = []): void
+    {
+        /** @var TagRepositoryInterface $tagRepository */
+        $tagRepository = self::$container->get('sulu.repository.tag');
+
+        foreach ($existTagNames as $existTagName) {
+            $existTag = $tagRepository->createNew();
+            $existTag->setName($existTagName);
+            self::getEntityManager()->persist($existTag);
+        }
+
+        if (\count($existTagNames)) {
+            self::getEntityManager()->flush();
+            self::getEntityManager()->clear();
+        }
+    }
+
+    private function createOtherEntity(): object
+    {
+        $contact = new Contact();
+        $contact->setFirstName('Dummy');
+        $contact->setLastName('Entity');
+
+        return $contact;
     }
 }

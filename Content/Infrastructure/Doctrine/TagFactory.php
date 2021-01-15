@@ -52,22 +52,41 @@ class TagFactory implements TagFactoryInterface
         // sort tags by the given names order
         $excerptTags = [];
         foreach ($tags as $tag) {
-            $excerptTags[array_search($tag->getName(), $tagNames, true)] = $tag;
+            $index = array_search($tag->getName(), $tagNames, true);
+            $excerptTags[$index] = $tag;
+            unset($tagNames[$index]);
         }
 
-        // create tags which not exist yet
-        foreach ($tagNames as $key => $tagName) {
-            if (isset($excerptTags[$key])) {
-                continue;
-            }
+        // check if a tag with the same name was yet persisted and use that instead of create one
+        // this avoids a unique constraint error to create multiple tag with same name
+        if (\count($tagNames)) {
+            // we use here the unitOfWork instead of an own cache this avoid us listing for
+            // flush, clear or deletion events and so we don't need to invalid an cache ourselves
+            foreach ($this->entityManager->getUnitOfWork()->getScheduledEntityInsertions() as $object) {
+                if (!$object instanceof TagInterface) {
+                    continue;
+                }
 
+                $index = array_search($object->getName(), $tagNames, true);
+
+                if (false === $index) {
+                    continue;
+                }
+
+                $excerptTags[$index] = $object;
+                unset($tagNames[$index]);
+            }
+        }
+
+        // create missing tags which not exist yet
+        foreach ($tagNames as $index => $tagName) {
             /** @var TagInterface $tag */
             $tag = $this->tagRepository->createNew();
             $tag->setName($tagName);
 
             $this->entityManager->persist($tag);
 
-            $excerptTags[$key] = $tag;
+            $excerptTags[$index] = $tag;
         }
 
         return $excerptTags;
