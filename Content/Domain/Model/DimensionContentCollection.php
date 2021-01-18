@@ -87,11 +87,6 @@ class DimensionContentCollection implements \IteratorAggregate, DimensionContent
         return $this->dimensionContentClass;
     }
 
-    public function getLocalizedDimensionContent(): ?DimensionContentInterface
-    {
-        return $this->localizedDimensionContent;
-    }
-
     public function getDimensionContent(array $dimensionAttributes): ?DimensionContentInterface
     {
         $dimensionAttributes = array_merge($this->defaultDimensionAttributes, $dimensionAttributes);

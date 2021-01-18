@@ -70,7 +70,8 @@ class UnpublishTransitionSubscriber implements EventSubscriberInterface
         $liveDimensionAttributes = array_merge($dimensionAttributes, ['stage' => DimensionContentInterface::STAGE_LIVE]);
 
         $dimensionContentCollection = $this->dimensionContentRepository->load($contentRichEntity, $liveDimensionAttributes);
-        $localizedDimensionContent = $dimensionContentCollection->getLocalizedDimensionContent();
+        $localizedDimensionContent = $dimensionContentCollection->getDimensionContent($liveDimensionAttributes);
+
         if (!$localizedDimensionContent) {
             throw new ContentNotFoundException($contentRichEntity, $liveDimensionAttributes);
         }
