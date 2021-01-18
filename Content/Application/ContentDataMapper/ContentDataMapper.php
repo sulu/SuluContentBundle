@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper;
 
 use Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\DataMapper\DataMapperInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
 
 class ContentDataMapper implements ContentDataMapperInterface
 {
@@ -32,11 +33,10 @@ class ContentDataMapper implements ContentDataMapperInterface
 
     public function map(
         array $data,
-        object $unlocalizedObject,
-        ?object $localizedObject = null
+        DimensionContentCollectionInterface $dimensionContentCollection
     ): void {
         foreach ($this->dataMappers as $mapper) {
-            $mapper->map($data, $unlocalizedObject, $localizedObject);
+            $mapper->map($data, $dimensionContentCollection);
         }
     }
 }

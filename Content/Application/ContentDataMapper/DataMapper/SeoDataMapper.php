@@ -13,15 +13,21 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\DataMapper;
 
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
 
 class SeoDataMapper implements DataMapperInterface
 {
     public function map(
         array $data,
-        object $unlocalizedObject,
-        ?object $localizedObject = null
+        DimensionContentCollectionInterface $dimensionContentCollection
     ): void {
+        $dimensionAttributes = $dimensionContentCollection->getDimensionAttributes();
+        $localizedObject = $dimensionContentCollection->getDimensionContent($dimensionAttributes);
+
+        $unlocalizedDimensionAttributes = array_merge($dimensionAttributes, ['locale' => null]);
+        $unlocalizedObject = $dimensionContentCollection->getDimensionContent($unlocalizedDimensionAttributes);
+
         if (!$unlocalizedObject instanceof SeoInterface) {
             return;
         }
