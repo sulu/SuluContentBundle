@@ -41,14 +41,14 @@ class ExcerptDataMapper implements DataMapperInterface
         DimensionContentCollectionInterface $dimensionContentCollection
     ): void {
         $dimensionAttributes = $dimensionContentCollection->getDimensionAttributes();
-        $localizedObject = $dimensionContentCollection->getDimensionContent($dimensionAttributes);
-
         $unlocalizedDimensionAttributes = array_merge($dimensionAttributes, ['locale' => null]);
         $unlocalizedObject = $dimensionContentCollection->getDimensionContent($unlocalizedDimensionAttributes);
 
         if (!$unlocalizedObject instanceof ExcerptInterface) {
             return;
         }
+
+        $localizedObject = $dimensionContentCollection->getDimensionContent($dimensionAttributes);
 
         if ($localizedObject) {
             if (!$localizedObject instanceof ExcerptInterface) {

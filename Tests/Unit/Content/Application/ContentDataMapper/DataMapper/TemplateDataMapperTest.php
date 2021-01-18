@@ -16,8 +16,10 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentDataMa
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\DataMapper\TemplateDataMapper;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
+use Sulu\Bundle\ContentBundle\Tests\Unit\Mocks\DimensionContentMockWrapperTrait;
 use Sulu\Bundle\ContentBundle\Tests\Unit\Mocks\MockWrapper;
 use Sulu\Bundle\ContentBundle\Tests\Unit\Mocks\TemplateMockWrapperTrait;
 use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
@@ -41,7 +43,10 @@ class TemplateDataMapperTest extends TestCase
      */
     protected function wrapTemplateMock(ObjectProphecy $tempplateMock): TemplateInterface
     {
-        return new class($tempplateMock) extends MockWrapper implements TemplateInterface {
+        return new class($tempplateMock) extends MockWrapper implements
+            DimensionContentInterface,
+            TemplateInterface {
+            use DimensionContentMockWrapperTrait;
             use TemplateMockWrapperTrait;
         };
     }
@@ -56,15 +61,18 @@ class TemplateDataMapperTest extends TestCase
 
         $structureMetadataFactory = $this->prophesize(StructureMetadataFactoryInterface::class);
 
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $unlocalizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
         $localizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
 
+        $dimensionContentCollection = $this->prophesize(DimensionContentCollectionInterface::class);
+        $dimensionContentCollection->getDimensionAttributes()->willReturn(['stage' => 'draft', 'locale' => 'de']);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => null])
+            ->willReturn($unlocalizedDimensionContent);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => 'de'])
+            ->willReturn($localizedDimensionContent);
+
         $templateMapper = $this->createTemplateDataMapperInstance($structureMetadataFactory->reveal());
-        $templateMapper->map(
-            $data,
-            $dimensionContent->reveal(),
-            $localizedDimensionContent->reveal()
-        );
+        $templateMapper->map($data, $dimensionContentCollection->reveal());
 
         $this->assertTrue(true); // Avoid risky test as this is an early return test
     }
@@ -77,18 +85,21 @@ class TemplateDataMapperTest extends TestCase
 
         $structureMetadataFactory = $this->prophesize(StructureMetadataFactoryInterface::class);
 
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent->willImplement(TemplateInterface::class);
+        $unlocalizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $unlocalizedDimensionContent->willImplement(TemplateInterface::class);
 
         $localizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
 
+        $dimensionContentCollection = $this->prophesize(DimensionContentCollectionInterface::class);
+        $dimensionContentCollection->getDimensionAttributes()->willReturn(['stage' => 'draft', 'locale' => 'de']);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => null])
+            ->willReturn($this->wrapTemplateMock($unlocalizedDimensionContent));
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => 'de'])
+            ->willReturn($localizedDimensionContent);
+
         $templateMapper = $this->createTemplateDataMapperInstance($structureMetadataFactory->reveal());
 
-        $templateMapper->map(
-            $data,
-            $this->wrapTemplateMock($dimensionContent),
-            $localizedDimensionContent->reveal()
-        );
+        $templateMapper->map($data, $dimensionContentCollection->reveal());
     }
 
     public function testMapLocalizedNoTemplateInstance(): void
@@ -115,16 +126,19 @@ class TemplateDataMapperTest extends TestCase
             'template-key'
         )->willReturn($structureMetadata->reveal())->shouldBeCalled();
 
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent->willImplement(TemplateInterface::class);
+        $unlocalizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $unlocalizedDimensionContent->willImplement(TemplateInterface::class);
+
+        $dimensionContentCollection = $this->prophesize(DimensionContentCollectionInterface::class);
+        $dimensionContentCollection->getDimensionAttributes()->willReturn(['stage' => 'draft', 'locale' => 'de']);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => null])
+            ->willReturn($this->wrapTemplateMock($unlocalizedDimensionContent));
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => 'de'])
+            ->willReturn($localizedDimensionContent);
 
         $templateMapper = $this->createTemplateDataMapperInstance($structureMetadataFactory->reveal());
 
-        $templateMapper->map(
-            $data,
-            $this->wrapTemplateMock($dimensionContent),
-            $localizedDimensionContent->reveal()
-        );
+        $templateMapper->map($data, $dimensionContentCollection->reveal());
     }
 
     public function testMapLocalizedNoStructureFound(): void
@@ -142,18 +156,21 @@ class TemplateDataMapperTest extends TestCase
             'template-key'
         )->willReturn(null)->shouldBeCalled();
 
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent->willImplement(TemplateInterface::class);
+        $unlocalizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $unlocalizedDimensionContent->willImplement(TemplateInterface::class);
 
         $localizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
 
+        $dimensionContentCollection = $this->prophesize(DimensionContentCollectionInterface::class);
+        $dimensionContentCollection->getDimensionAttributes()->willReturn(['stage' => 'draft', 'locale' => 'de']);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => null])
+            ->willReturn($this->wrapTemplateMock($unlocalizedDimensionContent));
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => 'de'])
+            ->willReturn($localizedDimensionContent);
+
         $templateMapper = $this->createTemplateDataMapperInstance($structureMetadataFactory->reveal());
 
-        $templateMapper->map(
-            $data,
-            $this->wrapTemplateMock($dimensionContent),
-            $localizedDimensionContent->reveal()
-        );
+        $templateMapper->map($data, $dimensionContentCollection->reveal());
     }
 
     public function testMapUnlocalizedTemplate(): void
@@ -163,11 +180,18 @@ class TemplateDataMapperTest extends TestCase
             'unlocalizedField' => 'Test Unlocalized',
         ];
 
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent->willImplement(TemplateInterface::class);
-        $dimensionContent->getTemplateData()->willReturn([])->shouldBeCalled();
-        $dimensionContent->setTemplateKey('template-key')->shouldBeCalled();
-        $dimensionContent->setTemplateData(['unlocalizedField' => 'Test Unlocalized'])->shouldBeCalled();
+        $unlocalizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $unlocalizedDimensionContent->willImplement(TemplateInterface::class);
+        $unlocalizedDimensionContent->getTemplateData()->willReturn([])->shouldBeCalled();
+        $unlocalizedDimensionContent->setTemplateKey('template-key')->shouldBeCalled();
+        $unlocalizedDimensionContent->setTemplateData(['unlocalizedField' => 'Test Unlocalized'])->shouldBeCalled();
+
+        $dimensionContentCollection = $this->prophesize(DimensionContentCollectionInterface::class);
+        $dimensionContentCollection->getDimensionAttributes()->willReturn(['stage' => 'draft', 'locale' => 'de']);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => null])
+            ->willReturn($this->wrapTemplateMock($unlocalizedDimensionContent));
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => 'de'])
+            ->willReturn(null);
 
         $unlocalizedPropertyMetadata = $this->prophesize(PropertyMetadata::class);
         $unlocalizedPropertyMetadata->getName()->willReturn('unlocalizedField')->shouldBeCalled();
@@ -186,10 +210,7 @@ class TemplateDataMapperTest extends TestCase
 
         $templateMapper = $this->createTemplateDataMapperInstance($structureMetadataFactory->reveal());
 
-        $templateMapper->map(
-            $data,
-            $this->wrapTemplateMock($dimensionContent)
-        );
+        $templateMapper->map($data, $dimensionContentCollection->reveal());
     }
 
     public function testMapLocalizedTemplate(): void
@@ -200,15 +221,22 @@ class TemplateDataMapperTest extends TestCase
             'localizedField' => 'Test Localized',
         ];
 
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent->willImplement(TemplateInterface::class);
-        $dimensionContent->getTemplateData()->willReturn([])->shouldBeCalled();
-        $dimensionContent->setTemplateData(['unlocalizedField' => 'Test Unlocalized'])->shouldBeCalled();
+        $unlocalizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $unlocalizedDimensionContent->willImplement(TemplateInterface::class);
+        $unlocalizedDimensionContent->getTemplateData()->willReturn([])->shouldBeCalled();
+        $unlocalizedDimensionContent->setTemplateData(['unlocalizedField' => 'Test Unlocalized'])->shouldBeCalled();
 
         $localizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
         $localizedDimensionContent->willImplement(TemplateInterface::class);
         $localizedDimensionContent->setTemplateKey('template-key')->shouldBeCalled();
         $localizedDimensionContent->setTemplateData(['localizedField' => 'Test Localized'])->shouldBeCalled();
+
+        $dimensionContentCollection = $this->prophesize(DimensionContentCollectionInterface::class);
+        $dimensionContentCollection->getDimensionAttributes()->willReturn(['stage' => 'draft', 'locale' => 'de']);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => null])
+            ->willReturn($this->wrapTemplateMock($unlocalizedDimensionContent));
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => 'de'])
+            ->willReturn($this->wrapTemplateMock($localizedDimensionContent));
 
         $unlocalizedPropertyMetadata = $this->prophesize(PropertyMetadata::class);
         $unlocalizedPropertyMetadata->getName()->willReturn('unlocalizedField')->shouldBeCalled();
@@ -231,11 +259,7 @@ class TemplateDataMapperTest extends TestCase
 
         $templateMapper = $this->createTemplateDataMapperInstance($structureMetadataFactory->reveal());
 
-        $templateMapper->map(
-            $data,
-            $this->wrapTemplateMock($dimensionContent),
-            $this->wrapTemplateMock($localizedDimensionContent)
-        );
+        $templateMapper->map($data, $dimensionContentCollection->reveal());
     }
 
     public function testMapLocalizedNoTemplateKeyWithDefaultTemplate(): void
@@ -245,15 +269,22 @@ class TemplateDataMapperTest extends TestCase
             'localizedField' => 'Test Localized',
         ];
 
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent->willImplement(TemplateInterface::class);
-        $dimensionContent->getTemplateData()->willReturn([])->shouldBeCalled();
-        $dimensionContent->setTemplateData(['unlocalizedField' => 'Test Unlocalized'])->shouldBeCalled();
+        $unlocalizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $unlocalizedDimensionContent->willImplement(TemplateInterface::class);
+        $unlocalizedDimensionContent->getTemplateData()->willReturn([])->shouldBeCalled();
+        $unlocalizedDimensionContent->setTemplateData(['unlocalizedField' => 'Test Unlocalized'])->shouldBeCalled();
 
         $localizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
         $localizedDimensionContent->willImplement(TemplateInterface::class);
         $localizedDimensionContent->setTemplateKey('template-key')->shouldBeCalled();
         $localizedDimensionContent->setTemplateData(['localizedField' => 'Test Localized'])->shouldBeCalled();
+
+        $dimensionContentCollection = $this->prophesize(DimensionContentCollectionInterface::class);
+        $dimensionContentCollection->getDimensionAttributes()->willReturn(['stage' => 'draft', 'locale' => 'de']);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => null])
+            ->willReturn($this->wrapTemplateMock($unlocalizedDimensionContent));
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => 'de'])
+            ->willReturn($this->wrapTemplateMock($localizedDimensionContent));
 
         $unlocalizedPropertyMetadata = $this->prophesize(PropertyMetadata::class);
         $unlocalizedPropertyMetadata->getName()->willReturn('unlocalizedField')->shouldBeCalled();
@@ -279,11 +310,7 @@ class TemplateDataMapperTest extends TestCase
             ['mock-template-type' => 'template-key']
         );
 
-        $templateMapper->map(
-            $data,
-            $this->wrapTemplateMock($dimensionContent),
-            $this->wrapTemplateMock($localizedDimensionContent)
-        );
+        $templateMapper->map($data, $dimensionContentCollection->reveal());
     }
 
     public function testMapFloatValueTemplate(): void
@@ -294,15 +321,22 @@ class TemplateDataMapperTest extends TestCase
             'localizedField' => 'Test Localized',
         ];
 
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent->willImplement(TemplateInterface::class);
-        $dimensionContent->getTemplateData()->willReturn([])->shouldBeCalled();
-        $dimensionContent->setTemplateData(['1.1' => 'Test Unlocalized'])->shouldBeCalled();
+        $unlocalizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $unlocalizedDimensionContent->willImplement(TemplateInterface::class);
+        $unlocalizedDimensionContent->getTemplateData()->willReturn([])->shouldBeCalled();
+        $unlocalizedDimensionContent->setTemplateData(['1.1' => 'Test Unlocalized'])->shouldBeCalled();
 
         $localizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
         $localizedDimensionContent->willImplement(TemplateInterface::class);
         $localizedDimensionContent->setTemplateKey('template-key')->shouldBeCalled();
         $localizedDimensionContent->setTemplateData(['localizedField' => 'Test Localized'])->shouldBeCalled();
+
+        $dimensionContentCollection = $this->prophesize(DimensionContentCollectionInterface::class);
+        $dimensionContentCollection->getDimensionAttributes()->willReturn(['stage' => 'draft', 'locale' => 'de']);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => null])
+            ->willReturn($this->wrapTemplateMock($unlocalizedDimensionContent));
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => 'de'])
+            ->willReturn($this->wrapTemplateMock($localizedDimensionContent));
 
         $unlocalizedPropertyMetadata = $this->prophesize(PropertyMetadata::class);
         $unlocalizedPropertyMetadata->getName()->willReturn(1.1)->shouldBeCalled();
@@ -325,10 +359,6 @@ class TemplateDataMapperTest extends TestCase
 
         $templateMapper = $this->createTemplateDataMapperInstance($structureMetadataFactory->reveal());
 
-        $templateMapper->map(
-            $data,
-            $this->wrapTemplateMock($dimensionContent),
-            $this->wrapTemplateMock($localizedDimensionContent)
-        );
+        $templateMapper->map($data, $dimensionContentCollection->reveal());
     }
 }

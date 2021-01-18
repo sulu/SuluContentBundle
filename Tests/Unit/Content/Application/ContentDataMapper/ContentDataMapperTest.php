@@ -17,6 +17,7 @@ use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\ContentDataMapper;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\ContentDataMapperInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\DataMapper\DataMapperInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
 
 class ContentDataMapperTest extends TestCase
 {
@@ -40,31 +41,11 @@ class ContentDataMapperTest extends TestCase
         ]);
 
         $data = ['test-key' => 'test-value'];
-        $unlocalizedObject = $this->prophesize(\stdClass::class);
-        $localizedObject = $this->prophesize(\stdClass::class);
+        $dimensionContentCollection = $this->prophesize(DimensionContentCollectionInterface::class);
 
-        $dataMapper1->map($data, $unlocalizedObject->reveal(), $localizedObject->reveal())->shouldBeCalled();
-        $dataMapper2->map($data, $unlocalizedObject->reveal(), $localizedObject->reveal())->shouldBeCalled();
+        $dataMapper1->map($data, $dimensionContentCollection->reveal())->shouldBeCalled();
+        $dataMapper2->map($data, $dimensionContentCollection->reveal())->shouldBeCalled();
 
-        $contentDataMapper->map($data, $unlocalizedObject, $localizedObject);
-    }
-
-    public function testMapWithoutLocalizedObject(): void
-    {
-        $dataMapper1 = $this->prophesize(DataMapperInterface::class);
-        $dataMapper2 = $this->prophesize(DataMapperInterface::class);
-
-        $contentDataMapper = $this->createContentDataMapperInstance([
-            $dataMapper1->reveal(),
-            $dataMapper2->reveal(),
-        ]);
-
-        $data = ['test-key' => 'test-value'];
-        $unlocalizedObject = $this->prophesize(\stdClass::class);
-
-        $dataMapper1->map($data, $unlocalizedObject->reveal(), null)->shouldBeCalled();
-        $dataMapper2->map($data, $unlocalizedObject->reveal(), null)->shouldBeCalled();
-
-        $contentDataMapper->map($data, $unlocalizedObject);
+        $contentDataMapper->map($data, $dimensionContentCollection->reveal());
     }
 }
