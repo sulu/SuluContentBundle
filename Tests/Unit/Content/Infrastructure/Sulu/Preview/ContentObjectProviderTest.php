@@ -27,7 +27,9 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Preview\ContentObjectProvider;
+use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Preview\PreviewDimensionContentCollection;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
+use Sulu\Component\Content\Document\Structure\PropertyValue;
 
 class ContentObjectProviderTest extends TestCase
 {
@@ -197,7 +199,12 @@ class ContentObjectProviderTest extends TestCase
         $this->contentObjectProvider->setValues($dimensionContent->reveal(), $locale, $data);
 
         $this->contentDataMapper->map(
-            $data, $dimensionContent->reveal(), $dimensionContent->reveal()
+            $data,
+            Argument::that(
+                function (PreviewDimensionContentCollection $dimensionContentCollection) use ($dimensionContent) {
+                    return $dimensionContent->reveal() === $dimensionContentCollection->getDimensionContent([]);
+                }
+            )
         )->shouldBeCalledTimes(1);
     }
 
