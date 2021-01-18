@@ -86,6 +86,7 @@ class ContentWorkflow implements ContentWorkflowInterface
          */
 
         $dimensionContentCollection = $this->dimensionContentRepository->load($contentRichEntity, $dimensionAttributes);
+        $dimensionAttributes = $dimensionContentCollection->getDimensionAttributes();
         $localizedDimensionContent = $dimensionContentCollection->getDimensionContent($dimensionAttributes);
 
         if (!$localizedDimensionContent) {
