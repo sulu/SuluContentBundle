@@ -18,8 +18,6 @@ namespace Sulu\Bundle\ContentBundle\Content\Domain\Model;
  */
 interface DimensionContentCollectionInterface extends \Traversable, \Countable
 {
-    public function getUnlocalizedDimensionContent(): ?DimensionContentInterface;
-
     public function getLocalizedDimensionContent(): ?DimensionContentInterface;
 
     /**

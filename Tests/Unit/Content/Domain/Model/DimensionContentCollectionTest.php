@@ -32,28 +32,6 @@ class DimensionContentCollectionTest extends TestCase
         return new DimensionContentCollection($dimensionContents, $dimensionAttributes, ExampleDimensionContent::class);
     }
 
-    public function testGetUnlocalizedDimension(): void
-    {
-        $dimensionContent1 = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent1->getLocale()->willReturn(null);
-        $dimensionContent1->getStage()->willReturn('draft');
-        $dimensionContent2 = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent2->getLocale()->willReturn('de');
-        $dimensionContent2->getStage()->willReturn('draft');
-
-        $attributes = ['locale' => 'de'];
-
-        $dimensionContentCollection = $this->createDimensionContentCollectionInstance([
-            $dimensionContent1->reveal(),
-            $dimensionContent2->reveal(),
-        ], $attributes);
-
-        $this->assertSame(
-            $dimensionContent1->reveal(),
-            $dimensionContentCollection->getUnlocalizedDimensionContent()
-        );
-    }
-
     public function testGetLocalizedDimension(): void
     {
         $dimensionContent1 = $this->prophesize(DimensionContentInterface::class);

@@ -45,11 +45,6 @@ class PreviewDimensionContentCollection implements \IteratorAggregate, Dimension
         return \get_class($this->previewDimensionContent);
     }
 
-    public function getUnlocalizedDimensionContent(): ?DimensionContentInterface
-    {
-        return $this->previewDimensionContent;
-    }
-
     public function getLocalizedDimensionContent(): ?DimensionContentInterface
     {
         return $this->previewDimensionContent;
