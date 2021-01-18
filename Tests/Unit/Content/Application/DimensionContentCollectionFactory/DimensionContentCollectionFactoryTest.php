@@ -19,8 +19,10 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\ContentDataM
 use Sulu\Bundle\ContentBundle\Content\Application\DimensionContentCollectionFactory\DimensionContentCollectionFactory;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollection;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionContentRepositoryInterface;
+use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Preview\PreviewDimensionContentCollection;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleDimensionContent;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 
@@ -72,7 +74,14 @@ class DimensionContentCollectionFactoryTest extends TestCase
         ];
 
         $contentDataMapper = $this->prophesize(ContentDataMapperInterface::class);
-        $contentDataMapper->map($data, $dimensionContent1->reveal(), $dimensionContent2->reveal())->shouldBeCalled();
+        $contentDataMapper->map(
+            $data,
+            Argument::that(
+                function (DimensionContentCollectionInterface $collection) use ($dimensionContent1, $dimensionContent2) {
+                    return [$dimensionContent1->reveal(), $dimensionContent2->reveal()] === iterator_to_array($collection);
+                }
+            )
+        )->shouldBeCalled();
 
         $dimensionContentCollectionFactoryInstance = $this->createDimensionContentCollectionFactoryInstance(
             $attributes,
@@ -89,10 +98,13 @@ class DimensionContentCollectionFactoryTest extends TestCase
             $data
         );
 
-        $this->assertSame([
-            $dimensionContent1->reveal(),
-            $dimensionContent2->reveal(),
-        ], iterator_to_array($dimensionContentCollection));
+        $this->assertCount(2, $dimensionContentCollection);
+        $this->assertSame(ExampleDimensionContent::class, $dimensionContentCollection->getDimensionContentClass());
+        $this->assertSame($attributes, $dimensionContentCollection->getDimensionAttributes());
+        $this->assertSame(
+            [$dimensionContent1->reveal(), $dimensionContent2->reveal()],
+            iterator_to_array($dimensionContentCollection)
+        );
     }
 
     public function testCreateWithoutExistingDimensionContent(): void
@@ -128,7 +140,14 @@ class DimensionContentCollectionFactoryTest extends TestCase
         ];
 
         $contentDataMapper = $this->prophesize(ContentDataMapperInterface::class);
-        $contentDataMapper->map($data, $dimensionContent1->reveal(), $dimensionContent2->reveal())->shouldBeCalled();
+        $contentDataMapper->map(
+            $data,
+            Argument::that(
+                function (DimensionContentCollectionInterface $collection) use ($dimensionContent1, $dimensionContent2) {
+                    return [$dimensionContent1->reveal(), $dimensionContent2->reveal()] === iterator_to_array($collection);
+                }
+            )
+        )->shouldBeCalled();
 
         $dimensionContentCollectionFactoryInstance = $this->createDimensionContentCollectionFactoryInstance(
             $attributes,
@@ -144,11 +163,12 @@ class DimensionContentCollectionFactoryTest extends TestCase
         );
 
         $this->assertCount(2, $dimensionContentCollection);
-
-        $this->assertSame([
-            $dimensionContent1->reveal(),
-            $dimensionContent2->reveal(),
-        ], iterator_to_array($dimensionContentCollection));
+        $this->assertSame(ExampleDimensionContent::class, $dimensionContentCollection->getDimensionContentClass());
+        $this->assertSame($attributes, $dimensionContentCollection->getDimensionAttributes());
+        $this->assertSame(
+            [$dimensionContent1->reveal(), $dimensionContent2->reveal()],
+            iterator_to_array($dimensionContentCollection)
+        );
     }
 
     public function testCreateWithoutExistingLocalizedDimensionContent(): void
@@ -178,8 +198,14 @@ class DimensionContentCollectionFactoryTest extends TestCase
         ];
 
         $contentDataMapper = $this->prophesize(ContentDataMapperInterface::class);
-        $contentDataMapper->map($data, $dimensionContent1->reveal(), $dimensionContent2->reveal())->shouldBeCalled();
-
+        $contentDataMapper->map(
+            $data,
+            Argument::that(
+                function (DimensionContentCollectionInterface $collection) use ($dimensionContent1, $dimensionContent2) {
+                    return [$dimensionContent1->reveal(), $dimensionContent2->reveal()] === iterator_to_array($collection);
+                }
+            )
+        )->shouldBeCalled();
         $dimensionContentCollectionFactoryInstance = $this->createDimensionContentCollectionFactoryInstance(
             $attributes,
             [
@@ -195,10 +221,11 @@ class DimensionContentCollectionFactoryTest extends TestCase
         );
 
         $this->assertCount(2, $dimensionContentCollection);
-
-        $this->assertSame([
-            $dimensionContent1->reveal(),
-            $dimensionContent2->reveal(),
-        ], iterator_to_array($dimensionContentCollection));
+        $this->assertSame(ExampleDimensionContent::class, $dimensionContentCollection->getDimensionContentClass());
+        $this->assertSame($attributes, $dimensionContentCollection->getDimensionAttributes());
+        $this->assertSame(
+            [$dimensionContent1->reveal(), $dimensionContent2->reveal()],
+            iterator_to_array($dimensionContentCollection)
+        );
     }
 }
