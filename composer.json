@@ -108,7 +108,6 @@
         "php-cs": "vendor/bin/php-cs-fixer fix --verbose --diff --dry-run",
         "php-cs-fix": "vendor/bin/php-cs-fixer fix",
         "lint-composer": "@composer validate --strict",
-        "lint-doctrine": "Tests/Application/bin/adminconsole doctrine:schema:validate",
         "lint-twig": "Tests/Application/bin/adminconsole lint:twig Tests/Application/templates",
         "lint-yaml": "Tests/Application/bin/adminconsole lint:yaml Resources/config Tests/Application/config",
         "lint-container": [

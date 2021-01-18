@@ -17,6 +17,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\ContentDataMapper;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\ContentDataMapperInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollection;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
@@ -91,7 +92,12 @@ trait CreateExampleTrait
             $entityManager->persist($draftLocalizedDimension);
 
             // Map Draft Data
-            $contentDataMapper->map($fillWithdefaultData($draftData), $draftUnlocalizedDimension, $draftLocalizedDimension);
+            $draftDimensionContentCollection = new DimensionContentCollection(
+                [$draftUnlocalizedDimension, $draftLocalizedDimension],
+                ['stage' => DimensionContentInterface::STAGE_DRAFT, 'locale' => $locale],
+                ExampleDimensionContent::class
+            );
+            $contentDataMapper->map($fillWithdefaultData($draftData), $draftDimensionContentCollection);
             $draftLocalizedDimension->setWorkflowPlace(WorkflowInterface::WORKFLOW_PLACE_DRAFT);
 
             if ($liveData) {
@@ -122,8 +128,13 @@ trait CreateExampleTrait
                 $liveLocalizedDimension->setWorkflowPublished(new \DateTimeImmutable());
 
                 // map data
+                $liveDimensionContentCollection = new DimensionContentCollection(
+                    [$liveUnlocalizedDimension, $liveLocalizedDimension],
+                    ['stage' => DimensionContentInterface::STAGE_LIVE, 'locale' => $locale],
+                    ExampleDimensionContent::class
+                );
                 $liveData['published'] = date('Y-m-d H:i:s');
-                $contentDataMapper->map($fillWithdefaultData($liveData), $liveUnlocalizedDimension, $liveLocalizedDimension);
+                $contentDataMapper->map($fillWithdefaultData($liveData), $liveDimensionContentCollection);
 
                 if ($options['create_route'] ?? false) {
                     $route = new Route();
