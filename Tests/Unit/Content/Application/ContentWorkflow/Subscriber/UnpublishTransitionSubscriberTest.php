@@ -156,7 +156,7 @@ class UnpublishTransitionSubscriberTest extends TestCase
         );
 
         $dimensionContentCollection = $this->prophesize(DimensionContentCollectionInterface::class);
-        $dimensionContentCollection->getLocalizedDimensionContent()
+        $dimensionContentCollection->getDimensionContent(['locale' => 'en', 'stage' => 'live'])
             ->willReturn(null)
             ->shouldBeCalled();
 
@@ -197,10 +197,10 @@ class UnpublishTransitionSubscriberTest extends TestCase
             $entityManager->reveal()
         );
 
+        $localizedLiveDimensionContent = $this->prophesize(DimensionContentInterface::class);
         $dimensionContentCollection = $this->prophesize(DimensionContentCollectionInterface::class);
-        $localizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContentCollection->getLocalizedDimensionContent()
-            ->willReturn($localizedDimensionContent)
+        $dimensionContentCollection->getDimensionContent(['locale' => 'en', 'stage' => 'live'])
+            ->willReturn($localizedLiveDimensionContent)
             ->shouldBeCalled();
 
         $liveDimensionAttributes = array_merge($dimensionAttributes, ['stage' => DimensionContentInterface::STAGE_LIVE]);
@@ -209,7 +209,7 @@ class UnpublishTransitionSubscriberTest extends TestCase
             ->willReturn($dimensionContentCollection)
             ->shouldBeCalled();
 
-        $entityManager->remove($localizedDimensionContent)->shouldBeCalled();
+        $entityManager->remove($localizedLiveDimensionContent)->shouldBeCalled();
 
         $contentUnpublishSubscriber->onUnpublish($event);
     }
