@@ -78,7 +78,8 @@
             "Tests/Application/bin/adminconsole sulu:build dev --env dev"
         ],
         "bootstrap-test-environment": [
-            "Tests/Application/bin/adminconsole doctrine:database:create --if-not-exists --env test",
+            "Tests/Application/bin/adminconsole doctrine:database:drop --if-exists --force --env test",
+            "Tests/Application/bin/adminconsole doctrine:database:create --env test",
             "Tests/Application/bin/adminconsole doctrine:schema:update --force --env test"
         ],
         "lint": [
