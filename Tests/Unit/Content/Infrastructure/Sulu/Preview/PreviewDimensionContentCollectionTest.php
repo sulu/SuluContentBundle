@@ -66,15 +66,16 @@ class PreviewDimensionContentCollectionTest extends TestCase
 
     public function testGetDimensionAttributes(): void
     {
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $example = $this->prophesize(Example::class);
+        $dimensionContent = new ExampleDimensionContent($example->reveal());
 
         $previewDimensionContentCollection = $this->createPreviewDimensionContentCollection(
-            $dimensionContent->reveal(),
+            $dimensionContent,
             'es'
         );
 
         $this->assertSame(
-            ['locale' => 'es'],
+            ['locale' => 'es', 'stage' => 'draft'],
             $previewDimensionContentCollection->getDimensionAttributes()
         );
     }
