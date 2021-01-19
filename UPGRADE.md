@@ -2,6 +2,31 @@
 
 ## 0.5.0
 
+### Adjusted ContentDataMapper to accept DimensionContentCollection instead of separate objects
+
+The `ContentDataMapper` service was adjusted to accept a `DimensionContentCollection` parameter instead of 
+a `unlocalizedObject` and an optional `localizedObject` parameter. This makes the interfaces more flexible 
+and consistent to other parts of the bundle.
+
+### Adjusted DataMapperInterface to accept DimensionContentCollection instead of separate objects
+
+The `DataMapperInterface` and all services that implement the interface were adjusted to accept a 
+`DimensionContentCollection` parameter instead of a `unlocalizedObject` and an optional `localizedObject` parameter.
+
+### Removed getUnlocalizedDimensionContent and getLocalizedDimensionContent from DimensionContentCollectionInterface
+
+To simplify the interface, the `getUnlocalizedDimensionContent` method and `getLocalizedDimensionContent` method 
+were removed from the `DimensionContentCollectionInterface`. The `getDimensionContent` can be used as a
+replacement like this:
+
+```php
+$localizedDimensionAttributes = $dimensionContentCollection->getDimensionAttributes();
+$localizedDimensionContent = $dimensionContentCollection->getDimensionContent($localizedDimensionAttributes);
+
+$unlocalizedDimensionAttributes = array_merge($localizedDimensionAttributes, ['locale' => null]);
+$unlocalizedDimensionContent= $dimensionContentCollection->getDimensionContent($unlocalizedDimensionAttributes);
+```
+
 ### Dimension Entity was removed
 
 The `Dimension` entity was removed because it had no additional value and did make things
