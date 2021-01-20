@@ -33,7 +33,117 @@ ALTER TABLE test_example_dimension_contents DROP dimension_id;
 DROP TABLE cn_dimensions;
 ```
 
-TODO provide here a general doctrine migration which support up/down.
+If you are using the `DoctrineMigrationBundle` you maybe want a `up` and `down`
+migration for your entity to make this easier you can generate the migration. Copy from
+there the tableName, foreignKey and indexName and replace the up and down methods with
+the one of the following example:
+
+<details>
+<summary>Doctrine Migration Example</summary>
+
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace DoctrineMigrations;
+
+use Doctrine\DBAL\Schema\Schema;
+use Doctrine\Migrations\AbstractMigration;
+
+/**
+ * Auto-generated Migration: Please modify to your needs!
+ */
+final class Version20210120152235 extends AbstractMigration
+{
+    public function getDescription(): string
+    {
+        return 'Migrate dimension attributes into dimension content table.';
+    }
+
+    /**
+     * @return array<array<string, string>>
+     */
+    private function tableData(): array
+    {
+        return [
+            [
+                // TODO replace the following values with the ones by your table
+                'tableName' => 'my_entity_dimension_content',
+                'foreignKey' => 'FK_61A94F1277428AD',
+                'indexName' => 'IDX_61A94F1277428AD',
+            ],
+        ];
+    }
+
+    public function up(Schema $schema): void
+    {
+        foreach ($this->tableData() as $tableConfig) {
+            $tableName = $tableConfig['tableName'];
+            $foreignKey = $tableConfig['foreignKey'];
+            $indexName = $tableConfig['indexName'];
+
+            // Create stage and locale fields
+            $this->addSql(\sprintf('ALTER TABLE %s ADD stage VARCHAR(16) DEFAULT NULL, ADD locale VARCHAR(7) DEFAULT NULL;', $tableName));
+
+            // Migrate data to new fields
+            $this->addSql(\sprintf('UPDATE %s myContentDimension INNER JOIN cn_dimensions dimension ON dimension.no = myContentDimension.dimension_id SET myContentDimension.stage = dimension.stage, myContentDimension.locale = dimension.locale;', $tableName));
+
+            // Remove dimension relation
+            $this->addSql(\sprintf('ALTER TABLE %s DROP FOREIGN KEY %s', $tableName, $foreignKey));
+            $this->addSql(\sprintf('DROP INDEX %s ON %s', $indexName, $tableName));
+            $this->addSql(\sprintf('ALTER TABLE %s DROP dimension_id;', $tableName));
+        }
+
+        // Drop Dimension Table
+        $this->addSql('DROP TABLE cn_dimensions');
+    }
+
+    public function down(Schema $schema): void
+    {
+        // create old dimension table
+        $this->addSql('CREATE TABLE cn_dimensions (no INT AUTO_INCREMENT NOT NULL, id CHAR(36) CHARACTER SET utf8mb4 NOT NULL COLLATE `utf8mb4_unicode_ci` COMMENT \'(DC2Type:guid)\', locale VARCHAR(5) CHARACTER SET utf8mb4 DEFAULT NULL COLLATE `utf8mb4_unicode_ci`, stage VARCHAR(16) CHARACTER SET utf8mb4 NOT NULL COLLATE `utf8mb4_unicode_ci`, INDEX IDX_979F85354180C698 (locale), UNIQUE INDEX UNIQ_979F8535BF396750 (id), INDEX IDX_979F8535C27C9369 (stage), PRIMARY KEY(no)) DEFAULT CHARACTER SET utf8 COLLATE `utf8_unicode_ci` ENGINE = InnoDB COMMENT = \'\' ');
+
+        foreach ($this->tableData() as $tableConfig) {
+            $tableName = $tableConfig['tableName'];
+            $foreignKey = $tableConfig['foreignKey'];
+            $indexName = $tableConfig['indexName'];
+
+            // Create dimension relation
+            $this->addSql(\sprintf('ALTER TABLE %s ADD dimension_id INT NOT NULL', $tableName));
+
+            // migrate data into the old table
+            $this->addSql(\sprintf('
+                INSERT INTO cn_dimensions (id, locale, stage)
+                (SELECT
+                   UUID() as id,
+                   myContentDimension.locale,
+                   myContentDimension.stage
+                   FROM ec_product_line_dimension_content myContentDimension
+                LEFT JOIN cn_dimensions ON (cn_dimensions.stage = myContentDimension.stage AND cn_dimensions.locale = myContentDimension.locale OR (cn_dimensions.locale IS NULL AND myContentDimension.locale IS NULL))
+                WHERE cn_dimensions.id IS NULL
+                GROUP BY myContentDimension.locale, myContentDimension.stage)
+            ', $tableName));
+
+            $this->addSql(\sprintf('
+                UPDATE %s myContentDimension 
+                INNER JOIN cn_dimensions dimension
+                ON myContentDimension.stage = dimension.stage AND (myContentDimension.locale = dimension.locale OR (myContentDimension.locale IS NULL AND dimension.locale IS NULL)) 
+                SET myContentDimension.dimension_id = dimension.no
+            ', $tableName));
+
+            // Add dimension relation
+            $this->addSql(\sprintf('ALTER TABLE %s ADD CONSTRAINT %s FOREIGN KEY (dimension_id) REFERENCES cn_dimensions (no) ON DELETE CASCADE', $tableName, $foreignKey));
+            $this->addSql(\sprintf('CREATE INDEX %s ON %s (dimension_id)', $indexName, $tableName));
+
+            // remove stage and locale
+            $this->addSql(\sprintf('ALTER TABLE %s DROP stage, DROP locale', $tableName));
+        }
+    }
+}
+```
+
+</details>
 
 #### Update your ContentRichEntity class and DimensionContent class
 
@@ -89,7 +199,6 @@ If you use the dimension data in your list configuration, you need to change it 
 -        <join>
 -            <entity-name>%sulu.model.dimension.class%</entity-name>
 -            <condition>%sulu.model.dimension.class%.locale = :locale AND %sulu.model.dimension.class%.stage = 'draft'</condition>
-+            <condition>dimensionContent.locale = :locale AND dimensionContent.stage = 'draft'</condition>
 -         </join>
 -     </joins>
 
@@ -118,7 +227,7 @@ If you use the dimension data in your list configuration, you need to change it 
 
 ### ContentTeaserProvider constructor changed
 
-The constructor of the `ContentTeaserProvider` requires like the `ContentDataProviderRepository` the `show_drafts` 
+The constructor of the `ContentTeaserProvider` requires like the `ContentDataProviderRepository` the `show_drafts`
 parameter. In this case also the `getShowDrafts` was removed from the `ContentTeaserProvider` class.
 
 **before**:
@@ -188,13 +297,13 @@ parameter. In this case also the `getShowDrafts` was removed from the `ContentTe
 
 ### Rename getContentRichEntity method of DimensionContentInterface to getResource
 
-The `getContentRichEntity` method of the `DimensionContentInterface` was renamed to `getResource`. 
-This makes the naming consistent with the `getResourceKey` method of the `DimensionContentInterface` and 
+The `getContentRichEntity` method of the `DimensionContentInterface` was renamed to `getResource`.
+This makes the naming consistent with the `getResourceKey` method of the `DimensionContentInterface` and
 the `getResourceId` method of the `RoutableInterface`.
 
 ### Rename getRoutableId method of RoutableInterface to getResourceId
 
-The `getRoutableId` method of the `RoutableInterface` was renamed to `getResourceId`. This makes the naming consistent 
+The `getRoutableId` method of the `RoutableInterface` was renamed to `getResourceId`. This makes the naming consistent
 with the `getResourceKey` method of the `RoutableInterface` and the `DimensionContentInterface`.
 
 ### Add contentRichEntityClass parameter to getDefaultToolbarActions method of ContentViewBuilderFactory
@@ -212,14 +321,14 @@ This makes it consistent with the `getTemplateType` method and the `getWorkflowN
 The bundle now uses the `route_schema` that is configured via `sulu_route.mappings` for generating the route for an
 entity instead of a hardcoded value. If no `route_schema` is configured, no route will be generated.
 
-Therefore, the `getContentId` method of the `RoutableInterface` was renamed to `getRoutableId` and the 
+Therefore, the `getContentId` method of the `RoutableInterface` was renamed to `getRoutableId` and the
 `getContentClass` method was replaced with a `getResourceKey` method.
 
 ### Moved automation bundle services
 
-The services related to the `SuluAutomationBundle` were moved to the 
-`Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Automation` namespace. 
-Furthermore the `ContentEntityPublishHandler` was renamed to `ContentPublishTaskHandler` and 
+The services related to the `SuluAutomationBundle` were moved to the
+`Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Automation` namespace.
+Furthermore the `ContentEntityPublishHandler` was renamed to `ContentPublishTaskHandler` and
 the `ContentEntityUnpublishHandler` was renamed to `ContentUnpublishTaskHandler`.
 
 ### Removed ContentProjection concept
@@ -228,7 +337,7 @@ To simplify the usage of the bundle, the ContentProjection concept was removed f
 Therefore, the `ContentProjectionInterface` and the `ContentProjectionFactoryInterface` were removed.
 
 Services that returned a `ContentProjectionInterface` instance were adjusted to return a merged
-`DimensionContentInterface` instance. Furthermore, the `ContentMergerInterface::merge` method 
+`DimensionContentInterface` instance. Furthermore, the `ContentMergerInterface::merge` method
 was refactored to accept a `DimensionContentCollectionInterface` parameter.
 
 ### Renamed merger services
@@ -242,7 +351,7 @@ was refactored to accept a `DimensionContentCollectionInterface` parameter.
 
 ### Refactored the ContentViewBuilder
 
-The class and its interface was renamed from `ContentViewBuilder` & `ContentViewBuilderInterface` 
+The class and its interface was renamed from `ContentViewBuilder` & `ContentViewBuilderInterface`
 to `ContentViewBuilderFactory` & `ContentViewBuilderFactoryInterface`.
 
 The service has been renamed from `sulu_content.content_view_builder` to `sulu_content.content_view_builder_factory`.
@@ -250,7 +359,7 @@ The service has been renamed from `sulu_content.content_view_builder` to `sulu_c
 The function `build` was replaced by `createViews` and additional functions has been introduced.
 
 The behaviour of the `createViews` function detects now the needed views: the template-view if the `TemplateInterface`
-is implemented, the seo-view if the `SeoInterface` is implemented, and the excerpt-view if the `ExcerptInterface` is 
+is implemented, the seo-view if the `SeoInterface` is implemented, and the excerpt-view if the `ExcerptInterface` is
 implemented.
 
 **before**:
