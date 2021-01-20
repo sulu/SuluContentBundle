@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper;
 
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
+
 interface ContentDataMapperInterface
 {
     /**
@@ -20,7 +22,6 @@ interface ContentDataMapperInterface
      */
     public function map(
         array $data,
-        object $unlocalizedObject,
-        ?object $localizedObject = null
+        DimensionContentCollectionInterface $dimensionContentCollection
     ): void;
 }

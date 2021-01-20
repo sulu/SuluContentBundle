@@ -16,6 +16,7 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentDataMa
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\DataMapper\WorkflowDataMapper;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 
@@ -34,10 +35,17 @@ class WorkflowDataMapperTest extends TestCase
             'published' => (new \DateTime())->format('c'),
         ];
 
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $unlocalizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
         $localizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
 
-        $workflowMapper->map($data, $dimensionContent->reveal(), $localizedDimensionContent->reveal());
+        $dimensionContentCollection = $this->prophesize(DimensionContentCollectionInterface::class);
+        $dimensionContentCollection->getDimensionAttributes()->willReturn(['stage' => 'draft', 'locale' => 'de']);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => null])
+            ->willReturn($unlocalizedDimensionContent);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => 'de'])
+            ->willReturn($localizedDimensionContent);
+
+        $workflowMapper->map($data, $dimensionContentCollection->reveal());
 
         $this->assertTrue(true); // Avoid risky test as this is an early return test
     }
@@ -50,13 +58,20 @@ class WorkflowDataMapperTest extends TestCase
             'published' => (new \DateTime())->format('c'),
         ];
 
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent->willImplement(WorkflowInterface::class);
+        $unlocalizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $unlocalizedDimensionContent->willImplement(WorkflowInterface::class);
         $localizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
+
+        $dimensionContentCollection = $this->prophesize(DimensionContentCollectionInterface::class);
+        $dimensionContentCollection->getDimensionAttributes()->willReturn(['stage' => 'draft', 'locale' => 'de']);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => null])
+            ->willReturn($unlocalizedDimensionContent);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => 'de'])
+            ->willReturn($localizedDimensionContent);
 
         $this->expectException(\RuntimeException::class);
 
-        $workflowMapper->map($data, $dimensionContent->reveal(), $localizedDimensionContent->reveal());
+        $workflowMapper->map($data, $dimensionContentCollection->reveal());
     }
 
     public function testMapUnlocalizedDraft(): void
@@ -67,15 +82,22 @@ class WorkflowDataMapperTest extends TestCase
             'published' => (new \DateTime())->format('c'),
         ];
 
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent->willImplement(WorkflowInterface::class);
-        $dimensionContent->getStage()->willReturn(DimensionContentInterface::STAGE_DRAFT);
-        $dimensionContent->getWorkflowPlace()->willReturn(null);
+        $unlocalizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $unlocalizedDimensionContent->willImplement(WorkflowInterface::class);
+        $unlocalizedDimensionContent->getStage()->willReturn(DimensionContentInterface::STAGE_DRAFT);
+        $unlocalizedDimensionContent->getWorkflowPlace()->willReturn(null);
 
-        $dimensionContent->setWorkflowPlace(WorkflowInterface::WORKFLOW_PLACE_UNPUBLISHED)->shouldBeCalled();
-        $dimensionContent->setWorkflowPublished(Argument::cetera())->shouldNotBeCalled();
+        $unlocalizedDimensionContent->setWorkflowPlace(WorkflowInterface::WORKFLOW_PLACE_UNPUBLISHED)->shouldBeCalled();
+        $unlocalizedDimensionContent->setWorkflowPublished(Argument::cetera())->shouldNotBeCalled();
 
-        $workflowMapper->map($data, $dimensionContent->reveal());
+        $dimensionContentCollection = $this->prophesize(DimensionContentCollectionInterface::class);
+        $dimensionContentCollection->getDimensionAttributes()->willReturn(['stage' => 'draft', 'locale' => 'de']);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => null])
+            ->willReturn($unlocalizedDimensionContent);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => 'de'])
+            ->willReturn(null);
+
+        $workflowMapper->map($data, $dimensionContentCollection->reveal());
     }
 
     public function testMapUnlocalizedDraftPlaceAlreadySet(): void
@@ -86,14 +108,21 @@ class WorkflowDataMapperTest extends TestCase
             'published' => (new \DateTime())->format('c'),
         ];
 
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent->willImplement(WorkflowInterface::class);
-        $dimensionContent->getStage()->willReturn(DimensionContentInterface::STAGE_DRAFT);
-        $dimensionContent->getWorkflowPlace()->willReturn(WorkflowInterface::WORKFLOW_PLACE_UNPUBLISHED);
-        $dimensionContent->setWorkflowPlace(Argument::cetera())->shouldNotBeCalled();
-        $dimensionContent->setWorkflowPublished(Argument::cetera())->shouldNotBeCalled();
+        $unlocalizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $unlocalizedDimensionContent->willImplement(WorkflowInterface::class);
+        $unlocalizedDimensionContent->getStage()->willReturn(DimensionContentInterface::STAGE_DRAFT);
+        $unlocalizedDimensionContent->getWorkflowPlace()->willReturn(WorkflowInterface::WORKFLOW_PLACE_UNPUBLISHED);
+        $unlocalizedDimensionContent->setWorkflowPlace(Argument::cetera())->shouldNotBeCalled();
+        $unlocalizedDimensionContent->setWorkflowPublished(Argument::cetera())->shouldNotBeCalled();
 
-        $workflowMapper->map($data, $dimensionContent->reveal());
+        $dimensionContentCollection = $this->prophesize(DimensionContentCollectionInterface::class);
+        $dimensionContentCollection->getDimensionAttributes()->willReturn(['stage' => 'draft', 'locale' => 'de']);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => null])
+            ->willReturn($unlocalizedDimensionContent);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => 'de'])
+            ->willReturn(null);
+
+        $workflowMapper->map($data, $dimensionContentCollection->reveal());
     }
 
     public function testMapUnlocalizedLive(): void
@@ -104,13 +133,20 @@ class WorkflowDataMapperTest extends TestCase
             'published' => (new \DateTime())->format('c'),
         ];
 
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent->willImplement(WorkflowInterface::class);
-        $dimensionContent->getStage()->willReturn(DimensionContentInterface::STAGE_LIVE);
-        $dimensionContent->setWorkflowPlace(Argument::cetera())->shouldNotBeCalled();
-        $dimensionContent->setWorkflowPublished(Argument::type(\DateTimeInterface::class))->shouldBeCalled();
+        $unlocalizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $unlocalizedDimensionContent->willImplement(WorkflowInterface::class);
+        $unlocalizedDimensionContent->getStage()->willReturn(DimensionContentInterface::STAGE_LIVE);
+        $unlocalizedDimensionContent->setWorkflowPlace(Argument::cetera())->shouldNotBeCalled();
+        $unlocalizedDimensionContent->setWorkflowPublished(Argument::type(\DateTimeInterface::class))->shouldBeCalled();
 
-        $workflowMapper->map($data, $dimensionContent->reveal());
+        $dimensionContentCollection = $this->prophesize(DimensionContentCollectionInterface::class);
+        $dimensionContentCollection->getDimensionAttributes()->willReturn(['stage' => 'draft', 'locale' => 'de']);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => null])
+            ->willReturn($unlocalizedDimensionContent);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => 'de'])
+            ->willReturn(null);
+
+        $workflowMapper->map($data, $dimensionContentCollection->reveal());
     }
 
     public function testMapUnlocalizedLivePublishedNotSet(): void
@@ -119,15 +155,22 @@ class WorkflowDataMapperTest extends TestCase
 
         $data = [];
 
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent->willImplement(WorkflowInterface::class);
-        $dimensionContent->getStage()->willReturn(DimensionContentInterface::STAGE_LIVE);
-        $dimensionContent->setWorkflowPlace(Argument::cetera())->shouldNotBeCalled();
-        $dimensionContent->setWorkflowPublished(Argument::cetera())->shouldNotBeCalled();
+        $unlocalizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $unlocalizedDimensionContent->willImplement(WorkflowInterface::class);
+        $unlocalizedDimensionContent->getStage()->willReturn(DimensionContentInterface::STAGE_LIVE);
+        $unlocalizedDimensionContent->setWorkflowPlace(Argument::cetera())->shouldNotBeCalled();
+        $unlocalizedDimensionContent->setWorkflowPublished(Argument::cetera())->shouldNotBeCalled();
+
+        $dimensionContentCollection = $this->prophesize(DimensionContentCollectionInterface::class);
+        $dimensionContentCollection->getDimensionAttributes()->willReturn(['stage' => 'draft', 'locale' => 'de']);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => null])
+            ->willReturn($unlocalizedDimensionContent);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => 'de'])
+            ->willReturn(null);
 
         $this->expectException(\RuntimeException::class);
 
-        $workflowMapper->map($data, $dimensionContent->reveal());
+        $workflowMapper->map($data, $dimensionContentCollection->reveal());
     }
 
     public function testMapLocalizedDraft(): void
@@ -138,21 +181,28 @@ class WorkflowDataMapperTest extends TestCase
             'published' => (new \DateTime())->format('c'),
         ];
 
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent->willImplement(WorkflowInterface::class);
+        $unlocalizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $unlocalizedDimensionContent->willImplement(WorkflowInterface::class);
 
         $localizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
         $localizedDimensionContent->willImplement(WorkflowInterface::class);
         $localizedDimensionContent->getStage()->willReturn(DimensionContentInterface::STAGE_DRAFT);
         $localizedDimensionContent->getWorkflowPlace()->willReturn(null);
 
-        $dimensionContent->setWorkflowPlace(Argument::cetera())->shouldNotBeCalled();
-        $dimensionContent->setWorkflowPublished(Argument::cetera())->shouldNotBeCalled();
+        $dimensionContentCollection = $this->prophesize(DimensionContentCollectionInterface::class);
+        $dimensionContentCollection->getDimensionAttributes()->willReturn(['stage' => 'draft', 'locale' => 'de']);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => null])
+            ->willReturn($unlocalizedDimensionContent);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => 'de'])
+            ->willReturn($localizedDimensionContent);
+
+        $unlocalizedDimensionContent->setWorkflowPlace(Argument::cetera())->shouldNotBeCalled();
+        $unlocalizedDimensionContent->setWorkflowPublished(Argument::cetera())->shouldNotBeCalled();
 
         $localizedDimensionContent->setWorkflowPlace(WorkflowInterface::WORKFLOW_PLACE_UNPUBLISHED)->shouldBeCalled();
         $localizedDimensionContent->setWorkflowPublished(Argument::cetera())->shouldNotBeCalled();
 
-        $workflowMapper->map($data, $dimensionContent->reveal(), $localizedDimensionContent->reveal());
+        $workflowMapper->map($data, $dimensionContentCollection->reveal());
     }
 
     public function testMapLocalizedDraftPlaceAlreadySet(): void
@@ -163,21 +213,28 @@ class WorkflowDataMapperTest extends TestCase
             'published' => (new \DateTime())->format('c'),
         ];
 
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent->willImplement(WorkflowInterface::class);
+        $unlocalizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $unlocalizedDimensionContent->willImplement(WorkflowInterface::class);
 
         $localizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
         $localizedDimensionContent->willImplement(WorkflowInterface::class);
         $localizedDimensionContent->getStage()->willReturn(DimensionContentInterface::STAGE_DRAFT);
         $localizedDimensionContent->getWorkflowPlace()->willReturn(WorkflowInterface::WORKFLOW_PLACE_UNPUBLISHED);
 
-        $dimensionContent->setWorkflowPlace(Argument::cetera())->shouldNotBeCalled();
-        $dimensionContent->setWorkflowPublished(Argument::cetera())->shouldNotBeCalled();
+        $dimensionContentCollection = $this->prophesize(DimensionContentCollectionInterface::class);
+        $dimensionContentCollection->getDimensionAttributes()->willReturn(['stage' => 'draft', 'locale' => 'de']);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => null])
+            ->willReturn($unlocalizedDimensionContent);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => 'de'])
+            ->willReturn($localizedDimensionContent);
+
+        $unlocalizedDimensionContent->setWorkflowPlace(Argument::cetera())->shouldNotBeCalled();
+        $unlocalizedDimensionContent->setWorkflowPublished(Argument::cetera())->shouldNotBeCalled();
 
         $localizedDimensionContent->setWorkflowPlace(Argument::cetera())->shouldNotBeCalled();
         $localizedDimensionContent->setWorkflowPublished(Argument::cetera())->shouldNotBeCalled();
 
-        $workflowMapper->map($data, $dimensionContent->reveal(), $localizedDimensionContent->reveal());
+        $workflowMapper->map($data, $dimensionContentCollection->reveal());
     }
 
     public function testMapLocalizedLive(): void
@@ -188,20 +245,27 @@ class WorkflowDataMapperTest extends TestCase
             'published' => (new \DateTime())->format('c'),
         ];
 
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent->willImplement(WorkflowInterface::class);
+        $unlocalizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $unlocalizedDimensionContent->willImplement(WorkflowInterface::class);
 
         $localizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
         $localizedDimensionContent->willImplement(WorkflowInterface::class);
         $localizedDimensionContent->getStage()->willReturn(DimensionContentInterface::STAGE_LIVE);
 
-        $dimensionContent->setWorkflowPlace(Argument::cetera())->shouldNotBeCalled();
-        $dimensionContent->setWorkflowPublished(Argument::cetera())->shouldNotBeCalled();
+        $dimensionContentCollection = $this->prophesize(DimensionContentCollectionInterface::class);
+        $dimensionContentCollection->getDimensionAttributes()->willReturn(['stage' => 'draft', 'locale' => 'de']);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => null])
+            ->willReturn($unlocalizedDimensionContent);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => 'de'])
+            ->willReturn($localizedDimensionContent);
+
+        $unlocalizedDimensionContent->setWorkflowPlace(Argument::cetera())->shouldNotBeCalled();
+        $unlocalizedDimensionContent->setWorkflowPublished(Argument::cetera())->shouldNotBeCalled();
 
         $localizedDimensionContent->setWorkflowPlace(Argument::cetera())->shouldNotBeCalled();
         $localizedDimensionContent->setWorkflowPublished(Argument::type(\DateTimeInterface::class))->shouldBeCalled();
 
-        $workflowMapper->map($data, $dimensionContent->reveal(), $localizedDimensionContent->reveal());
+        $workflowMapper->map($data, $dimensionContentCollection->reveal());
     }
 
     public function testMapLocalizedLivePublishedNotSet(): void
@@ -210,21 +274,28 @@ class WorkflowDataMapperTest extends TestCase
 
         $data = [];
 
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent->willImplement(WorkflowInterface::class);
+        $unlocalizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $unlocalizedDimensionContent->willImplement(WorkflowInterface::class);
 
         $localizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
         $localizedDimensionContent->willImplement(WorkflowInterface::class);
         $localizedDimensionContent->getStage()->willReturn(DimensionContentInterface::STAGE_LIVE);
 
-        $dimensionContent->setWorkflowPlace(Argument::cetera())->shouldNotBeCalled();
-        $dimensionContent->setWorkflowPublished(Argument::cetera())->shouldNotBeCalled();
+        $dimensionContentCollection = $this->prophesize(DimensionContentCollectionInterface::class);
+        $dimensionContentCollection->getDimensionAttributes()->willReturn(['stage' => 'draft', 'locale' => 'de']);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => null])
+            ->willReturn($unlocalizedDimensionContent);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => 'de'])
+            ->willReturn($localizedDimensionContent);
+
+        $unlocalizedDimensionContent->setWorkflowPlace(Argument::cetera())->shouldNotBeCalled();
+        $unlocalizedDimensionContent->setWorkflowPublished(Argument::cetera())->shouldNotBeCalled();
 
         $localizedDimensionContent->setWorkflowPlace(Argument::cetera())->shouldNotBeCalled();
         $localizedDimensionContent->setWorkflowPublished(Argument::cetera())->shouldNotBeCalled();
 
         $this->expectException(\RuntimeException::class);
 
-        $workflowMapper->map($data, $dimensionContent->reveal(), $localizedDimensionContent->reveal());
+        $workflowMapper->map($data, $dimensionContentCollection->reveal());
     }
 }

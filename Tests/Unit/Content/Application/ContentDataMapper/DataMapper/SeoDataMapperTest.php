@@ -15,6 +15,7 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentDataMa
 
 use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\DataMapper\SeoDataMapper;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
 
@@ -37,11 +38,18 @@ class SeoDataMapperTest extends TestCase
             'seoNoFollow' => true,
         ];
 
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $unlocalizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
         $localizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
 
+        $dimensionContentCollection = $this->prophesize(DimensionContentCollectionInterface::class);
+        $dimensionContentCollection->getDimensionAttributes()->willReturn(['stage' => 'draft', 'locale' => 'de']);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => null])
+            ->willReturn($unlocalizedDimensionContent);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => 'de'])
+            ->willReturn($localizedDimensionContent);
+
         $seoMapper = $this->createSeoDataMapperInstance();
-        $seoMapper->map($data, $dimensionContent->reveal(), $localizedDimensionContent->reveal());
+        $seoMapper->map($data, $dimensionContentCollection->reveal());
         $this->assertTrue(true); // Avoid risky test as this is an early return test
     }
 
@@ -59,14 +67,21 @@ class SeoDataMapperTest extends TestCase
             'seoNoFollow' => true,
         ];
 
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent->willImplement(SeoInterface::class);
+        $unlocalizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $unlocalizedDimensionContent->willImplement(SeoInterface::class);
 
         $localizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
 
+        $dimensionContentCollection = $this->prophesize(DimensionContentCollectionInterface::class);
+        $dimensionContentCollection->getDimensionAttributes()->willReturn(['stage' => 'draft', 'locale' => 'de']);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => null])
+            ->willReturn($unlocalizedDimensionContent);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => 'de'])
+            ->willReturn($localizedDimensionContent);
+
         $seoMapper = $this->createSeoDataMapperInstance();
 
-        $seoMapper->map($data, $dimensionContent->reveal(), $localizedDimensionContent->reveal());
+        $seoMapper->map($data, $dimensionContentCollection->reveal());
     }
 
     public function testMapUnlocalizedSeo(): void
@@ -81,19 +96,26 @@ class SeoDataMapperTest extends TestCase
             'seoNoFollow' => true,
         ];
 
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent->willImplement(SeoInterface::class);
-        $dimensionContent->setSeoTitle('Seo Title')->shouldBeCalled();
-        $dimensionContent->setSeoDescription('Seo Description')->shouldBeCalled();
-        $dimensionContent->setSeoKeywords('Seo Keyword 1, Seo Keyword 2')->shouldBeCalled();
-        $dimensionContent->setSeoCanonicalUrl('http://example.localhost')->shouldBeCalled();
-        $dimensionContent->setSeoHideInSitemap(true)->shouldBeCalled();
-        $dimensionContent->setSeoNoIndex(true)->shouldBeCalled();
-        $dimensionContent->setSeoNoFollow(true)->shouldBeCalled();
+        $unlocalizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $unlocalizedDimensionContent->willImplement(SeoInterface::class);
+        $unlocalizedDimensionContent->setSeoTitle('Seo Title')->shouldBeCalled();
+        $unlocalizedDimensionContent->setSeoDescription('Seo Description')->shouldBeCalled();
+        $unlocalizedDimensionContent->setSeoKeywords('Seo Keyword 1, Seo Keyword 2')->shouldBeCalled();
+        $unlocalizedDimensionContent->setSeoCanonicalUrl('http://example.localhost')->shouldBeCalled();
+        $unlocalizedDimensionContent->setSeoHideInSitemap(true)->shouldBeCalled();
+        $unlocalizedDimensionContent->setSeoNoIndex(true)->shouldBeCalled();
+        $unlocalizedDimensionContent->setSeoNoFollow(true)->shouldBeCalled();
+
+        $dimensionContentCollection = $this->prophesize(DimensionContentCollectionInterface::class);
+        $dimensionContentCollection->getDimensionAttributes()->willReturn(['stage' => 'draft', 'locale' => 'de']);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => null])
+            ->willReturn($unlocalizedDimensionContent);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => 'de'])
+            ->willReturn(null);
 
         $seoMapper = $this->createSeoDataMapperInstance();
 
-        $seoMapper->map($data, $dimensionContent->reveal());
+        $seoMapper->map($data, $dimensionContentCollection->reveal());
     }
 
     public function testMapLocalizedSeo(): void
@@ -108,8 +130,8 @@ class SeoDataMapperTest extends TestCase
             'seoNoFollow' => true,
         ];
 
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent->willImplement(SeoInterface::class);
+        $unlocalizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $unlocalizedDimensionContent->willImplement(SeoInterface::class);
 
         $localizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
         $localizedDimensionContent->willImplement(SeoInterface::class);
@@ -121,8 +143,15 @@ class SeoDataMapperTest extends TestCase
         $localizedDimensionContent->setSeoNoIndex(true)->shouldBeCalled();
         $localizedDimensionContent->setSeoNoFollow(true)->shouldBeCalled();
 
+        $dimensionContentCollection = $this->prophesize(DimensionContentCollectionInterface::class);
+        $dimensionContentCollection->getDimensionAttributes()->willReturn(['stage' => 'draft', 'locale' => 'de']);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => null])
+            ->willReturn($unlocalizedDimensionContent);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => 'de'])
+            ->willReturn($localizedDimensionContent);
+
         $seoMapper = $this->createSeoDataMapperInstance();
 
-        $seoMapper->map($data, $dimensionContent->reveal(), $localizedDimensionContent->reveal());
+        $seoMapper->map($data, $dimensionContentCollection->reveal());
     }
 }

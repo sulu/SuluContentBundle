@@ -87,8 +87,7 @@ class ContentWorkflow implements ContentWorkflowInterface
 
         $dimensionContentCollection = $this->dimensionContentRepository->load($contentRichEntity, $dimensionAttributes);
         $dimensionAttributes = $dimensionContentCollection->getDimensionAttributes();
-
-        $localizedDimensionContent = $dimensionContentCollection->getLocalizedDimensionContent();
+        $localizedDimensionContent = $dimensionContentCollection->getDimensionContent($dimensionAttributes);
 
         if (!$localizedDimensionContent) {
             throw new ContentNotFoundException($contentRichEntity, $dimensionAttributes);

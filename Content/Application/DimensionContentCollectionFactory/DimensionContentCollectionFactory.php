@@ -93,13 +93,15 @@ class DimensionContentCollectionFactory implements DimensionContentCollectionFac
             }
         }
 
-        $this->contentDataMapper->map($data, $unlocalizedDimensionContent, $localizedDimensionContent);
-
-        return new DimensionContentCollection(
+        $dimensionContentCollection = new DimensionContentCollection(
             $orderedContentDimensions,
             $dimensionAttributes,
             $dimensionContentCollection->getDimensionContentClass()
         );
+
+        $this->contentDataMapper->map($data, $dimensionContentCollection);
+
+        return $dimensionContentCollection;
     }
 
     /**

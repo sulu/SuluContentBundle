@@ -15,6 +15,7 @@ namespace Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\DataMa
 
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\CategoryFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\TagFactoryInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 
 class ExcerptDataMapper implements DataMapperInterface
@@ -37,12 +38,17 @@ class ExcerptDataMapper implements DataMapperInterface
 
     public function map(
         array $data,
-        object $unlocalizedObject,
-        ?object $localizedObject = null
+        DimensionContentCollectionInterface $dimensionContentCollection
     ): void {
+        $dimensionAttributes = $dimensionContentCollection->getDimensionAttributes();
+        $unlocalizedDimensionAttributes = array_merge($dimensionAttributes, ['locale' => null]);
+        $unlocalizedObject = $dimensionContentCollection->getDimensionContent($unlocalizedDimensionAttributes);
+
         if (!$unlocalizedObject instanceof ExcerptInterface) {
             return;
         }
+
+        $localizedObject = $dimensionContentCollection->getDimensionContent($dimensionAttributes);
 
         if ($localizedObject) {
             if (!$localizedObject instanceof ExcerptInterface) {

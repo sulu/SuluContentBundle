@@ -17,9 +17,11 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\DataMapper\RoutableDataMapper;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\RoutableInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
+use Sulu\Bundle\ContentBundle\Tests\Unit\Mocks\DimensionContentMockWrapperTrait;
 use Sulu\Bundle\ContentBundle\Tests\Unit\Mocks\MockWrapper;
 use Sulu\Bundle\ContentBundle\Tests\Unit\Mocks\RoutableMockWrapperTrait;
 use Sulu\Bundle\ContentBundle\Tests\Unit\Mocks\TemplateMockWrapperTrait;
@@ -67,9 +69,13 @@ class RoutableDataMapperTest extends TestCase
     protected function wrapRoutableMock(ObjectProphecy $routableMock): RoutableInterface
     {
         return new class($routableMock) extends MockWrapper implements
+            DimensionContentInterface,
             TemplateInterface,
             RoutableInterface {
-            use RoutableMockWrapperTrait;
+            use DimensionContentMockWrapperTrait, RoutableMockWrapperTrait {
+                RoutableMockWrapperTrait::getLocale insteadof DimensionContentMockWrapperTrait;
+                RoutableMockWrapperTrait::getResourceKey insteadof DimensionContentMockWrapperTrait;
+            }
             use TemplateMockWrapperTrait;
         };
     }
@@ -78,8 +84,15 @@ class RoutableDataMapperTest extends TestCase
     {
         $data = [];
 
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $unlocalizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
         $localizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
+
+        $dimensionContentCollection = $this->prophesize(DimensionContentCollectionInterface::class);
+        $dimensionContentCollection->getDimensionAttributes()->willReturn(['stage' => 'draft', 'locale' => 'de']);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => null])
+            ->willReturn($unlocalizedDimensionContent);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => 'de'])
+            ->willReturn($localizedDimensionContent);
 
         $factory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $routeGenerator = $this->prophesize(RouteGeneratorInterface::class);
@@ -100,14 +113,21 @@ class RoutableDataMapperTest extends TestCase
             $conflictResolver->reveal()
         );
 
-        $mapper->map($data, $dimensionContent->reveal(), $localizedDimensionContent->reveal());
+        $mapper->map($data, $dimensionContentCollection->reveal());
     }
 
     public function testMapNoLocalizedDimension(): void
     {
         $data = [];
 
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $unlocalizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
+
+        $dimensionContentCollection = $this->prophesize(DimensionContentCollectionInterface::class);
+        $dimensionContentCollection->getDimensionAttributes()->willReturn(['stage' => 'draft', 'locale' => 'de']);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => null])
+            ->willReturn($unlocalizedDimensionContent);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => 'de'])
+            ->willReturn(null);
 
         $factory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $routeGenerator = $this->prophesize(RouteGeneratorInterface::class);
@@ -128,7 +148,7 @@ class RoutableDataMapperTest extends TestCase
             $conflictResolver->reveal()
         );
 
-        $mapper->map($data, $dimensionContent->reveal(), null);
+        $mapper->map($data, $dimensionContentCollection->reveal());
     }
 
     public function testMapNoTemplateInterface(): void
@@ -138,10 +158,17 @@ class RoutableDataMapperTest extends TestCase
 
         $data = [];
 
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent->willImplement(RoutableInterface::class);
+        $unlocalizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $unlocalizedDimensionContent->willImplement(RoutableInterface::class);
         $localizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
         $localizedDimensionContent->willImplement(RoutableInterface::class);
+
+        $dimensionContentCollection = $this->prophesize(DimensionContentCollectionInterface::class);
+        $dimensionContentCollection->getDimensionAttributes()->willReturn(['stage' => 'draft', 'locale' => 'de']);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => null])
+            ->willReturn($unlocalizedDimensionContent);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => 'de'])
+            ->willReturn($localizedDimensionContent);
 
         $factory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $routeGenerator = $this->prophesize(RouteGeneratorInterface::class);
@@ -163,7 +190,7 @@ class RoutableDataMapperTest extends TestCase
             $conflictResolver->reveal()
         );
 
-        $mapper->map($data, $dimensionContent->reveal(), $localizedDimensionContent->reveal());
+        $mapper->map($data, $dimensionContentCollection->reveal());
     }
 
     public function testMapNoTemplate(): void
@@ -172,10 +199,17 @@ class RoutableDataMapperTest extends TestCase
 
         $data = [];
 
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $unlocalizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
         $localizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
         $localizedDimensionContent->willImplement(RoutableInterface::class);
         $localizedDimensionContent->willImplement(TemplateInterface::class);
+
+        $dimensionContentCollection = $this->prophesize(DimensionContentCollectionInterface::class);
+        $dimensionContentCollection->getDimensionAttributes()->willReturn(['stage' => 'draft', 'locale' => 'de']);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => null])
+            ->willReturn($unlocalizedDimensionContent);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => 'de'])
+            ->willReturn($this->wrapRoutableMock($localizedDimensionContent));
 
         $factory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $routeGenerator = $this->prophesize(RouteGeneratorInterface::class);
@@ -198,11 +232,7 @@ class RoutableDataMapperTest extends TestCase
             $conflictResolver->reveal()
         );
 
-        $mapper->map(
-            $data,
-            $dimensionContent->reveal(),
-            $this->wrapRoutableMock($localizedDimensionContent)
-        );
+        $mapper->map($data, $dimensionContentCollection->reveal());
     }
 
     public function testMapNoMetadata(): void
@@ -211,10 +241,17 @@ class RoutableDataMapperTest extends TestCase
             'template' => 'default',
         ];
 
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $unlocalizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
         $localizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
         $localizedDimensionContent->willImplement(RoutableInterface::class);
         $localizedDimensionContent->willImplement(TemplateInterface::class);
+
+        $dimensionContentCollection = $this->prophesize(DimensionContentCollectionInterface::class);
+        $dimensionContentCollection->getDimensionAttributes()->willReturn(['stage' => 'draft', 'locale' => 'de']);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => null])
+            ->willReturn($unlocalizedDimensionContent);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => 'de'])
+            ->willReturn($this->wrapRoutableMock($localizedDimensionContent));
 
         $factory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $routeGenerator = $this->prophesize(RouteGeneratorInterface::class);
@@ -237,11 +274,7 @@ class RoutableDataMapperTest extends TestCase
             $conflictResolver->reveal()
         );
 
-        $mapper->map(
-            $data,
-            $dimensionContent->reveal(),
-            $this->wrapRoutableMock($localizedDimensionContent)
-        );
+        $mapper->map($data, $dimensionContentCollection->reveal());
     }
 
     public function testMapNoRouteProperty(): void
@@ -250,10 +283,17 @@ class RoutableDataMapperTest extends TestCase
             'template' => 'default',
         ];
 
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $unlocalizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
         $localizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
         $localizedDimensionContent->willImplement(RoutableInterface::class);
         $localizedDimensionContent->willImplement(TemplateInterface::class);
+
+        $dimensionContentCollection = $this->prophesize(DimensionContentCollectionInterface::class);
+        $dimensionContentCollection->getDimensionAttributes()->willReturn(['stage' => 'draft', 'locale' => 'de']);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => null])
+            ->willReturn($unlocalizedDimensionContent);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => 'de'])
+            ->willReturn($this->wrapRoutableMock($localizedDimensionContent));
 
         $factory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $routeGenerator = $this->prophesize(RouteGeneratorInterface::class);
@@ -285,11 +325,7 @@ class RoutableDataMapperTest extends TestCase
             $conflictResolver->reveal()
         );
 
-        $mapper->map(
-            $data,
-            $dimensionContent->reveal(),
-            $this->wrapRoutableMock($localizedDimensionContent)
-        );
+        $mapper->map($data, $dimensionContentCollection->reveal());
     }
 
     public function testMapNoRoutePropertyData(): void
@@ -298,10 +334,17 @@ class RoutableDataMapperTest extends TestCase
             'template' => 'default',
         ];
 
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $unlocalizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
         $localizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
         $localizedDimensionContent->willImplement(RoutableInterface::class);
         $localizedDimensionContent->willImplement(TemplateInterface::class);
+
+        $dimensionContentCollection = $this->prophesize(DimensionContentCollectionInterface::class);
+        $dimensionContentCollection->getDimensionAttributes()->willReturn(['stage' => 'draft', 'locale' => 'de']);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => null])
+            ->willReturn($unlocalizedDimensionContent);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => 'de'])
+            ->willReturn($this->wrapRoutableMock($localizedDimensionContent));
 
         $factory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $routeGenerator = $this->prophesize(RouteGeneratorInterface::class);
@@ -334,11 +377,7 @@ class RoutableDataMapperTest extends TestCase
             $conflictResolver->reveal()
         );
 
-        $mapper->map(
-            $data,
-            $dimensionContent->reveal(),
-            $this->wrapRoutableMock($localizedDimensionContent)
-        );
+        $mapper->map($data, $dimensionContentCollection->reveal());
     }
 
     public function testMapNoRoutePropertyDataAndNoOldRoute(): void
@@ -347,10 +386,18 @@ class RoutableDataMapperTest extends TestCase
             'template' => 'default',
         ];
 
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $unlocalizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
         $localizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
         $localizedDimensionContent->willImplement(RoutableInterface::class);
         $localizedDimensionContent->willImplement(TemplateInterface::class);
+        $localizedDimensionContentMock = $this->wrapRoutableMock($localizedDimensionContent);
+
+        $dimensionContentCollection = $this->prophesize(DimensionContentCollectionInterface::class);
+        $dimensionContentCollection->getDimensionAttributes()->willReturn(['stage' => 'draft', 'locale' => 'de']);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => null])
+            ->willReturn($unlocalizedDimensionContent);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => 'de'])
+            ->willReturn($localizedDimensionContentMock);
 
         $factory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $routeGenerator = $this->prophesize(RouteGeneratorInterface::class);
@@ -368,13 +415,12 @@ class RoutableDataMapperTest extends TestCase
         $localizedDimensionContent->getTemplateData()->willReturn([]);
         $localizedDimensionContent->getLocale()->willReturn('en');
         $localizedDimensionContent->setTemplateData(['url' => '/test'])->shouldBeCalled();
-        $localizedDimensionContentMock = $this->wrapRoutableMock($localizedDimensionContent);
 
         $factory->getStructureMetadata('mock-template-type', 'default')->willReturn($metadata->reveal())->shouldBeCalled();
 
         $routeGenerator->generate(
             array_merge($data, [
-                '_unlocalizedObject' => $dimensionContent->reveal(),
+                '_unlocalizedObject' => $unlocalizedDimensionContent->reveal(),
                 '_localizedObject' => $localizedDimensionContentMock,
             ]),
             ['route_schema' => '/{object["title"]}']
@@ -399,11 +445,7 @@ class RoutableDataMapperTest extends TestCase
             $conflictResolver->reveal()
         );
 
-        $mapper->map(
-            $data,
-            $dimensionContent->reveal(),
-            $localizedDimensionContentMock
-        );
+        $mapper->map($data, $dimensionContentCollection->reveal());
     }
 
     public function testMapNoRoutePropertyDataAndNoOldRouteIgnoreSlash(): void
@@ -412,10 +454,18 @@ class RoutableDataMapperTest extends TestCase
             'template' => 'default',
         ];
 
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $unlocalizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
         $localizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
         $localizedDimensionContent->willImplement(RoutableInterface::class);
         $localizedDimensionContent->willImplement(TemplateInterface::class);
+        $localizedDimensionContentMock = $this->wrapRoutableMock($localizedDimensionContent);
+
+        $dimensionContentCollection = $this->prophesize(DimensionContentCollectionInterface::class);
+        $dimensionContentCollection->getDimensionAttributes()->willReturn(['stage' => 'draft', 'locale' => 'de']);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => null])
+            ->willReturn($unlocalizedDimensionContent);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => 'de'])
+            ->willReturn($localizedDimensionContentMock);
 
         $factory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $routeGenerator = $this->prophesize(RouteGeneratorInterface::class);
@@ -433,13 +483,12 @@ class RoutableDataMapperTest extends TestCase
         $localizedDimensionContent->getTemplateData()->willReturn([]);
         $localizedDimensionContent->getLocale()->willReturn('en');
         $localizedDimensionContent->setTemplateData(Argument::cetera())->shouldNotBeCalled();
-        $localizedDimensionContentMock = $this->wrapRoutableMock($localizedDimensionContent);
 
         $factory->getStructureMetadata('mock-template-type', 'default')->willReturn($metadata->reveal())->shouldBeCalled();
 
         $routeGenerator->generate(
             array_merge($data, [
-                '_unlocalizedObject' => $dimensionContent->reveal(),
+                '_unlocalizedObject' => $unlocalizedDimensionContent->reveal(),
                 '_localizedObject' => $localizedDimensionContentMock,
             ]),
             ['route_schema' => '/{object["title"]}']
@@ -456,11 +505,7 @@ class RoutableDataMapperTest extends TestCase
             $conflictResolver->reveal()
         );
 
-        $mapper->map(
-            $data,
-            $dimensionContent->reveal(),
-            $localizedDimensionContentMock
-        );
+        $mapper->map($data, $dimensionContentCollection->reveal());
     }
 
     public function testMapNoContentId(): void
@@ -469,10 +514,17 @@ class RoutableDataMapperTest extends TestCase
             'template' => 'default',
         ];
 
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $unlocalizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
         $localizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
         $localizedDimensionContent->willImplement(RoutableInterface::class);
         $localizedDimensionContent->willImplement(TemplateInterface::class);
+
+        $dimensionContentCollection = $this->prophesize(DimensionContentCollectionInterface::class);
+        $dimensionContentCollection->getDimensionAttributes()->willReturn(['stage' => 'draft', 'locale' => 'de']);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => null])
+            ->willReturn($unlocalizedDimensionContent);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => 'de'])
+            ->willReturn($this->wrapRoutableMock($localizedDimensionContent));
 
         $factory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $routeGenerator = $this->prophesize(RouteGeneratorInterface::class);
@@ -500,11 +552,7 @@ class RoutableDataMapperTest extends TestCase
             $conflictResolver->reveal()
         );
 
-        $mapper->map(
-            $data,
-            $dimensionContent->reveal(),
-            $this->wrapRoutableMock($localizedDimensionContent)
-        );
+        $mapper->map($data, $dimensionContentCollection->reveal());
     }
 
     public function testMapNoLocale(): void
@@ -513,10 +561,17 @@ class RoutableDataMapperTest extends TestCase
             'template' => 'default',
         ];
 
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $unlocalizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
         $localizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
         $localizedDimensionContent->willImplement(RoutableInterface::class);
         $localizedDimensionContent->willImplement(TemplateInterface::class);
+
+        $dimensionContentCollection = $this->prophesize(DimensionContentCollectionInterface::class);
+        $dimensionContentCollection->getDimensionAttributes()->willReturn(['stage' => 'draft', 'locale' => 'de']);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => null])
+            ->willReturn($unlocalizedDimensionContent);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => 'de'])
+            ->willReturn($this->wrapRoutableMock($localizedDimensionContent));
 
         $factory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $routeGenerator = $this->prophesize(RouteGeneratorInterface::class);
@@ -545,11 +600,7 @@ class RoutableDataMapperTest extends TestCase
             $conflictResolver->reveal()
         );
 
-        $mapper->map(
-            $data,
-            $dimensionContent->reveal(),
-            $this->wrapRoutableMock($localizedDimensionContent)
-        );
+        $mapper->map($data, $dimensionContentCollection->reveal());
     }
 
     public function testMapNoRoutePath(): void
@@ -559,10 +610,18 @@ class RoutableDataMapperTest extends TestCase
             'url' => null,
         ];
 
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $unlocalizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
         $localizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
         $localizedDimensionContent->willImplement(RoutableInterface::class);
         $localizedDimensionContent->willImplement(TemplateInterface::class);
+        $localizedDimensionContentMock = $this->wrapRoutableMock($localizedDimensionContent);
+
+        $dimensionContentCollection = $this->prophesize(DimensionContentCollectionInterface::class);
+        $dimensionContentCollection->getDimensionAttributes()->willReturn(['stage' => 'draft', 'locale' => 'de']);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => null])
+            ->willReturn($unlocalizedDimensionContent);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => 'de'])
+            ->willReturn($localizedDimensionContentMock);
 
         $factory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $routeGenerator = $this->prophesize(RouteGeneratorInterface::class);
@@ -582,11 +641,9 @@ class RoutableDataMapperTest extends TestCase
         $localizedDimensionContent->getTemplateData()->willReturn(['title' => 'Test', 'url' => null]);
         $localizedDimensionContent->getLocale()->willReturn('en');
 
-        $localizedDimensionContentMock = $this->wrapRoutableMock($localizedDimensionContent);
-
         $routeGenerator->generate(
             array_merge($data, [
-                '_unlocalizedObject' => $dimensionContent->reveal(),
+                '_unlocalizedObject' => $unlocalizedDimensionContent->reveal(),
                 '_localizedObject' => $localizedDimensionContentMock,
             ]),
             ['route_schema' => '/{object["title"]}']
@@ -611,11 +668,7 @@ class RoutableDataMapperTest extends TestCase
             $conflictResolver->reveal()
         );
 
-        $mapper->map(
-            $data,
-            $dimensionContent->reveal(),
-            $localizedDimensionContentMock
-        );
+        $mapper->map($data, $dimensionContentCollection->reveal());
     }
 
     public function testMap(): void
@@ -625,10 +678,17 @@ class RoutableDataMapperTest extends TestCase
             'url' => '/test',
         ];
 
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $unlocalizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
         $localizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
         $localizedDimensionContent->willImplement(RoutableInterface::class);
         $localizedDimensionContent->willImplement(TemplateInterface::class);
+
+        $dimensionContentCollection = $this->prophesize(DimensionContentCollectionInterface::class);
+        $dimensionContentCollection->getDimensionAttributes()->willReturn(['stage' => 'draft', 'locale' => 'de']);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => null])
+            ->willReturn($unlocalizedDimensionContent);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => 'de'])
+            ->willReturn($this->wrapRoutableMock($localizedDimensionContent));
 
         $factory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $routeGenerator = $this->prophesize(RouteGeneratorInterface::class);
@@ -647,7 +707,6 @@ class RoutableDataMapperTest extends TestCase
 
         $localizedDimensionContent->getResourceId()->willReturn('123-123-123');
         $localizedDimensionContent->getLocale()->willReturn('en');
-        $localizedDimensionContentMock = $this->wrapRoutableMock($localizedDimensionContent);
 
         $routeGenerator->generate(Argument::any())->shouldNotBeCalled();
 
@@ -670,11 +729,7 @@ class RoutableDataMapperTest extends TestCase
             $conflictResolver->reveal()
         );
 
-        $mapper->map(
-            $data,
-            $dimensionContent->reveal(),
-            $localizedDimensionContentMock
-        );
+        $mapper->map($data, $dimensionContentCollection->reveal());
     }
 
     public function testMapConflictingRoute(): void
@@ -684,10 +739,17 @@ class RoutableDataMapperTest extends TestCase
             'url' => '/test',
         ];
 
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $unlocalizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
         $localizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
         $localizedDimensionContent->willImplement(RoutableInterface::class);
         $localizedDimensionContent->willImplement(TemplateInterface::class);
+
+        $dimensionContentCollection = $this->prophesize(DimensionContentCollectionInterface::class);
+        $dimensionContentCollection->getDimensionAttributes()->willReturn(['stage' => 'draft', 'locale' => 'de']);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => null])
+            ->willReturn($unlocalizedDimensionContent);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => 'de'])
+            ->willReturn($this->wrapRoutableMock($localizedDimensionContent));
 
         $factory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $routeGenerator = $this->prophesize(RouteGeneratorInterface::class);
@@ -706,7 +768,6 @@ class RoutableDataMapperTest extends TestCase
 
         $localizedDimensionContent->getResourceId()->willReturn('123-123-123');
         $localizedDimensionContent->getLocale()->willReturn('en');
-        $localizedDimensionContentMock = $this->wrapRoutableMock($localizedDimensionContent);
 
         $routeGenerator->generate(Argument::any())->shouldNotBeCalled();
 
@@ -730,11 +791,7 @@ class RoutableDataMapperTest extends TestCase
             $conflictResolver->reveal()
         );
 
-        $mapper->map(
-            $data,
-            $dimensionContent->reveal(),
-            $localizedDimensionContentMock
-        );
+        $mapper->map($data, $dimensionContentCollection->reveal());
     }
 
     public function testMapNoTemplateWithDefaultTemplate(): void
@@ -743,10 +800,17 @@ class RoutableDataMapperTest extends TestCase
             'url' => '/test',
         ];
 
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $unlocalizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
         $localizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
         $localizedDimensionContent->willImplement(RoutableInterface::class);
         $localizedDimensionContent->willImplement(TemplateInterface::class);
+
+        $dimensionContentCollection = $this->prophesize(DimensionContentCollectionInterface::class);
+        $dimensionContentCollection->getDimensionAttributes()->willReturn(['stage' => 'draft', 'locale' => 'de']);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => null])
+            ->willReturn($unlocalizedDimensionContent);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => 'de'])
+            ->willReturn($this->wrapRoutableMock($localizedDimensionContent));
 
         $factory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $routeGenerator = $this->prophesize(RouteGeneratorInterface::class);
@@ -765,7 +829,6 @@ class RoutableDataMapperTest extends TestCase
 
         $localizedDimensionContent->getResourceId()->willReturn('123-123-123');
         $localizedDimensionContent->getLocale()->willReturn('en');
-        $localizedDimensionContentMock = $this->wrapRoutableMock($localizedDimensionContent);
 
         $routeGenerator->generate(Argument::any())->shouldNotBeCalled();
 
@@ -789,11 +852,7 @@ class RoutableDataMapperTest extends TestCase
             ['mock-template-type' => 'default']
         );
 
-        $mapper->map(
-            $data,
-            $dimensionContent->reveal(),
-            $localizedDimensionContentMock
-        );
+        $mapper->map($data, $dimensionContentCollection->reveal());
     }
 
     public function testMapCustomRoute(): void
@@ -803,10 +862,18 @@ class RoutableDataMapperTest extends TestCase
             'url' => null,
         ];
 
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $unlocalizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
         $localizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
         $localizedDimensionContent->willImplement(RoutableInterface::class);
         $localizedDimensionContent->willImplement(TemplateInterface::class);
+        $localizedDimensionContentMock = $this->wrapRoutableMock($localizedDimensionContent);
+
+        $dimensionContentCollection = $this->prophesize(DimensionContentCollectionInterface::class);
+        $dimensionContentCollection->getDimensionAttributes()->willReturn(['stage' => 'draft', 'locale' => 'de']);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => null])
+            ->willReturn($unlocalizedDimensionContent);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => 'de'])
+            ->willReturn($localizedDimensionContentMock);
 
         $factory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $routeGenerator = $this->prophesize(RouteGeneratorInterface::class);
@@ -825,11 +892,10 @@ class RoutableDataMapperTest extends TestCase
         $localizedDimensionContent->getResourceId()->willReturn('123-123-123');
         $localizedDimensionContent->getTemplateData()->willReturn(['title' => 'Test', 'url' => null]);
         $localizedDimensionContent->getLocale()->willReturn('en');
-        $localizedDimensionContentMock = $this->wrapRoutableMock($localizedDimensionContent);
 
         $routeGenerator->generate(
             array_merge($data, [
-                '_unlocalizedObject' => $dimensionContent->reveal(),
+                '_unlocalizedObject' => $unlocalizedDimensionContent->reveal(),
                 '_localizedObject' => $localizedDimensionContentMock,
             ]),
             ['route_schema' => 'custom/{object["_localizedObject"].getName()}-{object["_unlocalizedObject"].getResourceId()}']
@@ -865,10 +931,6 @@ class RoutableDataMapperTest extends TestCase
             ]
         );
 
-        $mapper->map(
-            $data,
-            $dimensionContent->reveal(),
-            $localizedDimensionContentMock
-        );
+        $mapper->map($data, $dimensionContentCollection->reveal());
     }
 }

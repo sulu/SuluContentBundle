@@ -81,10 +81,10 @@ class ContentWorkflowTest extends TestCase
         $transitionName = 'request_for_review';
 
         $dimensionContent1 = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent1->getStage()->willReturn('stage');
+        $dimensionContent1->getStage()->willReturn('draft');
         $dimensionContent1->getLocale()->willReturn(null);
         $dimensionContent2 = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent1->getStage()->willReturn('stage');
+        $dimensionContent1->getStage()->willReturn('draft');
         $dimensionContent1->getLocale()->willReturn('de');
 
         $this->expectExceptionMessage(sprintf(

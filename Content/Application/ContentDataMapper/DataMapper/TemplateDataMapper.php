@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\DataMapper;
 
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
 
@@ -39,9 +40,12 @@ class TemplateDataMapper implements DataMapperInterface
 
     public function map(
         array $data,
-        object $unlocalizedObject,
-        ?object $localizedObject = null
+        DimensionContentCollectionInterface $dimensionContentCollection
     ): void {
+        $dimensionAttributes = $dimensionContentCollection->getDimensionAttributes();
+        $unlocalizedDimensionAttributes = array_merge($dimensionAttributes, ['locale' => null]);
+        $unlocalizedObject = $dimensionContentCollection->getDimensionContent($unlocalizedDimensionAttributes);
+
         if (!$unlocalizedObject instanceof TemplateInterface) {
             return;
         }
@@ -64,6 +68,8 @@ class TemplateDataMapper implements DataMapperInterface
             $type,
             $template
         );
+
+        $localizedObject = $dimensionContentCollection->getDimensionContent($dimensionAttributes);
 
         if ($localizedObject) {
             if (!$localizedObject instanceof TemplateInterface) {
