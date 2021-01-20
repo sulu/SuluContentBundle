@@ -109,7 +109,6 @@
         "php-cs": "vendor/bin/php-cs-fixer fix --verbose --diff --dry-run",
         "php-cs-fix": "vendor/bin/php-cs-fixer fix",
         "lint-composer": "@composer validate --strict",
-        "lint-doctrine": "Tests/Application/bin/adminconsole doctrine:schema:validate",
         "lint-twig": "Tests/Application/bin/adminconsole lint:twig Tests/Application/templates",
         "lint-yaml": "Tests/Application/bin/adminconsole lint:yaml Resources/config Tests/Application/config",
         "lint-container": [
@@ -123,9 +122,7 @@
             "Tests/Application/bin/websiteconsole lint:container --env prod"
         ],
         "lint-doctrine": [
-            "Tests/Application/bin/adminconsole doctrine:database:create --if-not-exists",
-            "Tests/Application/bin/adminconsole doctrine:schema:update --force",
-            "Tests/Application/bin/adminconsole doctrine:schema:validate",
+            "Tests/Application/bin/adminconsole doctrine:schema:validate --skip-sync",
             "Tests/Application/bin/adminconsole doctrine:ensure-production-settings --env prod"
         ],
         "deptrac": "vendor/bin/deptrac"

@@ -93,7 +93,7 @@ class ContentDataProvider extends BaseDataProvider
      * @param DimensionContentInterface[] $data
      * @param string $locale
      *
-     * @return ArrayAccessItem[]
+     * @return ResourceItemInterface[]
      */
     protected function decorateResourceItems(array $data, $locale): array
     {
