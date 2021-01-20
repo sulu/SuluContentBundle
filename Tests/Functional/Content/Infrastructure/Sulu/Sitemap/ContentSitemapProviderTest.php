@@ -24,11 +24,10 @@ use Sulu\Bundle\WebsiteBundle\Sitemap\SitemapUrl;
 class ContentSitemapProviderTest extends SuluTestCase
 {
     use AssertSnapshotTrait;
+    use CreateExampleTrait;
 
     const SCHEME = 'https';
     const HOST = 'localhost';
-
-    use CreateExampleTrait;
 
     /**
      * @var ContentSitemapProvider
