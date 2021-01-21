@@ -1,6 +1,6 @@
 # Upgrade
 
-## 0.5.0
+## 0.6.0
 
 ### Adjusted ContentDataMapper to accept DimensionContentCollection instead of separate objects
 
@@ -140,6 +140,8 @@ If you use the dimension data in your list configuration, you need to change it 
     </properties>
 </list>
 ```
+
+## 0.5.0
 
 ### ContentTeaserProvider constructor changed
 
