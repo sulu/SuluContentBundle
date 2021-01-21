@@ -33,13 +33,12 @@ ALTER TABLE test_example_dimension_contents DROP dimension_id;
 DROP TABLE cn_dimensions;
 ```
 
-If you are using the `DoctrineMigrationBundle` you maybe want a `up` and `down`
-migration for your entity to make this easier you can generate the migration. Copy from
-there the tableName, foreignKey and indexName and replace the up and down methods with
-the one of the following example:
+If you are using the `DoctrineMigrationBundle` you can also reuse the following migration class
+to migrate the data of you entity. Make sure to provide the correct `tableName`, `foreignKey` 
+and `indexName` before executing the migration.
 
 <details>
-<summary>Doctrine Migration Example</summary>
+<summary>DoctrineMigrationBundle Example</summary>
 
 ```php
 <?php
@@ -69,9 +68,9 @@ final class Version20210120152235 extends AbstractMigration
         return [
             [
                 // TODO replace the following values with the ones by your table
-                'tableName' => 'my_entity_dimension_content',
-                'foreignKey' => 'FK_61A94F1277428AD',
-                'indexName' => 'IDX_61A94F1277428AD',
+                'tableName' => 'my_entity_dimension_content', # name of the table of your DimensionContent entity
+                'foreignKey' => 'FK_61A94F1277428AD', # dimension foreign key on the DimensionContent table
+                'indexName' => 'IDX_61A94F1277428AD', # dimension index on the DimensionContent table
             ],
         ];
     }
