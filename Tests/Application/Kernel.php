@@ -48,4 +48,14 @@ class Kernel extends SuluTestKernel
         parent::registerContainerConfiguration($loader);
         $loader->load(__DIR__ . '/config/config_' . $this->getContext() . '.yml');
     }
+
+    protected function getKernelParameters()
+    {
+        $parameters = parent::getKernelParameters();
+
+        $gedmoReflection = new \ReflectionClass(\Gedmo\Exception::class);
+        $parameters['gedmo_directory'] = \dirname($gedmoReflection->getFileName());
+
+        return $parameters;
+    }
 }
