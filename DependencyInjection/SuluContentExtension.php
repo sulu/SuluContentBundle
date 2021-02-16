@@ -19,6 +19,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class SuluContentExtension extends Extension implements PrependExtensionInterface
 {
@@ -54,6 +55,7 @@ class SuluContentExtension extends Extension implements PrependExtensionInterfac
         if ($container->hasParameter('kernel.bundles')) {
             // TODO FIXME add test here
             // @codeCoverageIgnoreStart
+            /** @var array<string, Bundle> $bundles */
             $bundles = $container->getParameter('kernel.bundles');
 
             if (\array_key_exists('SuluAutomationBundle', $bundles)) {
