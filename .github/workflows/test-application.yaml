@@ -75,11 +75,11 @@ jobs:
             - name: Bootstrap test environment
               run: composer bootstrap-test-environment
 
-            - name: Execute test
+            - name: Execute test cases
               if: matrix.coverage == false
               run: composer test
 
-            - name: Execute test with coverage
+            - name: Execute test cases with coverage
               if: ${{ matrix.coverage }}
               run: composer test-with-coverage
 
@@ -87,7 +87,7 @@ jobs:
               if: ${{ matrix.lint }}
               run: composer lint
 
-            - name: Coverage all upload
+            - name: Upload code coverage to coveralls
               if: ${{ matrix.coverage }}
               run: |
                   composer global require php-coveralls/php-coveralls
@@ -95,6 +95,6 @@ jobs:
               env:
                   COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-            - name: Check coverage
+            - name: Check code coverage
               if: ${{ matrix.coverage }}
               run: composer check-coverage
