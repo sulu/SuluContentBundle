@@ -45,7 +45,6 @@
         "jangregor/phpstan-prophecy": "^0.8",
         "matthiasnoback/symfony-config-test": "^4.0",
         "matthiasnoback/symfony-dependency-injection-test": "^4.0",
-        "php-coveralls/php-coveralls": "^2.4",
         "phpstan/phpstan": "^0.12",
         "phpstan/phpstan-doctrine": "^0.12",
         "phpstan/phpstan-phpunit": "^0.12",
