@@ -75,6 +75,10 @@ jobs:
             - name: Bootstrap test environment
               run: composer bootstrap-test-environment
 
+            - name: Lint Code
+              if: ${{ matrix.lint }}
+              run: composer lint
+
             - name: Execute test cases
               if: matrix.coverage == false
               run: composer test
@@ -82,10 +86,6 @@ jobs:
             - name: Execute test cases with coverage
               if: ${{ matrix.coverage }}
               run: composer test-with-coverage
-
-            - name: Lint Code
-              if: ${{ matrix.lint }}
-              run: composer lint
 
             - name: Upload code coverage to coveralls
               if: ${{ matrix.coverage }}
