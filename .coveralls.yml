@@ -1,3 +1,0 @@
-service_name: github-actions
-coverage_clover: Tests/reports/clover.xml
-json_path: Tests/reports/coveralls.json
