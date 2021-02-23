@@ -54,6 +54,7 @@ class SuluContentExtension extends Extension implements PrependExtensionInterfac
         if ($container->hasParameter('kernel.bundles')) {
             // TODO FIXME add test here
             // @codeCoverageIgnoreStart
+            /** @var string[] $bundles */
             $bundles = $container->getParameter('kernel.bundles');
 
             if (\array_key_exists('SuluAutomationBundle', $bundles)) {

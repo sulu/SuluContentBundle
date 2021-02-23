@@ -1,0 +1,100 @@
+name: Test application
+
+on:
+    pull_request:
+    push:
+        branches:
+            - '[0-9]+.x'
+            - '[0-9]+.[0-9]+'
+
+jobs:
+    test:
+        name: 'PHP ${{ matrix.php-version }} (${{ matrix.dependency-versions }}, Lint ${{ matrix.lint }}, Coverage ${{ matrix.coverage }})'
+        runs-on: ubuntu-latest
+
+        env:
+            DATABASE_URL: mysql://root:root@127.0.0.1:3306/su_headless_test?serverVersion=5.7
+            DATABASE_CHARSET: utf8mb4
+            DATABASE_COLLATE: utf8mb4_unicode_ci
+
+        strategy:
+            fail-fast: false
+            matrix:
+                include:
+                    - php-version: '7.2'
+                      lint: false
+                      coverage: false
+                      dependency-versions: 'lowest'
+                      tools: 'composer:v1'
+                      env:
+                          SYMFONY_DEPRECATIONS_HELPER: disabled
+
+                    - php-version: '7.4'
+                      lint: true
+                      coverage: true
+                      dependency-versions: 'highest'
+                      tools: 'composer:v2'
+                      env:
+                          SYMFONY_DEPRECATIONS_HELPER: weak
+
+                    - php-version: '8.0'
+                      lint: false
+                      coverage: false
+                      dependency-versions: 'highest'
+                      tools: 'composer:v2'
+                      env:
+                          SYMFONY_DEPRECATIONS_HELPER: weak
+
+        services:
+            mysql:
+                image: mysql:5.7
+                env:
+                    MYSQL_ROOT_PASSWORD: root
+                ports:
+                    - 3306:3306
+                options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=5
+
+        steps:
+            - name: Checkout project
+              uses: actions/checkout@v2
+
+            - name: Install and configure PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: ${{ matrix.php-version }}
+                  extensions: ctype, iconv, mysql
+                  coverage: pcov
+                  tools: ${{ matrix.tools }}
+
+            - name: Install composer dependencies
+              uses: ramsey/composer-install@v1
+              with:
+                  dependency-versions: ${{ matrix.dependency-versions }}
+                  composer-options: ${{ matrix.composer-options }}
+
+            - name: Bootstrap test environment
+              run: composer bootstrap-test-environment
+
+            - name: Lint Code
+              if: ${{ matrix.lint }}
+              run: composer lint
+
+            - name: Execute test cases
+              if: matrix.coverage == false
+              run: composer test
+
+            - name: Execute test cases with coverage
+              if: ${{ matrix.coverage }}
+              run: composer test-with-coverage
+
+            - name: Upload code coverage to coveralls
+              if: ${{ matrix.coverage }}
+              run: |
+                  composer global require php-coveralls/php-coveralls
+                  php-coveralls --coverage_clover=Tests/reports/clover.xml --json_path=Tests/reports/coveralls.json -vvv
+              env:
+                  COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Check code coverage
+              if: ${{ matrix.coverage }}
+              run: composer check-coverage

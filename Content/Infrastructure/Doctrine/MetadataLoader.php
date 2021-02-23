@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Content\Infrastructure\Doctrine;
 
 use Doctrine\Common\EventSubscriber;
-use Doctrine\Common\Inflector\Inflector;
+use Doctrine\Inflector\InflectorFactory;
 use Doctrine\ORM\Event\LoadClassMetadataEventArgs;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -196,7 +196,7 @@ class MetadataLoader implements EventSubscriber
 
     private function getRelationTableName(ClassMetadataInfo $metadata, string $relationName): string
     {
-        $inflector = new Inflector();
+        $inflector = InflectorFactory::create()->build();
         $tableNameParts = explode('_', $metadata->getTableName());
         $singularName = $inflector->singularize($tableNameParts[\count($tableNameParts) - 1]) . '_';
         $tableNameParts[\count($tableNameParts) - 1] = $singularName;
