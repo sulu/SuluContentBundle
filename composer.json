@@ -19,7 +19,7 @@
         "doctrine/doctrine-bundle": "^1.10 || ^2.0",
         "friendsofsymfony/rest-bundle": "^2.6 || ^3.0",
         "massive/search-bundle": "^2.4",
-        "ramsey/uuid": "^3.8",
+        "ramsey/uuid": "^3.8 || ^4.0",
         "sulu/sulu": "^2.1 || ^2.3@dev",
         "symfony/config": "^4.4 || ^5.0",
         "symfony/dependency-injection": "^4.4 || ^5.0",
