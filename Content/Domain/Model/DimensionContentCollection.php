@@ -79,7 +79,7 @@ class DimensionContentCollection implements \IteratorAggregate, DimensionContent
             }
         )->first() ?: null;
 
-        $this->dimensionAttributes = $dimensionAttributes;
+        $this->dimensionAttributes = $dimensionContentClass::getEffectiveDimensionAttributes($dimensionAttributes);
     }
 
     public function getDimensionContentClass(): string

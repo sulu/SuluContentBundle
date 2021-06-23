@@ -67,4 +67,19 @@ trait DimensionContentTrait
             'stage' => DimensionContentInterface::STAGE_DRAFT,
         ];
     }
+
+    public static function getEffectiveDimensionAttributes(array $dimensionAttributes): array
+    {
+        $defaultValues = static::getDefaultDimensionAttributes();
+
+        // Ignore keys that are not part of the default attributes
+        $dimensionAttributes = array_intersect_key($dimensionAttributes, $defaultValues);
+
+        $dimensionAttributes = array_merge(
+            $defaultValues,
+            $dimensionAttributes
+        );
+
+        return $dimensionAttributes;
+    }
 }

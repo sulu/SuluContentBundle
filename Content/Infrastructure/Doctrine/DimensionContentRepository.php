@@ -13,9 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Infrastructure\Doctrine;
 
-use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\QueryBuilder;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentMetadataInspector\ContentMetadataInspectorInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollection;
@@ -35,12 +33,19 @@ class DimensionContentRepository implements DimensionContentRepositoryInterface
      */
     private $contentMetadataInspector;
 
+    /**
+     * @var DimensionContentQueryEnhancer
+     */
+    private $dimensionContentQueryEnhancer;
+
     public function __construct(
         EntityManagerInterface $entityManager,
-        ContentMetadataInspectorInterface $contentMetadataInspector
+        ContentMetadataInspectorInterface $contentMetadataInspector,
+        DimensionContentQueryEnhancer $dimensionContentQueryEnhancer
     ) {
         $this->entityManager = $entityManager;
         $this->contentMetadataInspector = $contentMetadataInspector;
+        $this->dimensionContentQueryEnhancer = $dimensionContentQueryEnhancer;
     }
 
     public function load(
@@ -52,21 +57,22 @@ class DimensionContentRepository implements DimensionContentRepositoryInterface
 
         $queryBuilder = $this->entityManager->createQueryBuilder()
             ->from($dimensionContentClass, 'dimensionContent')
-            ->select('dimensionContent')
             ->innerJoin('dimensionContent.' . $mappingProperty, 'content')
             ->where('content.id = :id')
             ->setParameter('id', $contentRichEntity->getId());
 
-        $effectiveAttributes = $this->getEffectiveAttributes($dimensionContentClass, $dimensionAttributes);
-        $queryBuilder->addCriteria($this->getAttributesCriteria('dimensionContent', $effectiveAttributes));
-        $this->addSortBy($queryBuilder, $effectiveAttributes);
+        $this->dimensionContentQueryEnhancer->addSelects(
+            $queryBuilder,
+            $dimensionContentClass,
+            $dimensionAttributes
+        );
 
         /** @var DimensionContentInterface[] $dimensionContents */
         $dimensionContents = $queryBuilder->getQuery()->getResult();
 
         return new DimensionContentCollection(
             $dimensionContents,
-            $effectiveAttributes,
+            $dimensionAttributes,
             $dimensionContentClass
         );
     }

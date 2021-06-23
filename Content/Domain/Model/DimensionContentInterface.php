@@ -38,4 +38,11 @@ interface DimensionContentInterface
      * @return mixed[]
      */
     public static function getDefaultDimensionAttributes(): array;
+
+    /**
+     * @param mixed[] $dimensionAttributes
+     *
+     * @return mixed[]
+     */
+    public static function getEffectiveDimensionAttributes(array $dimensionAttributes): array;
 }

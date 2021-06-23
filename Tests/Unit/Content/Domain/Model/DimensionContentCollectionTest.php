@@ -106,7 +106,9 @@ class DimensionContentCollectionTest extends TestCase
         $dimensionContent2->getLocale()->willReturn('de');
         $dimensionContent2->getStage()->willReturn('draft');
 
-        $attributes = ['locale' => 'de'];
+        $attributes = [
+            'locale' => 'de',
+        ];
 
         $dimensionContentCollection = $this->createDimensionContentCollectionInstance([
             $dimensionContent1->reveal(),
@@ -114,7 +116,10 @@ class DimensionContentCollectionTest extends TestCase
         ], $attributes);
 
         $this->assertSame(
-            $attributes,
+            [
+                'locale' => 'de',
+                'stage' => 'draft',
+            ],
             $dimensionContentCollection->getDimensionAttributes()
         );
     }
