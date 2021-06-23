@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\SmartContent\Repository;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\QueryBuilder;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentManager\ContentManagerInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
@@ -48,7 +48,7 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
     protected $contentRichEntityClass;
 
     /**
-     * @var ClassMetadata
+     * @var ClassMetadataInfo<ContentRichEntityInterface>
      */
     protected $contentRichEntityClassMetadata;
 
@@ -67,7 +67,9 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
         $this->showDrafts = $showDrafts;
         $this->contentRichEntityClass = $contentRichEntityClass;
 
-        $this->contentRichEntityClassMetadata = $this->entityManager->getClassMetadata($this->contentRichEntityClass);
+        /** @var ClassMetadataInfo<ContentRichEntityInterface> $contentRichEntityClassMetadata */
+        $contentRichEntityClassMetadata = $this->entityManager->getClassMetadata($this->contentRichEntityClass);
+        $this->contentRichEntityClassMetadata = $contentRichEntityClassMetadata;
     }
 
     /**

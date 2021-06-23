@@ -41,6 +41,7 @@ class MetadataLoader implements EventSubscriber
 
     public function loadClassMetadata(LoadClassMetadataEventArgs $event): void
     {
+        /** @var ClassMetadataInfo<object> $metadata */
         $metadata = $event->getClassMetadata();
         $reflection = $metadata->getReflectionClass();
 
@@ -102,6 +103,8 @@ class MetadataLoader implements EventSubscriber
 
     /**
      * @codeCoverageIgnore
+     *
+     * @param ClassMetadataInfo<object> $metadata
      */
     private function addManyToOne(
         LoadClassMetadataEventArgs $event,
@@ -131,6 +134,9 @@ class MetadataLoader implements EventSubscriber
         ]);
     }
 
+    /**
+     * @param ClassMetadataInfo<object> $metadata
+     */
     private function addManyToMany(
         LoadClassMetadataEventArgs $event,
         ClassMetadataInfo $metadata,
@@ -173,6 +179,7 @@ class MetadataLoader implements EventSubscriber
     }
 
     /**
+     * @param ClassMetadataInfo<object> $metadata
      * @param mixed[] $mapping
      */
     private function addField(ClassMetadataInfo $metadata, string $name, string $type = 'string', array $mapping = []): void
@@ -194,6 +201,9 @@ class MetadataLoader implements EventSubscriber
         ], $mapping));
     }
 
+    /**
+     * @param ClassMetadataInfo<object> $metadata
+     */
     private function getRelationTableName(ClassMetadataInfo $metadata, string $relationName): string
     {
         $inflector = InflectorFactory::create()->build();
