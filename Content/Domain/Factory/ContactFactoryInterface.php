@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Domain\Factory;
 
-use Sulu\Component\Security\Authentication\UserInterface;
+use Sulu\Bundle\ContactBundle\Entity\ContactInterface;
 
-interface UserFactoryInterface
+interface ContactFactoryInterface
 {
-    public function create(?int $userId): ?UserInterface;
+    public function create(?int $contactId): ?ContactInterface;
 }

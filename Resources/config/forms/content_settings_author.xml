@@ -5,22 +5,22 @@
 >
     <key>content_settings_author</key>
 
-    <tag name="content_settings" instanceOf="Sulu\Bundle\ContentBundle\Content\Domain\Model\AuthorInterface" priority="128"/>
+    <tag name="content_settings_author" instanceOf="Sulu\Bundle\ContentBundle\Content\Domain\Model\AuthorInterface" priority="128"/>
 
     <properties>
         <section name="author">
             <meta>
-                <title>sulu_page.editing_information</title>
+                <title>sulu_content.author</title>
             </meta>
             <properties>
                 <property name="authored" type="datetime" colspan="6">
                     <meta>
-                        <title>sulu_page.authored_date</title>
+                        <title>sulu_content.authored_date</title>
                     </meta>
                 </property>
                 <property name="author" type="single_contact_selection" colspan="6">
                     <meta>
-                        <title>sulu_page.author</title>
+                        <title>sulu_content.author</title>
                     </meta>
                 </property>
             </properties>

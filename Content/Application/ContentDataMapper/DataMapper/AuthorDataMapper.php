@@ -13,20 +13,20 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\DataMapper;
 
-use Sulu\Bundle\ContentBundle\Content\Domain\Factory\UserFactoryInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ContactFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\AuthorInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
 
 class AuthorDataMapper implements DataMapperInterface
 {
     /**
-     * @var UserFactoryInterface
+     * @var ContactFactoryInterface
      */
-    private $userFactory;
+    private $contactFactory;
 
-    public function __construct(UserFactoryInterface $userFactory)
+    public function __construct(ContactFactoryInterface $contactFactory)
     {
-        $this->userFactory = $userFactory;
+        $this->contactFactory = $contactFactory;
     }
 
     public function map(
@@ -62,7 +62,7 @@ class AuthorDataMapper implements DataMapperInterface
     private function setAuthorData(AuthorInterface $dimensionContent, array $data): void
     {
         if (isset($data['author'])) {
-            $dimensionContent->setAuthor($this->userFactory->create($data['author']));
+            $dimensionContent->setAuthor($this->contactFactory->create($data['author']));
         }
 
         if (isset($data['authored'])) {

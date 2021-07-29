@@ -13,13 +13,13 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Domain\Model;
 
-use Sulu\Component\Security\Authentication\UserInterface;
+use Sulu\Bundle\ContactBundle\Entity\ContactInterface;
 
 interface AuthorInterface
 {
-    public function getAuthor(): ?UserInterface;
+    public function getAuthor(): ?ContactInterface;
 
-    public function setAuthor(?UserInterface $author): void;
+    public function setAuthor(?ContactInterface $author): void;
 
     public function getAuthored(): ?\DateTimeImmutable;
 

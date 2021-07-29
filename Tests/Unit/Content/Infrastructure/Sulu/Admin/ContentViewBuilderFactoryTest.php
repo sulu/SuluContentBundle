@@ -58,7 +58,8 @@ class ContentViewBuilderFactoryTest extends TestCase
             new ViewBuilderFactory(),
             $previewObjectProviderRegistry,
             $contentMetadataInspector,
-            $securityChecker
+            $securityChecker,
+            []
         );
     }
 

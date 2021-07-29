@@ -14,10 +14,10 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Content\Infrastructure\Doctrine;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Factory\UserFactoryInterface;
-use Sulu\Component\Security\Authentication\UserInterface;
+use Sulu\Bundle\ContactBundle\Entity\ContactInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ContactFactoryInterface;
 
-class UserFactory implements UserFactoryInterface
+class ContactFactory implements ContactFactoryInterface
 {
     /**
      * @var EntityManagerInterface
@@ -29,18 +29,18 @@ class UserFactory implements UserFactoryInterface
         $this->entityManager = $entityManager;
     }
 
-    public function create(?int $userId): ?UserInterface
+    public function create(?int $contactId): ?ContactInterface
     {
-        if (!$userId) {
+        if (!$contactId) {
             return null;
         }
 
-        /** @var UserInterface|null $user */
-        $user = $this->entityManager->getPartialReference(
-            UserInterface::class,
-            $userId
+        /** @var ContactInterface|null $contact */
+        $contact = $this->entityManager->getPartialReference(
+            ContactInterface::class,
+            $contactId
         );
 
-        return $user;
+        return $contact;
     }
 }

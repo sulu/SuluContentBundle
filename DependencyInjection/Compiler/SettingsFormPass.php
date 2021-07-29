@@ -23,10 +23,10 @@ class SettingsFormPass implements CompilerPassInterface
     public function process(ContainerBuilder $container): void
     {
         $formDirectories = $container->getParameter('sulu_admin.forms.directories');
-        $formMappingTags = [];
 
         $finder = new Finder();
         $finder->files()->in($formDirectories);
+        $settingsForms = [];
         foreach ($finder as $file) {
             $document = new \DOMDocument();
 
@@ -45,19 +45,24 @@ class SettingsFormPass implements CompilerPassInterface
 
             /** @var \DOMElement $tagNode */
             foreach ($tagNodes as $tagNode) {
-                $tag = [
-                    'name' => $tagNode->getAttribute('name'),
-                    'instanceOf' => $tagNode->getAttribute('instanceOf'),
-                    'priority' => $tagNode->getAttribute('priority'),
-                    'path' => $file->getPathname(),
-                ];
+                $instanceOf = $tagNode->getAttribute('instanceOf');
+                $priority = $tagNode->getAttribute('priority');
 
-                if (!empty($tag['instanceOf'])) {
-                    $formMappingTags[] = $tag;
+                if (empty($instanceOf)) {
+                    continue;
                 }
+
+                $settingsForms[$tagNode->getAttribute('name')] = [
+                    'instanceOf' => $instanceOf,
+                    'priority' => $priority,
+                ];
             }
         }
 
-        $container->setParameter('sulu_content.settings_mapping_tags', $formMappingTags);
+        uasort($settingsForms, static function ($a, $b) {
+            return $b['priority'] <=> $a['priority'];
+        });
+
+        $container->setParameter('sulu_content.settings_forms', $settingsForms);
     }
 }

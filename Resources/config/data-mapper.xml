@@ -27,7 +27,7 @@
         </service>
 
         <service id="sulu_content.author_data_mapper" class="Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\DataMapper\AuthorDataMapper">
-            <argument type="service" id="sulu_content.user_factory"/>
+            <argument type="service" id="sulu_content.contact_factory"/>
 
             <tag name="sulu_content.data_mapper" priority="8"/>
         </service>

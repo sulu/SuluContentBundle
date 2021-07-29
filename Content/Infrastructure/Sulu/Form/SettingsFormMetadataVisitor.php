@@ -13,49 +13,35 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Form;
 
-use Sulu\Bundle\AdminBundle\FormMetadata\FormXmlLoader;
 use Sulu\Bundle\AdminBundle\Metadata\FormMetadata\FormMetadata;
 use Sulu\Bundle\AdminBundle\Metadata\FormMetadata\FormMetadataVisitorInterface;
-use Sulu\Bundle\AdminBundle\Metadata\FormMetadata\LocalizedFormMetadataCollection;
+use Sulu\Bundle\AdminBundle\Metadata\FormMetadata\XmlFormMetadataLoader;
 
 class SettingsFormMetadataVisitor implements FormMetadataVisitorInterface
 {
     /**
-     * @var FormXmlLoader
+     * @var XmlFormMetadataLoader
      */
-    private $formXmlLoader;
+    private $xmlFormMetadataLoader;
 
-    /**
-     * @var array<string, mixed[]>
-     */
-    private $formMappingTags;
-
-    /**
-     * @param array<string, mixed[]> $formMappingTags
-     */
-    public function __construct(FormXmlLoader $formXmlLoader, array $formMappingTags)
+    public function __construct(XmlFormMetadataLoader $xmlFormMetadataLoader)
     {
-        $this->formXmlLoader = $formXmlLoader;
-        $this->formMappingTags = $formMappingTags;
+        $this->xmlFormMetadataLoader = $xmlFormMetadataLoader;
     }
 
     public function visitFormMetadata(FormMetadata $formMetadata, string $locale, array $metadataOptions = []): void
     {
         if ('content_settings' === $formMetadata->getKey()) {
-            usort($this->formMappingTags, static function ($a, $b) {
-                return $b['priority'] <=> $a['priority'];
-            });
+            foreach ($metadataOptions['forms'] ?? [] as $form) {
+                /** @var FormMetadata|null $subFormMetadata */
+                $subFormMetadata = $this->xmlFormMetadataLoader->getMetadata($form, $locale, $metadataOptions);
 
-            foreach ($this->formMappingTags as $tag) {
-                $class = $metadataOptions['class'];
-                if (is_subclass_of($class, $tag['instanceOf'])) {
-                    /** @var LocalizedFormMetadataCollection $formMetadataCollection */
-                    $formMetadataCollection = $this->formXmlLoader->load($tag['path']);
-                    $settingsMetadata = $formMetadataCollection->getItems()[$locale];
-
-                    $formMetadata->setItems(array_merge($formMetadata->getItems(), $settingsMetadata->getItems()));
-                    $formMetadata->setSchema($formMetadata->getSchema()->merge($settingsMetadata->getSchema()));
+                if (!$subFormMetadata || !($subFormMetadata instanceof FormMetadata)) {
+                    continue;
                 }
+
+                $formMetadata->setItems(array_merge($formMetadata->getItems(), $subFormMetadata->getItems()));
+                $formMetadata->setSchema($formMetadata->getSchema()->merge($subFormMetadata->getSchema()));
             }
         }
     }

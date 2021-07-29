@@ -50,16 +50,26 @@ class ContentViewBuilderFactory implements ContentViewBuilderFactoryInterface
      */
     private $securityChecker;
 
+    /**
+     * @var array<string, mixed[]>
+     */
+    private $settingsForms;
+
+    /**
+     * @param array<string, mixed[]> $settingsForms
+     */
     public function __construct(
         ViewBuilderFactoryInterface $viewBuilderFactory,
         PreviewObjectProviderRegistryInterface $objectProviderRegistry,
         ContentMetadataInspectorInterface $contentMetadataInspector,
-        SecurityCheckerInterface $securityChecker
+        SecurityCheckerInterface $securityChecker,
+        array $settingsForms
     ) {
         $this->viewBuilderFactory = $viewBuilderFactory;
         $this->objectProviderRegistry = $objectProviderRegistry;
         $this->contentMetadataInspector = $contentMetadataInspector;
         $this->securityChecker = $securityChecker;
+        $this->settingsForms = $settingsForms;
     }
 
     public function getDefaultToolbarActions(
@@ -286,8 +296,15 @@ class ContentViewBuilderFactory implements ContentViewBuilderFactoryInterface
         array $toolbarActions,
         string $dimensionContentClass
     ): ViewBuilderInterface {
+        $forms = [];
+        foreach ($this->settingsForms as $key => $tag) {
+            if (is_subclass_of($dimensionContentClass, $tag['instanceOf'])) {
+                $forms[] = $key;
+            }
+        }
+
         return $this->createFormViewBuilder($parentView . '.settings', '/settings', $previewEnabled)
-            ->addMetadataRequestParameters(['class' => $dimensionContentClass])
+            ->addMetadataRequestParameters(['forms' => $forms])
             ->setResourceKey($resourceKey)
             ->setFormKey('content_settings')
             ->setTabTitle('sulu_page.settings')

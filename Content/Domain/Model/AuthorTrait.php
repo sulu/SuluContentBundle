@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Domain\Model;
 
-use Sulu\Component\Security\Authentication\UserInterface;
+use Sulu\Bundle\ContactBundle\Entity\ContactInterface;
 
 /**
  * Basic implementation of the AuthorTrait.
@@ -21,7 +21,7 @@ use Sulu\Component\Security\Authentication\UserInterface;
 trait AuthorTrait
 {
     /**
-     * @var UserInterface|null
+     * @var ContactInterface|null
      */
     private $author;
 
@@ -30,12 +30,12 @@ trait AuthorTrait
      */
     private $authored;
 
-    public function getAuthor(): ?UserInterface
+    public function getAuthor(): ?ContactInterface
     {
         return $this->author;
     }
 
-    public function setAuthor(?UserInterface $author): void
+    public function setAuthor(?ContactInterface $author): void
     {
         $this->author = $author;
     }
