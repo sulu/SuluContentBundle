@@ -38,6 +38,11 @@
             <argument type="service" id="doctrine.orm.entity_manager"/>
         </service>
 
+        <!-- UserFactory -->
+        <service id="sulu_content.user_factory" class="Sulu\Bundle\ContentBundle\Content\Infrastructure\Doctrine\UserFactory">
+            <argument type="service" id="doctrine.orm.entity_manager"/>
+        </service>
+
         <!-- Content Dimension Factory -->
         <service id="sulu_content.dimension_content_collection_factory" class="Sulu\Bundle\ContentBundle\Content\Application\DimensionContentCollectionFactory\DimensionContentCollectionFactory">
             <argument type="service" id="sulu_content.dimension_content_repository"/>

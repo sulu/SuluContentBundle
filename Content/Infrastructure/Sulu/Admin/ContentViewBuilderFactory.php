@@ -71,16 +71,16 @@ class ContentViewBuilderFactory implements ContentViewBuilderFactoryInterface
 
         if (is_subclass_of($dimensionContentClass, WorkflowInterface::class)) {
             $toolbarActions['save'] = new ToolbarAction(
-                    'sulu_admin.save_with_publishing',
-                    [
-                        'publish_visible_condition' => '(!_permissions || _permissions.live)',
-                        'save_visible_condition' => '(!_permissions || _permissions.edit)',
-                    ]
-                );
+                'sulu_admin.save_with_publishing',
+                [
+                    'publish_visible_condition' => '(!_permissions || _permissions.live)',
+                    'save_visible_condition' => '(!_permissions || _permissions.edit)',
+                ]
+            );
         } else {
             $toolbarActions['save'] = new ToolbarAction(
-                    'sulu_admin.save'
-                );
+                'sulu_admin.save'
+            );
         }
 
         if (is_subclass_of($dimensionContentClass, TemplateInterface::class)) {
@@ -93,31 +93,31 @@ class ContentViewBuilderFactory implements ContentViewBuilderFactoryInterface
         }
 
         $toolbarActions['delete'] = new ToolbarAction(
-                'sulu_admin.delete',
-                [
-                    'visible_condition' => '(!_permissions || _permissions.delete) && url != "/"',
-                ]
-            );
+            'sulu_admin.delete',
+            [
+                'visible_condition' => '(!_permissions || _permissions.delete) && url != "/"',
+            ]
+        );
 
         if (is_subclass_of($dimensionContentClass, WorkflowInterface::class)) {
             $toolbarActions['edit'] = new DropdownToolbarAction(
-                    'sulu_admin.edit',
-                    'su-pen',
-                    [
-                        new ToolbarAction(
-                            'sulu_admin.delete_draft',
-                            [
-                                'visible_condition' => '(!_permissions || _permissions.live)',
-                            ]
-                        ),
-                        new ToolbarAction(
-                            'sulu_admin.set_unpublished',
-                            [
-                                'visible_condition' => '(!_permissions || _permissions.live)',
-                            ]
-                        ),
-                    ]
-                );
+                'sulu_admin.edit',
+                'su-pen',
+                [
+                    new ToolbarAction(
+                        'sulu_admin.delete_draft',
+                        [
+                            'visible_condition' => '(!_permissions || _permissions.live)',
+                        ]
+                    ),
+                    new ToolbarAction(
+                        'sulu_admin.set_unpublished',
+                        [
+                            'visible_condition' => '(!_permissions || _permissions.live)',
+                        ]
+                    ),
+                ]
+            );
         }
 
         return $toolbarActions;
@@ -138,24 +138,23 @@ class ContentViewBuilderFactory implements ContentViewBuilderFactoryInterface
         $toolbarActions = $toolbarActions ?: $this->getDefaultToolbarActions($contentRichEntityClass);
         $addToolbarActions = $toolbarActions;
 
+        $settingsToolbarActions = [];
         $seoAndExcerptToolbarActions = [];
         if (isset($toolbarActions['save'])) {
             $seoAndExcerptToolbarActions = ['save' => $toolbarActions['save']];
+            $settingsToolbarActions = ['save' => $toolbarActions['save']];
         }
 
         if (!$this->hasPermission($securityContext, PermissionTypes::EDIT)) {
-            unset($toolbarActions['save']);
-            unset($seoAndExcerptToolbarActions['save']);
+            unset($toolbarActions['save'], $seoAndExcerptToolbarActions['save'], $settingsToolbarActions['save']);
         }
 
         if (!$this->hasPermission($securityContext, PermissionTypes::LIVE)) {
-            unset($toolbarActions['edit']);
-            unset($addToolbarActions['edit']);
+            unset($toolbarActions['edit'], $addToolbarActions['edit']);
         }
 
         if (!$this->hasPermission($securityContext, PermissionTypes::DELETE)) {
-            unset($toolbarActions['delete']);
-            unset($addToolbarActions['delete']);
+            unset($toolbarActions['delete'], $addToolbarActions['delete']);
         }
 
         $views = [];
@@ -207,6 +206,14 @@ class ContentViewBuilderFactory implements ContentViewBuilderFactoryInterface
                     $seoAndExcerptToolbarActions
                 );
             }
+
+            $views[] = $this->createSettingsFormView(
+                $editParentView,
+                $previewEnabled,
+                $resourceKey,
+                $settingsToolbarActions,
+                $dimensionContentClass
+            );
         }
 
         return $views;
@@ -266,6 +273,27 @@ class ContentViewBuilderFactory implements ContentViewBuilderFactoryInterface
             ->setTitleVisible(true)
             ->addToolbarActions(array_values($toolbarActions))
             ->setTabOrder(40)
+            ->setParent($parentView);
+    }
+
+    /**
+     * @param array<string, ToolbarAction> $toolbarActions
+     */
+    private function createSettingsFormView(
+        string $parentView,
+        bool $previewEnabled,
+        string $resourceKey,
+        array $toolbarActions,
+        string $dimensionContentClass
+    ): ViewBuilderInterface {
+        return $this->createFormViewBuilder($parentView . '.settings', '/settings', $previewEnabled)
+            ->addMetadataRequestParameters(['class' => $dimensionContentClass])
+            ->setResourceKey($resourceKey)
+            ->setFormKey('content_settings')
+            ->setTabTitle('sulu_page.settings')
+            ->setTitleVisible(true)
+            ->addToolbarActions(array_values($toolbarActions))
+            ->setTabOrder(50)
             ->setParent($parentView);
     }
 

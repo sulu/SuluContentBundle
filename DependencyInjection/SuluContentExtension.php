@@ -50,6 +50,7 @@ class SuluContentExtension extends Extension implements PrependExtensionInterfac
         $loader->load('merger.xml');
         $loader->load('normalizer.xml');
         $loader->load('services.xml');
+        $loader->load('form-visitor.xml');
 
         if ($container->hasParameter('kernel.bundles')) {
             // TODO FIXME add test here
