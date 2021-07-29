@@ -19,6 +19,7 @@ use Doctrine\ORM\Event\LoadClassMetadataEventArgs;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Sulu\Bundle\CategoryBundle\Entity\CategoryInterface;
+use Sulu\Bundle\ContactBundle\Entity\ContactInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\AuthorInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
@@ -27,7 +28,6 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 use Sulu\Bundle\MediaBundle\Entity\MediaInterface;
 use Sulu\Bundle\TagBundle\Tag\TagInterface;
-use Sulu\Component\Security\Authentication\UserInterface;
 
 class MetadataLoader implements EventSubscriber
 {
@@ -99,7 +99,7 @@ class MetadataLoader implements EventSubscriber
 
         if ($reflection->implementsInterface(AuthorInterface::class)) {
             $this->addField($metadata, 'authored', 'datetime_immutable', ['nullable' => true]);
-            $this->addManyToOne($event, $metadata, 'author', UserInterface::class, true);
+            $this->addManyToOne($event, $metadata, 'author', ContactInterface::class, true);
         }
 
         if ($reflection->implementsInterface(WorkflowInterface::class)) {

@@ -22,6 +22,7 @@ use Doctrine\ORM\Mapping\UnderscoreNamingStrategy;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Sulu\Bundle\CategoryBundle\Entity\CategoryInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\AuthorInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
@@ -65,6 +66,7 @@ class MetadataLoaderTest extends TestCase
         $reflectionClass->implementsInterface(ExcerptInterface::class)->willReturn(\in_array(ExcerptInterface::class, $interfaces, true));
         $reflectionClass->implementsInterface(TemplateInterface::class)->willReturn(\in_array(TemplateInterface::class, $interfaces, true));
         $reflectionClass->implementsInterface(WorkflowInterface::class)->willReturn(\in_array(WorkflowInterface::class, $interfaces, true));
+        $reflectionClass->implementsInterface(AuthorInterface::class)->willReturn(\in_array(AuthorInterface::class, $interfaces, true));
 
         foreach ($interfaces as $interface) {
             $reflectionClass->implementsInterface($interface)->willReturn(true);
@@ -226,6 +228,20 @@ class MetadataLoaderTest extends TestCase
             [
             ],
             [],
+        ];
+
+        yield [
+            [
+                AuthorInterface::class,
+            ],
+            [
+                'author' => true,
+                'authored' => true,
+            ],
+            [],
+            [
+                'author' => true,
+            ],
         ];
     }
 }

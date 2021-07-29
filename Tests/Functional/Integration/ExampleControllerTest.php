@@ -64,6 +64,8 @@ class ExampleControllerTest extends SuluTestCase
             'excerptCategories' => [],
             'excerptIcon' => null,
             'excerptMedia' => null,
+            'author' => null,
+            'authored' => null,
         ]) ?: null);
 
         $response = $this->client->getResponse();

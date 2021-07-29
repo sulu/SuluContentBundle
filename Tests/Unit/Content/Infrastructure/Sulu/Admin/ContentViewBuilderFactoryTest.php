@@ -100,7 +100,7 @@ class ContentViewBuilderFactoryTest extends TestCase
 
         $views = $contentViewBuilder->createViews(Example::class, 'edit_parent_key');
 
-        $this->assertCount(3, $views);
+        $this->assertCount(4, $views);
 
         $this->assertInstanceOf(FormViewBuilderInterface::class, $views[0]);
         $this->assertSame('edit_parent_key.content', $views[0]->getName());
@@ -116,7 +116,7 @@ class ContentViewBuilderFactoryTest extends TestCase
 
         $views = $contentViewBuilder->createViews(Example::class, 'edit_parent_key', 'add_parent_key');
 
-        $this->assertCount(4, $views);
+        $this->assertCount(5, $views);
 
         $this->assertInstanceOf(FormViewBuilderInterface::class, $views[0]);
         $this->assertSame('add_parent_key.content', $views[0]->getName());
@@ -164,7 +164,7 @@ class ContentViewBuilderFactoryTest extends TestCase
 
         $views = $contentViewBuilder->createViews(Example::class, 'edit_parent_key');
 
-        $this->assertCount(3, $views);
+        $this->assertCount(4, $views);
         $this->assertInstanceOf(PreviewFormViewBuilderInterface::class, $views[0]);
         $this->assertInstanceOf(PreviewFormViewBuilderInterface::class, $views[1]);
         $this->assertInstanceOf(PreviewFormViewBuilderInterface::class, $views[2]);
@@ -188,6 +188,7 @@ class ContentViewBuilderFactoryTest extends TestCase
                     ['sulu_admin.save_with_publishing', 'sulu_admin.type', 'sulu_admin.delete', 'sulu_admin.dropdown'],
                     ['sulu_admin.save_with_publishing'],
                     ['sulu_admin.save_with_publishing'],
+                    ['sulu_admin.save_with_publishing'],
                 ],
             ],
             [
@@ -201,6 +202,7 @@ class ContentViewBuilderFactoryTest extends TestCase
                     ['sulu_admin.save_with_publishing', 'sulu_admin.type', 'sulu_admin.delete', 'sulu_admin.dropdown'],
                     ['sulu_admin.save_with_publishing'],
                     ['sulu_admin.save_with_publishing'],
+                    ['sulu_admin.save_with_publishing'],
                 ],
             ],
             [
@@ -212,6 +214,7 @@ class ContentViewBuilderFactoryTest extends TestCase
                 ],
                 [
                     ['sulu_admin.save_with_publishing', 'sulu_admin.type'],
+                    ['sulu_admin.save_with_publishing'],
                     ['sulu_admin.save_with_publishing'],
                     ['sulu_admin.save_with_publishing'],
                 ],
@@ -239,6 +242,7 @@ class ContentViewBuilderFactoryTest extends TestCase
                     ['sulu_admin.save_with_publishing', 'sulu_admin.type', 'sulu_admin.delete'],
                     ['sulu_admin.save_with_publishing'],
                     ['sulu_admin.save_with_publishing'],
+                    ['sulu_admin.save_with_publishing'],
                 ],
             ],
             [
@@ -251,6 +255,7 @@ class ContentViewBuilderFactoryTest extends TestCase
                 [
                     ['sulu_admin.save_with_publishing', 'sulu_admin.type', 'sulu_admin.dropdown'],
                     ['sulu_admin.save_with_publishing', 'sulu_admin.type', 'sulu_admin.dropdown'],
+                    ['sulu_admin.save_with_publishing'],
                     ['sulu_admin.save_with_publishing'],
                     ['sulu_admin.save_with_publishing'],
                 ],
@@ -268,7 +273,6 @@ class ContentViewBuilderFactoryTest extends TestCase
     {
         $securityChecker = $this->prophesize(SecurityCheckerInterface::class);
 
-        $entityManager = $this->prophesize(EntityManagerInterface::class);
         $contentMetadataInspector = $this->prophesize(ContentMetadataInspectorInterface::class);
         $contentMetadataInspector->getDimensionContentClass(Example::class)
             ->willReturn(ExampleDimensionContent::class);
@@ -323,6 +327,7 @@ class ContentViewBuilderFactoryTest extends TestCase
                 [
                     ['sulu_admin.save'],
                     ['sulu_admin.save'],
+                    ['sulu_admin.save'],
                 ],
             ],
             [
@@ -350,6 +355,7 @@ class ContentViewBuilderFactoryTest extends TestCase
                 [
                     ['sulu_admin.save', 'sulu_admin.type', 'sulu_admin.delete'],
                     ['sulu_admin.save', 'sulu_admin.type', 'sulu_admin.delete'],
+                    ['sulu_admin.save'],
                     ['sulu_admin.save'],
                     ['sulu_admin.save'],
                 ],
@@ -380,6 +386,7 @@ class ContentViewBuilderFactoryTest extends TestCase
                 [
                     ['sulu_admin.save_with_publishing', 'sulu_admin.type', 'sulu_admin.delete', 'sulu_admin.dropdown'],
                     ['sulu_admin.save_with_publishing', 'sulu_admin.type', 'sulu_admin.delete', 'sulu_admin.dropdown'],
+                    ['sulu_admin.save_with_publishing'],
                     ['sulu_admin.save_with_publishing'],
                     ['sulu_admin.save_with_publishing'],
                 ],
