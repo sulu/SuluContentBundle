@@ -16,7 +16,7 @@ namespace Sulu\Bundle\ContentBundle\Content\Domain\Model;
 use Sulu\Bundle\ContactBundle\Entity\ContactInterface;
 
 /**
- * Basic implementation of the AuthorTrait.
+ * Basic implementation of the AuthorInterface.
  */
 trait AuthorTrait
 {

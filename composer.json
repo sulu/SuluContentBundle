@@ -20,7 +20,7 @@
         "friendsofsymfony/rest-bundle": "^2.6 || ^3.0",
         "massive/search-bundle": "^2.4",
         "ramsey/uuid": "^3.8 || ^4.0",
-        "sulu/sulu": "^2.3@dev",
+        "sulu/sulu": "^2.3 || ^2.3@dev",
         "symfony/config": "^4.4 || ^5.0",
         "symfony/dependency-injection": "^4.4 || ^5.0",
         "symfony/event-dispatcher": "^4.4 || ^5.0",

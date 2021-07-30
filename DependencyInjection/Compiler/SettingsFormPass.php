@@ -58,6 +58,6 @@ class SettingsFormPass implements CompilerPassInterface
             return $b['priority'] ?? 0 <=> $a['priority'] ?? 0;
         });
 
-        $container->setParameter('sulu_content.settings_forms', $settingsForms);
+        $container->setParameter('sulu_content.content_settings_forms', $settingsForms);
     }
 }

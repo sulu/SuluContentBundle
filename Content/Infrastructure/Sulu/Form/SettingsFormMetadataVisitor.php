@@ -17,6 +17,9 @@ use Sulu\Bundle\AdminBundle\Metadata\FormMetadata\FormMetadata;
 use Sulu\Bundle\AdminBundle\Metadata\FormMetadata\FormMetadataVisitorInterface;
 use Sulu\Bundle\AdminBundle\Metadata\FormMetadata\XmlFormMetadataLoader;
 
+/**
+ * @internal
+ */
 class SettingsFormMetadataVisitor implements FormMetadataVisitorInterface
 {
     /**
