@@ -25,7 +25,7 @@ class SettingsFormPass implements CompilerPassInterface
         $formDirectories = $container->getParameter('sulu_admin.forms.directories');
 
         $finder = new Finder();
-        $finder->files()->in($formDirectories);
+        $finder->files()->in($formDirectories)->name('*.xml');
         $settingsForms = [];
         foreach ($finder as $file) {
             $document = new \DOMDocument();
