@@ -21,6 +21,7 @@ use Sulu\Bundle\AdminBundle\Admin\View\ViewBuilderFactory;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\ContentDataMapperInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentMetadataInspector\ContentMetadataInspectorInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolverInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\AuthorInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentTrait;
@@ -45,10 +46,14 @@ use Sulu\Component\Security\Authorization\SecurityCheckerInterface;
 
 class ContentViewBuilderFactoryTest extends TestCase
 {
+    /**
+     * @param mixed[] $settingsForms
+     */
     protected function createContentViewBuilder(
         ContentMetadataInspectorInterface $contentMetadataInspector,
         SecurityCheckerInterface $securityChecker,
-        PreviewObjectProviderRegistryInterface $previewObjectProviderRegistry = null
+        PreviewObjectProviderRegistryInterface $previewObjectProviderRegistry = null,
+        array $settingsForms = []
     ): ContentViewBuilderFactoryInterface {
         if (null === $previewObjectProviderRegistry) {
             $previewObjectProviderRegistry = $this->createPreviewObjectProviderRegistry([]);
@@ -58,7 +63,8 @@ class ContentViewBuilderFactoryTest extends TestCase
             new ViewBuilderFactory(),
             $previewObjectProviderRegistry,
             $contentMetadataInspector,
-            $securityChecker
+            $securityChecker,
+            $settingsForms
         );
     }
 
@@ -95,11 +101,17 @@ class ContentViewBuilderFactoryTest extends TestCase
         $contentMetadataInspector->getDimensionContentClass(Example::class)
             ->willReturn(ExampleDimensionContent::class);
 
-        $contentViewBuilder = $this->createContentViewBuilder($contentMetadataInspector->reveal(), $securityChecker->reveal());
+        $settingsForms = [
+            'content_settings_author' => [
+                'instanceOf' => AuthorInterface::class,
+                'priority' => 128,
+            ],
+        ];
+        $contentViewBuilder = $this->createContentViewBuilder($contentMetadataInspector->reveal(), $securityChecker->reveal(), null, $settingsForms);
 
         $views = $contentViewBuilder->createViews(Example::class, 'edit_parent_key');
 
-        $this->assertCount(3, $views);
+        $this->assertCount(4, $views);
 
         $this->assertInstanceOf(FormViewBuilderInterface::class, $views[0]);
         $this->assertSame('edit_parent_key.content', $views[0]->getName());
@@ -115,7 +127,7 @@ class ContentViewBuilderFactoryTest extends TestCase
 
         $views = $contentViewBuilder->createViews(Example::class, 'edit_parent_key', 'add_parent_key');
 
-        $this->assertCount(4, $views);
+        $this->assertCount(5, $views);
 
         $this->assertInstanceOf(FormViewBuilderInterface::class, $views[0]);
         $this->assertSame('add_parent_key.content', $views[0]->getName());
@@ -163,7 +175,7 @@ class ContentViewBuilderFactoryTest extends TestCase
 
         $views = $contentViewBuilder->createViews(Example::class, 'edit_parent_key');
 
-        $this->assertCount(3, $views);
+        $this->assertCount(4, $views);
         $this->assertInstanceOf(PreviewFormViewBuilderInterface::class, $views[0]);
         $this->assertInstanceOf(PreviewFormViewBuilderInterface::class, $views[1]);
         $this->assertInstanceOf(PreviewFormViewBuilderInterface::class, $views[2]);
@@ -187,6 +199,7 @@ class ContentViewBuilderFactoryTest extends TestCase
                     ['sulu_admin.save_with_publishing', 'sulu_admin.type', 'sulu_admin.delete', 'sulu_admin.dropdown'],
                     ['sulu_admin.save_with_publishing'],
                     ['sulu_admin.save_with_publishing'],
+                    ['sulu_admin.save_with_publishing'],
                 ],
             ],
             [
@@ -200,6 +213,7 @@ class ContentViewBuilderFactoryTest extends TestCase
                     ['sulu_admin.save_with_publishing', 'sulu_admin.type', 'sulu_admin.delete', 'sulu_admin.dropdown'],
                     ['sulu_admin.save_with_publishing'],
                     ['sulu_admin.save_with_publishing'],
+                    ['sulu_admin.save_with_publishing'],
                 ],
             ],
             [
@@ -211,6 +225,7 @@ class ContentViewBuilderFactoryTest extends TestCase
                 ],
                 [
                     ['sulu_admin.save_with_publishing', 'sulu_admin.type'],
+                    ['sulu_admin.save_with_publishing'],
                     ['sulu_admin.save_with_publishing'],
                     ['sulu_admin.save_with_publishing'],
                 ],
@@ -238,6 +253,7 @@ class ContentViewBuilderFactoryTest extends TestCase
                     ['sulu_admin.save_with_publishing', 'sulu_admin.type', 'sulu_admin.delete'],
                     ['sulu_admin.save_with_publishing'],
                     ['sulu_admin.save_with_publishing'],
+                    ['sulu_admin.save_with_publishing'],
                 ],
             ],
             [
@@ -250,6 +266,7 @@ class ContentViewBuilderFactoryTest extends TestCase
                 [
                     ['sulu_admin.save_with_publishing', 'sulu_admin.type', 'sulu_admin.dropdown'],
                     ['sulu_admin.save_with_publishing', 'sulu_admin.type', 'sulu_admin.dropdown'],
+                    ['sulu_admin.save_with_publishing'],
                     ['sulu_admin.save_with_publishing'],
                     ['sulu_admin.save_with_publishing'],
                 ],
@@ -267,7 +284,6 @@ class ContentViewBuilderFactoryTest extends TestCase
     {
         $securityChecker = $this->prophesize(SecurityCheckerInterface::class);
 
-        $entityManager = $this->prophesize(EntityManagerInterface::class);
         $contentMetadataInspector = $this->prophesize(ContentMetadataInspectorInterface::class);
         $contentMetadataInspector->getDimensionContentClass(Example::class)
             ->willReturn(ExampleDimensionContent::class);
@@ -322,6 +338,7 @@ class ContentViewBuilderFactoryTest extends TestCase
                 [
                     ['sulu_admin.save'],
                     ['sulu_admin.save'],
+                    ['sulu_admin.save'],
                 ],
             ],
             [
@@ -349,6 +366,7 @@ class ContentViewBuilderFactoryTest extends TestCase
                 [
                     ['sulu_admin.save', 'sulu_admin.type', 'sulu_admin.delete'],
                     ['sulu_admin.save', 'sulu_admin.type', 'sulu_admin.delete'],
+                    ['sulu_admin.save'],
                     ['sulu_admin.save'],
                     ['sulu_admin.save'],
                 ],
@@ -379,6 +397,7 @@ class ContentViewBuilderFactoryTest extends TestCase
                 [
                     ['sulu_admin.save_with_publishing', 'sulu_admin.type', 'sulu_admin.delete', 'sulu_admin.dropdown'],
                     ['sulu_admin.save_with_publishing', 'sulu_admin.type', 'sulu_admin.delete', 'sulu_admin.dropdown'],
+                    ['sulu_admin.save_with_publishing'],
                     ['sulu_admin.save_with_publishing'],
                     ['sulu_admin.save_with_publishing'],
                 ],

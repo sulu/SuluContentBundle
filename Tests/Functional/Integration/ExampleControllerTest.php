@@ -64,6 +64,8 @@ class ExampleControllerTest extends SuluTestCase
             'excerptCategories' => [],
             'excerptIcon' => null,
             'excerptMedia' => null,
+            'author' => null,
+            'authored' => '2020-05-08T00:00:00+00:00',
         ]) ?: null);
 
         $response = $this->client->getResponse();
@@ -112,6 +114,7 @@ class ExampleControllerTest extends SuluTestCase
         self::purgeDatabase();
 
         $this->client->request('POST', '/admin/api/examples?locale=en', [], [], [], json_encode([
+            'authored' => '2020-05-08T00:00:00+00:00',
             'template' => 'example-2',
             'title' => 'Test Example',
             'url' => '/my-example',

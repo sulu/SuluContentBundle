@@ -19,6 +19,8 @@ use Doctrine\ORM\Event\LoadClassMetadataEventArgs;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Sulu\Bundle\CategoryBundle\Entity\CategoryInterface;
+use Sulu\Bundle\ContactBundle\Entity\ContactInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\AuthorInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
@@ -95,6 +97,11 @@ class MetadataLoader implements EventSubscriber
             $this->addManyToMany($event, $metadata, 'excerptCategories', CategoryInterface::class, 'category_id');
         }
 
+        if ($reflection->implementsInterface(AuthorInterface::class)) {
+            $this->addField($metadata, 'authored', 'datetime_immutable', ['nullable' => true]);
+            $this->addManyToOne($event, $metadata, 'author', ContactInterface::class, true);
+        }
+
         if ($reflection->implementsInterface(WorkflowInterface::class)) {
             $this->addField($metadata, 'workflowPlace', 'string', ['length' => 32, 'nullable' => true]);
             $this->addField($metadata, 'workflowPublished', 'datetime_immutable', ['nullable' => true]);
@@ -110,7 +117,8 @@ class MetadataLoader implements EventSubscriber
         LoadClassMetadataEventArgs $event,
         ClassMetadataInfo $metadata,
         string $name,
-        string $class
+        string $class,
+        bool $nullable = false
     ): void {
         if ($metadata->hasAssociation($name)) {
             return;
@@ -126,7 +134,7 @@ class MetadataLoader implements EventSubscriber
                 [
                     'name' => $namingStrategy->joinKeyColumnName($name),
                     'referencedColumnName' => $referencedColumnName,
-                    'nullable' => false,
+                    'nullable' => $nullable,
                     'onDelete' => 'CASCADE',
                     'onUpdate' => 'CASCADE',
                 ],

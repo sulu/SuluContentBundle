@@ -13,8 +13,16 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle;
 
+use Sulu\Bundle\ContentBundle\DependencyInjection\Compiler\SettingsFormPass;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class SuluContentBundle extends Bundle
 {
+    public function build(ContainerBuilder $container): void
+    {
+        parent::build($container);
+
+        $container->addCompilerPass(new SettingsFormPass());
+    }
 }

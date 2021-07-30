@@ -13,6 +13,7 @@
             <argument type="service" id="sulu_preview.preview_object_provider_registry"/>
             <argument type="service" id="sulu_content.content_metadata_inspector"/>
             <argument type="service" id="sulu_security.security_checker"/>
+            <argument>%sulu_content.content_settings_forms%</argument>
 
             <tag name="sulu.context" context="admin"/>
         </service>
@@ -35,6 +36,11 @@
 
         <!-- CategoryFactory -->
         <service id="sulu_content.category_factory" class="Sulu\Bundle\ContentBundle\Content\Infrastructure\Doctrine\CategoryFactory">
+            <argument type="service" id="doctrine.orm.entity_manager"/>
+        </service>
+
+        <!-- ContactFactory -->
+        <service id="sulu_content.contact_factory" class="Sulu\Bundle\ContentBundle\Content\Infrastructure\Doctrine\ContactFactory">
             <argument type="service" id="doctrine.orm.entity_manager"/>
         </service>
 
