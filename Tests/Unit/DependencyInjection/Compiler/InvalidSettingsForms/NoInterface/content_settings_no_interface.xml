@@ -5,7 +5,7 @@
 >
     <key>content_settings_no_interface</key>
 
-    <tag name="content_settings_no_interface" priority="64"/>
+    <tag name="sulu_content.content_settings_form" priority="60"/>
 
     <properties>
     </properties>

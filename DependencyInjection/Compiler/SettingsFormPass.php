@@ -30,12 +30,25 @@ class SettingsFormPass implements CompilerPassInterface
         foreach ($finder as $file) {
             $document = new \DOMDocument();
             $document->load($file->getPathname());
-            $path = new \DOMXPath($document);
-            $path->registerNamespace('x', FormXmlLoader::SCHEMA_NAMESPACE_URI);
-            $tagNodes = $path->query('/x:form/x:tag');
+            $xPath = new \DOMXPath($document);
+            $xPath->registerNamespace('x', FormXmlLoader::SCHEMA_NAMESPACE_URI);
+            $tagNodes = $xPath->query('/x:form/x:tag');
+            $keyNodes = $xPath->query('/x:form/x:key');
 
             if (!$tagNodes || 0 === $tagNodes->count()) {
                 continue;
+            }
+
+            $key = null;
+            if ($keyNodes && $keyNodes->count() > 0) {
+                $item = $keyNodes->item(0);
+                $key = $item->nodeValue ?? null;
+            }
+
+            if (!$keyNodes || !$key) {
+                throw new \RuntimeException(
+                    'Forms must have a valid "key" element!'
+                );
             }
 
             /** @var \DOMElement $tagNode */
@@ -43,11 +56,17 @@ class SettingsFormPass implements CompilerPassInterface
                 $instanceOf = $tagNode->getAttribute('instanceOf');
                 $priority = $tagNode->getAttribute('priority');
 
-                if (empty($instanceOf)) {
+                if ('sulu_content.content_settings_form' !== $tagNode->getAttribute('name')) {
                     continue;
                 }
 
-                $settingsForms[$tagNode->getAttribute('name')] = [
+                if (empty($instanceOf)) {
+                    throw new \RuntimeException(
+                        'Tags with the name "sulu_content.content_settings_form" must have a valid "instanceOf" attribute! '
+                    );
+                }
+
+                $settingsForms[$key] = [
                     'instanceOf' => $instanceOf,
                     'priority' => $priority,
                 ];
