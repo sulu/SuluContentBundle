@@ -34,7 +34,7 @@ class SettingsFormPass implements CompilerPassInterface
             $path->registerNamespace('x', FormXmlLoader::SCHEMA_NAMESPACE_URI);
             $tagNodes = $path->query('/x:form/x:tag');
 
-            if (!$tagNodes) {
+            if (!$tagNodes || 0 === $tagNodes->count()) {
                 continue;
             }
 
