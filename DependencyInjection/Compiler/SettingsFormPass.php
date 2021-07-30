@@ -29,12 +29,7 @@ class SettingsFormPass implements CompilerPassInterface
         $settingsForms = [];
         foreach ($finder as $file) {
             $document = new \DOMDocument();
-
-            if (!$xmlContent = file_get_contents($file->getPathname())) {
-                continue;
-            }
-
-            $document->loadXML($xmlContent);
+            $document->load($file->getPathname());
             $path = new \DOMXPath($document);
             $path->registerNamespace('x', FormXmlLoader::SCHEMA_NAMESPACE_URI);
             $tagNodes = $path->query('/x:form/x:tag');
@@ -60,7 +55,7 @@ class SettingsFormPass implements CompilerPassInterface
         }
 
         uasort($settingsForms, static function ($a, $b) {
-            return $b['priority'] <=> $a['priority'];
+            return $b['priority'] ?? 0 <=> $a['priority'] ?? 0;
         });
 
         $container->setParameter('sulu_content.settings_forms', $settingsForms);

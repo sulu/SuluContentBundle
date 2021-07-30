@@ -21,6 +21,7 @@ use Sulu\Bundle\AdminBundle\Admin\View\ViewBuilderFactory;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\ContentDataMapperInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentMetadataInspector\ContentMetadataInspectorInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolverInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\AuthorInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentTrait;
@@ -45,10 +46,14 @@ use Sulu\Component\Security\Authorization\SecurityCheckerInterface;
 
 class ContentViewBuilderFactoryTest extends TestCase
 {
+    /**
+     * @param mixed[] $settingsForms
+     */
     protected function createContentViewBuilder(
         ContentMetadataInspectorInterface $contentMetadataInspector,
         SecurityCheckerInterface $securityChecker,
-        PreviewObjectProviderRegistryInterface $previewObjectProviderRegistry = null
+        PreviewObjectProviderRegistryInterface $previewObjectProviderRegistry = null,
+        array $settingsForms = []
     ): ContentViewBuilderFactoryInterface {
         if (null === $previewObjectProviderRegistry) {
             $previewObjectProviderRegistry = $this->createPreviewObjectProviderRegistry([]);
@@ -59,7 +64,7 @@ class ContentViewBuilderFactoryTest extends TestCase
             $previewObjectProviderRegistry,
             $contentMetadataInspector,
             $securityChecker,
-            []
+            $settingsForms
         );
     }
 
@@ -96,7 +101,13 @@ class ContentViewBuilderFactoryTest extends TestCase
         $contentMetadataInspector->getDimensionContentClass(Example::class)
             ->willReturn(ExampleDimensionContent::class);
 
-        $contentViewBuilder = $this->createContentViewBuilder($contentMetadataInspector->reveal(), $securityChecker->reveal());
+        $settingsForms = [
+            'content_settings_author' => [
+                'instanceOf' => AuthorInterface::class,
+                'priority' => 128,
+            ],
+        ];
+        $contentViewBuilder = $this->createContentViewBuilder($contentMetadataInspector->reveal(), $securityChecker->reveal(), null, $settingsForms);
 
         $views = $contentViewBuilder->createViews(Example::class, 'edit_parent_key');
 
