@@ -82,4 +82,22 @@ class SettingsFormPassTest extends TestCase
         $settingsFormPass = new SettingsFormPass();
         $settingsFormPass->process($container->reveal());
     }
+
+    public function testProcessInvalidTag(): void
+    {
+        $directories = [
+            __DIR__ . \DIRECTORY_SEPARATOR . 'InvalidSettingsForms' . \DIRECTORY_SEPARATOR . 'InvalidTag',
+        ];
+
+        $container = $this->prophesize(ContainerBuilder::class);
+        $container->getParameter('sulu_admin.forms.directories')
+            ->shouldBeCalled()
+            ->willReturn($directories);
+
+        $container->setParameter('sulu_content.content_settings_forms', [])
+            ->shouldBeCalled();
+
+        $settingsFormPass = new SettingsFormPass();
+        $settingsFormPass->process($container->reveal());
+    }
 }
