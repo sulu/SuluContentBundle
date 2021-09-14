@@ -60,7 +60,7 @@ class DimensionContentCollectionFactory implements DimensionContentCollectionFac
         $dimensionContentCollection = $this->dimensionContentRepository->load($contentRichEntity, $dimensionAttributes);
         $dimensionAttributes = $dimensionContentCollection->getDimensionAttributes();
 
-        $orderedContentDimensions = iterator_to_array($dimensionContentCollection);
+        $orderedContentDimensions = \iterator_to_array($dimensionContentCollection);
         $dimensionContents = new ArrayCollection($orderedContentDimensions);
 
         $unlocalizedAttributes = $dimensionAttributes;

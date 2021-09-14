@@ -80,7 +80,7 @@ class ExcerptTraitTest extends TestCase
         $model = $this->getExcerptInstance();
         $this->assertEmpty($model->getExcerptTags());
         $model->setExcerptTags([$tag1, $tag2]);
-        $this->assertSame([1, 2], array_map(function (TagInterface $tag) {
+        $this->assertSame([1, 2], \array_map(function(TagInterface $tag) {
             return $tag->getId();
         }, $model->getExcerptTags()));
     }
@@ -93,7 +93,7 @@ class ExcerptTraitTest extends TestCase
         $model = $this->getExcerptInstance();
         $this->assertEmpty($model->getExcerptCategories());
         $model->setExcerptCategories([$category1, $category2]);
-        $this->assertSame([1, 2], array_map(function (CategoryInterface $category) {
+        $this->assertSame([1, 2], \array_map(function(CategoryInterface $category) {
             return $category->getId();
         }, $model->getExcerptCategories()));
     }

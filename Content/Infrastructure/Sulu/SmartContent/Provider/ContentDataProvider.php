@@ -77,8 +77,8 @@ class ContentDataProvider extends BaseDataProvider
      */
     protected function decorateDataItems(array $data): array
     {
-        return array_map(
-            function (DimensionContentInterface $dimensionContent) {
+        return \array_map(
+            function(DimensionContentInterface $dimensionContent) {
                 $normalizedContentData = $this->normalizeContent($dimensionContent);
 
                 return $this->createDataItem($dimensionContent, $normalizedContentData);
@@ -97,8 +97,8 @@ class ContentDataProvider extends BaseDataProvider
      */
     protected function decorateResourceItems(array $data, $locale): array
     {
-        return array_map(
-            function (DimensionContentInterface $dimensionContent) {
+        return \array_map(
+            function(DimensionContentInterface $dimensionContent) {
                 $normalizedContentData = $this->normalizeContent($dimensionContent);
                 $id = $this->getIdForItem($dimensionContent);
 

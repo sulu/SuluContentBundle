@@ -17,7 +17,7 @@ class StructureMetadataNotFoundException extends \Exception
 {
     public function __construct(string $templateType, ?string $templateKey)
     {
-        parent::__construct(sprintf(
+        parent::__construct(\sprintf(
             'No structure metadata found for template type "%s" and template key "%s"',
             $templateType,
             $templateKey

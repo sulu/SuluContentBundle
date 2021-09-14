@@ -82,7 +82,7 @@ class RoutableDataMapper implements DataMapperInterface
         $dimensionAttributes = $dimensionContentCollection->getDimensionAttributes();
         $localizedObject = $dimensionContentCollection->getDimensionContent($dimensionAttributes);
 
-        $unlocalizedDimensionAttributes = array_merge($dimensionAttributes, ['locale' => null]);
+        $unlocalizedDimensionAttributes = \array_merge($dimensionAttributes, ['locale' => null]);
         $unlocalizedObject = $dimensionContentCollection->getDimensionContent($unlocalizedDimensionAttributes);
 
         if (!$localizedObject || !$localizedObject instanceof RoutableInterface) {
@@ -154,7 +154,7 @@ class RoutableDataMapper implements DataMapperInterface
         $routePath = $data[$name] ?? null;
         if (!$routePath) {
             /** @var mixed $routeGenerationData */
-            $routeGenerationData = array_merge(
+            $routeGenerationData = \array_merge(
                 $data,
                 [
                     '_unlocalizedObject' => $unlocalizedObject,
@@ -183,7 +183,7 @@ class RoutableDataMapper implements DataMapperInterface
 
         if (($data[$name] ?? null) !== $route->getPath()) {
             $localizedObject->setTemplateData(
-                array_merge(
+                \array_merge(
                     $localizedObject->getTemplateData(),
                     [$name => $route->getPath()]
                 )

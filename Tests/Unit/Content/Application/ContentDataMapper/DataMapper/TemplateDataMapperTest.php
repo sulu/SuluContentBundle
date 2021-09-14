@@ -107,7 +107,7 @@ class TemplateDataMapperTest extends TestCase
         $localizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
 
         $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage(sprintf(
+        $this->expectExceptionMessage(\sprintf(
             'Expected "$localizedObject" from type "%s" but "%s" given.',
             TemplateInterface::class,
             \get_class($localizedDimensionContent->reveal())

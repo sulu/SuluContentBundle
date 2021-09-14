@@ -20,16 +20,16 @@ use Symfony\Component\HttpFoundation\Request;
 $_SERVER['APP_ENV'] = 'dev';
 $_ENV['APP_ENV'] = 'dev';
 
-require dirname(__DIR__) . '/config/bootstrap.php';
+require \dirname(__DIR__) . '/config/bootstrap.php';
 
 if ($_SERVER['APP_DEBUG']) {
-    umask(0000);
+    \umask(0000);
     Debug::enable();
 }
 
 $suluContext = SuluKernel::CONTEXT_WEBSITE;
 
-if (preg_match('/^\/admin(\/|$)/', $_SERVER['REQUEST_URI'])) {
+if (\preg_match('/^\/admin(\/|$)/', $_SERVER['REQUEST_URI'])) {
     $suluContext = SuluKernel::CONTEXT_ADMIN;
 }
 

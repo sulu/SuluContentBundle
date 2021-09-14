@@ -75,7 +75,7 @@ class ContentStructureBridgeFactoryTest extends TestCase
     public function testGetBridgeNoStructureMetadata(): void
     {
         $this->expectException(StructureMetadataNotFoundException::class);
-        $this->expectExceptionMessage(sprintf(
+        $this->expectExceptionMessage(\sprintf(
             'No structure metadata found for template type "%s" and template key "%s"',
             'mock-template-type',
             'default'

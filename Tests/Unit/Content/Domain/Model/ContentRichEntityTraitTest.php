@@ -52,12 +52,12 @@ class ContentRichEntityTraitTest extends TestCase
         $this->assertSame([
             $modelDimension1->reveal(),
             $modelDimension2->reveal(),
-        ], iterator_to_array($model->getDimensionContents()));
+        ], \iterator_to_array($model->getDimensionContents()));
 
         $model->removeDimensionContent($modelDimension2->reveal());
 
         $this->assertSame([
             $modelDimension1->reveal(),
-        ], iterator_to_array($model->getDimensionContents()));
+        ], \iterator_to_array($model->getDimensionContents()));
     }
 }

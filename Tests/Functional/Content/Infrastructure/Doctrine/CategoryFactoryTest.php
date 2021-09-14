@@ -41,8 +41,8 @@ class CategoryFactoryTest extends SuluTestCase
 
         $this->assertSame(
             $categoryIds,
-            array_map(
-                function (CategoryInterface $category) {
+            \array_map(
+                function(CategoryInterface $category) {
                     return $category->getId();
                 },
                 $categoryFactory->create($categoryIds)

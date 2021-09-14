@@ -1,6 +1,6 @@
 <?php
 
-$header = <<<'EOF'
+$header = <<<EOF
 This file is part of Sulu.
 
 (c) Sulu GmbH
@@ -9,33 +9,28 @@ This source file is subject to the MIT license that is bundled
 with this source code in the file LICENSE.
 EOF;
 
-return PhpCsFixer\Config::create()
-    ->setRiskyAllowed(true)
+$config = new PhpCsFixer\Config();
+$config->setRiskyAllowed(true)
     ->setRules([
         '@Symfony' => true,
         '@Symfony:risky' => true,
-        'ordered_imports' => true,
+        'class_definition' => false,
         'concat_space' => ['spacing' => 'one'],
-        'array_syntax' => ['syntax' => 'short'],
-        'phpdoc_align' => false,
-        'class_definition' => [
-            'multiLineExtendsEachSingleLine' => true,
-        ],
-        'linebreak_after_opening_tag' => true,
         'declare_strict_types' => true,
-        'mb_str_functions' => true,
-        'no_php4_constructor' => true,
-        'no_superfluous_phpdoc_tags' => ['allow_mixed' => true],
-        'no_unreachable_default_argument_value' => true,
+        'function_declaration' => ['closure_function_spacing' => 'none'],
+        'header_comment' => ['header' => $header],
+        'native_function_invocation' => ['include' => ['@internal']],
+        'no_superfluous_phpdoc_tags' => ['allow_mixed' => true, 'remove_inheritdoc' => true],
         'no_useless_else' => true,
         'no_useless_return' => true,
         'php_unit_strict' => true,
+        'phpdoc_align' => ['align' => 'left'],
         'phpdoc_order' => true,
+        'phpdoc_to_comment' => false,
+        'phpdoc_types_order' => false,
+        'single_line_throw' => false,
         'strict_comparison' => true,
         'strict_param' => true,
-        'phpdoc_to_comment' => false,
-        'header_comment' => ['header' => $header],
-        'single_line_throw' => false,
     ])
     ->setFinder(
         PhpCsFixer\Finder::create()
@@ -44,3 +39,5 @@ return PhpCsFixer\Config::create()
             ->exclude('Tests/reports/')
             ->in(__DIR__)
     );
+
+return $config;

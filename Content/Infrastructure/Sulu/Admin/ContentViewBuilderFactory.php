@@ -79,7 +79,7 @@ class ContentViewBuilderFactory implements ContentViewBuilderFactoryInterface
 
         $toolbarActions = [];
 
-        if (is_subclass_of($dimensionContentClass, WorkflowInterface::class)) {
+        if (\is_subclass_of($dimensionContentClass, WorkflowInterface::class)) {
             $toolbarActions['save'] = new ToolbarAction(
                 'sulu_admin.save_with_publishing',
                 [
@@ -93,7 +93,7 @@ class ContentViewBuilderFactory implements ContentViewBuilderFactoryInterface
             );
         }
 
-        if (is_subclass_of($dimensionContentClass, TemplateInterface::class)) {
+        if (\is_subclass_of($dimensionContentClass, TemplateInterface::class)) {
             $toolbarActions['type'] = new ToolbarAction(
                 'sulu_admin.type',
                 [
@@ -109,7 +109,7 @@ class ContentViewBuilderFactory implements ContentViewBuilderFactoryInterface
             ]
         );
 
-        if (is_subclass_of($dimensionContentClass, WorkflowInterface::class)) {
+        if (\is_subclass_of($dimensionContentClass, WorkflowInterface::class)) {
             $toolbarActions['edit'] = new DropdownToolbarAction(
                 'sulu_admin.edit',
                 'su-pen',
@@ -171,7 +171,7 @@ class ContentViewBuilderFactory implements ContentViewBuilderFactoryInterface
 
         if ($this->hasPermission($securityContext, PermissionTypes::ADD)) {
             if ($addParentView) {
-                if (is_subclass_of($dimensionContentClass, TemplateInterface::class)) {
+                if (\is_subclass_of($dimensionContentClass, TemplateInterface::class)) {
                     /** @var FormViewBuilderInterface|PreviewFormViewBuilderInterface $templateFormView */
                     $templateFormView = $this->createTemplateFormView(
                         $addParentView,
@@ -189,7 +189,7 @@ class ContentViewBuilderFactory implements ContentViewBuilderFactoryInterface
         }
 
         if ($this->hasPermission($securityContext, PermissionTypes::EDIT)) {
-            if (is_subclass_of($dimensionContentClass, TemplateInterface::class)) {
+            if (\is_subclass_of($dimensionContentClass, TemplateInterface::class)) {
                 $views[] = $this->createTemplateFormView(
                     $editParentView,
                     $previewEnabled,
@@ -199,7 +199,7 @@ class ContentViewBuilderFactory implements ContentViewBuilderFactoryInterface
                 );
             }
 
-            if (is_subclass_of($dimensionContentClass, SeoInterface::class)) {
+            if (\is_subclass_of($dimensionContentClass, SeoInterface::class)) {
                 $views[] = $this->createSeoFormView(
                     $editParentView,
                     $previewEnabled,
@@ -208,7 +208,7 @@ class ContentViewBuilderFactory implements ContentViewBuilderFactoryInterface
                 );
             }
 
-            if (is_subclass_of($dimensionContentClass, ExcerptInterface::class)) {
+            if (\is_subclass_of($dimensionContentClass, ExcerptInterface::class)) {
                 $views[] = $this->createExcerptFormView(
                     $editParentView,
                     $previewEnabled,
@@ -243,7 +243,7 @@ class ContentViewBuilderFactory implements ContentViewBuilderFactoryInterface
             ->setResourceKey($resourceKey)
             ->setFormKey($formKey)
             ->setTabTitle('sulu_content.content')
-            ->addToolbarActions(array_values($toolbarActions))
+            ->addToolbarActions(\array_values($toolbarActions))
             ->setTabOrder(20)
             ->setParent($parentView);
     }
@@ -262,7 +262,7 @@ class ContentViewBuilderFactory implements ContentViewBuilderFactoryInterface
             ->setFormKey('content_seo')
             ->setTabTitle('sulu_content.seo')
             ->setTitleVisible(true)
-            ->addToolbarActions(array_values($toolbarActions))
+            ->addToolbarActions(\array_values($toolbarActions))
             ->setTabOrder(30)
             ->setParent($parentView);
     }
@@ -281,7 +281,7 @@ class ContentViewBuilderFactory implements ContentViewBuilderFactoryInterface
             ->setFormKey('content_excerpt')
             ->setTabTitle('sulu_content.excerpt')
             ->setTitleVisible(true)
-            ->addToolbarActions(array_values($toolbarActions))
+            ->addToolbarActions(\array_values($toolbarActions))
             ->setTabOrder(40)
             ->setParent($parentView);
     }
@@ -298,7 +298,7 @@ class ContentViewBuilderFactory implements ContentViewBuilderFactoryInterface
     ): ViewBuilderInterface {
         $forms = [];
         foreach ($this->settingsForms as $key => $tag) {
-            if (is_subclass_of($dimensionContentClass, $tag['instanceOf'])) {
+            if (\is_subclass_of($dimensionContentClass, $tag['instanceOf'])) {
                 $forms[] = $key;
             }
         }
@@ -309,7 +309,7 @@ class ContentViewBuilderFactory implements ContentViewBuilderFactoryInterface
             ->setFormKey('content_settings')
             ->setTabTitle('sulu_page.settings')
             ->setTitleVisible(true)
-            ->addToolbarActions(array_values($toolbarActions))
+            ->addToolbarActions(\array_values($toolbarActions))
             ->setTabOrder(50)
             ->setParent($parentView);
     }

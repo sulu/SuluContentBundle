@@ -24,7 +24,7 @@ class WorkflowDataMapper implements DataMapperInterface
         DimensionContentCollectionInterface $dimensionContentCollection
     ): void {
         $dimensionAttributes = $dimensionContentCollection->getDimensionAttributes();
-        $unlocalizedDimensionAttributes = array_merge($dimensionAttributes, ['locale' => null]);
+        $unlocalizedDimensionAttributes = \array_merge($dimensionAttributes, ['locale' => null]);
         $unlocalizedObject = $dimensionContentCollection->getDimensionContent($unlocalizedDimensionAttributes);
 
         if (!$unlocalizedObject instanceof WorkflowInterface) {
@@ -35,7 +35,7 @@ class WorkflowDataMapper implements DataMapperInterface
 
         if ($localizedObject) {
             if (!$localizedObject instanceof WorkflowInterface) {
-                throw new \RuntimeException(sprintf('Expected "$localizedObject" from type "%s" but "%s" given.', WorkflowInterface::class, \get_class($localizedObject)));
+                throw new \RuntimeException(\sprintf('Expected "$localizedObject" from type "%s" but "%s" given.', WorkflowInterface::class, \get_class($localizedObject)));
             }
 
             $this->setWorkflowData($localizedObject, $data);

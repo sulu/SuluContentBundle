@@ -68,13 +68,13 @@ class DimensionContentCollection implements \IteratorAggregate, DimensionContent
         $this->defaultDimensionAttributes = $dimensionContentClass::getDefaultDimensionAttributes();
 
         $this->unlocalizedDimensionContent = $this->dimensionContents->filter(
-            function (DimensionContentInterface $dimensionContent) {
+            function(DimensionContentInterface $dimensionContent) {
                 return null === $dimensionContent->getLocale();
             }
         )->first() ?: null;
 
         $this->localizedDimensionContent = $this->dimensionContents->filter(
-            function (DimensionContentInterface $dimensionContent) {
+            function(DimensionContentInterface $dimensionContent) {
                 return null !== $dimensionContent->getLocale();
             }
         )->first() ?: null;
@@ -89,7 +89,7 @@ class DimensionContentCollection implements \IteratorAggregate, DimensionContent
 
     public function getDimensionContent(array $dimensionAttributes): ?DimensionContentInterface
     {
-        $dimensionAttributes = array_merge($this->defaultDimensionAttributes, $dimensionAttributes);
+        $dimensionAttributes = \array_merge($this->defaultDimensionAttributes, $dimensionAttributes);
 
         $criteria = Criteria::create();
         foreach ($dimensionAttributes as $key => $value) {

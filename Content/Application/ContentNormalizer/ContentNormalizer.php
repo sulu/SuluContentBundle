@@ -47,7 +47,7 @@ class ContentNormalizer implements ContentNormalizerInterface
         $ignoredAttributes = [];
 
         foreach ($this->normalizers as $normalizer) {
-            $ignoredAttributes = array_merge(
+            $ignoredAttributes = \array_merge(
                 $ignoredAttributes,
                 $normalizer->getIgnoredAttributes($object)
             );
@@ -62,7 +62,7 @@ class ContentNormalizer implements ContentNormalizerInterface
             $normalizedData = $normalizer->enhance($object, $normalizedData);
         }
 
-        ksort($normalizedData);
+        \ksort($normalizedData);
 
         return $normalizedData;
     }

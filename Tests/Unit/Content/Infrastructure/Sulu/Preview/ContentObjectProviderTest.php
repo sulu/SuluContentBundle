@@ -72,20 +72,20 @@ class ContentObjectProviderTest extends TestCase
 
         $this->entityManager->createQueryBuilder()->willReturn($queryBuilder->reveal())->shouldBeCalledTimes(1);
 
-        $queryBuilder->select(Argument::type('string'))->will(function () {
-            return func_get_arg(\func_num_args() - 2);
+        $queryBuilder->select(Argument::type('string'))->will(function() {
+            return \func_get_arg(\func_num_args() - 2);
         })->shouldBeCalledTimes(1);
 
-        $queryBuilder->from(Argument::type('string'), Argument::type('string'))->will(function () {
-            return func_get_arg(\func_num_args() - 2);
+        $queryBuilder->from(Argument::type('string'), Argument::type('string'))->will(function() {
+            return \func_get_arg(\func_num_args() - 2);
         })->shouldBeCalledTimes(1);
 
-        $queryBuilder->where(Argument::type('string'))->will(function () {
-            return func_get_arg(\func_num_args() - 2);
+        $queryBuilder->where(Argument::type('string'))->will(function() {
+            return \func_get_arg(\func_num_args() - 2);
         })->shouldBeCalledTimes(1);
 
-        $queryBuilder->setParameter(Argument::type('string'), Argument::any())->will(function () {
-            return func_get_arg(\func_num_args() - 2);
+        $queryBuilder->setParameter(Argument::type('string'), Argument::any())->will(function() {
+            return \func_get_arg(\func_num_args() - 2);
         })->shouldBeCalledTimes(1);
 
         $query = $this->prophesize(AbstractQuery::class);
@@ -123,20 +123,20 @@ class ContentObjectProviderTest extends TestCase
 
         $this->entityManager->createQueryBuilder()->willReturn($queryBuilder->reveal())->shouldBeCalledTimes(1);
 
-        $queryBuilder->select(Argument::type('string'))->will(function () {
-            return func_get_arg(\func_num_args() - 2);
+        $queryBuilder->select(Argument::type('string'))->will(function() {
+            return \func_get_arg(\func_num_args() - 2);
         })->shouldBeCalledTimes(1);
 
-        $queryBuilder->from(Argument::type('string'), Argument::type('string'))->will(function () {
-            return func_get_arg(\func_num_args() - 2);
+        $queryBuilder->from(Argument::type('string'), Argument::type('string'))->will(function() {
+            return \func_get_arg(\func_num_args() - 2);
         })->shouldBeCalledTimes(1);
 
-        $queryBuilder->where(Argument::type('string'))->will(function () {
-            return func_get_arg(\func_num_args() - 2);
+        $queryBuilder->where(Argument::type('string'))->will(function() {
+            return \func_get_arg(\func_num_args() - 2);
         })->shouldBeCalledTimes(1);
 
-        $queryBuilder->setParameter(Argument::type('string'), Argument::any())->will(function () {
-            return func_get_arg(\func_num_args() - 2);
+        $queryBuilder->setParameter(Argument::type('string'), Argument::any())->will(function() {
+            return \func_get_arg(\func_num_args() - 2);
         })->shouldBeCalledTimes(1);
 
         $query = $this->prophesize(AbstractQuery::class);
@@ -200,7 +200,7 @@ class ContentObjectProviderTest extends TestCase
         $this->contentDataMapper->map(
             $data,
             Argument::that(
-                function (PreviewDimensionContentCollection $dimensionContentCollection) use ($dimensionContent) {
+                function(PreviewDimensionContentCollection $dimensionContentCollection) use ($dimensionContent) {
                     return $dimensionContent->reveal() === $dimensionContentCollection->getDimensionContent([]);
                 }
             )
@@ -230,7 +230,7 @@ class ContentObjectProviderTest extends TestCase
         $dimensionContent->getLocale()->willReturn('en');
         $dimensionContent->getStage()->willReturn('draft');
 
-        $serializedObject = json_encode([
+        $serializedObject = \json_encode([
             'id' => '123-456',
             'locale' => 'en',
         ]);
@@ -246,20 +246,20 @@ class ContentObjectProviderTest extends TestCase
 
         $this->entityManager->createQueryBuilder()->willReturn($queryBuilder->reveal())->shouldBeCalledTimes(1);
 
-        $queryBuilder->select(Argument::type('string'))->will(function () {
-            return func_get_arg(\func_num_args() - 2);
+        $queryBuilder->select(Argument::type('string'))->will(function() {
+            return \func_get_arg(\func_num_args() - 2);
         })->shouldBeCalledTimes(1);
 
-        $queryBuilder->from(Argument::type('string'), Argument::type('string'))->will(function () {
-            return func_get_arg(\func_num_args() - 2);
+        $queryBuilder->from(Argument::type('string'), Argument::type('string'))->will(function() {
+            return \func_get_arg(\func_num_args() - 2);
         })->shouldBeCalledTimes(1);
 
-        $queryBuilder->where(Argument::type('string'))->will(function () {
-            return func_get_arg(\func_num_args() - 2);
+        $queryBuilder->where(Argument::type('string'))->will(function() {
+            return \func_get_arg(\func_num_args() - 2);
         })->shouldBeCalledTimes(1);
 
-        $queryBuilder->setParameter(Argument::type('string'), Argument::any())->will(function () {
-            return func_get_arg(\func_num_args() - 2);
+        $queryBuilder->setParameter(Argument::type('string'), Argument::any())->will(function() {
+            return \func_get_arg(\func_num_args() - 2);
         })->shouldBeCalledTimes(1);
 
         $query = $this->prophesize(AbstractQuery::class);
@@ -277,7 +277,7 @@ class ContentObjectProviderTest extends TestCase
             Argument::type('array')
         )->willReturn($dimensionContent->reveal())->shouldBeCalledTimes(1);
 
-        $serializedObject = json_encode([
+        $serializedObject = \json_encode([
             'id' => '123-456',
             'locale' => 'en',
         ]) ?: '';
@@ -289,7 +289,7 @@ class ContentObjectProviderTest extends TestCase
 
     public function testDeserializeIdNull(): void
     {
-        $serializedObject = json_encode([
+        $serializedObject = \json_encode([
             'id' => null,
             'locale' => 'en',
         ]) ?: '';
@@ -301,7 +301,7 @@ class ContentObjectProviderTest extends TestCase
 
     public function testDeserializeLocaleNull(): void
     {
-        $serializedObject = json_encode([
+        $serializedObject = \json_encode([
             'id' => '123-456',
             'locale' => null,
         ]) ?: '';

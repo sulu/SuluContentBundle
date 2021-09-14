@@ -419,7 +419,7 @@ class RoutableDataMapperTest extends TestCase
         $factory->getStructureMetadata('mock-template-type', 'default')->willReturn($metadata->reveal())->shouldBeCalled();
 
         $routeGenerator->generate(
-            array_merge($data, [
+            \array_merge($data, [
                 '_unlocalizedObject' => $unlocalizedDimensionContent->reveal(),
                 '_localizedObject' => $localizedDimensionContentMock,
             ]),
@@ -487,7 +487,7 @@ class RoutableDataMapperTest extends TestCase
         $factory->getStructureMetadata('mock-template-type', 'default')->willReturn($metadata->reveal())->shouldBeCalled();
 
         $routeGenerator->generate(
-            array_merge($data, [
+            \array_merge($data, [
                 '_unlocalizedObject' => $unlocalizedDimensionContent->reveal(),
                 '_localizedObject' => $localizedDimensionContentMock,
             ]),
@@ -642,7 +642,7 @@ class RoutableDataMapperTest extends TestCase
         $localizedDimensionContent->getLocale()->willReturn('en');
 
         $routeGenerator->generate(
-            array_merge($data, [
+            \array_merge($data, [
                 '_unlocalizedObject' => $unlocalizedDimensionContent->reveal(),
                 '_localizedObject' => $localizedDimensionContentMock,
             ]),
@@ -894,7 +894,7 @@ class RoutableDataMapperTest extends TestCase
         $localizedDimensionContent->getLocale()->willReturn('en');
 
         $routeGenerator->generate(
-            array_merge($data, [
+            \array_merge($data, [
                 '_unlocalizedObject' => $unlocalizedDimensionContent->reveal(),
                 '_localizedObject' => $localizedDimensionContentMock,
             ]),

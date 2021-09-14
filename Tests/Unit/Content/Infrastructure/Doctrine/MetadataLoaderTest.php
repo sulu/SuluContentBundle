@@ -80,21 +80,21 @@ class MetadataLoaderTest extends TestCase
 
         foreach ($fields as $field => $exist) {
             $classMetadata->hasField($field)->willReturn($exist);
-            $classMetadata->mapField(Argument::that(function (array $mapping) use ($field) {
+            $classMetadata->mapField(Argument::that(function(array $mapping) use ($field) {
                 return $mapping['fieldName'] === $field;
             }))->shouldBeCalledTimes($exist ? 0 : 1);
         }
 
         foreach ($manyToManyAssociations as $association => $exist) {
             $classMetadata->hasAssociation($association)->willReturn($exist);
-            $classMetadata->mapManyToMany(Argument::that(function (array $mapping) use ($association) {
+            $classMetadata->mapManyToMany(Argument::that(function(array $mapping) use ($association) {
                 return $mapping['fieldName'] === $association;
             }))->shouldBeCalledTimes($exist ? 0 : 1);
         }
 
         foreach ($manyToOneAssociations as $association => $exist) {
             $classMetadata->hasAssociation($association)->willReturn($exist);
-            $classMetadata->mapManyToOne(Argument::that(function (array $mapping) use ($association) {
+            $classMetadata->mapManyToOne(Argument::that(function(array $mapping) use ($association) {
                 return $mapping['fieldName'] === $association;
             }))->shouldBeCalledTimes($exist ? 0 : 1);
         }
