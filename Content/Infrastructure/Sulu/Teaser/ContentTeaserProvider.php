@@ -28,7 +28,7 @@ use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
 
 abstract class ContentTeaserProvider implements TeaserProviderInterface
 {
-    const CONTENT_RICH_ENTITY_ALIAS = ContentWorkflowInterface::CONTENT_RICH_ENTITY_CONTEXT_KEY;
+    public const CONTENT_RICH_ENTITY_ALIAS = ContentWorkflowInterface::CONTENT_RICH_ENTITY_CONTEXT_KEY;
 
     /**
      * @var ContentManagerInterface

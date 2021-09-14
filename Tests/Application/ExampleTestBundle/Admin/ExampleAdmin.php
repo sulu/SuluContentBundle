@@ -27,13 +27,13 @@ use Sulu\Component\Security\Authorization\SecurityCheckerInterface;
 
 class ExampleAdmin extends Admin
 {
-    const SECURITY_CONTEXT = 'sulu.example.examples';
+    public const SECURITY_CONTEXT = 'sulu.example.examples';
 
-    const LIST_VIEW = 'example_test.example.list';
+    public const LIST_VIEW = 'example_test.example.list';
 
-    const ADD_TABS_VIEW = 'example_test.example.add_tabs';
+    public const ADD_TABS_VIEW = 'example_test.example.add_tabs';
 
-    const EDIT_TABS_VIEW = 'example_test.example.edit_tabs';
+    public const EDIT_TABS_VIEW = 'example_test.example.edit_tabs';
 
     /**
      * @var ViewBuilderFactoryInterface

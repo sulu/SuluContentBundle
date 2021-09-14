@@ -23,9 +23,9 @@ use Sulu\Component\SmartContent\Orm\DataProviderRepositoryInterface;
 
 class ContentDataProviderRepository implements DataProviderRepositoryInterface
 {
-    const CONTENT_RICH_ENTITY_ALIAS = 'entity';
-    const LOCALIZED_DIMENSION_CONTENT_ALIAS = 'localizedContent';
-    const UNLOCALIZED_DIMENSION_CONTENT_ALIAS = 'unlocalizedContent';
+    public const CONTENT_RICH_ENTITY_ALIAS = 'entity';
+    public const LOCALIZED_DIMENSION_CONTENT_ALIAS = 'localizedContent';
+    public const UNLOCALIZED_DIMENSION_CONTENT_ALIAS = 'unlocalizedContent';
 
     /**
      * @var ContentManagerInterface

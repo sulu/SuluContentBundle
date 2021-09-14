@@ -26,8 +26,8 @@ class ContentSitemapProviderTest extends SuluTestCase
     use AssertSnapshotTrait;
     use CreateExampleTrait;
 
-    const SCHEME = 'https';
-    const HOST = 'localhost';
+    public const SCHEME = 'https';
+    public const HOST = 'localhost';
 
     /**
      * @var ContentSitemapProvider

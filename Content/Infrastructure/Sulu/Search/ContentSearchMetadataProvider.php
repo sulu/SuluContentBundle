@@ -33,14 +33,14 @@ use Sulu\Component\Content\Metadata\StructureMetadata;
 
 class ContentSearchMetadataProvider implements ProviderInterface
 {
-    const SEARCH_FIELD_TAG = 'sulu.search.field';
-    const FIELD_TEMPLATE_KEY = '_template_key';
-    const EXCERPT_FIELDS = [
+    public const SEARCH_FIELD_TAG = 'sulu.search.field';
+    public const FIELD_TEMPLATE_KEY = '_template_key';
+    public const EXCERPT_FIELDS = [
         'excerptTitle',
         'excerptMore',
         'excerptDescription',
     ];
-    const SEO_FIELDS = [
+    public const SEO_FIELDS = [
         'seoTitle',
         'seoDescription',
         'seoKeywords',
