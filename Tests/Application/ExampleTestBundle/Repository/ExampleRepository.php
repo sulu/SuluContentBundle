@@ -16,6 +16,7 @@ namespace Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Reposito
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NoResultException;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Doctrine\DimensionContentQueryEnhancer;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
@@ -25,8 +26,40 @@ use Webmozart\Assert\Assert;
 
 class ExampleRepository
 {
-    public const GROUP_CONTENT_EDIT = 'example_content_edit';
-    public const GROUP_CONTENT_WEBSITE = 'example_content_website';
+    /**
+     * Groups are used in controllers and represents serialization / resolver group,
+     * this allows that no controller need to be overwritten when something additional should be
+     * loaded at that endpoint.
+     */
+    public const GROUP_EXAMPLE_ADMIN = 'example_admin';
+    public const GROUP_EXAMPLE_WEBSITE = 'example_website';
+
+    /**
+     * Withs represents additional selects which can be load to join and select specific sub entities.
+     * They are used by groups.
+     */
+    public const WITH_EXAMPLE_CONTENT = 'with-example-content';
+
+    public const WITH_EXAMPLE_TRANSLATION = 'with-example-translation';
+
+    /**
+     * TODO it should be possible to extend fields and groups inside the SELECTS.
+     */
+    private const SELECTS = [
+        // GROUPS
+        self::GROUP_EXAMPLE_ADMIN => [
+            self::WITH_EXAMPLE_TRANSLATION => true,
+            self::WITH_EXAMPLE_CONTENT => [
+                DimensionContentQueryEnhancer::GROUP_CONTENT_ADMIN => true,
+            ],
+        ],
+        self::GROUP_EXAMPLE_WEBSITE => [
+            self::WITH_EXAMPLE_TRANSLATION => true,
+            self::WITH_EXAMPLE_CONTENT => [
+                DimensionContentQueryEnhancer::GROUP_CONTENT_WEBSITE => true,
+            ],
+        ],
+    ];
 
     /**
      * @var EntityManagerInterface
@@ -60,14 +93,16 @@ class ExampleRepository
      *     stage?: string|null,
      * } $filters
      * @param array{
-     *     context?: string,
-     * } $options
+     *     example_admin?: bool,
+     *     example_website?: bool,
+     *     with-example-content?: array<string, mixed>,
+     * }|array<string, mixed> $selects
      *
      * @throws ExampleNotFoundException
      */
-    public function getOneBy(array $filters, array $options = []): Example
+    public function getOneBy(array $filters, array $selects = []): Example
     {
-        $queryBuilder = $this->createQueryBuilder($filters, [], $options);
+        $queryBuilder = $this->createQueryBuilder($filters, [], $selects);
 
         try {
             /** @var Example $example */
@@ -87,12 +122,14 @@ class ExampleRepository
      *     stage?: string|null,
      * } $filters
      * @param array{
-     *     context?: string,
-     * } $options
+     *     example_admin?: bool,
+     *     example_website?: bool,
+     *     with-example-content?: array<string, mixed>,
+     * }|array<string, mixed> $selects
      */
-    public function findOneBy(array $filters, array $options = []): ?Example
+    public function findOneBy(array $filters, array $selects = []): ?Example
     {
-        $queryBuilder = $this->createQueryBuilder($filters, [], $options);
+        $queryBuilder = $this->createQueryBuilder($filters, [], $selects);
 
         try {
             /** @var Example $example */
@@ -144,7 +181,6 @@ class ExampleRepository
          *     tagOperator?: 'AND'|'OR',
          *     templateKeys?: string[],
          * } $filters */
-
         $queryBuilder = $this->createQueryBuilder($filters);
 
         $queryBuilder->select('COUNT(DISTINCT example.id)');
@@ -172,12 +208,17 @@ class ExampleRepository
      *     id?: 'asc'|'desc',
      *     title?: 'asc'|'desc',
      * } $sortBy
+     * @param array{
+     *     example_admin?: bool,
+     *     example_website?: bool,
+     *     with-example-content?: bool|array<string, mixed>,
+     * }|array<string, mixed> $selects
      *
      * @return \Generator<Example>
      */
-    public function findBy(array $filters = [], array $sortBy = []): \Generator
+    public function findBy(array $filters = [], array $sortBy = [], array $selects = []): \Generator
     {
-        $queryBuilder = $this->createQueryBuilder($filters, $sortBy);
+        $queryBuilder = $this->createQueryBuilder($filters, $sortBy, $selects);
 
         // TODO optimize hydration with toIterable()
         /** @var iterable<Example> $examples */
@@ -218,12 +259,20 @@ class ExampleRepository
      *     id?: 'asc'|'desc',
      *     title?: 'asc'|'desc',
      * } $sortBy
-     * @param array{
-     *     context?: string,
-     * } $options
+     * @param array<string, boolean> $selects
      */
-    private function createQueryBuilder(array $filters, array $sortBy = [], array $options = []): QueryBuilder
+    private function createQueryBuilder(array $filters, array $sortBy = [], array $selects = []): QueryBuilder
     {
+        foreach ($selects as $selectGroup => $value) {
+            if (!$value) {
+                continue;
+            }
+
+            if (isset(self::SELECTS[$selectGroup])) {
+                $selects = array_merge($selects, self::SELECTS[$selectGroup]);
+            }
+        }
+
         $queryBuilder = $this->entityRepository->createQueryBuilder('example');
 
         $id = $filters['id'] ?? null;
@@ -272,7 +321,7 @@ class ExampleRepository
         }
 
         /**
-         * @see https://github.com/phpstan/phpstan/issues/5223https://github.com/phpstan/phpstan/issues/5223
+         * @see https://github.com/phpstan/phpstan/issues/5223
          *
          * @var array{
          *     locale?: string|null,
@@ -286,7 +335,6 @@ class ExampleRepository
          *     templateKeys?: string[],
          * } $contentFilters
          */
-
         if (!empty($contentFilters)) {
             Assert::keyExists($contentFilters, 'locale');
             Assert::keyExists($contentFilters, 'stage');
@@ -297,6 +345,29 @@ class ExampleRepository
                 ExampleDimensionContent::class,
                 $contentFilters
             );
+        }
+
+        if ($selects['with-example-content'] ?? null) {
+            /** @var array<string, bool> $contentSelects */
+            $contentSelects = $selects['with-example-content'] ?? [];
+            $this->dimensionContentQueryEnhancer->addSelects(
+                $queryBuilder,
+                ExampleDimensionContent::class,
+                $contentFilters,
+                $contentSelects
+            );
+        }
+
+        $locale = $dimensionAttributes['locale'] ?? null;
+        if ($selects['with-example-translations'] ?? null) {
+            Assert::notNull($locale);
+
+            $queryBuilder->leftJoin(
+                'example.translations',
+                'translations',
+                Join::WITH,
+                'translation.locale = :locale'
+            )->setParameter('locale', $locale);
         }
 
         return $queryBuilder;

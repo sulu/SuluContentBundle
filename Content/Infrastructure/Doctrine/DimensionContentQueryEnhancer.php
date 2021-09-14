@@ -35,28 +35,19 @@ class DimensionContentQueryEnhancer
      */
     public const WITH_EXCERPT_TAGS = 'with-excerpt-tags';
     public const WITH_EXCERPT_CATEGORIES = 'with-excerpt-categories';
-    public const WITH_EXCERPT_CATEGORIES_TRANSLATIONS = 'with-excerpt-categories-translations';
+    public const WITH_EXCERPT_CATEGORIES_TRANSLATION = 'with-excerpt-categories-translation';
     public const WITH_EXCERPT_IMAGE = 'with-excerpt-image';
-    public const WITH_EXCERPT_IMAGE_TRANSLATIONS = 'with-excerpt-image-translations';
+    public const WITH_EXCERPT_IMAGE_TRANSLATION = 'with-excerpt-image-translation';
     public const WITH_EXCERPT_ICON = 'with-excerpt-icon';
-    public const WITH_EXCERPT_ICON_TRANSLATIONS = 'with-excerpt-icon-translations';
+    public const WITH_EXCERPT_ICON_TRANSLATION = 'with-excerpt-icon-translation';
 
     /**
      * Groups are used in controllers and represents serialization / resolver group,
-     * this allows that no controller need to be overwritten when something additonal should be
+     * this allows that no controller need to be overwritten when something additional should be
      * loaded at that endpoint.
      */
     public const GROUP_CONTENT_ADMIN = 'content_admin';
     public const GROUP_CONTENT_WEBSITE = 'content_website';
-
-    /**
-     * Fields are used inside smart content and selection content types and match to
-     * one or multiple with selects to join a field.
-     */
-    public const FIELD_EXCERPT_IMAGE = 'excerpt.image';
-    public const FIELD_EXCERPT_ICON = 'excerpt.icon';
-    public const FIELD_EXCERPT_CATEGORIES = 'excerpt.categories';
-    public const FIELD_EXCERPT_TAGS= 'excerpt.tags';
 
     /**
      * TODO it should be possible to extend fields and groups inside the SELECTS.
@@ -72,29 +63,11 @@ class DimensionContentQueryEnhancer
         self::GROUP_CONTENT_WEBSITE => [
             self::WITH_EXCERPT_TAGS => true,
             self::WITH_EXCERPT_CATEGORIES => true,
-            self::WITH_EXCERPT_CATEGORIES_TRANSLATIONS => true,
+            self::WITH_EXCERPT_CATEGORIES_TRANSLATION => true,
             self::WITH_EXCERPT_IMAGE => true,
-            self::WITH_EXCERPT_IMAGE_TRANSLATIONS => true,
+            self::WITH_EXCERPT_IMAGE_TRANSLATION => true,
             self::WITH_EXCERPT_ICON => true,
-            self::WITH_EXCERPT_ICON_TRANSLATIONS => true,
-        ],
-        // FIELDS
-        self::FIELD_EXCERPT_TAGS => [
-            self::WITH_EXCERPT_TAGS => true,
-        ],
-        self::FIELD_EXCERPT_CATEGORIES => [
-            self::WITH_EXCERPT_CATEGORIES => true,
-            self::WITH_EXCERPT_CATEGORIES_TRANSLATIONS => true,
-        ],
-        self::FIELD_EXCERPT_IMAGE => [
-            self::WITH_EXCERPT_IMAGE => true,
-            self::WITH_EXCERPT_IMAGE_TRANSLATIONS => true,
-        ],
-        self::FIELD_EXCERPT_ICON => [
-            self::WITH_EXCERPT_IMAGE => true,
-            self::WITH_EXCERPT_IMAGE_TRANSLATIONS => true,
-            self::WITH_EXCERPT_ICON => true,
-            self::WITH_EXCERPT_ICON_TRANSLATIONS => true,
+            self::WITH_EXCERPT_ICON_TRANSLATION => true,
         ],
     ];
 
@@ -256,7 +229,17 @@ class DimensionContentQueryEnhancer
      *
      * @param class-string<DimensionContentInterface> $dimensionContentClassName
      * @param mixed[] $dimensionAttributes
-     * @param array<string, bool> $selects
+     * @param array{
+     *     content_admin?: bool,
+     *     content_website?: bool,
+     *     with-excerpt-tags?: bool,
+     *     with-excerpt-categories?: bool,
+     *     with-excerpt-categories-translation?: bool,
+     *     with-excerpt-image?: bool,
+     *     with-excerpt-image-translation?: bool,
+     *     with-excerpt-icon?: bool,
+     *     with-excerpt-icon-translation?: bool,
+     * }|array<string, bool> $selects
      */
     public function addSelects(
         QueryBuilder $queryBuilder,
@@ -270,7 +253,7 @@ class DimensionContentQueryEnhancer
             }
 
             if (isset(self::SELECTS[$selectGroup])) {
-                $selects = \array_merge($selects, self::SELECTS[$selectGroup]);
+                $selects = array_merge($selects, self::SELECTS[$selectGroup]);
             }
         }
 
@@ -292,7 +275,7 @@ class DimensionContentQueryEnhancer
                     ->addSelect('contentExcerptCategory');
             }
 
-            if ($selects[self::WITH_EXCERPT_CATEGORIES_TRANSLATIONS] ?? false) {
+            if ($selects[self::WITH_EXCERPT_CATEGORIES_TRANSLATION] ?? false) {
                 Assert::notFalse($selects[self::WITH_EXCERPT_CATEGORIES] ?? false);
                 Assert::notNull($locale);
                 $queryBuilder->leftJoin(
@@ -310,7 +293,7 @@ class DimensionContentQueryEnhancer
                     ->addSelect('contentExcerptImage');
             }
 
-            if ($selects[self::WITH_EXCERPT_IMAGE_TRANSLATIONS] ?? false) {
+            if ($selects[self::WITH_EXCERPT_IMAGE_TRANSLATION] ?? false) {
                 Assert::notFalse($selects[self::WITH_EXCERPT_IMAGE]);
                 Assert::notNull($locale);
                 $queryBuilder->leftJoin('contentExcerptImage.files', 'contentExcerptImageFile')
@@ -342,7 +325,7 @@ class DimensionContentQueryEnhancer
                     ->addSelect('contentExcerptIcon');
             }
 
-            if ($selects[self::WITH_EXCERPT_ICON_TRANSLATIONS] ?? false) {
+            if ($selects[self::WITH_EXCERPT_ICON_TRANSLATION] ?? false) {
                 Assert::notFalse($selects[self::WITH_EXCERPT_ICON] ?? false);
                 Assert::notNull($locale);
                 $queryBuilder->leftJoin('contentExcerptIcon.files', 'contentExcerptIconFile')
