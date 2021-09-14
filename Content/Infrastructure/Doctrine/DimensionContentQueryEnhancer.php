@@ -16,6 +16,7 @@ namespace Sulu\Bundle\ContentBundle\Content\Infrastructure\Doctrine;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentMetadataInspector\ContentMetadataInspectorInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
@@ -29,6 +30,17 @@ use Webmozart\Assert\Assert;
  */
 class DimensionContentQueryEnhancer
 {
+    /**
+     * @var ContentMetadataInspectorInterface
+     */
+    private $contentMetadataInspector;
+
+    public function __construct(
+        ContentMetadataInspectorInterface $contentMetadataInspector
+    ) {
+        $this->contentMetadataInspector = $contentMetadataInspector;
+    }
+
     /**
      * Withs represents additional selects which can be load to join and select specific sub entities.
      * They are used by groups and fields.
@@ -235,7 +247,6 @@ class DimensionContentQueryEnhancer
      */
     public function addSelects(
         QueryBuilder $queryBuilder,
-        string $contentRichEntityAlias,
         string $dimensionContentClassName,
         array $dimensionAttributes,
         array $selects = []
@@ -249,11 +260,6 @@ class DimensionContentQueryEnhancer
                 $selects = \array_merge($selects, self::SELECTS[$selectGroup]);
             }
         }
-
-        $queryBuilder->leftJoin(
-            $contentRichEntityAlias . '.dimensionContents',
-            'dimensionContent'
-        );
 
         $effectiveAttributes = $dimensionContentClassName::getEffectiveDimensionAttributes($dimensionAttributes);
         $this->addSortBy($queryBuilder, $effectiveAttributes);

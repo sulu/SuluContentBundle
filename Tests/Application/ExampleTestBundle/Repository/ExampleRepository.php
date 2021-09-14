@@ -269,7 +269,7 @@ class ExampleRepository
             }
 
             if (isset(self::SELECTS[$selectGroup])) {
-                $selects = \array_merge($selects, self::SELECTS[$selectGroup]);
+                $selects = \array_replace_recursive($selects, self::SELECTS[$selectGroup]);
             }
         }
 
@@ -350,9 +350,14 @@ class ExampleRepository
         if ($selects['with-example-content'] ?? null) {
             /** @var array<string, bool> $contentSelects */
             $contentSelects = $selects['with-example-content'] ?? [];
+
+            $queryBuilder->leftJoin(
+                'example.dimensionContents',
+                'dimensionContent'
+            );
+
             $this->dimensionContentQueryEnhancer->addSelects(
                 $queryBuilder,
-                'example',
                 ExampleDimensionContent::class,
                 $contentFilters,
                 $contentSelects

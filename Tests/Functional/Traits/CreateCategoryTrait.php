@@ -52,6 +52,7 @@ trait CreateCategoryTrait
         $categoryTranslation->setLocale($data['locale'] ?? 'en');
         $categoryTranslation->setTranslation($data['title'] ?? '');
         $category->addTranslation($categoryTranslation);
+        $categoryTranslation->setCategory($category);
 
         return $categoryTranslation;
     }

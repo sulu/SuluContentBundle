@@ -64,7 +64,8 @@ class DimensionContentRepository implements DimensionContentRepositoryInterface
         $this->dimensionContentQueryEnhancer->addSelects(
             $queryBuilder,
             $dimensionContentClass,
-            $dimensionAttributes
+            $dimensionAttributes,
+            [DimensionContentQueryEnhancer::GROUP_CONTENT_ADMIN => true]
         );
 
         /** @var DimensionContentInterface[] $dimensionContents */
@@ -75,60 +76,5 @@ class DimensionContentRepository implements DimensionContentRepositoryInterface
             $dimensionAttributes,
             $dimensionContentClass
         );
-    }
-
-    /**
-     * Less specific should be returned first to merge correctly.
-     *
-     * @param mixed[] $attributes
-     */
-    private function addSortBy(QueryBuilder $queryBuilder, array $attributes): void
-    {
-        foreach ($attributes as $key => $value) {
-            $queryBuilder->addOrderBy('dimensionContent.' . $key);
-        }
-    }
-
-    /**
-     * @param mixed[] $attributes
-     */
-    private function getAttributesCriteria(string $alias, array $attributes): Criteria
-    {
-        $criteria = Criteria::create();
-
-        foreach ($attributes as $key => $value) {
-            $fieldName = $alias . '.' . $key;
-            $expr = $criteria->expr()->isNull($fieldName);
-
-            if (null !== $value) {
-                $eqExpr = $criteria->expr()->eq($fieldName, $value);
-                $expr = $criteria->expr()->orX($expr, $eqExpr);
-            }
-
-            $criteria->andWhere($expr);
-        }
-
-        return $criteria;
-    }
-
-    /**
-     * @param class-string<DimensionContentInterface> $className
-     * @param mixed[] $attributes
-     *
-     * @return mixed[]
-     */
-    private function getEffectiveAttributes(string $className, array $attributes): array
-    {
-        $defaultValues = $className::getDefaultDimensionAttributes();
-
-        // Ignore keys that are not part of the default attributes
-        $attributes = \array_intersect_key($attributes, $defaultValues);
-
-        $attributes = \array_merge(
-            $defaultValues,
-            $attributes
-        );
-
-        return $attributes;
     }
 }
