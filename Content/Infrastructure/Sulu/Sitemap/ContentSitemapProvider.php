@@ -97,7 +97,7 @@ class ContentSitemapProvider implements SitemapProviderInterface
         );
 
         /** @var PortalInformation|null $portalInformation */
-        $portalInformation = array_shift($portalInformations);
+        $portalInformation = \array_shift($portalInformations);
 
         if (!$portalInformation) {
             // TODO FIXME add testcase for this
@@ -119,7 +119,7 @@ class ContentSitemapProvider implements SitemapProviderInterface
                 $mainRoute = $entityRoutes[$defaultLocale];
                 unset($entityRoutes[$defaultLocale]);
             } else {
-                $mainRoute = array_shift($entityRoutes);
+                $mainRoute = \array_shift($entityRoutes);
             }
 
             $sitemapUrl = $this->generateSitemapUrl(
@@ -158,7 +158,7 @@ class ContentSitemapProvider implements SitemapProviderInterface
                 ->getQuery()
                 ->getSingleScalarResult();
 
-            return (int) ceil($amount / self::PAGE_SIZE);
+            return (int) \ceil($amount / self::PAGE_SIZE);
         } catch (NoResultException | NonUniqueResultException $e) { // @codeCoverageIgnore
             // TODO FIXME add testcase for this
             return 0; // @codeCoverageIgnore

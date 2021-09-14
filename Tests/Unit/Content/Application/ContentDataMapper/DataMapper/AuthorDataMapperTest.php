@@ -101,7 +101,7 @@ class AuthorDataMapperTest extends TestCase
         $unlocalizedDimensionContent->setAuthor($contact->reveal())
             ->shouldBeCalled();
         $unlocalizedDimensionContent->setAuthored(Argument::that(
-            function (DateTimeImmutable $date) {
+            function(DateTimeImmutable $date) {
                 return $date->getTimestamp() === (new \DateTimeImmutable('2020-05-08T00:00:00+00:00'))->getTimestamp();
             })
         )->shouldBeCalled();
@@ -140,7 +140,7 @@ class AuthorDataMapperTest extends TestCase
         $localizedDimensionContent->setAuthor($contact->reveal())
             ->shouldBeCalled();
         $localizedDimensionContent->setAuthored(Argument::that(
-            function (DateTimeImmutable $date) {
+            function(DateTimeImmutable $date) {
                 return $date->getTimestamp() === (new \DateTimeImmutable('2020-05-08T00:00:00+00:00'))->getTimestamp();
             })
         )->shouldBeCalled();

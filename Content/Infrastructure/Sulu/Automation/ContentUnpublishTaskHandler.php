@@ -46,9 +46,6 @@ class ContentUnpublishTaskHandler implements AutomationTaskHandlerInterface
         $this->translator = $translator;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function configureOptionsResolver(OptionsResolver $optionsResolver): OptionsResolver
     {
         return $optionsResolver->setRequired(['id', 'locale'])
@@ -56,25 +53,16 @@ class ContentUnpublishTaskHandler implements AutomationTaskHandlerInterface
             ->setAllowedTypes('locale', 'string');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function supports(string $entityClass): bool
     {
-        return is_subclass_of($entityClass, ContentRichEntityInterface::class);
+        return \is_subclass_of($entityClass, ContentRichEntityInterface::class);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getConfiguration(): TaskHandlerConfiguration
     {
         return TaskHandlerConfiguration::create($this->translator->trans('sulu_content.task_handler.unpublish', [], 'admin'));
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function handle($workload)
     {
         if (!\is_array($workload)) {

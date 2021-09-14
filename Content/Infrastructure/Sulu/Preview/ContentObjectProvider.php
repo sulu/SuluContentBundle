@@ -128,7 +128,7 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
      */
     public function serialize($object)
     {
-        return json_encode([
+        return \json_encode([
             'id' => $object->getResource()->getId(),
             'locale' => $object->getLocale(),
         ]) ?: '[]';
@@ -142,7 +142,7 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
      */
     public function deserialize($serializedObject, $objectClass)
     {
-        $data = json_decode($serializedObject, true);
+        $data = \json_decode($serializedObject, true);
 
         $id = $data['id'] ?? null;
         $locale = $data['locale'] ?? null;

@@ -94,10 +94,10 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
 
         $contentRichEntities = $this->findEntitiesByIds($ids);
 
-        return array_values(
-            array_filter(
-                array_map(
-                    function (ContentRichEntityInterface $contentRichEntity) use ($locale): ?Teaser {
+        return \array_values(
+            \array_filter(
+                \array_map(
+                    function(ContentRichEntityInterface $contentRichEntity) use ($locale): ?Teaser {
                         $resolvedDimensionContent = $this->resolveContent($contentRichEntity, $locale);
 
                         if (!$resolvedDimensionContent) {
@@ -287,11 +287,11 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
             ->setParameter('ids', $ids)
             ->getResult();
 
-        $idPositions = array_flip($ids);
+        $idPositions = \array_flip($ids);
 
-        usort(
+        \usort(
             $entities,
-            function (ContentRichEntityInterface $a, ContentRichEntityInterface $b) use ($idPositions, $classMetadata, $entityIdField) {
+            function(ContentRichEntityInterface $a, ContentRichEntityInterface $b) use ($idPositions, $classMetadata, $entityIdField) {
                 $aId = $classMetadata->getIdentifierValues($a)[$entityIdField];
                 $bId = $classMetadata->getIdentifierValues($b)[$entityIdField];
 

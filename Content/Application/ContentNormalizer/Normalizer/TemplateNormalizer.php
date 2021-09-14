@@ -23,7 +23,7 @@ class TemplateNormalizer implements NormalizerInterface
             return $normalizedData;
         }
 
-        $normalizedData = array_merge($normalizedData['templateData'], $normalizedData);
+        $normalizedData = \array_merge($normalizedData['templateData'], $normalizedData);
         unset($normalizedData['templateData']);
 
         $normalizedData['template'] = $normalizedData['templateKey'];

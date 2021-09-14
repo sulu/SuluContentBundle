@@ -31,7 +31,7 @@ class TemplateMerger implements MergerInterface
             $targetObject->setTemplateKey($templateKey);
         }
 
-        $targetObject->setTemplateData(array_merge(
+        $targetObject->setTemplateData(\array_merge(
             $targetObject->getTemplateData(),
             $sourceObject->getTemplateData()
         ));

@@ -145,7 +145,7 @@ class ContentDocument implements ExtensionBehavior
     protected function createReadOnlyException(string $method): \BadMethodCallException
     {
         return new \BadMethodCallException(
-            sprintf(
+            \sprintf(
                 'Compatibility layer ContentDocument instances are readonly. Tried to call "%s"',
                 $method
             )

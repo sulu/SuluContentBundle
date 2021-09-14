@@ -45,7 +45,7 @@ trait AssertSnapshotTrait
         array $array,
         string $message = ''
     ): void {
-        $arrayContent = json_encode($array);
+        $arrayContent = \json_encode($array);
         $this->assertIsString($arrayContent);
 
         $this->assertSnapshot($snapshotPatternFilename, $arrayContent, $message);
@@ -57,10 +57,10 @@ trait AssertSnapshotTrait
         string $message = ''
     ): void {
         $snapshotFolder = $this->getCalledClassFolder() . \DIRECTORY_SEPARATOR . $this->getSnapshotFolder();
-        $snapshotPattern = file_get_contents($snapshotFolder . \DIRECTORY_SEPARATOR . $snapshotPatternFilename);
+        $snapshotPattern = \file_get_contents($snapshotFolder . \DIRECTORY_SEPARATOR . $snapshotPatternFilename);
         $this->assertIsString($snapshotPattern);
 
-        $this->assertMatchesPattern(trim($snapshotPattern), trim($content), $message);
+        $this->assertMatchesPattern(\trim($snapshotPattern), \trim($content), $message);
     }
 
     private function getCalledClassFolder(): string

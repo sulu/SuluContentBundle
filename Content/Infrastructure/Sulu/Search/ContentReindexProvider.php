@@ -120,17 +120,17 @@ class ContentReindexProvider implements LocalizedReindexProviderInterface
 
         $locales = $object->getDimensionContents()
             ->filter(
-                function (DimensionContentInterface $dimensionContent) use ($stage) {
+                function(DimensionContentInterface $dimensionContent) use ($stage) {
                     return $stage === $dimensionContent->getStage();
                 }
             )
             ->map(
-                function (DimensionContentInterface $dimensionContent) {
+                function(DimensionContentInterface $dimensionContent) {
                     return $dimensionContent->getLocale();
                 }
             )->getValues();
 
-        return array_values(array_filter(array_unique($locales)));
+        return \array_values(\array_filter(\array_unique($locales)));
     }
 
     /**
@@ -167,7 +167,7 @@ class ContentReindexProvider implements LocalizedReindexProviderInterface
 
     private function getWorkflowStage(): string
     {
-        $interfaces = class_implements($this->getDimensionContentClass());
+        $interfaces = \class_implements($this->getDimensionContentClass());
 
         if ($interfaces && \in_array(WorkflowInterface::class, $interfaces, true)
             && SuluKernel::CONTEXT_WEBSITE === $this->context) {

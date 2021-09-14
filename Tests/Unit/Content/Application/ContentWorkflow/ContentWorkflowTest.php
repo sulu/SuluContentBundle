@@ -87,7 +87,7 @@ class ContentWorkflowTest extends TestCase
         $dimensionContent1->getStage()->willReturn('draft');
         $dimensionContent1->getLocale()->willReturn('de');
 
-        $this->expectExceptionMessage(sprintf(
+        $this->expectExceptionMessage(\sprintf(
             'Expected "%s" but "%s" given.',
             WorkflowInterface::class,
             \get_class($dimensionContent2->reveal()))

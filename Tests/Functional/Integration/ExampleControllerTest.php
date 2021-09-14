@@ -44,7 +44,7 @@ class ExampleControllerTest extends SuluTestCase
         self::purgeDatabase();
         self::initPhpcr();
 
-        $this->client->request('POST', '/admin/api/examples?locale=en&action=publish', [], [], [], json_encode([
+        $this->client->request('POST', '/admin/api/examples?locale=en&action=publish', [], [], [], \json_encode([
             'template' => 'example-2',
             'title' => 'Test Example',
             'url' => '/my-example',
@@ -69,7 +69,7 @@ class ExampleControllerTest extends SuluTestCase
         ]) ?: null);
 
         $response = $this->client->getResponse();
-        $content = json_decode((string) $response->getContent(), true);
+        $content = \json_decode((string) $response->getContent(), true);
         $id = $content['id'] ?? null;
 
         $this->assertResponseSnapshot('example_post_publish.json', $response, 201);
@@ -113,7 +113,7 @@ class ExampleControllerTest extends SuluTestCase
     {
         self::purgeDatabase();
 
-        $this->client->request('POST', '/admin/api/examples?locale=en', [], [], [], json_encode([
+        $this->client->request('POST', '/admin/api/examples?locale=en', [], [], [], \json_encode([
             'authored' => '2020-05-08T00:00:00+00:00',
             'template' => 'example-2',
             'title' => 'Test Example',
@@ -139,7 +139,7 @@ class ExampleControllerTest extends SuluTestCase
 
         $this->assertResponseSnapshot('example_post.json', $response, 201);
 
-        $id = json_decode((string) $response->getContent(), true)['id'] ?? null;
+        $id = \json_decode((string) $response->getContent(), true)['id'] ?? null;
 
         return $id;
     }
@@ -168,7 +168,7 @@ class ExampleControllerTest extends SuluTestCase
      */
     public function testPut(int $id): void
     {
-        $this->client->request('PUT', '/admin/api/examples/' . $id . '?locale=en', [], [], [], json_encode([
+        $this->client->request('PUT', '/admin/api/examples/' . $id . '?locale=en', [], [], [], \json_encode([
             'template' => 'default',
             'title' => 'Test Example 2',
             'url' => '/my-example-2',

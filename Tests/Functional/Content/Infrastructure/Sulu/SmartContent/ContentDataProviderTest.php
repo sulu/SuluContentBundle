@@ -611,7 +611,7 @@ class ContentDataProviderTest extends SuluTestCase
      */
     private function mapDataProviderResult(DataProviderResult $dataProviderResult): array
     {
-        return array_map(function (ArrayAccessItem $item) {
+        return \array_map(function(ArrayAccessItem $item) {
             return [
                 'id' => $item->getId(),
                 'excerptCategories' => $item['excerptCategories'],

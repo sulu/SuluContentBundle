@@ -91,7 +91,7 @@ class ContentSearchMetadataProvider implements ProviderInterface
     {
         $dimensionContentClass = $this->getDimensionContentClass();
 
-        if (!is_a($object, $dimensionContentClass, true)
+        if (!\is_a($object, $dimensionContentClass, true)
             || !$object instanceof DimensionContentInterface
             || !$object instanceof TemplateInterface) {
             return null;
@@ -119,7 +119,7 @@ class ContentSearchMetadataProvider implements ProviderInterface
         /** @var class-string<TemplateInterface> $dimensionContentClass */
         $dimensionContentClass = $this->getDimensionContentClass();
 
-        if (!is_a($dimensionContentClass, TemplateInterface::class, true)) {
+        if (!\is_a($dimensionContentClass, TemplateInterface::class, true)) {
             // TODO FIXME add test case for this
             return [];  // @codeCoverageIgnore
         }
@@ -137,7 +137,7 @@ class ContentSearchMetadataProvider implements ProviderInterface
         /** @var class-string<TemplateInterface> $dimensionContentClass */
         $dimensionContentClass = $this->getDimensionContentClass();
 
-        if (!is_a($dimensionContentClass, TemplateInterface::class, true)) {
+        if (!\is_a($dimensionContentClass, TemplateInterface::class, true)) {
             // TODO FIXME add test case for this
             return null;  // @codeCoverageIgnore
         }
@@ -173,11 +173,11 @@ class ContentSearchMetadataProvider implements ProviderInterface
         /** @var class-string<DimensionContentInterface> $dimensionContentClass */
         $dimensionContentClass = $this->getDimensionContentClass();
 
-        if (!is_a($dimensionContentClass, DimensionContentInterface::class, true)) {
+        if (!\is_a($dimensionContentClass, DimensionContentInterface::class, true)) {
             // TODO FIXME add test case for this
             // @codeCoverageIgnoreStart
             throw new \RuntimeException(
-                sprintf('$dimensionContentClass needs to be of type "%s"', DimensionContentInterface::class)
+                \sprintf('$dimensionContentClass needs to be of type "%s"', DimensionContentInterface::class)
             );
             // @codeCoverageIgnoreEnd
         }
@@ -196,7 +196,7 @@ class ContentSearchMetadataProvider implements ProviderInterface
             ]
         );
 
-        if (is_a($className, ExcerptInterface::class, true)) {
+        if (\is_a($className, ExcerptInterface::class, true)) {
             foreach (self::EXCERPT_FIELDS as $property) {
                 $indexMeta->addFieldMapping(
                     $property,
@@ -210,7 +210,7 @@ class ContentSearchMetadataProvider implements ProviderInterface
             }
         }
 
-        if (is_a($className, SeoInterface::class, true)) {
+        if (\is_a($className, SeoInterface::class, true)) {
             foreach (self::SEO_FIELDS as $property) {
                 $indexMeta->addFieldMapping(
                     $property,
@@ -282,7 +282,7 @@ class ContentSearchMetadataProvider implements ProviderInterface
     private function getContentField(PropertyMetadata $property): Expression
     {
         return $this->searchMetadataFactory->createMetadataExpression(
-            sprintf(
+            \sprintf(
                 'object.getTemplateData()["%s"]',
                 $property->getName()
             )
@@ -346,10 +346,10 @@ class ContentSearchMetadataProvider implements ProviderInterface
                     // TODO FIXME add test case for this
                     // @codeCoverageIgnoreStart
                     throw new \InvalidArgumentException(
-                        sprintf(
+                        \sprintf(
                             'Unknown search field role "%s", role must be one of "%s"',
                             $tagAttributes['role'],
-                            implode(', ', ['title', 'description', 'image'])
+                            \implode(', ', ['title', 'description', 'image'])
                         )
                     );
                     // @codeCoverageIgnoreEnd

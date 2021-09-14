@@ -272,7 +272,7 @@ class ContentStructureBridgeTest extends TestCase
 
         $legacyProperty->setPropertyValue(
             Argument::that(
-                function (PropertyValue $propertyValue) {
+                function(PropertyValue $propertyValue) {
                     return 'title' === $propertyValue->getName() && 'Test' === $propertyValue->getValue();
                 }
             )
@@ -303,7 +303,7 @@ class ContentStructureBridgeTest extends TestCase
 
         $legacyProperty->setPropertyValue(
             Argument::that(
-                function (PropertyValue $propertyValue) {
+                function(PropertyValue $propertyValue) {
                     return 'title' === $propertyValue->getName() && 'Test' === $propertyValue->getValue();
                 }
             )
@@ -334,7 +334,7 @@ class ContentStructureBridgeTest extends TestCase
 
         $legacyProperty->setPropertyValue(
             Argument::that(
-                function (PropertyValue $propertyValue) {
+                function(PropertyValue $propertyValue) {
                     return 'title' === $propertyValue->getName() && 'Test' === $propertyValue->getValue();
                 }
             )
@@ -365,7 +365,7 @@ class ContentStructureBridgeTest extends TestCase
 
         $legacyProperty->setPropertyValue(
             Argument::that(
-                function (PropertyValue $propertyValue) {
+                function(PropertyValue $propertyValue) {
                     return 'title' === $propertyValue->getName() && 'Test' === $propertyValue->getValue();
                 }
             )
@@ -397,7 +397,7 @@ class ContentStructureBridgeTest extends TestCase
 
         $legacyProperty->setPropertyValue(
             Argument::that(
-                function (PropertyValue $propertyValue) {
+                function(PropertyValue $propertyValue) {
                     return 'title' === $propertyValue->getName() && 'Test' === $propertyValue->getValue();
                 }
             )
@@ -429,7 +429,7 @@ class ContentStructureBridgeTest extends TestCase
 
         $legacyProperty->setPropertyValue(
             Argument::that(
-                function (PropertyValue $propertyValue) {
+                function(PropertyValue $propertyValue) {
                     return 'title' === $propertyValue->getName() && 'Test' === $propertyValue->getValue();
                 }
             )
@@ -459,7 +459,7 @@ class ContentStructureBridgeTest extends TestCase
 
         $legacyProperty->setPropertyValue(
             Argument::that(
-                function (PropertyValue $propertyValue) {
+                function(PropertyValue $propertyValue) {
                     return 'title' === $propertyValue->getName() && 'Test' === $propertyValue->getValue();
                 }
             )
@@ -509,7 +509,7 @@ class ContentStructureBridgeTest extends TestCase
 
         $legacyProperty->setPropertyValue(
             Argument::that(
-                function (PropertyValue $propertyValue) {
+                function(PropertyValue $propertyValue) {
                     return 'title' === $propertyValue->getName() && 'Test' === $propertyValue->getValue();
                 }
             )

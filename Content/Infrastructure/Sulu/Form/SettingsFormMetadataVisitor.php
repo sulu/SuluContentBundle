@@ -43,7 +43,7 @@ class SettingsFormMetadataVisitor implements FormMetadataVisitorInterface
                     continue;
                 }
 
-                $formMetadata->setItems(array_merge($formMetadata->getItems(), $subFormMetadata->getItems()));
+                $formMetadata->setItems(\array_merge($formMetadata->getItems(), $subFormMetadata->getItems()));
                 $formMetadata->setSchema($formMetadata->getSchema()->merge($subFormMetadata->getSchema()));
             }
         }

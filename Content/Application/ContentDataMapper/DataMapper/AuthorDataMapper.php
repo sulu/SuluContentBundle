@@ -34,7 +34,7 @@ class AuthorDataMapper implements DataMapperInterface
         DimensionContentCollectionInterface $dimensionContentCollection
     ): void {
         $dimensionAttributes = $dimensionContentCollection->getDimensionAttributes();
-        $unlocalizedDimensionAttributes = array_merge($dimensionAttributes, ['locale' => null]);
+        $unlocalizedDimensionAttributes = \array_merge($dimensionAttributes, ['locale' => null]);
         $unlocalizedObject = $dimensionContentCollection->getDimensionContent($unlocalizedDimensionAttributes);
 
         if (!$unlocalizedObject instanceof AuthorInterface) {
@@ -45,7 +45,7 @@ class AuthorDataMapper implements DataMapperInterface
 
         if ($localizedObject) {
             if (!$localizedObject instanceof AuthorInterface) {
-                throw new \RuntimeException(sprintf('Expected "$localizedObject" from type "%s" but "%s" given.', AuthorInterface::class, \get_class($localizedObject)));
+                throw new \RuntimeException(\sprintf('Expected "$localizedObject" from type "%s" but "%s" given.', AuthorInterface::class, \get_class($localizedObject)));
             }
 
             $this->setAuthorData($localizedObject, $data);

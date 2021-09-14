@@ -251,7 +251,7 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $resolvedDimensionContent = $this->prophesize(DimensionContentInterface::class);
 
         $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage(sprintf(
+        $this->expectExceptionMessage(\sprintf(
             'Expected to get "%s" from ContentResolver but "%s" given.',
             TemplateInterface::class,
             \get_class($resolvedDimensionContent->reveal())
@@ -295,7 +295,7 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
 
         $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage(sprintf(
+        $this->expectExceptionMessage(\sprintf(
             'Expected to get "%s" from ContentResolver but "%s" given.',
             TemplateInterface::class,
             \get_class($contentRichEntity->reveal())
@@ -400,7 +400,7 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $query->getSingleResult()->willReturn($contentRichEntity->reveal());
 
         $contentResolver->resolve($contentRichEntity->reveal(), ['locale' => 'en', 'stage' => 'live'])
-            ->will(function ($arguments) {
+            ->will(function($arguments) {
                 throw new ContentNotFoundException($arguments[0], $arguments[1]);
             });
 

@@ -41,7 +41,7 @@ class ExcerptDataMapper implements DataMapperInterface
         DimensionContentCollectionInterface $dimensionContentCollection
     ): void {
         $dimensionAttributes = $dimensionContentCollection->getDimensionAttributes();
-        $unlocalizedDimensionAttributes = array_merge($dimensionAttributes, ['locale' => null]);
+        $unlocalizedDimensionAttributes = \array_merge($dimensionAttributes, ['locale' => null]);
         $unlocalizedObject = $dimensionContentCollection->getDimensionContent($unlocalizedDimensionAttributes);
 
         if (!$unlocalizedObject instanceof ExcerptInterface) {
@@ -52,7 +52,7 @@ class ExcerptDataMapper implements DataMapperInterface
 
         if ($localizedObject) {
             if (!$localizedObject instanceof ExcerptInterface) {
-                throw new \RuntimeException(sprintf('Expected "$localizedObject" from type "%s" but "%s" given.', ExcerptInterface::class, \get_class($localizedObject)));
+                throw new \RuntimeException(\sprintf('Expected "$localizedObject" from type "%s" but "%s" given.', ExcerptInterface::class, \get_class($localizedObject)));
             }
 
             $this->setExcerptData($localizedObject, $data);
