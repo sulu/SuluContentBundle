@@ -37,7 +37,7 @@ class ExampleNotFoundException extends \Exception
         $criteriaMessages = [];
         foreach ($filters as $key => $value) {
             if (\is_object($value)) {
-                $value = get_debug_type($value);
+                $value = \get_debug_type($value);
             } else {
                 $value = \json_encode($value);
             }
