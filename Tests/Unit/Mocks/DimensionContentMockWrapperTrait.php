@@ -75,9 +75,9 @@ trait DimensionContentMockWrapperTrait
         $defaultValues = static::getDefaultDimensionAttributes();
 
         // Ignore keys that are not part of the default attributes
-        $dimensionAttributes = array_intersect_key($dimensionAttributes, $defaultValues);
+        $dimensionAttributes = \array_intersect_key($dimensionAttributes, $defaultValues);
 
-        $dimensionAttributes = array_merge(
+        $dimensionAttributes = \array_merge(
             $defaultValues,
             $dimensionAttributes
         );

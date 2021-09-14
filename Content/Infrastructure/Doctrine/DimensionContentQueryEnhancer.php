@@ -112,7 +112,7 @@ class DimensionContentQueryEnhancer
                 ->setParameter($key, $value);
         }
 
-        if (is_subclass_of($dimensionContentClassName, ExcerptInterface::class)) {
+        if (\is_subclass_of($dimensionContentClassName, ExcerptInterface::class)) {
             $categoryIds = $filters['categoryIds'] ?? null;
             if ($categoryIds) {
                 Assert::isArray($categoryIds);
@@ -174,7 +174,7 @@ class DimensionContentQueryEnhancer
             }
         }
 
-        if (is_subclass_of($dimensionContentClassName, TemplateInterface::class)) {
+        if (\is_subclass_of($dimensionContentClassName, TemplateInterface::class)) {
             $templateKeys = $filters['templateKeys'] ?? null;
             if ($templateKeys) {
                 Assert::isArray($templateKeys);
@@ -207,7 +207,7 @@ class DimensionContentQueryEnhancer
             $queryBuilder->andWhere($targetAlias . '.' . $targetField . ' IN (:' . $filterKey . ')')
                 ->setParameter($filterKey, $parameters);
         } elseif ('AND' === $operator) {
-            foreach (array_values($parameters) as $key => $parameter) {
+            foreach (\array_values($parameters) as $key => $parameter) {
                 $queryBuilder->leftJoin(
                     $join,
                     $targetAlias . $key
@@ -218,7 +218,7 @@ class DimensionContentQueryEnhancer
             }
         } else {
             throw new \InvalidArgumentException(
-                sprintf('The operator "%s" is not supported for this filter.', $operator)
+                \sprintf('The operator "%s" is not supported for this filter.', $operator)
             );
         }
     }
@@ -253,7 +253,7 @@ class DimensionContentQueryEnhancer
             }
 
             if (isset(self::SELECTS[$selectGroup])) {
-                $selects = array_merge($selects, self::SELECTS[$selectGroup]);
+                $selects = \array_merge($selects, self::SELECTS[$selectGroup]);
             }
         }
 
@@ -264,7 +264,7 @@ class DimensionContentQueryEnhancer
 
         $locale = $dimensionAttributes['locale'] ?? null;
 
-        if (is_subclass_of($dimensionContentClassName, ExcerptInterface::class)) {
+        if (\is_subclass_of($dimensionContentClassName, ExcerptInterface::class)) {
             if ($selects[self::WITH_EXCERPT_TAGS] ?? false) {
                 $queryBuilder->leftJoin('dimensionContent.excerptTags', 'contentExcerptTag')
                     ->addSelect('contentExcerptTag');

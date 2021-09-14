@@ -59,7 +59,7 @@ class ExampleRepositoryTest extends SuluTestCase
 
     public function testFindByNotExist(): void
     {
-        $examples = iterator_to_array($this->exampleRepository->findBy(['ids' => [\PHP_INT_MAX]]));
+        $examples = \iterator_to_array($this->exampleRepository->findBy(['ids' => [\PHP_INT_MAX]]));
         $this->assertCount(0, $examples);
     }
 
@@ -120,7 +120,7 @@ class ExampleRepositoryTest extends SuluTestCase
         $example3Id = $example3->getId();
         static::getEntityManager()->clear();
 
-        $examples = iterator_to_array($this->exampleRepository->findBy(['ids' => [$exampleId, $example3Id]]));
+        $examples = \iterator_to_array($this->exampleRepository->findBy(['ids' => [$exampleId, $example3Id]]));
 
         $this->assertCount(2, $examples);
     }
@@ -135,7 +135,7 @@ class ExampleRepositoryTest extends SuluTestCase
         static::getEntityManager()->flush();
         static::getEntityManager()->clear();
 
-        $examples = iterator_to_array($this->exampleRepository->findBy(['limit' => 2, 'page' => 2]));
+        $examples = \iterator_to_array($this->exampleRepository->findBy(['limit' => 2, 'page' => 2]));
         $this->assertCount(1, $examples);
     }
 }

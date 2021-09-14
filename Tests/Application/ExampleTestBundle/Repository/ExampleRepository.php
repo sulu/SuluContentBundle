@@ -269,7 +269,7 @@ class ExampleRepository
             }
 
             if (isset(self::SELECTS[$selectGroup])) {
-                $selects = array_merge($selects, self::SELECTS[$selectGroup]);
+                $selects = \array_merge($selects, self::SELECTS[$selectGroup]);
             }
         }
 

@@ -50,7 +50,7 @@ class DimensionContentQueryEnhancerTest extends SuluTestCase
         static::getEntityManager()->flush();
         static::getEntityManager()->clear();
 
-        $examples = iterator_to_array($this->exampleRepository->findBy(['locale' => null, 'stage' => 'draft']));
+        $examples = \iterator_to_array($this->exampleRepository->findBy(['locale' => null, 'stage' => 'draft']));
         $this->assertCount(3, $examples);
     }
 
@@ -58,7 +58,7 @@ class DimensionContentQueryEnhancerTest extends SuluTestCase
     {
         $this->expectException(\InvalidArgumentException::class);
 
-        iterator_to_array($this->exampleRepository->findBy(['locale' => 'en', 'stage' => 'live', 'tagNames' => ['A', 'B'], 'tagOperator' => 'INVALID'])); // @phpstan-ignore-line
+        \iterator_to_array($this->exampleRepository->findBy(['locale' => 'en', 'stage' => 'live', 'tagNames' => ['A', 'B'], 'tagOperator' => 'INVALID'])); // @phpstan-ignore-line
     }
 
     public function testFindByLocaleAndStage(): void
@@ -76,7 +76,7 @@ class DimensionContentQueryEnhancerTest extends SuluTestCase
         static::getEntityManager()->flush();
         static::getEntityManager()->clear();
 
-        $examples = iterator_to_array($this->exampleRepository->findBy(['locale' => 'en', 'stage' => 'live']));
+        $examples = \iterator_to_array($this->exampleRepository->findBy(['locale' => 'en', 'stage' => 'live']));
         $this->assertCount(2, $examples);
     }
 
@@ -98,7 +98,7 @@ class DimensionContentQueryEnhancerTest extends SuluTestCase
         $categoryBId = $categoryB->getId();
         static::getEntityManager()->clear();
 
-        $this->assertCount(2, iterator_to_array($this->exampleRepository->findBy([
+        $this->assertCount(2, \iterator_to_array($this->exampleRepository->findBy([
             'locale' => 'en',
             'stage' => 'draft',
             'categoryKeys' => ['a', 'b'],
@@ -110,7 +110,7 @@ class DimensionContentQueryEnhancerTest extends SuluTestCase
             'categoryKeys' => ['a', 'b'],
         ]));
 
-        $this->assertCount(1, iterator_to_array($this->exampleRepository->findBy([
+        $this->assertCount(1, \iterator_to_array($this->exampleRepository->findBy([
             'locale' => 'en',
             'stage' => 'draft',
             'categoryKeys' => ['a', 'b'],
@@ -124,7 +124,7 @@ class DimensionContentQueryEnhancerTest extends SuluTestCase
             'categoryOperator' => 'AND',
         ]));
 
-        $this->assertCount(2, iterator_to_array($this->exampleRepository->findBy([
+        $this->assertCount(2, \iterator_to_array($this->exampleRepository->findBy([
             'locale' => 'en',
             'stage' => 'draft',
             'categoryIds' => [$categoryAId, $categoryBId],
@@ -136,7 +136,7 @@ class DimensionContentQueryEnhancerTest extends SuluTestCase
             'categoryIds' => [$categoryAId, $categoryBId],
         ]));
 
-        $this->assertCount(1, iterator_to_array($this->exampleRepository->findBy([
+        $this->assertCount(1, \iterator_to_array($this->exampleRepository->findBy([
             'locale' => 'en',
             'stage' => 'draft',
             'categoryIds' => [$categoryAId, $categoryBId],
@@ -169,7 +169,7 @@ class DimensionContentQueryEnhancerTest extends SuluTestCase
         $tagBId = $tagB->getId();
         static::getEntityManager()->clear();
 
-        $this->assertCount(2, iterator_to_array($this->exampleRepository->findBy([
+        $this->assertCount(2, \iterator_to_array($this->exampleRepository->findBy([
             'locale' => 'en',
             'stage' => 'draft',
             'tagNames' => ['a', 'b'],
@@ -181,7 +181,7 @@ class DimensionContentQueryEnhancerTest extends SuluTestCase
             'tagNames' => ['a', 'b'],
         ]));
 
-        $this->assertCount(1, iterator_to_array($this->exampleRepository->findBy([
+        $this->assertCount(1, \iterator_to_array($this->exampleRepository->findBy([
             'locale' => 'en',
             'stage' => 'draft',
             'tagNames' => ['a', 'b'],
@@ -195,7 +195,7 @@ class DimensionContentQueryEnhancerTest extends SuluTestCase
             'tagOperator' => 'AND',
         ]));
 
-        $this->assertCount(2, iterator_to_array($this->exampleRepository->findBy([
+        $this->assertCount(2, \iterator_to_array($this->exampleRepository->findBy([
             'locale' => 'en',
             'stage' => 'draft',
             'tagIds' => [$tagAId, $tagBId],
@@ -207,7 +207,7 @@ class DimensionContentQueryEnhancerTest extends SuluTestCase
             'tagIds' => [$tagAId, $tagBId],
         ]));
 
-        $this->assertCount(1, iterator_to_array($this->exampleRepository->findBy([
+        $this->assertCount(1, \iterator_to_array($this->exampleRepository->findBy([
             'locale' => 'en',
             'stage' => 'draft',
             'tagIds' => [$tagAId, $tagBId],
@@ -235,7 +235,7 @@ class DimensionContentQueryEnhancerTest extends SuluTestCase
         static::getEntityManager()->flush();
         static::getEntityManager()->clear();
 
-        $this->assertCount(2, iterator_to_array($this->exampleRepository->findBy([
+        $this->assertCount(2, \iterator_to_array($this->exampleRepository->findBy([
             'locale' => 'en',
             'stage' => 'draft',
             'templateKeys' => ['a', 'c'],

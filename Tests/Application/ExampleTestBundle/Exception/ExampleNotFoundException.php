@@ -39,16 +39,16 @@ class ExampleNotFoundException extends \Exception
             if (\is_object($value)) {
                 $value = get_debug_type($value);
             } else {
-                $value = json_encode($value);
+                $value = \json_encode($value);
             }
 
-            $criteriaMessages[] = sprintf('"%s" %s', $key, $value);
+            $criteriaMessages[] = \sprintf('"%s" %s', $key, $value);
         }
 
-        $message = sprintf(
+        $message = \sprintf(
             'Model "%s" with %s not found',
             $this->model,
-            implode(' and ', $criteriaMessages)
+            \implode(' and ', $criteriaMessages)
         );
 
         parent::__construct($message, $code, $previous);
