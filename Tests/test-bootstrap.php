@@ -11,4 +11,6 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
+date_default_timezone_set('UTC');
+
 require __DIR__ . '/Application/config/bootstrap.php';
