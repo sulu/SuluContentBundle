@@ -26,10 +26,13 @@ class TagFactory implements TagFactoryInterface
     private $entityManager;
 
     /**
-     * @var EntityRepository
+     * @var EntityRepository<TagInterface>
      */
     private $tagRepository;
 
+    /**
+     * @param EntityRepository<TagInterface> $tagRepository
+     */
     public function __construct(EntityManagerInterface $entityManager, EntityRepository $tagRepository)
     {
         $this->entityManager = $entityManager;
