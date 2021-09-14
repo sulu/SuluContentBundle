@@ -13,10 +13,13 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Tests\Functional\Content\Infrastructure\Doctrine;
 
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollection;
+use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleDimensionContent;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Repository\ExampleRepository;
 use Sulu\Bundle\ContentBundle\Tests\Functional\Traits\CreateCategoryTrait;
 use Sulu\Bundle\ContentBundle\Tests\Functional\Traits\CreateExampleTrait;
 use Sulu\Bundle\ContentBundle\Tests\Functional\Traits\CreateTagTrait;
+use Sulu\Bundle\ContentBundle\Tests\Functional\Traits\ProfilerHelperTrait;
 use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
 
 class DimensionContentQueryEnhancerTest extends SuluTestCase
@@ -24,6 +27,7 @@ class DimensionContentQueryEnhancerTest extends SuluTestCase
     use CreateCategoryTrait;
     use CreateExampleTrait;
     use CreateTagTrait;
+    use ProfilerHelperTrait;
 
     /**
      * @var ExampleRepository
@@ -78,6 +82,78 @@ class DimensionContentQueryEnhancerTest extends SuluTestCase
 
         $examples = \iterator_to_array($this->exampleRepository->findBy(['locale' => 'en', 'stage' => 'live']));
         $this->assertCount(2, $examples);
+    }
+
+    public function testGroupContentAdmin(): void
+    {
+        $example = static::createExample();
+        static::createExampleContent($example, ['title' => 'Example A']);
+        static::createExampleContent($example, ['title' => 'Example A', 'stage' => 'draft']);
+        static::createExampleContent($example, ['title' => 'Example A', 'stage' => 'live']);
+        static::getEntityManager()->flush();
+        $exampleId = $example->getId();
+        static::getEntityManager()->clear();
+
+        $dbDataCollector = static::getDbDataCollector(true);
+
+        $dimensionAttributes = ['locale' => 'en', 'stage' => 'live'];
+        $example = $this->exampleRepository->getOneBy(
+            \array_merge($dimensionAttributes, ['id' => $exampleId]),
+            [ExampleRepository::GROUP_EXAMPLE_ADMIN => true]
+        );
+        $dimensionContentCollection = new DimensionContentCollection(
+            \iterator_to_array($example->getDimensionContents()),
+            $dimensionAttributes,
+            ExampleDimensionContent::class
+        );
+        /** @var ExampleDimensionContent $localizeDimensionContent */
+        $localizeDimensionContent = $dimensionContentCollection->getDimensionContent($dimensionAttributes);
+        $tags = $localizeDimensionContent->getExcerptTagNames();
+        $categoryIds = $localizeDimensionContent->getExcerptCategoryIds();
+
+        static::collectDataCollector($dbDataCollector);
+        $this->assertSame(1, $dbDataCollector->getQueryCount());
+
+        $this->assertSame($exampleId, $example->getId());
+        $this->assertSame(2, $dimensionContentCollection->count());
+        $this->assertSame([], $tags);
+        $this->assertSame([], $categoryIds);
+    }
+
+    public function testGroupContentWebsite(): void
+    {
+        $example = static::createExample();
+        static::createExampleContent($example, ['title' => 'Example A']);
+        static::createExampleContent($example, ['title' => 'Example A', 'stage' => 'draft']);
+        static::createExampleContent($example, ['title' => 'Example A', 'stage' => 'live']);
+        static::getEntityManager()->flush();
+        $exampleId = $example->getId();
+        static::getEntityManager()->clear();
+
+        $dbDataCollector = static::getDbDataCollector(true);
+
+        $dimensionAttributes = ['locale' => 'en', 'stage' => 'live'];
+        $example = $this->exampleRepository->getOneBy(
+            \array_merge($dimensionAttributes, ['id' => $exampleId]),
+            [ExampleRepository::GROUP_EXAMPLE_WEBSITE => true]
+        );
+        $dimensionContentCollection = new DimensionContentCollection(
+            \iterator_to_array($example->getDimensionContents()),
+            $dimensionAttributes,
+            ExampleDimensionContent::class
+        );
+        /** @var ExampleDimensionContent $localizeDimensionContent */
+        $localizeDimensionContent = $dimensionContentCollection->getDimensionContent($dimensionAttributes);
+        $tags = $localizeDimensionContent->getExcerptTagNames();
+        $categoryIds = $localizeDimensionContent->getExcerptCategoryIds();
+
+        static::collectDataCollector($dbDataCollector);
+        $this->assertSame(1, $dbDataCollector->getQueryCount());
+
+        $this->assertSame($exampleId, $example->getId());
+        $this->assertSame(2, $dimensionContentCollection->count());
+        $this->assertSame([], $tags);
+        $this->assertSame([], $categoryIds);
     }
 
     public function testCategoryFilters(): void

@@ -36,10 +36,6 @@ class DimensionContentQueryEnhancer
     public const WITH_EXCERPT_TAGS = 'with-excerpt-tags';
     public const WITH_EXCERPT_CATEGORIES = 'with-excerpt-categories';
     public const WITH_EXCERPT_CATEGORIES_TRANSLATION = 'with-excerpt-categories-translation';
-    public const WITH_EXCERPT_IMAGE = 'with-excerpt-image';
-    public const WITH_EXCERPT_IMAGE_TRANSLATION = 'with-excerpt-image-translation';
-    public const WITH_EXCERPT_ICON = 'with-excerpt-icon';
-    public const WITH_EXCERPT_ICON_TRANSLATION = 'with-excerpt-icon-translation';
 
     /**
      * Groups are used in controllers and represents serialization / resolver group,
@@ -57,17 +53,11 @@ class DimensionContentQueryEnhancer
         self::GROUP_CONTENT_ADMIN => [
             self::WITH_EXCERPT_TAGS => true,
             self::WITH_EXCERPT_CATEGORIES => true,
-            self::WITH_EXCERPT_IMAGE => true,
-            self::WITH_EXCERPT_ICON => true,
         ],
         self::GROUP_CONTENT_WEBSITE => [
             self::WITH_EXCERPT_TAGS => true,
             self::WITH_EXCERPT_CATEGORIES => true,
             self::WITH_EXCERPT_CATEGORIES_TRANSLATION => true,
-            self::WITH_EXCERPT_IMAGE => true,
-            self::WITH_EXCERPT_IMAGE_TRANSLATION => true,
-            self::WITH_EXCERPT_ICON => true,
-            self::WITH_EXCERPT_ICON_TRANSLATION => true,
         ],
     ];
 
@@ -97,8 +87,10 @@ class DimensionContentQueryEnhancer
         $effectiveAttributes = $dimensionContentClassName::getEffectiveDimensionAttributes($filters);
 
         $queryBuilder->leftJoin(
-            $contentRichEntityAlias . '.dimensionContents',
-            'filterDimensionContent'
+            $dimensionContentClassName,
+            'filterDimensionContent',
+            Join::WITH,
+            'filterDimensionContent.' . $contentRichEntityAlias . ' = ' . $contentRichEntityAlias . ''
         );
 
         foreach ($effectiveAttributes as $key => $value) {
@@ -243,6 +235,7 @@ class DimensionContentQueryEnhancer
      */
     public function addSelects(
         QueryBuilder $queryBuilder,
+        string $contentRichEntityAlias,
         string $dimensionContentClassName,
         array $dimensionAttributes,
         array $selects = []
@@ -256,6 +249,11 @@ class DimensionContentQueryEnhancer
                 $selects = \array_merge($selects, self::SELECTS[$selectGroup]);
             }
         }
+
+        $queryBuilder->leftJoin(
+            $contentRichEntityAlias . '.dimensionContents',
+            'dimensionContent'
+        );
 
         $effectiveAttributes = $dimensionContentClassName::getEffectiveDimensionAttributes($dimensionAttributes);
         $this->addSortBy($queryBuilder, $effectiveAttributes);
@@ -279,77 +277,16 @@ class DimensionContentQueryEnhancer
                 Assert::notFalse($selects[self::WITH_EXCERPT_CATEGORIES] ?? false);
                 Assert::notNull($locale);
                 $queryBuilder->leftJoin(
-                    'excerptCategory.translations',
-                    'excerptCategoryTranslation',
+                    'contentExcerptCategory.translations',
+                    'contentExcerptCategoryTranslation',
                     Join::WITH,
-                    'excerptCategoryTranslation.locale = IN(contentExcerptCategory.defaultLocale, :locale)'
+                    '(
+                        contentExcerptCategoryTranslation.locale = contentExcerptCategory.defaultLocale
+                        OR contentExcerptCategoryTranslation.locale = :locale
+                    )'
                 )
-                    ->addSelect('excerptCategoryTranslation')
+                    ->addSelect('contentExcerptCategoryTranslation')
                     ->setParameter('locale', $locale);
-            }
-
-            if ($selects[self::WITH_EXCERPT_IMAGE] ?? false) {
-                $queryBuilder->leftJoin('dimensionContent.excerptImage', 'contentExcerptImage')
-                    ->addSelect('contentExcerptImage');
-            }
-
-            if ($selects[self::WITH_EXCERPT_IMAGE_TRANSLATION] ?? false) {
-                Assert::notFalse($selects[self::WITH_EXCERPT_IMAGE]);
-                Assert::notNull($locale);
-                $queryBuilder->leftJoin('contentExcerptImage.files', 'contentExcerptImageFile')
-                    ->addSelect('contentExcerptImageFile');
-                $queryBuilder->leftJoin(
-                    'contentExcerptImageFile.versions',
-                    'contentExcerptImageFileVersion',
-                    Join::WITH,
-                    'contentExcerptImageFileVersion.version = contentExcerptImageFile.version'
-                )
-                    ->addSelect('contentExcerptImageFile');
-                $queryBuilder->leftJoin(
-                    'contentExcerptImageFileVersion.meta',
-                    'contentExcerptImageFileVersionMeta',
-                    Join::WITH,
-                    'contentExcerptImageFileVersionMeta.locale = :locale'
-                )
-                    ->addSelect('contentExcerptImageFileVersionMeta')
-                    ->setParameter('locale', $locale);
-                $queryBuilder->leftJoin(
-                    'contentExcerptImageFileVersion.defaultMeta',
-                    'contentExcerptImageFileVersionDefaultMeta'
-                )
-                    ->addSelect('contentExcerptImageFileVersionDefaultMeta');
-            }
-
-            if ($selects[self::WITH_EXCERPT_ICON] ?? false) {
-                $queryBuilder->leftJoin('dimensionContent.excerptIcon', 'contentExcerptIcon')
-                    ->addSelect('contentExcerptIcon');
-            }
-
-            if ($selects[self::WITH_EXCERPT_ICON_TRANSLATION] ?? false) {
-                Assert::notFalse($selects[self::WITH_EXCERPT_ICON] ?? false);
-                Assert::notNull($locale);
-                $queryBuilder->leftJoin('contentExcerptIcon.files', 'contentExcerptIconFile')
-                    ->addSelect('contentExcerptIconFile');
-                $queryBuilder->leftJoin(
-                    'contentExcerptIconFile.versions',
-                    'contentExcerptIconFileVersion',
-                    Join::WITH,
-                    'contentExcerptIconFileVersion.version = contentExcerptIconFile.version'
-                )
-                    ->addSelect('contentExcerptIconFile');
-                $queryBuilder->leftJoin(
-                    'contentExcerptIconFileVersion.meta',
-                    'contentExcerptIconFileVersionMeta',
-                    Join::WITH,
-                    'contentExcerptIconFileVersionMeta.locale = :locale'
-                )
-                    ->addSelect('contentExcerptIconFileVersionMeta')
-                    ->setParameter('locale', $locale);
-                $queryBuilder->leftJoin(
-                    'contentExcerptIconFileVersion.defaultMeta',
-                    'contentExcerptIconFileVersionDefaultMeta'
-                )
-                    ->addSelect('contentExcerptIconFileVersionDefaultMeta');
             }
         }
     }

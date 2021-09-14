@@ -352,6 +352,7 @@ class ExampleRepository
             $contentSelects = $selects['with-example-content'] ?? [];
             $this->dimensionContentQueryEnhancer->addSelects(
                 $queryBuilder,
+                'example',
                 ExampleDimensionContent::class,
                 $contentFilters,
                 $contentSelects
