@@ -9,7 +9,9 @@
         </service>
 
         <service id="sulu_content.route_remover" class="Sulu\Bundle\ContentBundle\Content\Infrastructure\Doctrine\RouteRemover">
+            <argument type="service" id="sulu_content.content_metadata_inspector"/>
             <argument type="service" id="sulu.repository.route"/>
+            <argument>%sulu_route.mappings%</argument>
             <tag name="doctrine.event_subscriber"/>
         </service>
 

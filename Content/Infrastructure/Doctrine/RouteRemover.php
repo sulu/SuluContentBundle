@@ -14,9 +14,9 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Content\Infrastructure\Doctrine;
 
 use Doctrine\Common\EventSubscriber;
-use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Events;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentMetadataInspector\ContentMetadataInspectorInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\RouteBundle\Entity\RouteRepositoryInterface;
 
@@ -27,13 +27,31 @@ use Sulu\Bundle\RouteBundle\Entity\RouteRepositoryInterface;
 class RouteRemover implements EventSubscriber
 {
     /**
+     * @var ContentMetadataInspectorInterface
+     */
+    private $contentMetadataInspector;
+
+    /**
      * @var RouteRepositoryInterface
      */
     private $routeRepository;
 
-    public function __construct(RouteRepositoryInterface $routeRepository)
-    {
+    /**
+     * @var array<string, array<mixed>>
+     */
+    private $routeMappings;
+
+    /**
+     * @param array<string, array<mixed>> $routeMappings
+     */
+    public function __construct(
+        ContentMetadataInspectorInterface $contentMetadataInspector,
+        RouteRepositoryInterface $routeRepository,
+        array $routeMappings
+    ) {
         $this->routeRepository = $routeRepository;
+        $this->contentMetadataInspector = $contentMetadataInspector;
+        $this->routeMappings = $routeMappings;
     }
 
     public function getSubscribedEvents()
@@ -48,7 +66,21 @@ class RouteRemover implements EventSubscriber
             return; // @codeCoverageIgnore
         }
 
-        $entityClass = ClassUtils::getRealClass(\get_class($object));
+        $dimensionContentClass = $this->contentMetadataInspector->getDimensionContentClass(\get_class($object));
+        $resourceKey = $dimensionContentClass::getResourceKey();
+
+        $entityClass = null;
+        foreach ($this->routeMappings as $key => $mapping) {
+            if ($resourceKey === $mapping['resource_key']) {
+                $entityClass = $mapping['entityClass'] ?? $key;
+                break;
+            }
+        }
+
+        if (!$entityClass) {
+            return;
+        }
+
         foreach ($this->routeRepository->findAllByEntity($entityClass, $object->getId()) as $route) {
             $event->getEntityManager()->remove($route);
         }

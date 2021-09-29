@@ -19,46 +19,76 @@ use Doctrine\ORM\Events;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentMetadataInspector\ContentMetadataInspectorInterface;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Doctrine\RouteRemover;
+use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
+use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleDimensionContent;
 use Sulu\Bundle\RouteBundle\Entity\RouteRepositoryInterface;
 use Sulu\Bundle\RouteBundle\Model\RouteInterface;
 
 class RouteRemoverTest extends TestCase
 {
+    public static function getResourceKey(): string
+    {
+        return 'test';
+    }
+
+    /**
+     * @var ContentMetadataInspectorInterface|ObjectProphecy
+     */
+    private $contentMetadataInspector;
+
     /**
      * @var RouteRepositoryInterface|ObjectProphecy
      */
     private $routeRepository;
 
+    /**
+     * @var mixed[]
+     */
+    private $routeMappings = [
+        [
+            'resource_key' => 'examples',
+            'entityClass' => ExampleDimensionContent::class,
+        ],
+    ];
+
+    /**
+     * @var RouteRemover
+     */
+    private $routeRemover;
+
     protected function setUp(): void
     {
         parent::setUp();
 
+        $this->contentMetadataInspector = $this->prophesize(ContentMetadataInspectorInterface::class);
         $this->routeRepository = $this->prophesize(RouteRepositoryInterface::class);
-    }
 
-    protected function getRouteRemover(): RouteRemover
-    {
-        return new RouteRemover($this->routeRepository->reveal());
+        $this->routeRemover = new RouteRemover(
+            $this->contentMetadataInspector->reveal(),
+            $this->routeRepository->reveal(),
+            $this->routeMappings
+        );
     }
 
     public function testGetSubscribedEvents(): void
     {
-        $routeRemover = $this->getRouteRemover();
-
         $this->assertSame([
             Events::preRemove,
-        ], $routeRemover->getSubscribedEvents());
+        ], $this->routeRemover->getSubscribedEvents());
     }
 
     public function testPreRemove(): void
     {
-        $object = $this->prophesize(ContentRichEntityInterface::class);
-        $object->getId()->willReturn('123-123-123');
+        $object = new Example();
+        $object->setId('123-123-123');
+
+        $this->contentMetadataInspector->getDimensionContentClass(Example::class)
+            ->willReturn(ExampleDimensionContent::class);
 
         $entityManager = $this->prophesize(EntityManagerInterface::class);
-        $event = new LifecycleEventArgs($object->reveal(), $entityManager->reveal());
+        $event = new LifecycleEventArgs($object, $entityManager->reveal());
 
         $route1 = $this->prophesize(RouteInterface::class);
         $route2 = $this->prophesize(RouteInterface::class);
@@ -68,20 +98,34 @@ class RouteRemoverTest extends TestCase
         $entityManager->remove($route1->reveal())->shouldBeCalled();
         $entityManager->remove($route2->reveal())->shouldBeCalled();
 
-        $routeRemover = $this->getRouteRemover();
-        $routeRemover->preRemove($event);
+        $this->routeRemover->preRemove($event);
+    }
+
+    public function testPreRemoveNoMappingConfigured(): void
+    {
+        $object = new Example();
+        $object->setId('123-123-123');
+
+        $this->contentMetadataInspector->getDimensionContentClass(Example::class)
+            ->willReturn(self::class); // For testing purpose we return the wrong dimension content class
+
+        $entityManager = $this->prophesize(EntityManagerInterface::class);
+        $event = new LifecycleEventArgs($object, $entityManager->reveal());
+
+        $this->routeRepository->findAllByEntity(Argument::cetera())->shouldNotBeCalled();
+
+        $this->routeRemover->preRemove($event);
     }
 
     public function testPreRemoveNoContentRichEntity(): void
     {
-        $object = $this->prophesize(\stdClass::class);
-        $event = $this->prophesize(LifecycleEventArgs::class);
+        $object = new \stdClass();
 
-        $event->getObject()->willReturn($object->reveal());
+        $entityManager = $this->prophesize(EntityManagerInterface::class);
+        $event = new LifecycleEventArgs($object, $entityManager->reveal());
 
         $this->routeRepository->findAllByEntity(Argument::cetera())->shouldNotBeCalled();
 
-        $routeRemover = $this->getRouteRemover();
-        $routeRemover->preRemove($event->reveal());
+        $this->routeRemover->preRemove($event);
     }
 }

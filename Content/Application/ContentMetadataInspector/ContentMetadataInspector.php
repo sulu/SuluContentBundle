@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentMetadataInspector;
 
+use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\EntityManagerInterface;
 
 class ContentMetadataInspector implements ContentMetadataInspectorInterface
@@ -29,6 +30,8 @@ class ContentMetadataInspector implements ContentMetadataInspectorInterface
 
     public function getDimensionContentClass(string $contentRichEntityClass): string
     {
+        $contentRichEntityClass = ClassUtils::getRealClass($contentRichEntityClass);
+
         $classMetadata = $this->entityManager->getClassMetadata($contentRichEntityClass);
         $associationMapping = $classMetadata->getAssociationMapping('dimensionContents');
 
@@ -37,6 +40,8 @@ class ContentMetadataInspector implements ContentMetadataInspectorInterface
 
     public function getDimensionContentPropertyName(string $contentRichEntityClass): string
     {
+        $contentRichEntityClass = ClassUtils::getRealClass($contentRichEntityClass);
+
         $classMetadata = $this->entityManager->getClassMetadata($contentRichEntityClass);
         $associationMapping = $classMetadata->getAssociationMapping('dimensionContents');
 
