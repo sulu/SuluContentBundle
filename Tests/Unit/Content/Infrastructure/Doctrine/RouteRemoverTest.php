@@ -58,10 +58,7 @@ class RouteRemoverTest extends TestCase
         $object->getId()->willReturn('123-123-123');
 
         $entityManager = $this->prophesize(EntityManagerInterface::class);
-
-        $event = $this->prophesize(LifecycleEventArgs::class);
-        $event->getObject()->willReturn($object->reveal());
-        $event->getEntityManager()->willReturn($entityManager->reveal());
+        $event = new LifecycleEventArgs($object->reveal(), $entityManager->reveal());
 
         $route1 = $this->prophesize(RouteInterface::class);
         $route2 = $this->prophesize(RouteInterface::class);
@@ -72,7 +69,7 @@ class RouteRemoverTest extends TestCase
         $entityManager->remove($route2->reveal())->shouldBeCalled();
 
         $routeRemover = $this->getRouteRemover();
-        $routeRemover->preRemove($event->reveal());
+        $routeRemover->preRemove($event);
     }
 
     public function testPreRemoveNoContentRichEntity(): void

@@ -20,6 +20,10 @@ use Doctrine\ORM\Events;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\RouteBundle\Entity\RouteRepositoryInterface;
 
+/**
+ * @internal
+ * @final
+ */
 class RouteRemover implements EventSubscriber
 {
     /**
