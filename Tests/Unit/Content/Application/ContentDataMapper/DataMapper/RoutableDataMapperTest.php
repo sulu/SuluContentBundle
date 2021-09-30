@@ -308,6 +308,7 @@ class RoutableDataMapperTest extends TestCase
         $property = $this->prophesize(PropertyMetadata::class);
         $property->getType()->willReturn('text_line');
         $property->getName()->willReturn('url');
+        $property->hasTag('sulu.rlp')->willReturn(false);
 
         $metadata->getProperties()->WillReturn([$property->reveal()]);
 
@@ -699,6 +700,68 @@ class RoutableDataMapperTest extends TestCase
         $property = $this->prophesize(PropertyMetadata::class);
         $property->getType()->willReturn('route');
         $property->getName()->willReturn('url');
+
+        $metadata->getProperties()->WillReturn([$property->reveal()]);
+
+        $localizedDimensionContent->getTemplateData()->willReturn([]);
+        $factory->getStructureMetadata('mock-template-type', 'default')->willReturn($metadata->reveal())->shouldBeCalled();
+
+        $localizedDimensionContent->getResourceId()->willReturn('123-123-123');
+        $localizedDimensionContent->getLocale()->willReturn('en');
+
+        $routeGenerator->generate(Argument::any())->shouldNotBeCalled();
+
+        $route = $this->prophesize(RouteInterface::class);
+        $route->getPath()->willReturn('/test');
+        $routeManager->createOrUpdateByAttributes(
+            'mock-content-class',
+            '123-123-123',
+            'en',
+            '/test'
+        )->willReturn($route->reveal());
+
+        $conflictResolver->resolve($route->reveal())->shouldBeCalled();
+        $localizedDimensionContent->setTemplateData(Argument::cetera())->shouldNotBeCalled();
+
+        $mapper = $this->createRouteDataMapperInstance(
+            $factory->reveal(),
+            $routeGenerator->reveal(),
+            $routeManager->reveal(),
+            $conflictResolver->reveal()
+        );
+
+        $mapper->map($data, $dimensionContentCollection->reveal());
+    }
+
+    public function testMapDifferentType(): void
+    {
+        $data = [
+            'template' => 'default',
+            'url' => '/test',
+        ];
+
+        $unlocalizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $localizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $localizedDimensionContent->willImplement(RoutableInterface::class);
+        $localizedDimensionContent->willImplement(TemplateInterface::class);
+
+        $dimensionContentCollection = $this->prophesize(DimensionContentCollectionInterface::class);
+        $dimensionContentCollection->getDimensionAttributes()->willReturn(['stage' => 'draft', 'locale' => 'de']);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => null])
+            ->willReturn($unlocalizedDimensionContent);
+        $dimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => 'de'])
+            ->willReturn($this->wrapRoutableMock($localizedDimensionContent));
+
+        $factory = $this->prophesize(StructureMetadataFactoryInterface::class);
+        $routeGenerator = $this->prophesize(RouteGeneratorInterface::class);
+        $routeManager = $this->prophesize(RouteManagerInterface::class);
+        $conflictResolver = $this->prophesize(ConflictResolverInterface::class);
+
+        $metadata = $this->prophesize(StructureMetadata::class);
+        $property = $this->prophesize(PropertyMetadata::class);
+        $property->getType()->willReturn('test_line');
+        $property->getName()->willReturn('url');
+        $property->hasTag('sulu.rlp')->willReturn(true);
 
         $metadata->getProperties()->WillReturn([$property->reveal()]);
 

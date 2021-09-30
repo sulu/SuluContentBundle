@@ -194,7 +194,7 @@ class RoutableDataMapper implements DataMapperInterface
     private function getRouteProperty(StructureMetadata $metadata): ?PropertyMetadata
     {
         foreach ($metadata->getProperties() as $property) {
-            if ('route' === $property->getType()) {
+            if ('route' === $property->getType() || $property->hasTag('sulu.rlp')) {
                 return $property;
             }
         }
