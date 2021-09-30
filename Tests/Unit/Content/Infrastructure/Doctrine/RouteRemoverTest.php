@@ -82,7 +82,9 @@ class RouteRemoverTest extends TestCase
     public function testPreRemove(): void
     {
         $object = new Example();
-        $object->setId('123-123-123');
+        $property = new \ReflectionProperty(Example::class, 'id');
+        $property->setAccessible(true);
+        $property->setValue($object, '123-123-123');
 
         $this->contentMetadataInspector->getDimensionContentClass(Example::class)
             ->willReturn(ExampleDimensionContent::class);
@@ -104,7 +106,9 @@ class RouteRemoverTest extends TestCase
     public function testPreRemoveNoMappingConfigured(): void
     {
         $object = new Example();
-        $object->setId('123-123-123');
+        $property = new \ReflectionProperty(Example::class, 'id');
+        $property->setAccessible(true);
+        $property->setValue($object, '123-123-123');
 
         $this->contentMetadataInspector->getDimensionContentClass(Example::class)
             ->willReturn(self::class); // For testing purpose we return the wrong dimension content class

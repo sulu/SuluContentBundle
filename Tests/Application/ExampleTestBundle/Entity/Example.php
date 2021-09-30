@@ -37,16 +37,6 @@ class Example implements ContentRichEntityInterface
         return $this->id;
     }
 
-    /**
-     * @param mixed $id
-     */
-    public function setId($id): self
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
     public function createDimensionContent(): DimensionContentInterface
     {
         return new ExampleDimensionContent($this);
