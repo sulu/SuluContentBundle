@@ -47,6 +47,11 @@ class Kernel extends SuluTestKernel
     {
         parent::registerContainerConfiguration($loader);
         $loader->load(__DIR__ . '/config/config_' . $this->getContext() . '.yml');
+
+        $devConfigFile = __DIR__ . '/config/config_' . $this->getContext() . '_' . $this->getEnvironment() . '.yml';
+        if (\is_file($devConfigFile)) {
+            $loader->load($devConfigFile);
+        }
     }
 
     protected function getKernelParameters()
@@ -59,3 +64,6 @@ class Kernel extends SuluTestKernel
         return $parameters;
     }
 }
+
+// Needed for preview PreviewKernelFactory
+\class_alias(Kernel::class, 'App\\Kernel');

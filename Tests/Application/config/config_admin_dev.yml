@@ -1,0 +1,4 @@
+security:
+    providers:
+        testprovider:
+            id: sulu_security.user_provider
