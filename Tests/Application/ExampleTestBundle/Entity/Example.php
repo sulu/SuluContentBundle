@@ -39,8 +39,6 @@ class Example implements ContentRichEntityInterface
 
     public function createDimensionContent(): DimensionContentInterface
     {
-        $exampleDimensionContent = new ExampleDimensionContent($this);
-
-        return $exampleDimensionContent;
+        return new ExampleDimensionContent($this);
     }
 }

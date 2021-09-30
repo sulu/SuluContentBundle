@@ -139,6 +139,9 @@ class ExampleControllerTest extends SuluTestCase
 
         $this->assertResponseSnapshot('example_post.json', $response, 201);
 
+        $routeRepository = $this->getContainer()->get('sulu.repository.route');
+        $this->assertCount(0, $routeRepository->findAll());
+
         $id = \json_decode((string) $response->getContent(), true)['id'] ?? null;
 
         return $id;
@@ -215,6 +218,9 @@ class ExampleControllerTest extends SuluTestCase
         $this->client->request('DELETE', '/admin/api/examples/' . $id . '?locale=en');
         $response = $this->client->getResponse();
         $this->assertHttpStatusCode(204, $response);
+
+        $routeRepository = $this->getContainer()->get('sulu.repository.route');
+        $this->assertCount(0, $routeRepository->findAll());
     }
 
     protected function getSnapshotFolder(): string
