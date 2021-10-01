@@ -183,7 +183,7 @@ class DimensionContentQueryEnhancerTest extends SuluTestCase
                 ExampleRepository::GROUP_EXAMPLE_ADMIN => true,
                 ExampleRepository::GROUP_EXAMPLE_WEBSITE => false,
                 ExampleRepository::WITH_EXAMPLE_CONTENT => [
-                    DimensionContentQueryEnhancer::WITH_EXCERPT_TAGS => false,
+                    DimensionContentQueryEnhancer::SELECT_EXCERPT_TAGS => false,
                 ],
             ]
         );

@@ -45,31 +45,31 @@ class DimensionContentQueryEnhancer
      * Withs represents additional selects which can be load to join and select specific sub entities.
      * They are used by groups and fields.
      */
-    public const WITH_EXCERPT_TAGS = 'with-excerpt-tags';
-    public const WITH_EXCERPT_CATEGORIES = 'with-excerpt-categories';
-    public const WITH_EXCERPT_CATEGORIES_TRANSLATION = 'with-excerpt-categories-translation';
+    public const SELECT_EXCERPT_TAGS = 'excerpt-tags';
+    public const SELECT_EXCERPT_CATEGORIES = 'excerpt-categories';
+    public const SELECT_EXCERPT_CATEGORIES_TRANSLATION = 'excerpt-categories-translation';
 
     /**
      * Groups are used in controllers and represents serialization / resolver group,
      * this allows that no controller need to be overwritten when something additional should be
      * loaded at that endpoint.
      */
-    public const GROUP_CONTENT_ADMIN = 'content_admin';
-    public const GROUP_CONTENT_WEBSITE = 'content_website';
+    public const GROUP_SELECT_CONTENT_ADMIN = 'content_admin';
+    public const GROUP_SELECT_CONTENT_WEBSITE = 'content_website';
 
     /**
      * TODO it should be possible to extend fields and groups inside the SELECTS.
      */
     private const SELECTS = [
         // GROUPS
-        self::GROUP_CONTENT_ADMIN => [
-            self::WITH_EXCERPT_TAGS => true,
-            self::WITH_EXCERPT_CATEGORIES => true,
+        self::GROUP_SELECT_CONTENT_ADMIN => [
+            self::SELECT_EXCERPT_TAGS => true,
+            self::SELECT_EXCERPT_CATEGORIES => true,
         ],
-        self::GROUP_CONTENT_WEBSITE => [
-            self::WITH_EXCERPT_TAGS => true,
-            self::WITH_EXCERPT_CATEGORIES => true,
-            self::WITH_EXCERPT_CATEGORIES_TRANSLATION => true,
+        self::GROUP_SELECT_CONTENT_WEBSITE => [
+            self::SELECT_EXCERPT_TAGS => true,
+            self::SELECT_EXCERPT_CATEGORIES => true,
+            self::SELECT_EXCERPT_CATEGORIES_TRANSLATION => true,
         ],
     ];
 
@@ -104,6 +104,8 @@ class DimensionContentQueryEnhancer
             Join::WITH,
             'filterDimensionContent.' . $contentRichEntityAlias . ' = ' . $contentRichEntityAlias . ''
         );
+
+        // TODO filter to shadow dimension
 
         foreach ($effectiveAttributes as $key => $value) {
             if (null === $value) {
@@ -262,25 +264,24 @@ class DimensionContentQueryEnhancer
         }
 
         $effectiveAttributes = $dimensionContentClassName::getEffectiveDimensionAttributes($dimensionAttributes);
-        $this->addSortBy($queryBuilder, $effectiveAttributes);
         $queryBuilder->addCriteria($this->getAttributesCriteria('dimensionContent', $effectiveAttributes));
         $queryBuilder->addSelect('dimensionContent');
 
         $locale = $dimensionAttributes['locale'] ?? null;
 
         if (\is_subclass_of($dimensionContentClassName, ExcerptInterface::class)) {
-            if ($selects[self::WITH_EXCERPT_TAGS] ?? false) {
+            if ($selects[self::SELECT_EXCERPT_TAGS] ?? false) {
                 $queryBuilder->leftJoin('dimensionContent.excerptTags', 'contentExcerptTag')
                     ->addSelect('contentExcerptTag');
             }
 
-            if ($selects[self::WITH_EXCERPT_CATEGORIES] ?? false) {
+            if ($selects[self::SELECT_EXCERPT_CATEGORIES] ?? false) {
                 $queryBuilder->leftJoin('dimensionContent.excerptCategories', 'contentExcerptCategory')
                     ->addSelect('contentExcerptCategory');
             }
 
-            if ($selects[self::WITH_EXCERPT_CATEGORIES_TRANSLATION] ?? false) {
-                Assert::notFalse($selects[self::WITH_EXCERPT_CATEGORIES] ?? false);
+            if ($selects[self::SELECT_EXCERPT_CATEGORIES_TRANSLATION] ?? false) {
+                Assert::notFalse($selects[self::SELECT_EXCERPT_CATEGORIES] ?? false);
                 Assert::notNull($locale);
                 $queryBuilder->leftJoin(
                     'contentExcerptCategory.translations',
@@ -294,18 +295,6 @@ class DimensionContentQueryEnhancer
                     ->addSelect('contentExcerptCategoryTranslation')
                     ->setParameter('locale', $locale);
             }
-        }
-    }
-
-    /**
-     * Less specific should be returned first to merge correctly.
-     *
-     * @param mixed[] $attributes
-     */
-    private function addSortBy(QueryBuilder $queryBuilder, array $attributes): void
-    {
-        foreach ($attributes as $key => $value) {
-            $queryBuilder->addOrderBy('dimensionContent.' . $key);
         }
     }
 

@@ -15,6 +15,7 @@ namespace Sulu\Bundle\ContentBundle\Content\Domain\Model;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Criteria;
+use Sulu\Component\Util\SortUtils;
 
 /**
  * @implements \IteratorAggregate<DimensionContentInterface>
@@ -25,16 +26,6 @@ class DimensionContentCollection implements \IteratorAggregate, DimensionContent
      * @var ArrayCollection<int, DimensionContentInterface>
      */
     private $dimensionContents;
-
-    /**
-     * @var DimensionContentInterface|null
-     */
-    private $unlocalizedDimensionContent;
-
-    /**
-     * @var DimensionContentInterface|null
-     */
-    private $localizedDimensionContent;
 
     /**
      * @var mixed[]
@@ -63,23 +54,14 @@ class DimensionContentCollection implements \IteratorAggregate, DimensionContent
         array $dimensionAttributes,
         string $dimensionContentClass
     ) {
-        $this->dimensionContents = new ArrayCollection($dimensionContents);
         $this->dimensionContentClass = $dimensionContentClass;
         $this->defaultDimensionAttributes = $dimensionContentClass::getDefaultDimensionAttributes();
-
-        $this->unlocalizedDimensionContent = $this->dimensionContents->filter(
-            function(DimensionContentInterface $dimensionContent) {
-                return null === $dimensionContent->getLocale();
-            }
-        )->first() ?: null;
-
-        $this->localizedDimensionContent = $this->dimensionContents->filter(
-            function(DimensionContentInterface $dimensionContent) {
-                return null !== $dimensionContent->getLocale();
-            }
-        )->first() ?: null;
-
         $this->dimensionAttributes = $dimensionContentClass::getEffectiveDimensionAttributes($dimensionAttributes);
+
+        $this->dimensionContents = new ArrayCollection(
+            // sort dimension content correctly by effective attributes for later merge
+            SortUtils::multisort($dimensionContents, \array_keys($this->dimensionAttributes), 'asc')
+        );
     }
 
     public function getDimensionContentClass(): string

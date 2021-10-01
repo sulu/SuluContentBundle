@@ -50,13 +50,13 @@ class ExampleRepository
         self::GROUP_EXAMPLE_ADMIN => [
             self::WITH_EXAMPLE_TRANSLATION => true,
             self::WITH_EXAMPLE_CONTENT => [
-                DimensionContentQueryEnhancer::GROUP_CONTENT_ADMIN => true,
+                DimensionContentQueryEnhancer::GROUP_SELECT_CONTENT_ADMIN => true,
             ],
         ],
         self::GROUP_EXAMPLE_WEBSITE => [
             self::WITH_EXAMPLE_TRANSLATION => true,
             self::WITH_EXAMPLE_CONTENT => [
-                DimensionContentQueryEnhancer::GROUP_CONTENT_WEBSITE => true,
+                DimensionContentQueryEnhancer::GROUP_SELECT_CONTENT_WEBSITE => true,
             ],
         ],
     ];
@@ -303,47 +303,13 @@ class ExampleRepository
             $queryBuilder->setFirstResult($offset);
         }
 
-        $contentFilters = [];
-        foreach ([
-            'locale',
-            'stage',
-            'categoryIds',
-            'categoryKeys',
-            'categoryOperator',
-            'tagIds',
-            'tagNames',
-            'tagOperator',
-            'templateKeys',
-        ] as $key) {
-            if (\array_key_exists($key, $filters)) {
-                $contentFilters[$key] = $filters[$key];
-            }
-        }
-
-        /**
-         * @see https://github.com/phpstan/phpstan/issues/5223
-         *
-         * @var array{
-         *     locale?: string|null,
-         *     stage?: string|null,
-         *     categoryIds?: int[],
-         *     categoryKeys?: string[],
-         *     categoryOperator?: 'AND'|'OR',
-         *     tagIds?: int[],
-         *     tagNames?: string[],
-         *     tagOperator?: 'AND'|'OR',
-         *     templateKeys?: string[],
-         * } $contentFilters
-         */
-        if (!empty($contentFilters)) {
-            Assert::keyExists($contentFilters, 'locale');
-            Assert::keyExists($contentFilters, 'stage');
-
+        if (\array_key_exists('locale', $filters) // should also work with locale = null
+            && \array_key_exists('stage', $filters)) {
             $this->dimensionContentQueryEnhancer->addFilters(
                 $queryBuilder,
                 'example',
                 ExampleDimensionContent::class,
-                $contentFilters
+                $filters
             );
         }
 
@@ -359,12 +325,12 @@ class ExampleRepository
             $this->dimensionContentQueryEnhancer->addSelects(
                 $queryBuilder,
                 ExampleDimensionContent::class,
-                $contentFilters,
+                $filters,
                 $contentSelects
             );
         }
 
-        $locale = $dimensionAttributes['locale'] ?? null;
+        $locale = $filters['locale'] ?? null;
         if ($selects['with-example-translations'] ?? null) {
             Assert::notNull($locale);
 
