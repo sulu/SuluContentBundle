@@ -133,6 +133,7 @@ class MetadataLoaderTest extends TestCase
             [
                 'locale' => false,
                 'stage' => false,
+                'version' => false,
             ],
             [],
             [
@@ -146,6 +147,7 @@ class MetadataLoaderTest extends TestCase
             [
                 'locale' => true,
                 'stage' => true,
+                'version' => true,
             ],
             [],
             [

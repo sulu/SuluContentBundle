@@ -28,6 +28,7 @@ class DimensionContentNormalizer implements NormalizerInterface
             'merged',
             'dimension',
             'resource',
+            'version',
         ];
     }
 

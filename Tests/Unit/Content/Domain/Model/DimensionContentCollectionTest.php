@@ -37,9 +37,11 @@ class DimensionContentCollectionTest extends TestCase
         $dimensionContent1 = $this->prophesize(DimensionContentInterface::class);
         $dimensionContent1->getLocale()->willReturn(null);
         $dimensionContent1->getStage()->willReturn('draft');
+        $dimensionContent1->getVersion()->willReturn(0);
         $dimensionContent2 = $this->prophesize(DimensionContentInterface::class);
         $dimensionContent2->getLocale()->willReturn('de');
         $dimensionContent2->getStage()->willReturn('draft');
+        $dimensionContent2->getVersion()->willReturn(0);
 
         $attributes = ['locale' => 'de'];
 
@@ -58,9 +60,11 @@ class DimensionContentCollectionTest extends TestCase
         $dimensionContent1 = $this->prophesize(DimensionContentInterface::class);
         $dimensionContent1->getLocale()->willReturn(null);
         $dimensionContent1->getStage()->willReturn('draft');
+        $dimensionContent1->getVersion()->willReturn(0);
         $dimensionContent2 = $this->prophesize(DimensionContentInterface::class);
         $dimensionContent2->getLocale()->willReturn('de');
         $dimensionContent2->getStage()->willReturn('draft');
+        $dimensionContent2->getVersion()->willReturn(0);
 
         $attributes = ['locale' => 'de'];
 
@@ -80,9 +84,11 @@ class DimensionContentCollectionTest extends TestCase
         $dimensionContent1 = $this->prophesize(DimensionContentInterface::class);
         $dimensionContent1->getLocale()->willReturn(null);
         $dimensionContent1->getStage()->willReturn('draft');
+        $dimensionContent1->getVersion()->willReturn(0);
         $dimensionContent2 = $this->prophesize(DimensionContentInterface::class);
         $dimensionContent2->getLocale()->willReturn('de');
         $dimensionContent2->getStage()->willReturn('draft');
+        $dimensionContent2->getVersion()->willReturn(0);
 
         $attributes = ['locale' => 'de'];
 
@@ -102,9 +108,11 @@ class DimensionContentCollectionTest extends TestCase
         $dimensionContent1 = $this->prophesize(DimensionContentInterface::class);
         $dimensionContent1->getLocale()->willReturn(null);
         $dimensionContent1->getStage()->willReturn('draft');
+        $dimensionContent1->getVersion()->willReturn(0);
         $dimensionContent2 = $this->prophesize(DimensionContentInterface::class);
         $dimensionContent2->getLocale()->willReturn('de');
         $dimensionContent2->getStage()->willReturn('draft');
+        $dimensionContent2->getVersion()->willReturn(0);
 
         $attributes = ['locale' => 'de'];
 
@@ -124,9 +132,11 @@ class DimensionContentCollectionTest extends TestCase
         $dimensionContent1 = $this->prophesize(DimensionContentInterface::class);
         $dimensionContent1->getLocale()->willReturn(null);
         $dimensionContent1->getStage()->willReturn('draft');
+        $dimensionContent1->getVersion()->willReturn(0);
         $dimensionContent2 = $this->prophesize(DimensionContentInterface::class);
         $dimensionContent2->getLocale()->willReturn('de');
         $dimensionContent2->getStage()->willReturn('draft');
+        $dimensionContent2->getVersion()->willReturn(0);
 
         $attributes = [
             'locale' => 'de',
@@ -141,6 +151,7 @@ class DimensionContentCollectionTest extends TestCase
             [
                 'locale' => 'de',
                 'stage' => 'draft',
+                'version' => 0,
             ],
             $dimensionContentCollection->getDimensionAttributes()
         );
@@ -151,9 +162,11 @@ class DimensionContentCollectionTest extends TestCase
         $dimensionContent1 = $this->prophesize(DimensionContentInterface::class);
         $dimensionContent1->getLocale()->willReturn(null);
         $dimensionContent1->getStage()->willReturn('draft');
+        $dimensionContent1->getVersion()->willReturn(0);
         $dimensionContent2 = $this->prophesize(DimensionContentInterface::class);
         $dimensionContent2->getLocale()->willReturn('de');
         $dimensionContent2->getStage()->willReturn('draft');
+        $dimensionContent2->getVersion()->willReturn(0);
 
         $attributes = ['locale' => 'de'];
 
@@ -173,9 +186,11 @@ class DimensionContentCollectionTest extends TestCase
         $dimensionContent1 = $this->prophesize(DimensionContentInterface::class);
         $dimensionContent1->getLocale()->willReturn(null);
         $dimensionContent1->getStage()->willReturn('draft');
+        $dimensionContent1->getVersion()->willReturn(0);
         $dimensionContent2 = $this->prophesize(DimensionContentInterface::class);
         $dimensionContent2->getLocale()->willReturn('de');
         $dimensionContent2->getStage()->willReturn('draft');
+        $dimensionContent2->getVersion()->willReturn(0);
 
         $attributes = ['locale' => 'de'];
 

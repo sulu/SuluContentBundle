@@ -25,4 +25,16 @@ interface DimensionContentRepositoryInterface
         ContentRichEntityInterface $contentRichEntity,
         array $dimensionAttributes
     ): DimensionContentCollectionInterface;
+
+    public function getLatestVersion(ContentRichEntityInterface $contentRichEntity): int;
+
+    /**
+     * @param mixed[] $dimensionAttributes
+     *
+     * @return string[]
+     */
+    public function getLocales(
+        ContentRichEntityInterface $contentRichEntity,
+        array $dimensionAttributes
+    ): array;
 }

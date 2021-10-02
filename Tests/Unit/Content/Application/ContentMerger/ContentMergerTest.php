@@ -69,6 +69,8 @@ class ContentMergerTest extends TestCase
             ->shouldBeCalled();
         $mergedDimensionContent->setStage('draft')
             ->shouldBeCalled();
+        $mergedDimensionContent->setVersion(0)
+            ->shouldBeCalled();
         $mergedDimensionContent->markAsMerged()
             ->shouldBeCalled();
 

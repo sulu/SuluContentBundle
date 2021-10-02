@@ -22,21 +22,30 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionContentRepositoryInterface;
 use Symfony\Component\Workflow\Event\TransitionEvent;
 use Symfony\Component\Workflow\Marking;
 
 class PublishTransitionSubscriberTest extends TestCase
 {
     public function createContentPublisherSubscriberInstance(
-        ContentCopierInterface $contentCopier
+        ContentCopierInterface $contentCopier,
+        DimensionContentRepositoryInterface $dimensionContentRepository
     ): PublishTransitionSubscriber {
-        return new PublishTransitionSubscriber($contentCopier);
+        return new PublishTransitionSubscriber(
+            $contentCopier,
+            $dimensionContentRepository
+        );
     }
 
     public function testGetSubscribedEvents(): void
     {
         $contentCopier = $this->prophesize(ContentCopierInterface::class);
-        $contentPublishSubscriber = $this->createContentPublisherSubscriberInstance($contentCopier->reveal());
+        $dimensionContentRepository = $this->prophesize(DimensionContentRepositoryInterface::class);
+        $contentPublishSubscriber = $this->createContentPublisherSubscriberInstance(
+            $contentCopier->reveal(),
+            $dimensionContentRepository->reveal()
+        );
 
         $this->assertSame([
             'workflow.content_workflow.transition.publish' => 'onPublish',
@@ -54,7 +63,11 @@ class PublishTransitionSubscriberTest extends TestCase
         $contentCopier = $this->prophesize(ContentCopierInterface::class);
         $contentCopier->copyFromDimensionContentCollection(Argument::cetera())->shouldNotBeCalled();
 
-        $contentPublishSubscriber = $this->createContentPublisherSubscriberInstance($contentCopier->reveal());
+        $dimensionContentRepository = $this->prophesize(DimensionContentRepositoryInterface::class);
+        $contentPublishSubscriber = $this->createContentPublisherSubscriberInstance(
+            $contentCopier->reveal(),
+            $dimensionContentRepository->reveal()
+        );
 
         $contentPublishSubscriber->onPublish($event);
     }
@@ -81,7 +94,11 @@ class PublishTransitionSubscriberTest extends TestCase
         $contentCopier->copyFromDimensionContentCollection(Argument::any(), Argument::any(), Argument::any())
             ->shouldNotBeCalled();
 
-        $contentPublishSubscriber = $this->createContentPublisherSubscriberInstance($contentCopier->reveal());
+        $dimensionContentRepository = $this->prophesize(DimensionContentRepositoryInterface::class);
+        $contentPublishSubscriber = $this->createContentPublisherSubscriberInstance(
+            $contentCopier->reveal(),
+            $dimensionContentRepository->reveal()
+        );
 
         $contentPublishSubscriber->onPublish($event);
     }
@@ -108,7 +125,11 @@ class PublishTransitionSubscriberTest extends TestCase
         $contentCopier->copyFromDimensionContentCollection(Argument::any(), Argument::any(), Argument::any())
             ->shouldNotBeCalled();
 
-        $contentPublishSubscriber = $this->createContentPublisherSubscriberInstance($contentCopier->reveal());
+        $dimensionContentRepository = $this->prophesize(DimensionContentRepositoryInterface::class);
+        $contentPublishSubscriber = $this->createContentPublisherSubscriberInstance(
+            $contentCopier->reveal(),
+            $dimensionContentRepository->reveal()
+        );
 
         $contentPublishSubscriber->onPublish($event);
     }
@@ -135,7 +156,11 @@ class PublishTransitionSubscriberTest extends TestCase
         $contentCopier->copyFromDimensionContentCollection(Argument::any(), Argument::any(), Argument::any())
             ->shouldNotBeCalled();
 
-        $contentPublishSubscriber = $this->createContentPublisherSubscriberInstance($contentCopier->reveal());
+        $dimensionContentRepository = $this->prophesize(DimensionContentRepositoryInterface::class);
+        $contentPublishSubscriber = $this->createContentPublisherSubscriberInstance(
+            $contentCopier->reveal(),
+            $dimensionContentRepository->reveal()
+        );
 
         $contentPublishSubscriber->onPublish($event);
     }
@@ -162,19 +187,30 @@ class PublishTransitionSubscriberTest extends TestCase
         ]);
 
         $contentCopier = $this->prophesize(ContentCopierInterface::class);
-        $sourceDimensionAttributes = $dimensionAttributes;
-        $sourceDimensionAttributes['stage'] = 'live';
+        $targetDimensionAttributes = $dimensionAttributes;
+        $targetDimensionAttributes['stage'] = 'live';
 
         $resolvedCopiedContent = $this->prophesize(DimensionContentInterface::class);
         $contentCopier->copyFromDimensionContentCollection(
             $dimensionContentCollection->reveal(),
             $contentRichEntity->reveal(),
-            $sourceDimensionAttributes
+            $targetDimensionAttributes
         )
             ->willReturn($resolvedCopiedContent->reveal())
             ->shouldBeCalled();
 
-        $contentPublishSubscriber = $this->createContentPublisherSubscriberInstance($contentCopier->reveal());
+        $dimensionContentRepository = $this->prophesize(DimensionContentRepositoryInterface::class);
+        $dimensionContentRepository->getLatestVersion($contentRichEntity->reveal())
+            ->willReturn(0)
+            ->shouldBeCalled();
+        $dimensionContentRepository->getLocales($contentRichEntity->reveal(), $targetDimensionAttributes)
+            ->willReturn([])
+            ->shouldBeCalled();
+
+        $contentPublishSubscriber = $this->createContentPublisherSubscriberInstance(
+            $contentCopier->reveal(),
+            $dimensionContentRepository->reveal()
+        );
 
         $contentPublishSubscriber->onPublish($event);
     }
@@ -201,19 +237,44 @@ class PublishTransitionSubscriberTest extends TestCase
         ]);
 
         $contentCopier = $this->prophesize(ContentCopierInterface::class);
-        $sourceDimensionAttributes = $dimensionAttributes;
-        $sourceDimensionAttributes['stage'] = 'live';
+        $targetDimensionAttributes = $dimensionAttributes;
+        $targetDimensionAttributes['stage'] = 'live';
 
         $resolvedCopiedContent = $this->prophesize(DimensionContentInterface::class);
         $contentCopier->copyFromDimensionContentCollection(
             $dimensionContentCollection->reveal(),
             $contentRichEntity->reveal(),
-            $sourceDimensionAttributes
+            $targetDimensionAttributes
         )
             ->willReturn($resolvedCopiedContent->reveal())
             ->shouldBeCalled();
 
-        $contentPublishSubscriber = $this->createContentPublisherSubscriberInstance($contentCopier->reveal());
+        $dimensionContentRepository = $this->prophesize(DimensionContentRepositoryInterface::class);
+        $dimensionContentRepository->getLatestVersion($contentRichEntity->reveal())
+            ->willReturn(0)
+            ->shouldBeCalled();
+        $dimensionContentRepository->getLocales($contentRichEntity->reveal(), $targetDimensionAttributes)
+            ->willReturn(['en', 'de'])
+            ->shouldBeCalled();
+
+        $contentCopier->copy(
+            $contentRichEntity->reveal(),
+            \array_merge($targetDimensionAttributes, ['locale' => 'en']),
+            $contentRichEntity->reveal(),
+            \array_merge($targetDimensionAttributes, ['locale' => 'en', 'version' => 1])
+        )->shouldBeCalled();
+
+        $contentCopier->copy(
+            $contentRichEntity->reveal(),
+            \array_merge($targetDimensionAttributes, ['locale' => 'de']),
+            $contentRichEntity->reveal(),
+            \array_merge($targetDimensionAttributes, ['locale' => 'de', 'version' => 1])
+        )->shouldBeCalled();
+
+        $contentPublishSubscriber = $this->createContentPublisherSubscriberInstance(
+            $contentCopier->reveal(),
+            $dimensionContentRepository->reveal()
+        );
 
         $contentPublishSubscriber->onPublish($event);
     }
