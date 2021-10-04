@@ -13,9 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Infrastructure\Doctrine;
 
-use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\QueryBuilder;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentMetadataInspector\ContentMetadataInspectorInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollection;
@@ -35,12 +33,19 @@ class DimensionContentRepository implements DimensionContentRepositoryInterface
      */
     private $contentMetadataInspector;
 
+    /**
+     * @var DimensionContentQueryEnhancer
+     */
+    private $dimensionContentQueryEnhancer;
+
     public function __construct(
         EntityManagerInterface $entityManager,
-        ContentMetadataInspectorInterface $contentMetadataInspector
+        ContentMetadataInspectorInterface $contentMetadataInspector,
+        DimensionContentQueryEnhancer $dimensionContentQueryEnhancer
     ) {
         $this->entityManager = $entityManager;
         $this->contentMetadataInspector = $contentMetadataInspector;
+        $this->dimensionContentQueryEnhancer = $dimensionContentQueryEnhancer;
     }
 
     public function load(
@@ -52,77 +57,24 @@ class DimensionContentRepository implements DimensionContentRepositoryInterface
 
         $queryBuilder = $this->entityManager->createQueryBuilder()
             ->from($dimensionContentClass, 'dimensionContent')
-            ->select('dimensionContent')
             ->innerJoin('dimensionContent.' . $mappingProperty, 'content')
             ->where('content.id = :id')
             ->setParameter('id', $contentRichEntity->getId());
 
-        $effectiveAttributes = $this->getEffectiveAttributes($dimensionContentClass, $dimensionAttributes);
-        $queryBuilder->addCriteria($this->getAttributesCriteria('dimensionContent', $effectiveAttributes));
-        $this->addSortBy($queryBuilder, $effectiveAttributes);
+        $this->dimensionContentQueryEnhancer->addSelects(
+            $queryBuilder,
+            $dimensionContentClass,
+            $dimensionAttributes,
+            [DimensionContentQueryEnhancer::GROUP_SELECT_CONTENT_ADMIN => true]
+        );
 
         /** @var DimensionContentInterface[] $dimensionContents */
         $dimensionContents = $queryBuilder->getQuery()->getResult();
 
         return new DimensionContentCollection(
             $dimensionContents,
-            $effectiveAttributes,
+            $dimensionAttributes,
             $dimensionContentClass
         );
-    }
-
-    /**
-     * Less specific should be returned first to merge correctly.
-     *
-     * @param mixed[] $attributes
-     */
-    private function addSortBy(QueryBuilder $queryBuilder, array $attributes): void
-    {
-        foreach ($attributes as $key => $value) {
-            $queryBuilder->addOrderBy('dimensionContent.' . $key);
-        }
-    }
-
-    /**
-     * @param mixed[] $attributes
-     */
-    private function getAttributesCriteria(string $alias, array $attributes): Criteria
-    {
-        $criteria = Criteria::create();
-
-        foreach ($attributes as $key => $value) {
-            $fieldName = $alias . '.' . $key;
-            $expr = $criteria->expr()->isNull($fieldName);
-
-            if (null !== $value) {
-                $eqExpr = $criteria->expr()->eq($fieldName, $value);
-                $expr = $criteria->expr()->orX($expr, $eqExpr);
-            }
-
-            $criteria->andWhere($expr);
-        }
-
-        return $criteria;
-    }
-
-    /**
-     * @param class-string<DimensionContentInterface> $className
-     * @param mixed[] $attributes
-     *
-     * @return mixed[]
-     */
-    private function getEffectiveAttributes(string $className, array $attributes): array
-    {
-        $defaultValues = $className::getDefaultDimensionAttributes();
-
-        // Ignore keys that are not part of the default attributes
-        $attributes = \array_intersect_key($attributes, $defaultValues);
-
-        $attributes = \array_merge(
-            $defaultValues,
-            $attributes
-        );
-
-        return $attributes;
     }
 }

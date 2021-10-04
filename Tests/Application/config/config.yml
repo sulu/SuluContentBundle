@@ -1,6 +1,9 @@
 swiftmailer:
     disable_delivery:  true
 
+framework:
+    profiler: { enabled: true, collect: false }
+
 doctrine:
     orm:
         mappings:

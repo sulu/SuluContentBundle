@@ -53,6 +53,28 @@ class DimensionContentCollectionTest extends TestCase
         $this->assertSame(2, $dimensionContentCollection->count()); // @phpstan-ignore-line
     }
 
+    public function testSortedByAttributes(): void
+    {
+        $dimensionContent1 = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent1->getLocale()->willReturn(null);
+        $dimensionContent1->getStage()->willReturn('draft');
+        $dimensionContent2 = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent2->getLocale()->willReturn('de');
+        $dimensionContent2->getStage()->willReturn('draft');
+
+        $attributes = ['locale' => 'de'];
+
+        $dimensionContentCollection = $this->createDimensionContentCollectionInstance([
+            $dimensionContent2->reveal(),
+            $dimensionContent1->reveal(),
+        ], $attributes);
+
+        $this->assertSame([
+            $dimensionContent1->reveal(),
+            $dimensionContent2->reveal(),
+        ], \iterator_to_array($dimensionContentCollection));
+    }
+
     public function testIterator(): void
     {
         $dimensionContent1 = $this->prophesize(DimensionContentInterface::class);
@@ -106,7 +128,9 @@ class DimensionContentCollectionTest extends TestCase
         $dimensionContent2->getLocale()->willReturn('de');
         $dimensionContent2->getStage()->willReturn('draft');
 
-        $attributes = ['locale' => 'de'];
+        $attributes = [
+            'locale' => 'de',
+        ];
 
         $dimensionContentCollection = $this->createDimensionContentCollectionInstance([
             $dimensionContent1->reveal(),
@@ -114,7 +138,10 @@ class DimensionContentCollectionTest extends TestCase
         ], $attributes);
 
         $this->assertSame(
-            $attributes,
+            [
+                'locale' => 'de',
+                'stage' => 'draft',
+            ],
             $dimensionContentCollection->getDimensionAttributes()
         );
     }
