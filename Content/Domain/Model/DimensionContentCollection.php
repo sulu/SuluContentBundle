@@ -59,7 +59,7 @@ class DimensionContentCollection implements \IteratorAggregate, DimensionContent
         $this->dimensionAttributes = $dimensionContentClass::getEffectiveDimensionAttributes($dimensionAttributes);
 
         $this->dimensionContents = new ArrayCollection(
-            // sort dimension content correctly by effective attributes for later merge
+            // dimension contents need to be sorted from most specific to least specific when they are merged
             SortUtils::multisort($dimensionContents, \array_keys($this->dimensionAttributes), 'asc')
         );
     }
