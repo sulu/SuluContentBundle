@@ -31,31 +31,31 @@ class ExampleRepository
      * this allows that no controller need to be overwritten when something additional should be
      * loaded at that endpoint.
      */
-    public const GROUP_EXAMPLE_ADMIN = 'example_admin';
-    public const GROUP_EXAMPLE_WEBSITE = 'example_website';
+    public const GROUP_SELECT_EXAMPLE_ADMIN = 'example_admin';
+    public const GROUP_SELECT_EXAMPLE_WEBSITE = 'example_website';
 
     /**
      * Withs represents additional selects which can be load to join and select specific sub entities.
      * They are used by groups.
      */
-    public const WITH_EXAMPLE_CONTENT = 'with-example-content';
+    public const SELECT_EXAMPLE_CONTENT = 'with-example-content';
 
-    public const WITH_EXAMPLE_TRANSLATION = 'with-example-translation';
+    public const SELECT_EXAMPLE_TRANSLATION = 'with-example-translation';
 
     /**
      * TODO it should be possible to extend fields and groups inside the SELECTS.
      */
     private const SELECTS = [
         // GROUPS
-        self::GROUP_EXAMPLE_ADMIN => [
-            self::WITH_EXAMPLE_TRANSLATION => true,
-            self::WITH_EXAMPLE_CONTENT => [
+        self::GROUP_SELECT_EXAMPLE_ADMIN => [
+            self::SELECT_EXAMPLE_TRANSLATION => true,
+            self::SELECT_EXAMPLE_CONTENT => [
                 DimensionContentQueryEnhancer::GROUP_SELECT_CONTENT_ADMIN => true,
             ],
         ],
-        self::GROUP_EXAMPLE_WEBSITE => [
-            self::WITH_EXAMPLE_TRANSLATION => true,
-            self::WITH_EXAMPLE_CONTENT => [
+        self::GROUP_SELECT_EXAMPLE_WEBSITE => [
+            self::SELECT_EXAMPLE_TRANSLATION => true,
+            self::SELECT_EXAMPLE_CONTENT => [
                 DimensionContentQueryEnhancer::GROUP_SELECT_CONTENT_WEBSITE => true,
             ],
         ],

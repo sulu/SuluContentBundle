@@ -105,7 +105,7 @@ class DimensionContentQueryEnhancerTest extends SuluTestCase
         $dimensionAttributes = ['locale' => 'en', 'stage' => 'live'];
         $example = $this->exampleRepository->getOneBy(
             \array_merge($dimensionAttributes, ['id' => $exampleId]),
-            [ExampleRepository::GROUP_EXAMPLE_ADMIN => true]
+            [ExampleRepository::GROUP_SELECT_EXAMPLE_ADMIN => true]
         );
         $dimensionContentCollection = new DimensionContentCollection(
             \iterator_to_array($example->getDimensionContents()),
@@ -145,7 +145,7 @@ class DimensionContentQueryEnhancerTest extends SuluTestCase
         $dimensionAttributes = ['locale' => 'en', 'stage' => 'live'];
         $example = $this->exampleRepository->getOneBy(
             \array_merge($dimensionAttributes, ['id' => $exampleId]),
-            [ExampleRepository::GROUP_EXAMPLE_WEBSITE => true]
+            [ExampleRepository::GROUP_SELECT_EXAMPLE_WEBSITE => true]
         );
         $dimensionContentCollection = new DimensionContentCollection(
             \iterator_to_array($example->getDimensionContents()),
@@ -180,9 +180,9 @@ class DimensionContentQueryEnhancerTest extends SuluTestCase
         $example = $this->exampleRepository->getOneBy(
             \array_merge($dimensionAttributes, ['id' => $exampleId]),
             [
-                ExampleRepository::GROUP_EXAMPLE_ADMIN => true,
-                ExampleRepository::GROUP_EXAMPLE_WEBSITE => false,
-                ExampleRepository::WITH_EXAMPLE_CONTENT => [
+                ExampleRepository::GROUP_SELECT_EXAMPLE_ADMIN => true,
+                ExampleRepository::GROUP_SELECT_EXAMPLE_WEBSITE => false,
+                ExampleRepository::SELECT_EXAMPLE_CONTENT => [
                     DimensionContentQueryEnhancer::SELECT_EXCERPT_TAGS => false,
                 ],
             ]
