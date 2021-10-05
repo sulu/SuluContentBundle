@@ -107,6 +107,46 @@ class DimensionContentRepositoryTest extends SuluTestCase
         }, \iterator_to_array($dimensionContentCollection)));
     }
 
+    public function testGetLatestVersion(): void
+    {
+        // prepare database
+        $contentRichEntity = $this->createContentRichEntity();
+        $this->createContentDimension($contentRichEntity, []);
+        $this->createContentDimension($contentRichEntity, ['locale' => 'de']);
+        $this->createContentDimension($contentRichEntity, ['locale' => 'de', 'version' => 1]);
+
+        $this->getEntityManager()->flush();
+        $this->getEntityManager()->clear();
+
+        // test functionality
+        $dimensionContentRepository = $this->createContentDimensionRepository();
+        $version = $dimensionContentRepository->getLatestVersion($contentRichEntity);
+
+        // assert result
+        $this->assertSame(1, $version);
+    }
+
+    public function testGetLocales(): void
+    {
+        // prepare database
+        $contentRichEntity = $this->createContentRichEntity();
+        $this->createContentDimension($contentRichEntity, []);
+        $this->createContentDimension($contentRichEntity, ['locale' => 'de']);
+        $this->createContentDimension($contentRichEntity, ['locale' => 'en']);
+        $this->createContentDimension($contentRichEntity, ['locale' => 'en', 'stage' => 'live']);
+        $this->createContentDimension($contentRichEntity, ['locale' => 'fr', 'stage' => 'live']);
+
+        $this->getEntityManager()->flush();
+        $this->getEntityManager()->clear();
+
+        // test functionality
+        $dimensionContentRepository = $this->createContentDimensionRepository();
+        $locales = $dimensionContentRepository->getLocales($contentRichEntity, ['stage' => 'live']);
+
+        // assert result
+        $this->assertSame(['en', 'fr'], $locales);
+    }
+
     private function createContentRichEntity(): Example
     {
         $example = new Example();
@@ -123,6 +163,7 @@ class DimensionContentRepositoryTest extends SuluTestCase
         $exampleDimension = new ExampleDimensionContent($example);
         $exampleDimension->setStage($dimensionAttributes['stage'] ?? DimensionContentInterface::STAGE_DRAFT);
         $exampleDimension->setLocale($dimensionAttributes['locale'] ?? null);
+        $exampleDimension->setVersion($dimensionAttributes['version'] ?? 0);
 
         $this->getEntityManager()->persist($exampleDimension);
 

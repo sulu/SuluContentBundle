@@ -18,6 +18,8 @@ interface DimensionContentInterface
     public const STAGE_DRAFT = 'draft';
     public const STAGE_LIVE = 'live';
 
+    public const DEFAULT_VERSION = 0;
+
     public static function getResourceKey(): string;
 
     public function getLocale(): ?string;
@@ -27,6 +29,10 @@ interface DimensionContentInterface
     public function getStage(): string;
 
     public function setStage(string $stage): void;
+
+    public function getVersion(): int;
+
+    public function setVersion(int $version): void;
 
     public function getResource(): ContentRichEntityInterface;
 

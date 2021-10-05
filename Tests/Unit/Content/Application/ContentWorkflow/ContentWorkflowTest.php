@@ -83,9 +83,11 @@ class ContentWorkflowTest extends TestCase
         $dimensionContent1 = $this->prophesize(DimensionContentInterface::class);
         $dimensionContent1->getStage()->willReturn('draft');
         $dimensionContent1->getLocale()->willReturn(null);
+        $dimensionContent1->getVersion()->willReturn(0);
         $dimensionContent2 = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent1->getStage()->willReturn('draft');
-        $dimensionContent1->getLocale()->willReturn('de');
+        $dimensionContent2->getStage()->willReturn('draft');
+        $dimensionContent2->getLocale()->willReturn('de');
+        $dimensionContent2->getVersion()->willReturn(0);
 
         $this->expectExceptionMessage(\sprintf(
             'Expected "%s" but "%s" given.',
@@ -166,11 +168,13 @@ class ContentWorkflowTest extends TestCase
         $dimensionContent1->willImplement(WorkflowInterface::class);
         $dimensionContent1->getLocale()->willReturn(null);
         $dimensionContent1->getStage()->willReturn('draft');
+        $dimensionContent1->getVersion()->willReturn(0);
 
         $dimensionContent2 = $this->prophesize(DimensionContentInterface::class);
         $dimensionContent2->willImplement(WorkflowInterface::class);
         $dimensionContent2->getLocale()->willReturn('de');
         $dimensionContent2->getStage()->willReturn('draft');
+        $dimensionContent2->getVersion()->willReturn(0);
 
         $dimensionContent2->getWorkflowPlace()
             ->willReturn('unpublished')
@@ -219,10 +223,12 @@ class ContentWorkflowTest extends TestCase
         $dimensionContent1->willImplement(WorkflowInterface::class);
         $dimensionContent1->getLocale()->willReturn(null);
         $dimensionContent1->getStage()->willReturn('draft');
+        $dimensionContent1->getVersion()->willReturn(0);
         $dimensionContent2 = $this->prophesize(DimensionContentInterface::class);
         $dimensionContent2->willImplement(WorkflowInterface::class);
         $dimensionContent2->getLocale()->willReturn('de');
         $dimensionContent2->getStage()->willReturn('draft');
+        $dimensionContent2->getVersion()->willReturn(0);
 
         $dimensionContent2->getWorkflowPlace()
             ->willReturn($currentPlace)

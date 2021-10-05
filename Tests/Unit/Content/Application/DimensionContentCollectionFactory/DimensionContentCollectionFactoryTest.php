@@ -57,15 +57,18 @@ class DimensionContentCollectionFactoryTest extends TestCase
         $dimensionContent1 = $this->prophesize(DimensionContentInterface::class);
         $dimensionContent1->getLocale()->willReturn(null);
         $dimensionContent1->getStage()->willReturn('draft');
+        $dimensionContent1->getVersion()->willReturn(0);
         $dimensionContent2 = $this->prophesize(DimensionContentInterface::class);
         $dimensionContent2->getLocale()->willReturn('de');
         $dimensionContent2->getStage()->willReturn('draft');
+        $dimensionContent2->getVersion()->willReturn(0);
 
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
 
         $attributes = [
             'locale' => 'de',
             'stage' => 'draft',
+            'version' => 0,
         ];
 
         $data = [
@@ -113,15 +116,21 @@ class DimensionContentCollectionFactoryTest extends TestCase
             ->shouldBeCalled();
         $dimensionContent1->setStage('draft')
             ->shouldBeCalled();
+        $dimensionContent1->setVersion(0)
+            ->shouldBeCalled();
         $dimensionContent1->getLocale()->willReturn(null);
         $dimensionContent1->getStage()->willReturn('draft');
+        $dimensionContent1->getVersion()->willReturn(0);
         $dimensionContent2 = $this->prophesize(DimensionContentInterface::class);
         $dimensionContent2->setLocale('de')
             ->shouldBeCalled();
         $dimensionContent2->setStage('draft')
             ->shouldBeCalled();
+        $dimensionContent2->setVersion(0)
+            ->shouldBeCalled();
         $dimensionContent2->getLocale()->willReturn('de');
         $dimensionContent2->getStage()->willReturn('draft');
+        $dimensionContent2->getVersion()->willReturn(0);
 
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
         $contentRichEntity->createDimensionContent()->shouldBeCalledTimes(2)
@@ -132,6 +141,7 @@ class DimensionContentCollectionFactoryTest extends TestCase
         $attributes = [
             'locale' => 'de',
             'stage' => 'draft',
+            'version' => 0,
         ];
 
         $data = [
@@ -175,13 +185,17 @@ class DimensionContentCollectionFactoryTest extends TestCase
         $dimensionContent1 = $this->prophesize(DimensionContentInterface::class);
         $dimensionContent1->getLocale()->willReturn(null);
         $dimensionContent1->getStage()->willReturn('draft');
+        $dimensionContent1->getVersion()->willReturn(0);
         $dimensionContent2 = $this->prophesize(DimensionContentInterface::class);
         $dimensionContent2->setLocale('de')
             ->shouldBeCalled();
         $dimensionContent2->setStage('draft')
             ->shouldBeCalled();
+        $dimensionContent2->setVersion(0)
+            ->shouldBeCalled();
         $dimensionContent2->getLocale()->willReturn('de');
         $dimensionContent2->getStage()->willReturn('draft');
+        $dimensionContent2->getVersion()->willReturn(0);
 
         $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
         $contentRichEntity->createDimensionContent()->shouldBeCalled()->willReturn($dimensionContent2->reveal());
@@ -190,6 +204,7 @@ class DimensionContentCollectionFactoryTest extends TestCase
         $attributes = [
             'locale' => 'de',
             'stage' => 'draft',
+            'version' => 0,
         ];
 
         $data = [

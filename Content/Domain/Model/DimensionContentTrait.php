@@ -26,6 +26,11 @@ trait DimensionContentTrait
     protected $stage = DimensionContentInterface::STAGE_DRAFT;
 
     /**
+     * @var int
+     */
+    protected $version = DimensionContentInterface::DEFAULT_VERSION;
+
+    /**
      * @var bool
      */
     private $isMerged = false;
@@ -50,6 +55,16 @@ trait DimensionContentTrait
         return $this->stage;
     }
 
+    public function setVersion(int $version): void
+    {
+        $this->version = $version;
+    }
+
+    public function getVersion(): int
+    {
+        return $this->version;
+    }
+
     public function isMerged(): bool
     {
         return $this->isMerged;
@@ -65,6 +80,7 @@ trait DimensionContentTrait
         return [
             'locale' => null,
             'stage' => DimensionContentInterface::STAGE_DRAFT,
+            'version' => DimensionContentInterface::DEFAULT_VERSION,
         ];
     }
 

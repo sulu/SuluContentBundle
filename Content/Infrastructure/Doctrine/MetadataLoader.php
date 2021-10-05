@@ -47,6 +47,7 @@ class MetadataLoader implements EventSubscriber
         if ($reflection->implementsInterface(DimensionContentInterface::class)) {
             $this->addField($metadata, 'stage', 'string', ['length' => 16, 'nullable' => false]);
             $this->addField($metadata, 'locale', 'string', ['length' => 7, 'nullable' => true]);
+            $this->addField($metadata, 'version', 'integer', ['nullable' => false, 'default' => 0]);
         }
 
         if ($reflection->implementsInterface(SeoInterface::class)) {

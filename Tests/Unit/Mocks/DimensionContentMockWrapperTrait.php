@@ -42,6 +42,16 @@ trait DimensionContentMockWrapperTrait
         return $this->instance->getStage();
     }
 
+    public function setVersion(int $version): void
+    {
+        $this->instance->setVersion($version);
+    }
+
+    public function getVersion(): int
+    {
+        return $this->instance->getVersion();
+    }
+
     public function setStage(?string $stage): void
     {
         $this->instance->setStage($stage);

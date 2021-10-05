@@ -158,6 +158,7 @@
 
         <service id="sulu_content.publish_transition_subscriber" class="Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\Subscriber\PublishTransitionSubscriber">
             <argument type="service" id="sulu_content.content_copier"/>
+            <argument type="service" id="sulu_content.dimension_content_repository"/>
 
             <tag name="kernel.event_subscriber"/>
         </service>

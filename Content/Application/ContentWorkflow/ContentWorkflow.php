@@ -135,9 +135,11 @@ class ContentWorkflow implements ContentWorkflowInterface
         // | New |--------->| Unpublished |                      | Review |---------->| Published  |                | draft |                             | Review draft  |
         // |     |          |             |<---------------------|        |           |            |--------------->|       |<----------------------------|               |
         // +-----+          +-------------+       reject         +--------+           +------------+  create draft  +-------+        reject draft         +---------------+
-        //                                                                              A   |    A                                                                |
-        //                                                                              +---+    |                          publish                               |
-        //                                                                             publish   +----------------------------------------------------------------+
+        //                   A   |                                                     A   |  A  |                      A                                          |
+        //                   +---+                                                     +---+  |  |       restore        |                                          |
+        //                  restore                                                   publish |  +----------------------+                                          |
+        //                                                                                    |                              publish                               |
+        //                                                                                    +--------------------------------------------------------------------+
 
         // Configures places
         $definition = $definitionBuilder
