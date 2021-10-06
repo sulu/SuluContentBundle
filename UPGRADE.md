@@ -2,6 +2,22 @@
 
 ## 0.7.0
 
+### ContentPersisterInterface and ContentManagerInterface changed
+
+The `ContentPersisterInterface` and `ContentManagerInterface` was changed to be similar to the ContentMapper:
+
+**Before**
+
+```php
+    public function persist(ContentRichEntityInterface $contentRichEntity, array $data, array $dimensionAttributes): DimensionContentInterface;
+```
+
+**After**
+
+```php
+    public function persist(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes, array $data): DimensionContentCollectionInterface;
+```
+
 ### ContentMapperInterface changed
 
 The `ContentMapperInterface` was changed as a preparation for refactoring the `DimensionContentCollection`:

@@ -24,6 +24,11 @@ interface DimensionContentCollectionInterface extends \Traversable, \Countable
     public function getDimensionContent(array $dimensionAttributes): ?DimensionContentInterface;
 
     /**
+     * @param mixed[] $dimensionAttributes
+     */
+    public function createDimensionContent(array $dimensionAttributes): DimensionContentInterface;
+
+    /**
      * @return class-string<DimensionContentInterface>
      */
     public function getDimensionContentClass(): string;
@@ -32,4 +37,6 @@ interface DimensionContentCollectionInterface extends \Traversable, \Countable
      * @return mixed[]
      */
     public function getDimensionAttributes(): array;
+
+    public function getMergedDimensionContent(): DimensionContentInterface;
 }

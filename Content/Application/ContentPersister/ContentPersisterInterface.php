@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentPersister;
 
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
 
 interface ContentPersisterInterface
 {
@@ -22,5 +22,5 @@ interface ContentPersisterInterface
      * @param mixed[] $data
      * @param mixed[] $dimensionAttributes
      */
-    public function persist(ContentRichEntityInterface $contentRichEntity, array $data, array $dimensionAttributes): DimensionContentInterface;
+    public function persist(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes, array $data): DimensionContentCollectionInterface;
 }

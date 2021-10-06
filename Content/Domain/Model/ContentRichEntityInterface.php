@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Content\Domain\Model;
 
 use Doctrine\Common\Collections\Collection;
+use Sulu\Bundle\ContentBundle\Content\Domain\Factory\DimensionContentCollectionFactoryInterface;
 
 interface ContentRichEntityInterface
 {
