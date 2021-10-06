@@ -20,9 +20,9 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
 class SeoDataMapper implements DataMapperInterface
 {
     public function map(
-        array $data,
         DimensionContentInterface $unlocalizedDimensionContent,
-        DimensionContentInterface $localizedDimensionContent
+        DimensionContentInterface $localizedDimensionContent,
+        array $data
     ): void {
         if (!$localizedDimensionContent instanceof SeoInterface) {
             return;

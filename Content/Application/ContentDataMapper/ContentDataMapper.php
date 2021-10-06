@@ -48,7 +48,7 @@ class ContentDataMapper implements ContentDataMapperInterface
         }
 
         foreach ($this->dataMappers as $mapper) {
-            $mapper->map($data, $unlocalizedDimensionContent, $localizedDimensionContent);
+            $mapper->map($unlocalizedDimensionContent, $localizedDimensionContent, $data);
         }
     }
 }

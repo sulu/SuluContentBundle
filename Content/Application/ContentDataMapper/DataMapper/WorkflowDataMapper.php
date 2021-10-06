@@ -19,9 +19,9 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 class WorkflowDataMapper implements DataMapperInterface
 {
     public function map(
-        array $data,
         DimensionContentInterface $unlocalizedDimensionContent,
-        DimensionContentInterface $localizedDimensionContent
+        DimensionContentInterface $localizedDimensionContent,
+        array $data
     ): void {
         if (!$localizedDimensionContent instanceof WorkflowInterface) {
             return;

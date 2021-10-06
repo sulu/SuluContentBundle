@@ -31,13 +31,14 @@ class AuthorDataMapper implements DataMapperInterface
     }
 
     public function map(
-        array $data,
         DimensionContentInterface $unlocalizedDimensionContent,
-        DimensionContentInterface $localizedDimensionContent
+        DimensionContentInterface $localizedDimensionContent,
+        array $data
     ): void {
         if (!$localizedDimensionContent instanceof AuthorInterface) {
             return;
         }
+
 
         $this->setAuthorData($localizedDimensionContent, $data);
     }
@@ -47,11 +48,11 @@ class AuthorDataMapper implements DataMapperInterface
      */
     private function setAuthorData(AuthorInterface $dimensionContent, array $data): void
     {
-        if (isset($data['author'])) {
+        if (\array_key_exists('author', $data)) {
             $dimensionContent->setAuthor($this->contactFactory->create($data['author']));
         }
 
-        if (isset($data['authored'])) {
+        if (\array_key_exists('authored', $data)) {
             $dimensionContent->setAuthored(new \DateTimeImmutable($data['authored']));
         }
     }

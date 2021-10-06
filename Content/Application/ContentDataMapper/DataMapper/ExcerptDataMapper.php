@@ -38,9 +38,9 @@ class ExcerptDataMapper implements DataMapperInterface
     }
 
     public function map(
-        array $data,
         DimensionContentInterface $unlocalizedDimensionContent,
-        DimensionContentInterface $localizedDimensionContent
+        DimensionContentInterface $localizedDimensionContent,
+        array $data
     ): void {
         if (!$localizedDimensionContent instanceof ExcerptInterface) {
             return;
@@ -54,14 +54,28 @@ class ExcerptDataMapper implements DataMapperInterface
      */
     private function setExcerptData(ExcerptInterface $dimensionContent, array $data): void
     {
-        $dimensionContent->setExcerptTitle($data['excerptTitle'] ?? null);
-        $dimensionContent->setExcerptDescription($data['excerptDescription'] ?? null);
-        $dimensionContent->setExcerptMore($data['excerptMore'] ?? null);
-        $dimensionContent->setExcerptImage($data['excerptImage'] ?? null);
-        $dimensionContent->setExcerptIcon($data['excerptIcon'] ?? null);
-        $dimensionContent->setExcerptTags($this->tagFactory->create($data['excerptTags'] ?? []));
-        $dimensionContent->setExcerptCategories(
-            $this->categoryFactory->create($data['excerptCategories'] ?? [])
-        );
+        if (\array_key_exists('excerptTitle', $data)) {
+            $dimensionContent->setExcerptTitle($data['excerptTitle']);
+        }
+        if (\array_key_exists('excerptDescription', $data)) {
+            $dimensionContent->setExcerptDescription($data['excerptDescription']);
+        }
+        if (\array_key_exists('excerptMore', $data)) {
+            $dimensionContent->setExcerptMore($data['excerptMore']);
+        }
+        if (\array_key_exists('excerptImage', $data)) {
+            $dimensionContent->setExcerptImage($data['excerptImage']);
+        }
+        if (\array_key_exists('excerptIcon', $data)) {
+            $dimensionContent->setExcerptIcon($data['excerptIcon']);
+        }
+        if (\array_key_exists('excerptTags', $data)) {
+            $dimensionContent->setExcerptTags($this->tagFactory->create($data['excerptTags'] ?: []));
+        }
+        if (\array_key_exists('excerptCategories', $data)) {
+            $dimensionContent->setExcerptCategories(
+                $this->categoryFactory->create($data['excerptCategories'] ?: [])
+            );
+        }
     }
 }

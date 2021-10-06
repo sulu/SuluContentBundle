@@ -40,12 +40,12 @@ class TemplateDataMapper implements DataMapperInterface
     }
 
     public function map(
-        array $data,
         DimensionContentInterface $unlocalizedDimensionContent,
-        DimensionContentInterface $localizedDimensionContent
+        DimensionContentInterface $localizedDimensionContent,
+        array $data
     ): void {
         if (!$localizedDimensionContent instanceof TemplateInterface
-            || $unlocalizedDimensionContent instanceof TemplateInterface
+            || !$unlocalizedDimensionContent instanceof TemplateInterface
         ) {
             return;
         }
@@ -63,11 +63,16 @@ class TemplateDataMapper implements DataMapperInterface
             throw new \RuntimeException('Expected "template" to be set in the data array.');
         }
 
-        list($unlocalizedData, $localizedData) = $this->getTemplateData(
+        list($unlocalizedData, $localizedData, $hasAnyValue) = $this->getTemplateData(
             $data,
             $type,
             $template
         );
+
+        if (!isset($data['template']) && !$hasAnyValue) {
+            // do nothing when no data was given
+            return;
+        }
 
         $localizedDimensionContent->setTemplateKey($template);
         $localizedDimensionContent->setTemplateData($localizedData);
@@ -81,7 +86,11 @@ class TemplateDataMapper implements DataMapperInterface
     /**
      * @param mixed[] $data
      *
-     * @return mixed[]
+     * @return array{
+     *     0: mixed[],
+     *     1: mixed[],
+     *     2: bool,
+     * }
      */
     private function getTemplateData(array $data, string $type, string $template): array
     {
@@ -93,6 +102,7 @@ class TemplateDataMapper implements DataMapperInterface
 
         $unlocalizedData = [];
         $localizedData = [];
+        $hasAnyValue = false;
 
         foreach ($metadata->getProperties() as $property) {
             $value = null;
@@ -104,6 +114,7 @@ class TemplateDataMapper implements DataMapperInterface
             }
 
             if (\array_key_exists($name, $data)) {
+                $hasAnyValue = true;
                 $value = $data[$name];
             }
 
@@ -115,6 +126,6 @@ class TemplateDataMapper implements DataMapperInterface
             $unlocalizedData[$name] = $value;
         }
 
-        return [$unlocalizedData, $localizedData];
+        return [$unlocalizedData, $localizedData, $hasAnyValue];
     }
 }
