@@ -99,7 +99,7 @@ class DimensionContentCollectionFactory implements DimensionContentCollectionFac
             $dimensionContentCollection->getDimensionContentClass()
         );
 
-        $this->contentDataMapper->map($data, $dimensionContentCollection);
+        $this->contentDataMapper->map($dimensionContentCollection, $dimensionAttributes, $data);
 
         return $dimensionContentCollection;
     }

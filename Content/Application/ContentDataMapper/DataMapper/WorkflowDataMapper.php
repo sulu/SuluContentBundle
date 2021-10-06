@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\DataMapper;
 
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 
@@ -21,29 +20,14 @@ class WorkflowDataMapper implements DataMapperInterface
 {
     public function map(
         array $data,
-        DimensionContentCollectionInterface $dimensionContentCollection
+        DimensionContentInterface $unlocalizedDimensionContent,
+        DimensionContentInterface $localizedDimensionContent
     ): void {
-        $dimensionAttributes = $dimensionContentCollection->getDimensionAttributes();
-        $unlocalizedDimensionAttributes = \array_merge($dimensionAttributes, ['locale' => null]);
-        $unlocalizedObject = $dimensionContentCollection->getDimensionContent($unlocalizedDimensionAttributes);
-
-        if (!$unlocalizedObject instanceof WorkflowInterface) {
+        if (!$localizedDimensionContent instanceof WorkflowInterface) {
             return;
         }
 
-        $localizedObject = $dimensionContentCollection->getDimensionContent($dimensionAttributes);
-
-        if ($localizedObject) {
-            if (!$localizedObject instanceof WorkflowInterface) {
-                throw new \RuntimeException(\sprintf('Expected "$localizedObject" from type "%s" but "%s" given.', WorkflowInterface::class, \get_class($localizedObject)));
-            }
-
-            $this->setWorkflowData($localizedObject, $data);
-
-            return;
-        }
-
-        $this->setWorkflowData($unlocalizedObject, $data);
+        $this->setWorkflowData($localizedDimensionContent, $data);
     }
 
     /**

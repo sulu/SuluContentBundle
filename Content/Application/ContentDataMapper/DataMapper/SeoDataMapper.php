@@ -14,35 +14,21 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\DataMapper;
 
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
 
 class SeoDataMapper implements DataMapperInterface
 {
     public function map(
         array $data,
-        DimensionContentCollectionInterface $dimensionContentCollection
+        DimensionContentInterface $unlocalizedDimensionContent,
+        DimensionContentInterface $localizedDimensionContent
     ): void {
-        $dimensionAttributes = $dimensionContentCollection->getDimensionAttributes();
-        $unlocalizedDimensionAttributes = \array_merge($dimensionAttributes, ['locale' => null]);
-        $unlocalizedObject = $dimensionContentCollection->getDimensionContent($unlocalizedDimensionAttributes);
-
-        if (!$unlocalizedObject instanceof SeoInterface) {
+        if (!$localizedDimensionContent instanceof SeoInterface) {
             return;
         }
 
-        $localizedObject = $dimensionContentCollection->getDimensionContent($dimensionAttributes);
-
-        if ($localizedObject) {
-            if (!$localizedObject instanceof SeoInterface) {
-                throw new \RuntimeException(\sprintf('Expected "$localizedObject" from type "%s" but "%s" given.', SeoInterface::class, \get_class($localizedObject)));
-            }
-
-            $this->setSeoData($localizedObject, $data);
-
-            return;
-        }
-
-        $this->setSeoData($unlocalizedObject, $data);
+        $this->setSeoData($localizedDimensionContent, $data);
     }
 
     /**

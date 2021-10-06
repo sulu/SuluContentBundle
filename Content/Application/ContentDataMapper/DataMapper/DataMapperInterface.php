@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\DataMapper;
 
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 
 interface DataMapperInterface
 {
@@ -22,6 +22,7 @@ interface DataMapperInterface
      */
     public function map(
         array $data,
-        DimensionContentCollectionInterface $dimensionContentCollection
+        DimensionContentInterface $unlocalizedDimensionContent,
+        DimensionContentInterface $localizedDimensionContent
     ): void;
 }

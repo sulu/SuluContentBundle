@@ -16,6 +16,7 @@ namespace Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\DataMa
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\CategoryFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\TagFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 
 class ExcerptDataMapper implements DataMapperInterface
@@ -38,29 +39,14 @@ class ExcerptDataMapper implements DataMapperInterface
 
     public function map(
         array $data,
-        DimensionContentCollectionInterface $dimensionContentCollection
+        DimensionContentInterface $unlocalizedDimensionContent,
+        DimensionContentInterface $localizedDimensionContent
     ): void {
-        $dimensionAttributes = $dimensionContentCollection->getDimensionAttributes();
-        $unlocalizedDimensionAttributes = \array_merge($dimensionAttributes, ['locale' => null]);
-        $unlocalizedObject = $dimensionContentCollection->getDimensionContent($unlocalizedDimensionAttributes);
-
-        if (!$unlocalizedObject instanceof ExcerptInterface) {
+        if (!$localizedDimensionContent instanceof ExcerptInterface) {
             return;
         }
 
-        $localizedObject = $dimensionContentCollection->getDimensionContent($dimensionAttributes);
-
-        if ($localizedObject) {
-            if (!$localizedObject instanceof ExcerptInterface) {
-                throw new \RuntimeException(\sprintf('Expected "$localizedObject" from type "%s" but "%s" given.', ExcerptInterface::class, \get_class($localizedObject)));
-            }
-
-            $this->setExcerptData($localizedObject, $data);
-
-            return;
-        }
-
-        $this->setExcerptData($unlocalizedObject, $data);
+        $this->setExcerptData($localizedDimensionContent, $data);
     }
 
     /**
