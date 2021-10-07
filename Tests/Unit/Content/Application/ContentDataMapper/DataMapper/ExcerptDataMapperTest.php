@@ -20,13 +20,10 @@ use Sulu\Bundle\CategoryBundle\Entity\Category;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\DataMapper\ExcerptDataMapper;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\CategoryFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\TagFactoryInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleDimensionContent;
 use Sulu\Bundle\TagBundle\Entity\Tag;
-use Sulu\Bundle\TagBundle\Tag\TagInterface;
 
 class ExcerptDataMapperTest extends TestCase
 {
@@ -46,7 +43,8 @@ class ExcerptDataMapperTest extends TestCase
         $this->categoryFactory = $this->prophesize(CategoryFactoryInterface::class);
     }
 
-    protected function createExcerptDataMapperInstance(): ExcerptDataMapper {
+    protected function createExcerptDataMapperInstance(): ExcerptDataMapper
+    {
         return new ExcerptDataMapper($this->tagFactory->reveal(), $this->categoryFactory->reveal());
     }
 

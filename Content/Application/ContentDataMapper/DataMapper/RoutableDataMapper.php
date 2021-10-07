@@ -17,7 +17,6 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\RoutableInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Bundle\RouteBundle\Generator\RouteGeneratorInterface;
-use Sulu\Bundle\RouteBundle\Manager\ConflictResolverInterface;
 use Sulu\Bundle\RouteBundle\Manager\RouteManagerInterface;
 use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
 use Sulu\Component\Content\Metadata\PropertyMetadata;
@@ -41,11 +40,6 @@ class RoutableDataMapper implements DataMapperInterface
     private $routeManager;
 
     /**
-     * @var ConflictResolverInterface
-     */
-    private $conflictResolver;
-
-    /**
      * @var array<string, string>
      */
     private $structureDefaultTypes;
@@ -63,14 +57,12 @@ class RoutableDataMapper implements DataMapperInterface
         StructureMetadataFactoryInterface $factory,
         RouteGeneratorInterface $routeGenerator,
         RouteManagerInterface $routeManager,
-        ConflictResolverInterface $conflictResolver,
         array $structureDefaultTypes,
         array $routeMappings
     ) {
         $this->factory = $factory;
         $this->routeGenerator = $routeGenerator;
         $this->routeManager = $routeManager;
-        $this->conflictResolver = $conflictResolver;
         $this->structureDefaultTypes = $structureDefaultTypes;
         $this->routeMappings = $routeMappings;
     }
@@ -85,7 +77,7 @@ class RoutableDataMapper implements DataMapperInterface
         }
 
         if (!$localizedDimensionContent instanceof TemplateInterface) {
-            throw new \RuntimeException('LocalizedDimensionContent needs to extend the TemplateInterface');
+            throw new \RuntimeException('LocalizedDimensionContent needs to extend the TemplateInterface.');
         }
 
         $type = $localizedDimensionContent::getTemplateType();
@@ -107,19 +99,19 @@ class RoutableDataMapper implements DataMapperInterface
         }
 
         $property = $this->getRouteProperty($metadata);
+
         if (!$property) {
-            return;
-        }
-
-        if (!$localizedDimensionContent->getResourceId()) {
-            // FIXME the code only works if the entity is flushed once and has a valid id
-
             return;
         }
 
         $locale = $localizedDimensionContent->getLocale();
         if (!$locale) {
-            return;
+            throw new \RuntimeException('Expected a LocalizedDimensionContent with a locale.');
+        }
+
+        if (!$localizedDimensionContent->getResourceId()) {
+            // TODO route bundle should work to update the entity later with a resourceId over UPDATE SQL statement
+            throw new \RuntimeException('Expected a LocalizedDimensionContent with a resourceId.');
         }
 
         /** @var string $name */
@@ -133,6 +125,7 @@ class RoutableDataMapper implements DataMapperInterface
         $entityClass = null;
         $routeSchema = null;
         $resourceKey = $localizedDimensionContent::getResourceKey();
+
         foreach ($this->routeMappings as $key => $mapping) {
             if ($resourceKey === $mapping['resource_key']) {
                 $entityClass = $mapping['entityClass'] ?? $key;
@@ -142,11 +135,11 @@ class RoutableDataMapper implements DataMapperInterface
         }
 
         if (null === $entityClass || null === $routeSchema) {
-            // TODO FIXME add test case for this
-            return; // @codeCoverageIgnore
+            return;
         }
 
         $routePath = $data[$name] ?? null;
+
         if (!$routePath) {
             /** @var mixed $routeGenerationData */
             $routeGenerationData = \array_merge(
@@ -161,20 +154,19 @@ class RoutableDataMapper implements DataMapperInterface
                 $routeGenerationData,
                 $routeSchema
             );
+        }
 
-            if ('/' === $routePath) {
-                return;
-            }
+        if ('/' === $routePath) {
+            throw new \RuntimeException('Not allowed url "/" given or generated.');
         }
 
         $route = $this->routeManager->createOrUpdateByAttributes(
             $entityClass,
             (string) $localizedDimensionContent->getResourceId(),
             $locale,
-            $routePath
+            $routePath,
+            true
         );
-
-        $this->conflictResolver->resolve($route);
 
         if (($data[$name] ?? null) !== $route->getPath()) {
             $localizedDimensionContent->setTemplateData(

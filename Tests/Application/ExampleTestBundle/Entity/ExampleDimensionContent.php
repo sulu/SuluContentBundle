@@ -85,7 +85,11 @@ class ExampleDimensionContent implements DimensionContentInterface, ExcerptInter
     public function getTemplateData(): array
     {
         $data = $this->parentGetTemplateData();
-        $data['title'] = $this->getTitle();
+        $title = $this->getTitle();
+
+        if ($title) {
+            $data['title'] = $title;
+        }
 
         return $data;
     }

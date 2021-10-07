@@ -15,7 +15,6 @@ namespace Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\DataMa
 
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\CategoryFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\TagFactoryInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 

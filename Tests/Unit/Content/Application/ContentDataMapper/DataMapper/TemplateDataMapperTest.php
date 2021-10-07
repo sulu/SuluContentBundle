@@ -16,14 +16,9 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentDataMa
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\DataMapper\TemplateDataMapper;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleDimensionContent;
-use Sulu\Bundle\ContentBundle\Tests\Unit\Mocks\DimensionContentMockWrapperTrait;
-use Sulu\Bundle\ContentBundle\Tests\Unit\Mocks\MockWrapper;
-use Sulu\Bundle\ContentBundle\Tests\Unit\Mocks\TemplateMockWrapperTrait;
 use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
 use Sulu\Component\Content\Metadata\PropertyMetadata;
 use Sulu\Component\Content\Metadata\StructureMetadata;
@@ -119,8 +114,8 @@ class TemplateDataMapperTest extends TestCase
 
         $this->assertNull($unlocalizedDimensionContent->getTemplateKey());
         $this->assertNull($localizedDimensionContent->getTemplateKey());
-        $this->assertSame(['title' => null], $unlocalizedDimensionContent->getTemplateData());
-        $this->assertSame(['title' => null], $localizedDimensionContent->getTemplateData());
+        $this->assertSame([], $unlocalizedDimensionContent->getTemplateData());
+        $this->assertSame([], $localizedDimensionContent->getTemplateData());
     }
 
     public function testMapData(): void
@@ -145,8 +140,39 @@ class TemplateDataMapperTest extends TestCase
 
         $this->assertNull($unlocalizedDimensionContent->getTemplateKey());
         $this->assertSame('template-key', $localizedDimensionContent->getTemplateKey());
-        $this->assertSame(['unlocalizedField' => 'Test Unlocalized', 'title' => null], $unlocalizedDimensionContent->getTemplateData());
-        $this->assertSame(['title' => 'Test Localized', 'title' => null], $localizedDimensionContent->getTemplateData());
+        $this->assertSame(['unlocalizedField' => 'Test Unlocalized'], $unlocalizedDimensionContent->getTemplateData());
+        $this->assertSame(['title' => 'Test Localized'], $localizedDimensionContent->getTemplateData());
+    }
+
+    public function testMapFloatData(): void
+    {
+        $data = [
+            'template' => 'template-key',
+            'unlocalizedField' => 'Test Unlocalized',
+            'title' => 'Test Localized',
+            '1.1' => 'Test Float',
+        ];
+
+        $example = new Example();
+        $unlocalizedDimensionContent = new ExampleDimensionContent($example);
+        $localizedDimensionContent = new ExampleDimensionContent($example);
+
+        $floatPropertyMetadata = $this->prophesize(PropertyMetadata::class);
+        $floatPropertyMetadata->getName()->willReturn(1.1)->shouldBeCalled();
+        $floatPropertyMetadata->isLocalized()->willReturn(true)->shouldBeCalled();
+
+        $this->structureMetadataFactory->getStructureMetadata(
+            'example',
+            'template-key'
+        )->willReturn($this->createStructureMetadata([$floatPropertyMetadata->reveal()]))->shouldBeCalled();
+
+        $templateMapper = $this->createTemplateDataMapperInstance();
+        $templateMapper->map($unlocalizedDimensionContent, $localizedDimensionContent, $data);
+
+        $this->assertNull($unlocalizedDimensionContent->getTemplateKey());
+        $this->assertSame('template-key', $localizedDimensionContent->getTemplateKey());
+        $this->assertSame(['unlocalizedField' => 'Test Unlocalized'], $unlocalizedDimensionContent->getTemplateData());
+        $this->assertSame(['1.1' => 'Test Float', 'title' => 'Test Localized'], $localizedDimensionContent->getTemplateData());
     }
 
     public function testMapWithDefaultTemplate(): void
@@ -172,11 +198,14 @@ class TemplateDataMapperTest extends TestCase
 
         $this->assertNull($unlocalizedDimensionContent->getTemplateKey());
         $this->assertSame('template-key', $localizedDimensionContent->getTemplateKey());
-        $this->assertSame(['unlocalizedField' => 'Test Unlocalized', 'title' => null], $unlocalizedDimensionContent->getTemplateData());
-        $this->assertSame(['title' => 'Test Localized', 'title' => null], $localizedDimensionContent->getTemplateData());
+        $this->assertSame(['unlocalizedField' => 'Test Unlocalized'], $unlocalizedDimensionContent->getTemplateData());
+        $this->assertSame(['title' => 'Test Localized'], $localizedDimensionContent->getTemplateData());
     }
 
-    private function createStructureMetadata(): StructureMetadata
+    /**
+     * @param PropertyMetadata[] $properties
+     */
+    private function createStructureMetadata(array $properties = []): StructureMetadata
     {
         $unlocalizedPropertyMetadata = $this->prophesize(PropertyMetadata::class);
         $unlocalizedPropertyMetadata->getName()->willReturn('unlocalizedField')->shouldBeCalled();
@@ -186,10 +215,10 @@ class TemplateDataMapperTest extends TestCase
         $localizedPropertyMetadata->isLocalized()->willReturn(true)->shouldBeCalled();
 
         $structureMetadata = $this->prophesize(StructureMetadata::class);
-        $structureMetadata->getProperties()->willReturn([
+        $structureMetadata->getProperties()->willReturn(\array_merge([
             $unlocalizedPropertyMetadata->reveal(),
             $localizedPropertyMetadata->reveal(),
-        ])->shouldBeCalled();
+        ], $properties))->shouldBeCalled();
 
         return $structureMetadata->reveal();
     }

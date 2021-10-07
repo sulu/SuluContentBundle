@@ -136,6 +136,10 @@ class ExampleController extends AbstractRestController implements ClassResourceI
     {
         $example = new Example();
 
+        $this->entityManager->persist($example);
+        // FIXME This flush is needed for RoutableMapper and should in future note longer be required
+        $this->entityManager->flush();
+
         $data = $this->getData($request);
         $dimensionAttributes = $this->getDimensionAttributes($request); // ["locale" => "en", "stage" => "draft"]
 

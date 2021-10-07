@@ -140,7 +140,7 @@ class ExampleControllerTest extends SuluTestCase
         $this->assertResponseSnapshot('example_post.json', $response, 201);
 
         $routeRepository = $this->getContainer()->get('sulu.repository.route');
-        $this->assertCount(0, $routeRepository->findAll());
+        $this->assertCount(1, $routeRepository->findAll());
 
         $id = \json_decode((string) $response->getContent(), true)['id'] ?? null;
 

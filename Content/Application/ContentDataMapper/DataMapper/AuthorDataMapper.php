@@ -15,7 +15,6 @@ namespace Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\DataMa
 
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ContactFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\AuthorInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 
 class AuthorDataMapper implements DataMapperInterface
@@ -38,7 +37,6 @@ class AuthorDataMapper implements DataMapperInterface
         if (!$localizedDimensionContent instanceof AuthorInterface) {
             return;
         }
-
 
         $this->setAuthorData($localizedDimensionContent, $data);
     }

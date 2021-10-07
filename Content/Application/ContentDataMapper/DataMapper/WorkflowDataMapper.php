@@ -31,6 +31,7 @@ class WorkflowDataMapper implements DataMapperInterface
     }
 
     /**
+     * @param WorkflowInterface&DimensionContentInterface $object
      * @param mixed[] $data
      */
     private function setWorkflowData(WorkflowInterface $object, array $data): void
@@ -40,6 +41,7 @@ class WorkflowDataMapper implements DataMapperInterface
     }
 
     /**
+     * @param WorkflowInterface&DimensionContentInterface $object
      * @param mixed[] $data
      */
     private function setInitialPlaceToDraftDimension(WorkflowInterface $object, array $data): void
@@ -48,8 +50,7 @@ class WorkflowDataMapper implements DataMapperInterface
         // after the place was set by this mapper initially, the place should only be changed by the ContentWorkflow
         // see: https://github.com/sulu/SuluContentBundle/issues/92
 
-        if (!$object instanceof DimensionContentInterface
-            || DimensionContentInterface::STAGE_DRAFT !== $object->getStage()) {
+        if (DimensionContentInterface::STAGE_DRAFT !== $object->getStage()) {
             return;
         }
 
@@ -60,6 +61,7 @@ class WorkflowDataMapper implements DataMapperInterface
     }
 
     /**
+     * @param WorkflowInterface&DimensionContentInterface $object
      * @param mixed[] $data
      */
     private function setPublishedToLiveDimension(WorkflowInterface $object, array $data): void
@@ -67,8 +69,7 @@ class WorkflowDataMapper implements DataMapperInterface
         // the published property of the draft dimension should only be changed by a ContentWorkflow subscriber
         // therefore we only want to copy the published property from the draft to the live dimension
 
-        if (!$object instanceof DimensionContentInterface
-            || DimensionContentInterface::STAGE_LIVE !== $object->getStage()) {
+        if (DimensionContentInterface::STAGE_LIVE !== $object->getStage()) {
             return;
         }
 
