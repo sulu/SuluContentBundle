@@ -4,7 +4,7 @@
 
 ### ContentMapperInterface changed
 
-The `ContentMapperInterface` has changed.
+The `ContentMapperInterface` was changed as a preparation for refactoring the `DimensionContentCollection`:
 
 **Before**
 
@@ -27,7 +27,7 @@ The `ContentMapperInterface` has changed.
 
 ### DataMapperInterface changed
 
-The `DataMapperInterface` has changed to make the mapper easier to set localized and unlocalized data.
+The `DataMapperInterface` was changed to make it easier to set localized and unlocalized data:
 
 **Before**
 
