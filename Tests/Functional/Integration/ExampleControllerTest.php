@@ -194,6 +194,9 @@ class ExampleControllerTest extends SuluTestCase
 
         $response = $this->client->getResponse();
 
+        $routeRepository = $this->getContainer()->get('sulu.repository.route');
+        $this->assertCount(0, $routeRepository->findAll());
+
         $this->assertResponseSnapshot('example_put.json', $response, 200);
     }
 

@@ -74,12 +74,13 @@ class DimensionContentCollectionFactoryTest extends TestCase
 
         $contentDataMapper = $this->prophesize(ContentDataMapperInterface::class);
         $contentDataMapper->map(
-            $data,
             Argument::that(
                 function(DimensionContentCollectionInterface $collection) use ($dimensionContent1, $dimensionContent2) {
                     return [$dimensionContent1->reveal(), $dimensionContent2->reveal()] === \iterator_to_array($collection);
                 }
-            )
+            ),
+            $attributes,
+            $data
         )->shouldBeCalled();
 
         $dimensionContentCollectionFactoryInstance = $this->createDimensionContentCollectionFactoryInstance(
@@ -140,12 +141,13 @@ class DimensionContentCollectionFactoryTest extends TestCase
 
         $contentDataMapper = $this->prophesize(ContentDataMapperInterface::class);
         $contentDataMapper->map(
-            $data,
             Argument::that(
                 function(DimensionContentCollectionInterface $collection) use ($dimensionContent1, $dimensionContent2) {
                     return [$dimensionContent1->reveal(), $dimensionContent2->reveal()] === \iterator_to_array($collection);
                 }
-            )
+            ),
+            $attributes,
+            $data
         )->shouldBeCalled();
 
         $dimensionContentCollectionFactoryInstance = $this->createDimensionContentCollectionFactoryInstance(
@@ -198,12 +200,13 @@ class DimensionContentCollectionFactoryTest extends TestCase
 
         $contentDataMapper = $this->prophesize(ContentDataMapperInterface::class);
         $contentDataMapper->map(
-            $data,
             Argument::that(
                 function(DimensionContentCollectionInterface $collection) use ($dimensionContent1, $dimensionContent2) {
                     return [$dimensionContent1->reveal(), $dimensionContent2->reveal()] === \iterator_to_array($collection);
                 }
-            )
+            ),
+            $attributes,
+            $data
         )->shouldBeCalled();
         $dimensionContentCollectionFactoryInstance = $this->createDimensionContentCollectionFactoryInstance(
             $attributes,

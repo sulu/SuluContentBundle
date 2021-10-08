@@ -13,40 +13,25 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\DataMapper;
 
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 
 class WorkflowDataMapper implements DataMapperInterface
 {
     public function map(
-        array $data,
-        DimensionContentCollectionInterface $dimensionContentCollection
+        DimensionContentInterface $unlocalizedDimensionContent,
+        DimensionContentInterface $localizedDimensionContent,
+        array $data
     ): void {
-        $dimensionAttributes = $dimensionContentCollection->getDimensionAttributes();
-        $unlocalizedDimensionAttributes = \array_merge($dimensionAttributes, ['locale' => null]);
-        $unlocalizedObject = $dimensionContentCollection->getDimensionContent($unlocalizedDimensionAttributes);
-
-        if (!$unlocalizedObject instanceof WorkflowInterface) {
+        if (!$localizedDimensionContent instanceof WorkflowInterface) {
             return;
         }
 
-        $localizedObject = $dimensionContentCollection->getDimensionContent($dimensionAttributes);
-
-        if ($localizedObject) {
-            if (!$localizedObject instanceof WorkflowInterface) {
-                throw new \RuntimeException(\sprintf('Expected "$localizedObject" from type "%s" but "%s" given.', WorkflowInterface::class, \get_class($localizedObject)));
-            }
-
-            $this->setWorkflowData($localizedObject, $data);
-
-            return;
-        }
-
-        $this->setWorkflowData($unlocalizedObject, $data);
+        $this->setWorkflowData($localizedDimensionContent, $data);
     }
 
     /**
+     * @param WorkflowInterface&DimensionContentInterface $object
      * @param mixed[] $data
      */
     private function setWorkflowData(WorkflowInterface $object, array $data): void
@@ -56,6 +41,7 @@ class WorkflowDataMapper implements DataMapperInterface
     }
 
     /**
+     * @param WorkflowInterface&DimensionContentInterface $object
      * @param mixed[] $data
      */
     private function setInitialPlaceToDraftDimension(WorkflowInterface $object, array $data): void
@@ -64,8 +50,7 @@ class WorkflowDataMapper implements DataMapperInterface
         // after the place was set by this mapper initially, the place should only be changed by the ContentWorkflow
         // see: https://github.com/sulu/SuluContentBundle/issues/92
 
-        if (!$object instanceof DimensionContentInterface
-            || DimensionContentInterface::STAGE_DRAFT !== $object->getStage()) {
+        if (DimensionContentInterface::STAGE_DRAFT !== $object->getStage()) {
             return;
         }
 
@@ -76,6 +61,7 @@ class WorkflowDataMapper implements DataMapperInterface
     }
 
     /**
+     * @param WorkflowInterface&DimensionContentInterface $object
      * @param mixed[] $data
      */
     private function setPublishedToLiveDimension(WorkflowInterface $object, array $data): void
@@ -83,8 +69,7 @@ class WorkflowDataMapper implements DataMapperInterface
         // the published property of the draft dimension should only be changed by a ContentWorkflow subscriber
         // therefore we only want to copy the published property from the draft to the live dimension
 
-        if (!$object instanceof DimensionContentInterface
-            || DimensionContentInterface::STAGE_LIVE !== $object->getStage()) {
+        if (DimensionContentInterface::STAGE_LIVE !== $object->getStage()) {
             return;
         }
 

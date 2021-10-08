@@ -18,6 +18,7 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\ContentDataM
 use Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\ContentDataMapperInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\DataMapper\DataMapperInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 
 class ContentDataMapperTest extends TestCase
 {
@@ -40,12 +41,46 @@ class ContentDataMapperTest extends TestCase
             $dataMapper2->reveal(),
         ]);
 
+        $unlocalizedDimensionAttributes = ['stage' => 'draft', 'locale' => null];
+        $localizedDimensionAttributes = ['stage' => 'draft', 'locale' => 'en'];
+
         $data = ['test-key' => 'test-value'];
         $dimensionContentCollection = $this->prophesize(DimensionContentCollectionInterface::class);
+        $unlocalizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $localizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContentCollection->getDimensionContent($unlocalizedDimensionAttributes)
+            ->willReturn($unlocalizedDimensionContent->reveal())
+            ->shouldBeCalled();
+        $dimensionContentCollection->getDimensionContent($localizedDimensionAttributes)
+            ->willReturn($localizedDimensionContent->reveal())
+            ->shouldBeCalled();
 
-        $dataMapper1->map($data, $dimensionContentCollection->reveal())->shouldBeCalled();
-        $dataMapper2->map($data, $dimensionContentCollection->reveal())->shouldBeCalled();
+        $dataMapper1->map($unlocalizedDimensionContent->reveal(), $localizedDimensionContent->reveal(), $data)
+            ->shouldBeCalled();
+        $dataMapper2->map($unlocalizedDimensionContent->reveal(), $localizedDimensionContent->reveal(), $data)
+            ->shouldBeCalled();
 
-        $contentDataMapper->map($data, $dimensionContentCollection->reveal());
+        $contentDataMapper->map($dimensionContentCollection->reveal(), $localizedDimensionAttributes, $data);
+    }
+
+    public function testMapNoLocalized(): void
+    {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Create unlocalized and localized dimension content.');
+
+        $unlocalizedDimensionAttributes = ['stage' => 'draft', 'locale' => null];
+        $localizedDimensionAttributes = ['stage' => 'draft', 'locale' => 'en'];
+
+        $data = ['test-key' => 'test-value'];
+        $dimensionContentCollection = $this->prophesize(DimensionContentCollectionInterface::class);
+        $dimensionContentCollection->getDimensionContent($unlocalizedDimensionAttributes)
+            ->willReturn(null)
+            ->shouldBeCalled();
+        $dimensionContentCollection->getDimensionContent($localizedDimensionAttributes)
+            ->willReturn(null)
+            ->shouldBeCalled();
+
+        $contentDataMapper = $this->createContentDataMapperInstance([]);
+        $contentDataMapper->map($dimensionContentCollection->reveal(), $localizedDimensionAttributes, $data);
     }
 }

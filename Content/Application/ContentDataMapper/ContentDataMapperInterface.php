@@ -19,9 +19,11 @@ interface ContentDataMapperInterface
 {
     /**
      * @param array<string, mixed> $data
+     * @param mixed[] $dimensionAttributes
      */
     public function map(
-        array $data,
-        DimensionContentCollectionInterface $dimensionContentCollection
+        DimensionContentCollectionInterface $dimensionContentCollection,
+        array $dimensionAttributes,
+        array $data
     ): void;
 }

@@ -15,7 +15,7 @@ namespace Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\DataMa
 
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\ContactFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\AuthorInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 
 class AuthorDataMapper implements DataMapperInterface
 {
@@ -30,30 +30,15 @@ class AuthorDataMapper implements DataMapperInterface
     }
 
     public function map(
-        array $data,
-        DimensionContentCollectionInterface $dimensionContentCollection
+        DimensionContentInterface $unlocalizedDimensionContent,
+        DimensionContentInterface $localizedDimensionContent,
+        array $data
     ): void {
-        $dimensionAttributes = $dimensionContentCollection->getDimensionAttributes();
-        $unlocalizedDimensionAttributes = \array_merge($dimensionAttributes, ['locale' => null]);
-        $unlocalizedObject = $dimensionContentCollection->getDimensionContent($unlocalizedDimensionAttributes);
-
-        if (!$unlocalizedObject instanceof AuthorInterface) {
+        if (!$localizedDimensionContent instanceof AuthorInterface) {
             return;
         }
 
-        $localizedObject = $dimensionContentCollection->getDimensionContent($dimensionAttributes);
-
-        if ($localizedObject) {
-            if (!$localizedObject instanceof AuthorInterface) {
-                throw new \RuntimeException(\sprintf('Expected "$localizedObject" from type "%s" but "%s" given.', AuthorInterface::class, \get_class($localizedObject)));
-            }
-
-            $this->setAuthorData($localizedObject, $data);
-
-            return;
-        }
-
-        $this->setAuthorData($unlocalizedObject, $data);
+        $this->setAuthorData($localizedDimensionContent, $data);
     }
 
     /**
@@ -61,11 +46,11 @@ class AuthorDataMapper implements DataMapperInterface
      */
     private function setAuthorData(AuthorInterface $dimensionContent, array $data): void
     {
-        if (isset($data['author'])) {
+        if (\array_key_exists('author', $data)) {
             $dimensionContent->setAuthor($this->contactFactory->create($data['author']));
         }
 
-        if (isset($data['authored'])) {
+        if (\array_key_exists('authored', $data)) {
             $dimensionContent->setAuthored(new \DateTimeImmutable($data['authored']));
         }
     }

@@ -15,7 +15,7 @@ namespace Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\DataMa
 
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\CategoryFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\TagFactoryInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 
 class ExcerptDataMapper implements DataMapperInterface
@@ -37,30 +37,15 @@ class ExcerptDataMapper implements DataMapperInterface
     }
 
     public function map(
-        array $data,
-        DimensionContentCollectionInterface $dimensionContentCollection
+        DimensionContentInterface $unlocalizedDimensionContent,
+        DimensionContentInterface $localizedDimensionContent,
+        array $data
     ): void {
-        $dimensionAttributes = $dimensionContentCollection->getDimensionAttributes();
-        $unlocalizedDimensionAttributes = \array_merge($dimensionAttributes, ['locale' => null]);
-        $unlocalizedObject = $dimensionContentCollection->getDimensionContent($unlocalizedDimensionAttributes);
-
-        if (!$unlocalizedObject instanceof ExcerptInterface) {
+        if (!$localizedDimensionContent instanceof ExcerptInterface) {
             return;
         }
 
-        $localizedObject = $dimensionContentCollection->getDimensionContent($dimensionAttributes);
-
-        if ($localizedObject) {
-            if (!$localizedObject instanceof ExcerptInterface) {
-                throw new \RuntimeException(\sprintf('Expected "$localizedObject" from type "%s" but "%s" given.', ExcerptInterface::class, \get_class($localizedObject)));
-            }
-
-            $this->setExcerptData($localizedObject, $data);
-
-            return;
-        }
-
-        $this->setExcerptData($unlocalizedObject, $data);
+        $this->setExcerptData($localizedDimensionContent, $data);
     }
 
     /**
@@ -68,14 +53,28 @@ class ExcerptDataMapper implements DataMapperInterface
      */
     private function setExcerptData(ExcerptInterface $dimensionContent, array $data): void
     {
-        $dimensionContent->setExcerptTitle($data['excerptTitle'] ?? null);
-        $dimensionContent->setExcerptDescription($data['excerptDescription'] ?? null);
-        $dimensionContent->setExcerptMore($data['excerptMore'] ?? null);
-        $dimensionContent->setExcerptImage($data['excerptImage'] ?? null);
-        $dimensionContent->setExcerptIcon($data['excerptIcon'] ?? null);
-        $dimensionContent->setExcerptTags($this->tagFactory->create($data['excerptTags'] ?? []));
-        $dimensionContent->setExcerptCategories(
-            $this->categoryFactory->create($data['excerptCategories'] ?? [])
-        );
+        if (\array_key_exists('excerptTitle', $data)) {
+            $dimensionContent->setExcerptTitle($data['excerptTitle']);
+        }
+        if (\array_key_exists('excerptDescription', $data)) {
+            $dimensionContent->setExcerptDescription($data['excerptDescription']);
+        }
+        if (\array_key_exists('excerptMore', $data)) {
+            $dimensionContent->setExcerptMore($data['excerptMore']);
+        }
+        if (\array_key_exists('excerptImage', $data)) {
+            $dimensionContent->setExcerptImage($data['excerptImage']);
+        }
+        if (\array_key_exists('excerptIcon', $data)) {
+            $dimensionContent->setExcerptIcon($data['excerptIcon']);
+        }
+        if (\array_key_exists('excerptTags', $data)) {
+            $dimensionContent->setExcerptTags($this->tagFactory->create($data['excerptTags'] ?: []));
+        }
+        if (\array_key_exists('excerptCategories', $data)) {
+            $dimensionContent->setExcerptCategories(
+                $this->categoryFactory->create($data['excerptCategories'] ?: [])
+            );
+        }
     }
 }

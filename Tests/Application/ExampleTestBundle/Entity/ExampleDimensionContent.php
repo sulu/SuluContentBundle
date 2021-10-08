@@ -37,7 +37,6 @@ class ExampleDimensionContent implements DimensionContentInterface, ExcerptInter
     use RoutableTrait;
     use SeoTrait;
     use TemplateTrait {
-        getTemplateData as parentGetTemplateData;
         setTemplateData as parentSetTemplateData;
     }
     use WorkflowTrait;
@@ -77,23 +76,12 @@ class ExampleDimensionContent implements DimensionContentInterface, ExcerptInter
         return $this->title;
     }
 
-    public function setTitle(?string $title): void
-    {
-        $this->title = $title;
-    }
-
-    public function getTemplateData(): array
-    {
-        $data = $this->parentGetTemplateData();
-        $data['title'] = $this->getTitle();
-
-        return $data;
-    }
-
     public function setTemplateData(array $templateData): void
     {
-        $this->setTitle($templateData['title']);
-        unset($templateData['title']);
+        if (\array_key_exists('title', $templateData)) {
+            $this->title = $templateData['title'] ?? null;
+        }
+
         $this->parentSetTemplateData($templateData);
     }
 

@@ -56,7 +56,6 @@ trait CreateExampleTrait
         $localizedDimensionContent = $example->createDimensionContent();
         $localizedDimensionContent->setLocale($locale);
         $localizedDimensionContent->setStage($stage);
-        $localizedDimensionContent->setTitle($data['title'] ?? null);
 
         $templateKey = $data['templateKey'] ?? null;
         if ($templateKey) {

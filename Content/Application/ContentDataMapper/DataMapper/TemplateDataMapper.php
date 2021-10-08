@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\DataMapper;
 
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
 
@@ -39,18 +39,17 @@ class TemplateDataMapper implements DataMapperInterface
     }
 
     public function map(
-        array $data,
-        DimensionContentCollectionInterface $dimensionContentCollection
+        DimensionContentInterface $unlocalizedDimensionContent,
+        DimensionContentInterface $localizedDimensionContent,
+        array $data
     ): void {
-        $dimensionAttributes = $dimensionContentCollection->getDimensionAttributes();
-        $unlocalizedDimensionAttributes = \array_merge($dimensionAttributes, ['locale' => null]);
-        $unlocalizedObject = $dimensionContentCollection->getDimensionContent($unlocalizedDimensionAttributes);
-
-        if (!$unlocalizedObject instanceof TemplateInterface) {
+        if (!$localizedDimensionContent instanceof TemplateInterface
+            || !$unlocalizedDimensionContent instanceof TemplateInterface
+        ) {
             return;
         }
 
-        $type = $unlocalizedObject::getTemplateType();
+        $type = $localizedDimensionContent::getTemplateType();
 
         /** @var string|null $template */
         $template = $data['template'] ?? null;
@@ -63,31 +62,22 @@ class TemplateDataMapper implements DataMapperInterface
             throw new \RuntimeException('Expected "template" to be set in the data array.');
         }
 
-        list($unlocalizedData, $localizedData) = $this->getTemplateData(
+        list($unlocalizedData, $localizedData, $hasAnyValue) = $this->getTemplateData(
             $data,
             $type,
             $template
         );
 
-        $localizedObject = $dimensionContentCollection->getDimensionContent($dimensionAttributes);
-
-        if ($localizedObject) {
-            if (!$localizedObject instanceof TemplateInterface) {
-                throw new \RuntimeException(\sprintf('Expected "$localizedObject" from type "%s" but "%s" given.', TemplateInterface::class, \get_class($localizedObject)));
-            }
-
-            $localizedObject->setTemplateKey($template);
-            $localizedObject->setTemplateData($localizedData);
+        if (!isset($data['template']) && !$hasAnyValue) {
+            // do nothing when no data was given
+            return;
         }
 
-        if (!$localizedObject) {
-            // Only set templateKey to unlocalizedDimension when no localizedDimension exist
-            $unlocalizedObject->setTemplateKey($template);
-        }
+        $localizedDimensionContent->setTemplateKey($template);
+        $localizedDimensionContent->setTemplateData($localizedData);
 
-        // Unlocalized dimensions can contain data of different templates so we need to merge them together
-        $unlocalizedObject->setTemplateData(\array_merge(
-            $unlocalizedObject->getTemplateData(),
+        $unlocalizedDimensionContent->setTemplateData(\array_merge(
+            $unlocalizedDimensionContent->getTemplateData(),
             $unlocalizedData
         ));
     }
@@ -95,7 +85,11 @@ class TemplateDataMapper implements DataMapperInterface
     /**
      * @param mixed[] $data
      *
-     * @return mixed[]
+     * @return array{
+     *     0: mixed[],
+     *     1: mixed[],
+     *     2: bool,
+     * }
      */
     private function getTemplateData(array $data, string $type, string $template): array
     {
@@ -107,6 +101,7 @@ class TemplateDataMapper implements DataMapperInterface
 
         $unlocalizedData = [];
         $localizedData = [];
+        $hasAnyValue = false;
 
         foreach ($metadata->getProperties() as $property) {
             $value = null;
@@ -118,6 +113,7 @@ class TemplateDataMapper implements DataMapperInterface
             }
 
             if (\array_key_exists($name, $data)) {
+                $hasAnyValue = true;
                 $value = $data[$name];
             }
 
@@ -129,6 +125,6 @@ class TemplateDataMapper implements DataMapperInterface
             $unlocalizedData[$name] = $value;
         }
 
-        return [$unlocalizedData, $localizedData];
+        return [$unlocalizedData, $localizedData, $hasAnyValue];
     }
 }

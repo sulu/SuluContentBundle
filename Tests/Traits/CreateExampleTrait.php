@@ -97,7 +97,11 @@ trait CreateExampleTrait
                 ['stage' => DimensionContentInterface::STAGE_DRAFT, 'locale' => $locale],
                 ExampleDimensionContent::class
             );
-            $contentDataMapper->map($fillWithdefaultData($draftData), $draftDimensionContentCollection);
+            $contentDataMapper->map(
+                $draftDimensionContentCollection,
+                $draftDimensionContentCollection->getDimensionAttributes(),
+                $fillWithdefaultData($draftData)
+            );
             $draftLocalizedDimension->setWorkflowPlace(WorkflowInterface::WORKFLOW_PLACE_DRAFT);
 
             if ($liveData) {
@@ -134,7 +138,11 @@ trait CreateExampleTrait
                     ExampleDimensionContent::class
                 );
                 $liveData['published'] = \date('Y-m-d H:i:s');
-                $contentDataMapper->map($fillWithdefaultData($liveData), $liveDimensionContentCollection);
+                $contentDataMapper->map(
+                    $liveDimensionContentCollection,
+                    $liveDimensionContentCollection->getDimensionAttributes(),
+                    $fillWithdefaultData($liveData)
+                );
 
                 if ($options['create_route'] ?? false) {
                     $route = new Route();

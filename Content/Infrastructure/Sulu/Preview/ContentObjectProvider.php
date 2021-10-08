@@ -102,7 +102,11 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
     public function setValues($object, $locale, array $data): void
     {
         $previewDimensionContentCollection = new PreviewDimensionContentCollection($object, $locale);
-        $this->contentDataMapper->map($data, $previewDimensionContentCollection);
+        $this->contentDataMapper->map(
+            $previewDimensionContentCollection,
+            $previewDimensionContentCollection->getDimensionAttributes(),
+            $data
+        );
     }
 
     /**

@@ -1,5 +1,53 @@
 # Upgrade
 
+## 0.7.0
+
+### ContentMapperInterface changed
+
+The `ContentMapperInterface` was changed as a preparation for refactoring the `DimensionContentCollection`:
+
+**Before**
+
+```php
+    public function map(
+        array $data,
+        DimensionContentCollectionInterface $dimensionContentCollection
+    ): void;
+```
+
+**After**
+
+```php
+    public function map(
+        DimensionContentCollectionInterface $dimensionContentCollection,
+        array $dimensionAttributes,
+        array $data
+    ): void;
+```
+
+### DataMapperInterface changed
+
+The `DataMapperInterface` was changed to make it easier to set localized and unlocalized data:
+
+**Before**
+
+```php
+    public function map(
+        array $data,
+        DimensionContentCollectionInterface $dimensionContentCollection
+    ): void;
+```
+
+**After**
+
+```php
+    public function map(
+        DimensionContentInterface $unlocalizedDimensionContent,
+        DimensionContentInterface $localizedDimensionContent,
+        array $data
+    ): void;
+```
+
 ## 0.6.0
 
 ### Adjusted ContentDataMapper to accept DimensionContentCollection instead of separate objects

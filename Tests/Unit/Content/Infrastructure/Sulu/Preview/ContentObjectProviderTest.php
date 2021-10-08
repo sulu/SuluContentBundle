@@ -29,6 +29,7 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Preview\ContentObjectProvider;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Preview\PreviewDimensionContentCollection;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
+use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleDimensionContent;
 
 class ContentObjectProviderTest extends TestCase
 {
@@ -193,17 +194,19 @@ class ContentObjectProviderTest extends TestCase
             'excerptIcon' => ['id' => 4],
         ]
     ): void {
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $example = new Example();
+        $exampleDimensionContent = new ExampleDimensionContent($example);
 
-        $this->contentObjectProvider->setValues($dimensionContent->reveal(), $locale, $data);
+        $this->contentObjectProvider->setValues($exampleDimensionContent, $locale, $data);
 
         $this->contentDataMapper->map(
-            $data,
             Argument::that(
-                function(PreviewDimensionContentCollection $dimensionContentCollection) use ($dimensionContent) {
-                    return $dimensionContent->reveal() === $dimensionContentCollection->getDimensionContent([]);
+                function(PreviewDimensionContentCollection $dimensionContentCollection) use ($exampleDimensionContent) {
+                    return $exampleDimensionContent === $dimensionContentCollection->getDimensionContent([]);
                 }
-            )
+            ),
+            ['locale' => 'de', 'stage' => 'draft'],
+            $data
         )->shouldBeCalledTimes(1);
     }
 
