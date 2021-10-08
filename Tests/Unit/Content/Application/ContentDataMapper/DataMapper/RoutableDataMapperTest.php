@@ -220,34 +220,6 @@ class RoutableDataMapperTest extends TestCase
         $this->assertSame([], $localizedDimensionContent->getTemplateData());
     }
 
-    public function testMapNoResourceId(): void
-    {
-        $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('Expected a LocalizedDimensionContent with a resourceId.');
-
-        $data = [
-            'template' => 'default',
-        ];
-
-        $example = new Example();
-        $unlocalizedDimensionContent = new ExampleDimensionContent($example);
-        $localizedDimensionContent = new ExampleDimensionContent($example);
-        $localizedDimensionContent->setLocale('en');
-
-        $this->structureMetadataFactory->getStructureMetadata('example', 'default')
-            ->shouldBeCalled()
-            ->willReturn($this->createRouteStructureMetadata());
-
-        $this->routeManager->createOrUpdateByAttributes(Argument::cetera())->shouldNotBeCalled();
-        $this->routeGenerator->generate(Argument::cetera())
-            ->shouldNotBeCalled();
-
-        $mapper = $this->createRouteDataMapperInstance();
-        $mapper->map($unlocalizedDimensionContent, $localizedDimensionContent, $data);
-
-        $this->assertSame([], $localizedDimensionContent->getTemplateData());
-    }
-
     public function testMapNoRoutePropertyValue(): void
     {
         // see https://github.com/sulu/SuluContentBundle/pull/55
@@ -310,6 +282,37 @@ class RoutableDataMapperTest extends TestCase
         $this->assertSame([], $localizedDimensionContent->getTemplateData());
     }
 
+    public function testMapNoResourceId(): void
+    {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Expected a LocalizedDimensionContent with a resourceId.');
+
+        $data = [
+            'template' => 'default',
+            'url' => '/test',
+        ];
+
+        $example = new Example();
+        $unlocalizedDimensionContent = new ExampleDimensionContent($example);
+        $unlocalizedDimensionContent->setStage('live');
+        $localizedDimensionContent = new ExampleDimensionContent($example);
+        $localizedDimensionContent->setStage('live');
+        $localizedDimensionContent->setLocale('en');
+
+        $this->structureMetadataFactory->getStructureMetadata('example', 'default')
+            ->shouldBeCalled()
+            ->willReturn($this->createRouteStructureMetadata());
+
+        $this->routeManager->createOrUpdateByAttributes(Argument::cetera())->shouldNotBeCalled();
+        $this->routeGenerator->generate(Argument::cetera())
+            ->shouldNotBeCalled();
+
+        $mapper = $this->createRouteDataMapperInstance();
+        $mapper->map($unlocalizedDimensionContent, $localizedDimensionContent, $data);
+
+        $this->assertSame([], $localizedDimensionContent->getTemplateData());
+    }
+
     public function testMapRouteProperty(): void
     {
         $data = [
@@ -323,7 +326,9 @@ class RoutableDataMapperTest extends TestCase
         $example = new Example();
         static::setPrivateProperty($example, 'id', 1);
         $unlocalizedDimensionContent = new ExampleDimensionContent($example);
+        $unlocalizedDimensionContent->setStage('live');
         $localizedDimensionContent = new ExampleDimensionContent($example);
+        $localizedDimensionContent->setStage('live');
         $localizedDimensionContent->setLocale('en');
 
         $this->structureMetadataFactory->getStructureMetadata('example', 'default')
@@ -351,6 +356,36 @@ class RoutableDataMapperTest extends TestCase
         ], $localizedDimensionContent->getTemplateData());
     }
 
+    public function testMapRouteDraftDimension(): void
+    {
+        $data = [
+            'template' => 'default',
+            'url' => '/test',
+        ];
+
+        $example = new Example();
+        $unlocalizedDimensionContent = new ExampleDimensionContent($example);
+        $localizedDimensionContent = new ExampleDimensionContent($example);
+        $localizedDimensionContent->setLocale('en');
+
+        $this->structureMetadataFactory->getStructureMetadata('example', 'default')
+            ->shouldBeCalled()
+            ->willReturn($this->createRouteStructureMetadata());
+
+        $this->routeManager->createOrUpdateByAttributes(Argument::cetera())
+            ->shouldNotBeCalled();
+
+        $this->routeGenerator->generate(Argument::cetera())
+            ->shouldNotBeCalled();
+
+        $mapper = $this->createRouteDataMapperInstance();
+        $mapper->map($unlocalizedDimensionContent, $localizedDimensionContent, $data);
+
+        $this->assertSame([
+            'url' => '/test',
+        ], $localizedDimensionContent->getTemplateData());
+    }
+
     public function testMapNoNewAndOldUrl(): void
     {
         $data = [
@@ -363,7 +398,9 @@ class RoutableDataMapperTest extends TestCase
         $example = new Example();
         static::setPrivateProperty($example, 'id', 1);
         $unlocalizedDimensionContent = new ExampleDimensionContent($example);
+        $unlocalizedDimensionContent->setStage('live');
         $localizedDimensionContent = new ExampleDimensionContent($example);
+        $localizedDimensionContent->setStage('live');
         $localizedDimensionContent->setLocale('en');
 
         $this->structureMetadataFactory->getStructureMetadata('example', 'default')
@@ -402,7 +439,9 @@ class RoutableDataMapperTest extends TestCase
         $example = new Example();
         static::setPrivateProperty($example, 'id', 1);
         $unlocalizedDimensionContent = new ExampleDimensionContent($example);
+        $unlocalizedDimensionContent->setStage('live');
         $localizedDimensionContent = new ExampleDimensionContent($example);
+        $localizedDimensionContent->setStage('live');
         $localizedDimensionContent->setLocale('en');
         $localizedDimensionContent->setTemplateData(['url' => '/example']);
 
@@ -437,7 +476,9 @@ class RoutableDataMapperTest extends TestCase
         $example = new Example();
         static::setPrivateProperty($example, 'id', 123);
         $unlocalizedDimensionContent = new ExampleDimensionContent($example);
+        $unlocalizedDimensionContent->setStage('live');
         $localizedDimensionContent = new ExampleDimensionContent($example);
+        $localizedDimensionContent->setStage('live');
         $localizedDimensionContent->setLocale('en');
         $localizedDimensionContent->setTemplateData(['title' => 'Test', 'url' => null]);
 
@@ -450,7 +491,7 @@ class RoutableDataMapperTest extends TestCase
                 '_unlocalizedObject' => $unlocalizedDimensionContent,
                 '_localizedObject' => $localizedDimensionContent,
             ]),
-            ['route_schema' => 'custom/{object["_localizedObject"].getName()}-{object["_unlocalizedObject"].getResourceId()}']
+            ['route_schema' => 'custom/{object["_localizedObject"].getTitle()}-{object["_unlocalizedObject"].getResourceId()}']
         )->willReturn('/custom/testEntity-123');
 
         $this->routeManager->createOrUpdateByAttributes(
@@ -467,7 +508,7 @@ class RoutableDataMapperTest extends TestCase
             'examples' => [
                 'generator' => 'schema',
                 'options' => [
-                    'route_schema' => 'custom/{object["_localizedObject"].getName()}-{object["_unlocalizedObject"].getResourceId()}',
+                    'route_schema' => 'custom/{object["_localizedObject"].getTitle()}-{object["_unlocalizedObject"].getResourceId()}',
                 ],
                 'resource_key' => 'examples',
                 'entityClass' => Example::class,
@@ -476,8 +517,8 @@ class RoutableDataMapperTest extends TestCase
         $mapper->map($unlocalizedDimensionContent, $localizedDimensionContent, $data);
 
         $this->assertSame([
-            'url' => '/custom/testEntity-123',
             'title' => 'Test',
+            'url' => '/custom/testEntity-123',
         ], $localizedDimensionContent->getTemplateData());
     }
 
@@ -528,7 +569,9 @@ class RoutableDataMapperTest extends TestCase
         $example = new Example();
         static::setPrivateProperty($example, 'id', 1);
         $unlocalizedDimensionContent = new ExampleDimensionContent($example);
+        $unlocalizedDimensionContent->setStage('live');
         $localizedDimensionContent = new ExampleDimensionContent($example);
+        $localizedDimensionContent->setStage('live');
         $localizedDimensionContent->setLocale('en');
 
         $this->structureMetadataFactory->getStructureMetadata('example', 'new-default')

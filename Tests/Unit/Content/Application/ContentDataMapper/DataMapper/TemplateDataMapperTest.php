@@ -172,7 +172,7 @@ class TemplateDataMapperTest extends TestCase
         $this->assertNull($unlocalizedDimensionContent->getTemplateKey());
         $this->assertSame('template-key', $localizedDimensionContent->getTemplateKey());
         $this->assertSame(['unlocalizedField' => 'Test Unlocalized'], $unlocalizedDimensionContent->getTemplateData());
-        $this->assertSame(['1.1' => 'Test Float', 'title' => 'Test Localized'], $localizedDimensionContent->getTemplateData());
+        $this->assertSame(['title' => 'Test Localized', '1.1' => 'Test Float'], $localizedDimensionContent->getTemplateData());
     }
 
     public function testMapWithDefaultTemplate(): void

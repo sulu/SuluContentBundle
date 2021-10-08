@@ -80,6 +80,10 @@ class RoutableDataMapper implements DataMapperInterface
             throw new \RuntimeException('LocalizedDimensionContent needs to extend the TemplateInterface.');
         }
 
+        if (DimensionContentInterface::STAGE_LIVE !== $localizedDimensionContent->getStage()) {
+            // return;
+        }
+
         $type = $localizedDimensionContent::getTemplateType();
 
         /** @var string|null $template */
@@ -107,11 +111,6 @@ class RoutableDataMapper implements DataMapperInterface
         $locale = $localizedDimensionContent->getLocale();
         if (!$locale) {
             throw new \RuntimeException('Expected a LocalizedDimensionContent with a locale.');
-        }
-
-        if (!$localizedDimensionContent->getResourceId()) {
-            // TODO route bundle should work to update the entity later with a resourceId over UPDATE SQL statement
-            throw new \RuntimeException('Expected a LocalizedDimensionContent with a resourceId.');
         }
 
         /** @var string $name */
@@ -160,19 +159,30 @@ class RoutableDataMapper implements DataMapperInterface
             throw new \RuntimeException('Not allowed url "/" given or generated.');
         }
 
-        $route = $this->routeManager->createOrUpdateByAttributes(
-            $entityClass,
-            (string) $localizedDimensionContent->getResourceId(),
-            $locale,
-            $routePath,
-            true
-        );
+        if (DimensionContentInterface::STAGE_LIVE === $localizedDimensionContent->getStage()) {
+            if (!$localizedDimensionContent->getResourceId()) {
+                // TODO route bundle should work to update the entity later with a resourceId over UPDATE SQL statement
+                throw new \RuntimeException('Expected a LocalizedDimensionContent with a resourceId.');
+            }
 
-        if (($data[$name] ?? null) !== $route->getPath()) {
+            // route should only be updated in live dimension
+            $route = $this->routeManager->createOrUpdateByAttributes(
+                $entityClass,
+                (string) $localizedDimensionContent->getResourceId(),
+                $locale,
+                $routePath,
+                true
+            );
+
+            $routePath = $route->getPath();
+        }
+
+        $oldData = $localizedDimensionContent->getTemplateData();
+        if (($oldData[$name] ?? null) !== $routePath) {
             $localizedDimensionContent->setTemplateData(
                 \array_merge(
-                    $localizedDimensionContent->getTemplateData(),
-                    [$name => $route->getPath()]
+                    $oldData,
+                    [$name => $routePath]
                 )
             );
         }
