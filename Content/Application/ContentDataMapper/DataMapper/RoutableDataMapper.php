@@ -16,7 +16,9 @@ namespace Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\DataMa
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\RoutableInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
+use Sulu\Bundle\RouteBundle\Entity\Route;
 use Sulu\Bundle\RouteBundle\Generator\RouteGeneratorInterface;
+use Sulu\Bundle\RouteBundle\Manager\ConflictResolverInterface;
 use Sulu\Bundle\RouteBundle\Manager\RouteManagerInterface;
 use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
 use Sulu\Component\Content\Metadata\PropertyMetadata;
@@ -40,9 +42,9 @@ class RoutableDataMapper implements DataMapperInterface
     private $routeManager;
 
     /**
-     * @var array<string, string>
+     * @var ConflictResolverInterface
      */
-    private $structureDefaultTypes;
+    private $conflictResolver;
 
     /**
      * @var array<string, array<mixed>>
@@ -50,20 +52,19 @@ class RoutableDataMapper implements DataMapperInterface
     private $routeMappings;
 
     /**
-     * @param array<string, string> $structureDefaultTypes
      * @param array<string, array<mixed>> $routeMappings
      */
     public function __construct(
         StructureMetadataFactoryInterface $factory,
         RouteGeneratorInterface $routeGenerator,
         RouteManagerInterface $routeManager,
-        array $structureDefaultTypes,
+        ConflictResolverInterface $conflictResolver,
         array $routeMappings
     ) {
         $this->factory = $factory;
         $this->routeGenerator = $routeGenerator;
         $this->routeManager = $routeManager;
-        $this->structureDefaultTypes = $structureDefaultTypes;
+        $this->conflictResolver = $conflictResolver;
         $this->routeMappings = $routeMappings;
     }
 
@@ -80,21 +81,13 @@ class RoutableDataMapper implements DataMapperInterface
             throw new \RuntimeException('LocalizedDimensionContent needs to extend the TemplateInterface.');
         }
 
-        if (DimensionContentInterface::STAGE_LIVE !== $localizedDimensionContent->getStage()) {
-            // return;
-        }
-
         $type = $localizedDimensionContent::getTemplateType();
 
         /** @var string|null $template */
-        $template = $data['template'] ?? null;
+        $template = $localizedDimensionContent->getTemplateKey() ?? null;
 
         if (null === $template) {
-            $template = $this->structureDefaultTypes[$type] ?? null;
-        }
-
-        if (null === $template) {
-            throw new \RuntimeException('Expected "template" to be set in the data array.');
+            throw new \RuntimeException('LocalizedDimensionContent should return the a template.');
         }
 
         $metadata = $this->factory->getStructureMetadata($type, $template);
@@ -171,10 +164,19 @@ class RoutableDataMapper implements DataMapperInterface
                 (string) $localizedDimensionContent->getResourceId(),
                 $locale,
                 $routePath,
-                true
+                false
             );
 
             $routePath = $route->getPath();
+        } else {
+            $route = new Route();
+            $route->setPath($routePath);
+            $route->setLocale($locale);
+            $route->setEntityClass($entityClass);
+            $route->setEntityId((string) $localizedDimensionContent->getResourceId());
+
+            $routePath = $this->conflictResolver->resolve($route)
+                ->getPath();
         }
 
         $oldData = $localizedDimensionContent->getTemplateData();
