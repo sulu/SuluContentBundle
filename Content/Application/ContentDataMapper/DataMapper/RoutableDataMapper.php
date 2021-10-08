@@ -135,7 +135,7 @@ class RoutableDataMapper implements DataMapperInterface
         }
 
         if (null === $entityClass || null === $routeSchema) {
-            return;
+            throw new \RuntimeException(\sprintf('No route mapping found for "%s".', $resourceKey));
         }
 
         $routePath = $data[$name] ?? null;

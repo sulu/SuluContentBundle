@@ -282,6 +282,9 @@ class RoutableDataMapperTest extends TestCase
 
     public function testMapNoRouteMapping(): void
     {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('No route mapping found for "examples".');
+
         $data = [
             'template' => 'default',
             'url' => '/test',
