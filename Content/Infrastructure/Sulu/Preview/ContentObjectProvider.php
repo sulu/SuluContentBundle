@@ -46,18 +46,25 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
     private $contentRichEntityClass;
 
     /**
+     * @var string|null
+     */
+    private $securityContext;
+
+    /**
      * @param class-string<ContentRichEntityInterface> $contentRichEntityClass
      */
     public function __construct(
         EntityManagerInterface $entityManager,
         ContentResolverInterface $contentResolver,
         ContentDataMapperInterface $contentDataMapper,
-        string $contentRichEntityClass
+        string $contentRichEntityClass,
+        ?string $securityContext = null
     ) {
         $this->entityManager = $entityManager;
         $this->contentResolver = $contentResolver;
         $this->contentDataMapper = $contentDataMapper;
         $this->contentRichEntityClass = $contentRichEntityClass;
+        $this->securityContext = $securityContext;
     }
 
     /**
@@ -152,6 +159,11 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
         }
 
         return $this->getObject($id, $locale);
+    }
+
+    public function getSecurityContext($id, $locale): ?string
+    {
+        return $this->securityContext;
     }
 
     protected function resolveContent(ContentRichEntityInterface $contentRichEntity, string $locale): ?DimensionContentInterface

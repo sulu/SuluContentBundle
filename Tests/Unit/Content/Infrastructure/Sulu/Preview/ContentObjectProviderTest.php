@@ -28,6 +28,7 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Preview\ContentObjectProvider;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Preview\PreviewDimensionContentCollection;
+use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Admin\ExampleAdmin;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
 
 class ContentObjectProviderTest extends TestCase
@@ -62,7 +63,8 @@ class ContentObjectProviderTest extends TestCase
             $this->entityManager->reveal(),
             $this->contentResolver->reveal(),
             $this->contentDataMapper->reveal(),
-            Example::class
+            Example::class,
+            ExampleAdmin::SECURITY_CONTEXT
         );
     }
 
@@ -309,5 +311,13 @@ class ContentObjectProviderTest extends TestCase
         $result = $this->contentObjectProvider->deserialize($serializedObject, DimensionContentInterface::class);
 
         $this->assertNull($result);
+    }
+
+    public function testGetSecurityContext(): void
+    {
+        $this->assertSame(
+            ExampleAdmin::SECURITY_CONTEXT,
+            $this->contentObjectProvider->getSecurityContext('123-123-123', 'en')
+        );
     }
 }
