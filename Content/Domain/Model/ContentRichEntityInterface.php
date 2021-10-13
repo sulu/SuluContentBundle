@@ -28,6 +28,16 @@ interface ContentRichEntityInterface
      */
     public function getDimensionContents(): Collection;
 
+    /**
+     * @param mixed[] $dimensionAttributes
+     */
+    public function findDimensionContent(array $dimensionAttributes): ?DimensionContentInterface;
+
+    /**
+     * @return class-string<DimensionContentInterface>
+     */
+    public static function getDimensionContentClass(): string;
+
     public function createDimensionContent(): DimensionContentInterface;
 
     public function addDimensionContent(DimensionContentInterface $dimensionContent): void;

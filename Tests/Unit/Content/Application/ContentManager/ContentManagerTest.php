@@ -100,13 +100,13 @@ class ContentManagerTest extends TestCase
             $contentIndexer->reveal()
         );
 
-        $contentPersister->persist($contentRichEntity->reveal(), $data, $dimensionAttributes)
+        $contentPersister->persist($contentRichEntity->reveal(), $dimensionAttributes, $data)
             ->willReturn($dimensionContent->reveal())
             ->shouldBeCalled();
 
         $this->assertSame(
             $dimensionContent->reveal(),
-            $contentManager->persist($contentRichEntity->reveal(), $data, $dimensionAttributes)
+            $contentManager->persist($contentRichEntity->reveal(), $dimensionAttributes, $data)
         );
     }
 

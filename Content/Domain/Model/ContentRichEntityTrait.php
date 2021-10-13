@@ -15,6 +15,7 @@ namespace Sulu\Bundle\ContentBundle\Content\Domain\Model;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Criteria;
 
 trait ContentRichEntityTrait
 {
@@ -31,6 +32,24 @@ trait ContentRichEntityTrait
         $this->initializeDimensionContents();
 
         return $this->dimensionContents;
+    }
+
+    public function findDimensionContent(array $dimensionAttributes): ?DimensionContentInterface
+    {
+        $dimensionAttributes = static::getDimensionContentClass()::getEffectiveDimensionAttributes($dimensionAttributes);
+
+        $criteria = Criteria::create();
+        foreach ($dimensionAttributes as $key => $value) {
+            if (null === $value) {
+                $expr = $criteria->expr()->isNull($key);
+            } else {
+                $expr = $criteria->expr()->eq($key, $value);
+            }
+
+            $criteria->andWhere($expr);
+        }
+
+        return $this->getDimensionContents()->matching($criteria)->first() ?: null;
     }
 
     public function addDimensionContent(DimensionContentInterface $dimensionContent): void

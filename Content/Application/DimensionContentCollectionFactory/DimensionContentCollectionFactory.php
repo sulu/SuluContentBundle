@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Content\Application\DimensionContentCollectionFactory;
 
 use Sulu\Bundle\ContentBundle\Content\Application\ContentMerger\Merger\MergerInterface;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentMetadataInspector\ContentMetadataInspectorInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\DimensionContentCollectionFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollection;
@@ -23,11 +22,6 @@ use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 class DimensionContentCollectionFactory implements DimensionContentCollectionFactoryInterface
 {
-    /**
-     * @var ContentMetadataInspectorInterface
-     */
-    private $contentMetadataInspector;
-
     /**
      * @var iterable<MergerInterface>
      */
@@ -38,13 +32,14 @@ class DimensionContentCollectionFactory implements DimensionContentCollectionFac
      */
     private $propertyAccessor;
 
+    /**
+     * @param iterable<MergerInterface> $mergers
+     */
     public function __construct(
         iterable $mergers,
-        ContentMetadataInspectorInterface $contentMetadataInspector,
         PropertyAccessor $propertyAccessor
     ) {
         $this->mergers = $mergers;
-        $this->contentMetadataInspector = $contentMetadataInspector;
         $this->propertyAccessor = $propertyAccessor;
     }
 
@@ -55,7 +50,6 @@ class DimensionContentCollectionFactory implements DimensionContentCollectionFac
         return new DimensionContentCollection(
             $contentRichEntity,
             $dimensionAttributes,
-            $this->contentMetadataInspector->getDimensionContentClass(\get_class($this)),
             $this->mergers,
             $this->propertyAccessor
         );

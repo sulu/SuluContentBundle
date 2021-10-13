@@ -63,7 +63,7 @@ class ContentCopierTest extends TestCase
             ->willReturn(['resolved' => 'data'])
             ->shouldBeCalled();
 
-        $contentPersister->persist($targetContentRichEntity, ['resolved' => 'data'], $targetDimensionAttributes)
+        $contentPersister->persist($targetContentRichEntity, $targetDimensionAttributes, ['resolved' => 'data'])
             ->willReturn($resolvedTargetContent->reveal())
             ->shouldBeCalled();
 
@@ -107,7 +107,7 @@ class ContentCopierTest extends TestCase
             ->willReturn(['resolved' => 'data'])
             ->shouldBeCalled();
 
-        $contentPersister->persist($targetContentRichEntity, ['resolved' => 'data'], $targetDimensionAttributes)
+        $contentPersister->persist($targetContentRichEntity, $targetDimensionAttributes, ['resolved' => 'data'])
             ->willReturn($resolvedTargetContent->reveal())
             ->shouldBeCalled();
 
@@ -145,7 +145,7 @@ class ContentCopierTest extends TestCase
             ->willReturn(['resolved' => 'data'])
             ->shouldBeCalled();
 
-        $contentPersister->persist($targetContentRichEntity, ['resolved' => 'data'], $targetDimensionAttributes)
+        $contentPersister->persist($targetContentRichEntity, $targetDimensionAttributes, ['resolved' => 'data'])
             ->willReturn($resolvedTargetContent->reveal())
             ->shouldBeCalled();
 

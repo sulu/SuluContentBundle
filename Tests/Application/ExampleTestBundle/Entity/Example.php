@@ -41,4 +41,9 @@ class Example implements ContentRichEntityInterface
     {
         return new ExampleDimensionContent($this);
     }
+
+    public static function getDimensionContentClass(): string
+    {
+        return ExampleDimensionContent::class;
+    }
 }

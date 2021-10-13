@@ -139,7 +139,7 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         $data = $this->getData($request);
         $dimensionAttributes = $this->getDimensionAttributes($request); // ["locale" => "en", "stage" => "draft"]
 
-        $dimensionContent = $this->contentManager->persist($example, $data, $dimensionAttributes);
+        $dimensionContentCollection = $this->contentManager->persist($example, $dimensionAttributes, $data, );
 
         $this->entityManager->persist($example);
         $this->entityManager->flush();
@@ -233,7 +233,7 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         $dimensionAttributes = $this->getDimensionAttributes($request); // ["locale" => "en", "stage" => "draft"]
 
         /** @var ExampleDimensionContent $dimensionContent */
-        $dimensionContent = $this->contentManager->persist($example, $data, $dimensionAttributes);
+        $dimensionContent = $this->contentManager->persist($example, $dimensionAttributes, $data);
         if (WorkflowInterface::WORKFLOW_PLACE_PUBLISHED === $dimensionContent->getWorkflowPlace()) {
             $dimensionContent = $this->contentManager->applyTransition(
                 $example,
