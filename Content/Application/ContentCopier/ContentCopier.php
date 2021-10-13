@@ -83,6 +83,6 @@ class ContentCopier implements ContentCopierInterface
     ): DimensionContentInterface {
         $data = $this->contentNormalizer->normalize($dimensionContent);
 
-        return $this->contentPersister->persist($targetContentRichEntity, $data, $targetDimensionAttributes);
+        return $this->contentPersister->persist($targetContentRichEntity, $targetDimensionAttributes, $data);
     }
 }

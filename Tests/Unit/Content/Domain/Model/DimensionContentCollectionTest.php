@@ -32,27 +32,6 @@ class DimensionContentCollectionTest extends TestCase
         return new DimensionContentCollection($dimensionContents, $dimensionAttributes, ExampleDimensionContent::class);
     }
 
-    public function testCount(): void
-    {
-        $dimensionContent1 = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent1->getLocale()->willReturn(null);
-        $dimensionContent1->getStage()->willReturn('draft');
-        $dimensionContent2 = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent2->getLocale()->willReturn('de');
-        $dimensionContent2->getStage()->willReturn('draft');
-
-        $attributes = ['locale' => 'de'];
-
-        $dimensionContentCollection = $this->createDimensionContentCollectionInstance([
-            $dimensionContent1->reveal(),
-            $dimensionContent2->reveal(),
-        ], $attributes);
-
-        $this->assertCount(2, $dimensionContentCollection);
-        $this->assertSame(2, \count($dimensionContentCollection)); // @phpstan-ignore-line
-        $this->assertSame(2, $dimensionContentCollection->count()); // @phpstan-ignore-line
-    }
-
     public function testSortedByAttributes(): void
     {
         $dimensionContent1 = $this->prophesize(DimensionContentInterface::class);

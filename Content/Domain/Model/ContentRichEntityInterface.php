@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Content\Domain\Model;
 
 use Doctrine\Common\Collections\Collection;
+use Sulu\Bundle\ContentBundle\Content\Domain\Factory\DimensionContentCollectionFactoryInterface;
 
 interface ContentRichEntityInterface
 {
@@ -26,6 +27,16 @@ interface ContentRichEntityInterface
      * @return Collection<int, DimensionContentInterface>
      */
     public function getDimensionContents(): Collection;
+
+    /**
+     * @param mixed[] $dimensionAttributes
+     */
+    public function findDimensionContent(array $dimensionAttributes): ?DimensionContentInterface;
+
+    /**
+     * @return class-string<DimensionContentInterface>
+     */
+    public static function getDimensionContentClass(): string;
 
     public function createDimensionContent(): DimensionContentInterface;
 

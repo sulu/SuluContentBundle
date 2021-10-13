@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentManager;
 
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 
 interface ContentManagerInterface
@@ -24,10 +25,10 @@ interface ContentManagerInterface
     public function resolve(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes): DimensionContentInterface;
 
     /**
-     * @param mixed[] $data
      * @param mixed[] $dimensionAttributes
+     * @param mixed[] $data
      */
-    public function persist(ContentRichEntityInterface $contentRichEntity, array $data, array $dimensionAttributes): DimensionContentInterface;
+    public function persist(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes, array $data): DimensionContentCollectionInterface;
 
     /**
      * @return mixed[]

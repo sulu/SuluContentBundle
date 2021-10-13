@@ -39,13 +39,10 @@ class ContentDataMapper implements ContentDataMapperInterface
         $localizedDimensionAttributes = $dimensionAttributes;
         $unlocalizedDimensionAttributes = $dimensionAttributes;
         $unlocalizedDimensionAttributes['locale'] = null;
-        $unlocalizedDimensionContent = $dimensionContentCollection->getDimensionContent($unlocalizedDimensionAttributes);
-        $localizedDimensionContent = $dimensionContentCollection->getDimensionContent($localizedDimensionAttributes);
-
-        if (!$unlocalizedDimensionContent || !$localizedDimensionContent) {
-            // TODO see https://github.com/sulu/SuluContentBundle/pull/204
-            throw new \RuntimeException('Create unlocalized and localized dimension content.');
-        }
+        $unlocalizedDimensionContent = $dimensionContentCollection->getDimensionContent($unlocalizedDimensionAttributes)
+            ?: $dimensionContentCollection->createDimensionContent($unlocalizedDimensionAttributes);
+        $localizedDimensionContent = $dimensionContentCollection->getDimensionContent($localizedDimensionAttributes)
+            ?: $dimensionContentCollection->createDimensionContent($localizedDimensionAttributes);
 
         foreach ($this->dataMappers as $mapper) {
             $mapper->map($unlocalizedDimensionContent, $localizedDimensionContent, $data);

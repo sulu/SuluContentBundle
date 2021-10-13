@@ -43,32 +43,6 @@ class ContentMerger implements ContentMergerInterface
 
     public function merge(DimensionContentCollectionInterface $dimensionContentCollection): DimensionContentInterface
     {
-        if (!$dimensionContentCollection->count()) {
-            throw new \RuntimeException('Expected at least one dimensionContent given.');
-        }
-
-        $mergedDimensionContent = null;
-
-        foreach ($dimensionContentCollection as $dimensionContent) {
-            if (!$mergedDimensionContent) {
-                $contentRichEntity = $dimensionContent->getResource();
-                $mergedDimensionContent = $contentRichEntity->createDimensionContent();
-                $mergedDimensionContent->markAsMerged();
-            }
-
-            foreach ($this->mergers as $merger) {
-                $merger->merge($mergedDimensionContent, $dimensionContent);
-            }
-
-            foreach ($dimensionContentCollection->getDimensionAttributes() as $key => $value) {
-                $this->propertyAccessor->setValue(
-                    $mergedDimensionContent,
-                    $key,
-                    $this->propertyAccessor->getValue($dimensionContent, $key)
-                );
-            }
-        }
-
-        return $mergedDimensionContent;
+        return $dimensionContentCollection->getMergedDimensionContent();
     }
 }

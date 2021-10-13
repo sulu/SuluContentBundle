@@ -13,19 +13,18 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Domain\Model;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Criteria;
-use Sulu\Component\Util\SortUtils;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentMerger\Merger\MergerInterface;
+use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 /**
  * @implements \IteratorAggregate<DimensionContentInterface>
  */
-class DimensionContentCollection implements \IteratorAggregate, DimensionContentCollectionInterface
+class DimensionContentCollection implements DimensionContentCollectionInterface
 {
     /**
-     * @var ArrayCollection<int, DimensionContentInterface>
+     * @var ContentRichEntityInterface
      */
-    private $dimensionContents;
+    private $contentRichEntity;
 
     /**
      * @var mixed[]
@@ -38,53 +37,39 @@ class DimensionContentCollection implements \IteratorAggregate, DimensionContent
     private $dimensionContentClass;
 
     /**
-     * @var mixed[]
+     * @var iterable<MergerInterface>
      */
-    private $defaultDimensionAttributes;
+    private $mergers;
+
+    /**
+     * @var PropertyAccessor
+     */
+    private $propertyAccessor;
 
     /**
      * DimensionContentCollection constructor.
      *
-     * @param DimensionContentInterface[] $dimensionContents
+     * @param ContentRichEntityInterface $contentRichEntity
      * @param mixed[] $dimensionAttributes
      * @param class-string<DimensionContentInterface> $dimensionContentClass
+     * @param iterable<MergerInterface>
      */
     public function __construct(
-        array $dimensionContents,
+        ContentRichEntityInterface $contentRichEntity,
         array $dimensionAttributes,
-        string $dimensionContentClass
+        iterable $mergers,
+        PropertyAccessor $propertyAccessor
     ) {
-        $this->dimensionContentClass = $dimensionContentClass;
-        $this->defaultDimensionAttributes = $dimensionContentClass::getDefaultDimensionAttributes();
-        $this->dimensionAttributes = $dimensionContentClass::getEffectiveDimensionAttributes($dimensionAttributes);
-
-        $this->dimensionContents = new ArrayCollection(
-            // dimension contents need to be sorted from most specific to least specific when they are merged
-            SortUtils::multisort($dimensionContents, \array_keys($this->dimensionAttributes), 'asc')
-        );
+        $this->contentRichEntity = $contentRichEntity;
+        $this->dimensionContentClass = $contentRichEntity::getDimensionContentClass();
+        $this->dimensionAttributes = $this->dimensionContentClass::getEffectiveDimensionAttributes($dimensionAttributes);
+        $this->mergers = $mergers;
+        $this->propertyAccessor = $propertyAccessor;
     }
 
-    public function getDimensionContentClass(): string
+    public function getResource(): ContentRichEntityInterface
     {
-        return $this->dimensionContentClass;
-    }
-
-    public function getDimensionContent(array $dimensionAttributes): ?DimensionContentInterface
-    {
-        $dimensionAttributes = \array_merge($this->defaultDimensionAttributes, $dimensionAttributes);
-
-        $criteria = Criteria::create();
-        foreach ($dimensionAttributes as $key => $value) {
-            if (null === $value) {
-                $expr = $criteria->expr()->isNull($key);
-            } else {
-                $expr = $criteria->expr()->eq($key, $value);
-            }
-
-            $criteria->andWhere($expr);
-        }
-
-        return $this->dimensionContents->matching($criteria)->first() ?: null;
+        return $this->contentRichEntity;
     }
 
     public function getDimensionAttributes(): array
@@ -92,13 +77,42 @@ class DimensionContentCollection implements \IteratorAggregate, DimensionContent
         return $this->dimensionAttributes;
     }
 
-    public function getIterator()
+    public function getMergedDimensionContent(): DimensionContentInterface
     {
-        return $this->dimensionContents;
-    }
+        $unlocalizedDimensionAttributes = $this->dimensionAttributes;
+        $unlocalizedDimensionAttributes['locale'] = null;
 
-    public function count(): int
-    {
-        return \count($this->dimensionContents);
+        $dimensionContents = \array_filter([
+            $this->contentRichEntity->findDimensionContent($unlocalizedDimensionAttributes),
+            $this->contentRichEntity->findDimensionContent($this->dimensionAttributes),
+        ]);
+
+        $mergedDimensionContent = null;
+
+        foreach ($dimensionContents as $dimensionContent) {
+            if (!$mergedDimensionContent) {
+                $contentRichEntity = $dimensionContent->getResource();
+                $mergedDimensionContent = $contentRichEntity->createDimensionContent();
+                $mergedDimensionContent->markAsMerged();
+            }
+
+            foreach ($this->mergers as $merger) {
+                $merger->merge($mergedDimensionContent, $dimensionContent);
+            }
+
+            foreach ($this->dimensionAttributes as $key => $value) {
+                $this->propertyAccessor->setValue(
+                    $mergedDimensionContent,
+                    $key,
+                    $this->propertyAccessor->getValue($dimensionContent, $key)
+                );
+            }
+        }
+
+        if (!$mergedDimensionContent) {
+            throw new \RuntimeException('Expected at least one dimensionContent given.');
+        }
+
+        return $mergedDimensionContent;
     }
 }

@@ -60,6 +60,15 @@ trait DimensionContentTrait
         $this->isMerged = true;
     }
 
+    public function setDimensionAttributes(array $dimensionAttributes): void
+    {
+        $dimensionAttributes = static::getEffectiveDimensionAttributes($dimensionAttributes);
+
+        foreach ($dimensionAttributes as $key => $value) {
+            $this->{$key} = $value;
+        }
+    }
+
     public static function getDefaultDimensionAttributes(): array
     {
         return [

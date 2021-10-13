@@ -13,10 +13,10 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentPersister;
 
-use Sulu\Bundle\ContentBundle\Content\Application\ContentMerger\ContentMergerInterface;
+use Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\ContentDataMapperInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\DimensionContentCollectionFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
 
 class ContentPersister implements ContentPersisterInterface
 {
@@ -26,34 +26,27 @@ class ContentPersister implements ContentPersisterInterface
     private $dimensionContentCollectionFactory;
 
     /**
-     * @var ContentMergerInterface
+     * @var ContentDataMapperInterface
      */
-    private $contentMerger;
+    private $contentDataMapper;
 
     public function __construct(
         DimensionContentCollectionFactoryInterface $dimensionContentCollectionFactory,
-        ContentMergerInterface $contentMerger
+        ContentDataMapperInterface $contentDataMapper
     ) {
         $this->dimensionContentCollectionFactory = $dimensionContentCollectionFactory;
-        $this->contentMerger = $contentMerger;
+        $this->contentDataMapper = $contentDataMapper;
     }
 
-    public function persist(ContentRichEntityInterface $contentRichEntity, array $data, array $dimensionAttributes): DimensionContentInterface
+    public function persist(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes, array $data): DimensionContentCollectionInterface
     {
-        /*
-         * Data should always be persisted to the STAGE_DRAFT content-dimension of the given $dimensionAttributes.
-         * Modifying data of other content-dimensions (eg. STAGE_LIVE) should only be possible by applying transitions
-         * of the ContentWorkflow.
-         *
-         * TODO: maybe throw an exception here if the $dimensionAttributes contain another stage than 'STAGE_DRAFT'
-         */
-
         $dimensionContentCollection = $this->dimensionContentCollectionFactory->create(
             $contentRichEntity,
-            $dimensionAttributes,
-            $data
+            $dimensionAttributes
         );
 
-        return $this->contentMerger->merge($dimensionContentCollection);
+        $this->contentDataMapper->map($dimensionContentCollection, $dimensionAttributes, $data);
+
+        return $dimensionContentCollection;
     }
 }

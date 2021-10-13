@@ -20,6 +20,7 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentPersister\ContentPersis
 use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\ContentWorkflowInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 
 class ContentManager implements ContentManagerInterface
@@ -75,9 +76,9 @@ class ContentManager implements ContentManagerInterface
         return $this->contentResolver->resolve($contentRichEntity, $dimensionAttributes);
     }
 
-    public function persist(ContentRichEntityInterface $contentRichEntity, array $data, array $dimensionAttributes): DimensionContentInterface
+    public function persist(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes, array $data): DimensionContentCollectionInterface
     {
-        return $this->contentPersister->persist($contentRichEntity, $data, $dimensionAttributes);
+        return $this->contentPersister->persist($contentRichEntity, $dimensionAttributes, $data);
     }
 
     public function normalize(DimensionContentInterface $dimensionContent): array

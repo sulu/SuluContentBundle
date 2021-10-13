@@ -77,7 +77,7 @@ class ContentPersisterTest extends TestCase
 
         $this->assertSame(
             $mergedDimensionContent->reveal(),
-            $createContentMessageHandler->persist($example, $data, $attributes)
+            $createContentMessageHandler->persist($example, $attributes, $data)
         );
     }
 }

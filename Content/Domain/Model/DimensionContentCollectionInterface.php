@@ -16,20 +16,14 @@ namespace Sulu\Bundle\ContentBundle\Content\Domain\Model;
 /**
  * @extends \Traversable<DimensionContentInterface>
  */
-interface DimensionContentCollectionInterface extends \Traversable, \Countable
+interface DimensionContentCollectionInterface extends \Traversable
 {
-    /**
-     * @param mixed[] $dimensionAttributes
-     */
-    public function getDimensionContent(array $dimensionAttributes): ?DimensionContentInterface;
-
-    /**
-     * @return class-string<DimensionContentInterface>
-     */
-    public function getDimensionContentClass(): string;
+    public function getResource(): ContentRichEntityInterface;
 
     /**
      * @return mixed[]
      */
     public function getDimensionAttributes(): array;
+
+    public function getMergedDimensionContent(): DimensionContentInterface;
 }

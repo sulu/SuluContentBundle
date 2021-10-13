@@ -24,7 +24,6 @@ interface DimensionContentCollectionFactoryInterface
      */
     public function create(
         ContentRichEntityInterface $contentRichEntity,
-        array $dimensionAttributes,
-        array $data
+        array $dimensionAttributes
     ): DimensionContentCollectionInterface;
 }
