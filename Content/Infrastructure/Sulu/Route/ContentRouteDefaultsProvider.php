@@ -121,7 +121,7 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
             $contentRichEntity = $this->entityManager->createQueryBuilder()
                 ->select('entity')
                 ->from($entityClass, 'entity')
-                ->where('entity.id = :id')
+                ->where('entity = :id')
                 ->setParameter('id', $id)
                 ->getQuery()
                 ->getSingleResult();
