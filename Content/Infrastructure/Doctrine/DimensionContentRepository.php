@@ -57,8 +57,7 @@ class DimensionContentRepository implements DimensionContentRepositoryInterface
 
         $queryBuilder = $this->entityManager->createQueryBuilder()
             ->from($dimensionContentClass, 'dimensionContent')
-            ->innerJoin('dimensionContent.' . $mappingProperty, 'content')
-            ->where('content.id = :id')
+            ->where('dimensionContent.' . $mappingProperty . ' = :id')
             ->setParameter('id', $contentRichEntity->getId());
 
         $this->dimensionContentQueryEnhancer->addSelects(
