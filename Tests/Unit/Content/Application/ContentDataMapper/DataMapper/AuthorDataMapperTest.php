@@ -100,4 +100,27 @@ class AuthorDataMapperTest extends TestCase
         $this->assertNotNull($authored);
         $this->assertSame('2020-05-08T00:00:00+00:00', $authored->format('c'));
     }
+
+    public function testMapDataNull(): void
+    {
+        $data = [
+            'author' => null,
+            'authored' => null,
+        ];
+
+        $example = new Example();
+        $unlocalizedDimensionContent = new ExampleDimensionContent($example);
+        $localizedDimensionContent = new ExampleDimensionContent($example);
+        $localizedDimensionContent->setAuthor(new Contact());
+        $localizedDimensionContent->setAuthored(new \DateTimeImmutable());
+
+        $this->contactFactory->create(Argument::cetera())
+            ->shouldNotBeCalled();
+
+        $authorMapper = $this->createAuthorDataMapperInstance();
+        $authorMapper->map($unlocalizedDimensionContent, $localizedDimensionContent, $data);
+
+        $this->assertNull($localizedDimensionContent->getAuthor());
+        $this->assertNull($localizedDimensionContent->getAuthored());
+    }
 }
