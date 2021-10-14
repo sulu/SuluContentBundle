@@ -80,7 +80,7 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
             $contentRichEntity = $this->entityManager->createQueryBuilder()
                 ->select('entity')
                 ->from($this->contentRichEntityClass, 'entity')
-                ->where('entity.id = :id')
+                ->where('entity = :id')
                 ->setParameter('id', $id)
                 ->getQuery()
                 ->getSingleResult();
