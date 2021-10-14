@@ -111,9 +111,11 @@ class AuthorDataMapperTest extends TestCase
         $example = new Example();
         $unlocalizedDimensionContent = new ExampleDimensionContent($example);
         $localizedDimensionContent = new ExampleDimensionContent($example);
+        $localizedDimensionContent->setAuthor(new Contact());
+        $localizedDimensionContent->setAuthored(new \DateTimeImmutable());
 
         $this->contactFactory->create(Argument::cetera())
-            ->shouldBeNotCalled();
+            ->shouldNotBeCalled();
 
         $authorMapper = $this->createAuthorDataMapperInstance();
         $authorMapper->map($unlocalizedDimensionContent, $localizedDimensionContent, $data);
