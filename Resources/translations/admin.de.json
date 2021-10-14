@@ -3,6 +3,9 @@
     "sulu_content.excerpt": "Auszug & Taxonomien",
     "sulu_content.content": "Inhalt",
     "sulu_content.published": "Veröffentlicht am",
-    "sulu_content.author": "Author",
-    "sulu_page.authored_date": "Authored Date"
+    "sulu_content.author": "Autor",
+    "sulu_content.authored_date": "Verfasst am",
+    "sulu_content.webspace": "Webspace",
+    "sulu_content.main_webspace": "Hauptwebspace",
+    "sulu_content.additional_webspaces": "Weitere Webspaces"
 }

@@ -5,7 +5,7 @@
 >
     <key>content_settings_author</key>
 
-   <tag name="sulu_content.content_settings_form" instanceOf="Sulu\Bundle\ContentBundle\Content\Domain\Model\AuthorInterface" priority="50"/>
+    <tag name="sulu_content.content_settings_form" instanceOf="Sulu\Bundle\ContentBundle\Content\Domain\Model\AuthorInterface" priority="-50"/>
 
     <properties>
         <section name="author">
@@ -18,6 +18,7 @@
                         <title>sulu_content.authored_date</title>
                     </meta>
                 </property>
+
                 <property name="author" type="single_contact_selection" colspan="6">
                     <meta>
                         <title>sulu_content.author</title>

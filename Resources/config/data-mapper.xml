@@ -23,6 +23,12 @@
         </service>
 
         <service id="sulu_content.workflow_data_mapper" class="Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\DataMapper\WorkflowDataMapper">
+            <tag name="sulu_content.data_mapper" priority="24"/>
+        </service>
+
+        <service id="sulu_content.webspace_data_mapper" class="Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\DataMapper\WebspaceDataMapper">
+            <argument type="service" id="sulu_core.webspace.webspace_manager"/>
+
             <tag name="sulu_content.data_mapper" priority="16"/>
         </service>
 

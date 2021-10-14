@@ -1,6 +1,6 @@
 {
     "author": null,
-    "authored": "2020-05-08T00:00:00+00:00",
+    "authored": "2020-06-09T00:00:00+00:00",
     "article": "<p>Test Article 2</p>",
     "blocks": null,
     "description": null,
@@ -30,5 +30,6 @@
     "template": "default",
     "title": "Test Example 2",
     "url": "/my-example-2",
-    "workflowPlace": "unpublished"
+    "workflowPlace": "unpublished",
+    "mainWebspace": "sulu-io2"
 }
