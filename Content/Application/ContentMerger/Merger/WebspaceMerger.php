@@ -30,5 +30,9 @@ class WebspaceMerger implements MergerInterface
         if ($mainWebspace = $sourceObject->getMainWebspace()) {
             $targetObject->setMainWebspace($mainWebspace);
         }
+
+        if ($additionalWebspaces = $sourceObject->getAdditionalWebspaces()) {
+            $targetObject->setAdditionalWebspaces($additionalWebspaces);
+        }
     }
 }

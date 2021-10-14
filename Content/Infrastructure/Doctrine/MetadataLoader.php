@@ -97,6 +97,7 @@ class MetadataLoader implements EventSubscriber
 
         if ($reflection->implementsInterface(WebspaceInterface::class)) {
             $this->addField($metadata, 'mainWebspace', 'string', ['nullable' => true]);
+            $this->addField($metadata, 'additionalWebspaces', 'json', ['nullable' => true]);
         }
 
         if ($reflection->implementsInterface(AuthorInterface::class)) {

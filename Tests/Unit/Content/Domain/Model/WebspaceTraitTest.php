@@ -33,4 +33,31 @@ class WebspaceTraitTest extends TestCase
         $model->setMainWebspace('example');
         $this->assertSame('example', $model->getMainWebspace());
     }
+
+    public function testGetSetAdditionalWebspaces(): void
+    {
+        $model = $this->getWebspaceInstance();
+        $this->assertSame([], $model->getAdditionalWebspaces());
+        $model->setAdditionalWebspaces(['example', 'example2']);
+        $this->assertSame(['example', 'example2'], $model->getAdditionalWebspaces());
+    }
+
+    public function testMainWebspaceAlwaysAdditionalWebspaces(): void
+    {
+        $model = $this->getWebspaceInstance();
+        $model->setMainWebspace('example');
+
+        $this->assertSame('example', $model->getMainWebspace());
+        $this->assertSame(['example'], $model->getAdditionalWebspaces());
+    }
+
+    public function testAdditionalWebspacesWithoutMainWebspace(): void
+    {
+        $model = $this->getWebspaceInstance();
+        $model->setMainWebspace('example');
+        $model->setAdditionalWebspaces(['example-2']);
+
+        $this->assertSame('example', $model->getMainWebspace());
+        $this->assertSame(['example-2', 'example'], $model->getAdditionalWebspaces());
+    }
 }

@@ -67,6 +67,7 @@ class ExampleControllerTest extends SuluTestCase
             'author' => null,
             'authored' => '2020-05-08T00:00:00+00:00',
             'mainWebspace' => 'sulu-io',
+            'additionalWebspaces' => ['sulu-io', 'sulu-io2'],
         ]) ?: null);
 
         $response = $this->client->getResponse();
@@ -134,6 +135,7 @@ class ExampleControllerTest extends SuluTestCase
             'excerptIcon' => null,
             'excerptMedia' => null,
             'mainWebspace' => 'sulu-io',
+            'additionalWebspaces' => ['sulu-io', 'sulu-io2'],
             'authored' => '2020-05-08T00:00:00+00:00',
         ]) ?: null);
 
@@ -194,6 +196,7 @@ class ExampleControllerTest extends SuluTestCase
             'excerptMedia' => null,
             'authored' => '2020-06-09T00:00:00+00:00',
             'mainWebspace' => 'sulu-io2',
+            'additionalWebspaces' => ['sulu-io', 'sulu-io2'],
         ]) ?: null);
 
         $response = $this->client->getResponse();

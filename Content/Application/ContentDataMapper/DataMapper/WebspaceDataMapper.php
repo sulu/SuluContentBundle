@@ -61,6 +61,10 @@ class WebspaceDataMapper implements DataMapperInterface
             // if no main webspace is yet set a default webspace will be set
             $dimensionContent->setMainWebspace($this->getDefaultWebspaceKey());
         }
+
+        if (\array_key_exists('additionalWebspaces', $data)) {
+            $dimensionContent->setAdditionalWebspaces($data['additionalWebspaces'] ?: []);
+        }
     }
 
     private function getDefaultWebspaceKey(): ?string

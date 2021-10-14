@@ -252,6 +252,7 @@ class MetadataLoaderTest extends TestCase
             ],
             [
                 'mainWebspace' => true,
+                'additionalWebspaces' => true,
             ],
             [],
             [],

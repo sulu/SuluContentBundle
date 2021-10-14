@@ -31,5 +31,6 @@
     "title": "Test Example 2",
     "url": "/my-example-2",
     "workflowPlace": "unpublished",
-    "mainWebspace": "sulu-io2"
+    "mainWebspace": "sulu-io2",
+    "additionalWebspaces": ["sulu-io", "sulu-io2"]
 }

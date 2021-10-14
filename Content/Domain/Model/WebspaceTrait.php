@@ -20,6 +20,11 @@ trait WebspaceTrait
      */
     protected $mainWebspace;
 
+    /**
+     * @var string[]|null
+     */
+    protected $additionalWebspaces;
+
     public function getMainWebspace(): ?string
     {
         return $this->mainWebspace;
@@ -28,5 +33,31 @@ trait WebspaceTrait
     public function setMainWebspace(?string $mainWebspace): void
     {
         $this->mainWebspace = $mainWebspace;
+
+        if ($mainWebspace && !\in_array($mainWebspace, $this->additionalWebspaces ?: [], true)) {
+            // additional webspace always include also the main webspace to make query simpler
+            $this->additionalWebspaces = \array_merge($this->additionalWebspaces ?: [], [$mainWebspace]);
+        }
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getAdditionalWebspaces(): array
+    {
+        return $this->additionalWebspaces ?: [];
+    }
+
+    /**
+     * @param string[] $additionalWebspaces
+     */
+    public function setAdditionalWebspaces(array $additionalWebspaces): void
+    {
+        if ($this->mainWebspace && !\in_array($this->mainWebspace, $additionalWebspaces, true)) {
+            // additional webspace always include also the main webspace to make query simpler
+            $additionalWebspaces[] = $this->mainWebspace;
+        }
+
+        $this->additionalWebspaces = $additionalWebspaces;
     }
 }

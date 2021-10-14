@@ -75,6 +75,7 @@ class WebspaceDataMapperTest extends TestCase
         $authorMapper->map($unlocalizedDimensionContent, $localizedDimensionContent, $data);
 
         $this->assertNull($localizedDimensionContent->getMainWebspace());
+        $this->assertSame([], $localizedDimensionContent->getAdditionalWebspaces());
     }
 
     public function testMapDefaultWebspace(): void
@@ -93,12 +94,14 @@ class WebspaceDataMapperTest extends TestCase
         $authorMapper->map($unlocalizedDimensionContent, $localizedDimensionContent, $data);
 
         $this->assertSame('default-webspace', $localizedDimensionContent->getMainWebspace());
+        $this->assertSame(['default-webspace'], $localizedDimensionContent->getAdditionalWebspaces());
     }
 
     public function testMapData(): void
     {
         $data = [
             'mainWebspace' => 'example',
+            'additionalWebspaces' => ['example', 'example2'],
         ];
 
         $example = new Example();
@@ -109,22 +112,26 @@ class WebspaceDataMapperTest extends TestCase
         $authorMapper->map($unlocalizedDimensionContent, $localizedDimensionContent, $data);
 
         $this->assertSame('example', $localizedDimensionContent->getMainWebspace());
+        $this->assertSame(['example', 'example2'], $localizedDimensionContent->getAdditionalWebspaces());
     }
 
     public function testMapDataEmpty(): void
     {
         $data = [
             'mainWebspace' => null,
+            'additionalWebspaces' => null,
         ];
 
         $example = new Example();
         $unlocalizedDimensionContent = new ExampleDimensionContent($example);
         $localizedDimensionContent = new ExampleDimensionContent($example);
         $localizedDimensionContent->setMainWebspace('example');
+        $localizedDimensionContent->setAdditionalWebspaces(['example', 'example2']);
 
         $authorMapper = $this->createWebspaceDataMapperInstance();
         $authorMapper->map($unlocalizedDimensionContent, $localizedDimensionContent, $data);
 
         $this->assertNull($localizedDimensionContent->getMainWebspace());
+        $this->assertSame([], $localizedDimensionContent->getAdditionalWebspaces());
     }
 }

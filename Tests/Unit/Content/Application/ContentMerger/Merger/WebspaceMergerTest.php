@@ -58,14 +58,17 @@ class WebspaceMergerTest extends TestCase
         $merger = $this->getWebspaceMergerInstance();
 
         $mainWebspace = 'sulu-io';
+        $additionalWebspaces = ['sulu-io', 'sulu-io2'];
 
         $source = $this->prophesize(DimensionContentInterface::class);
         $source->willImplement(WebspaceInterface::class);
         $source->getMainWebspace()->willReturn($mainWebspace)->shouldBeCalled();
+        $source->getAdditionalWebspaces()->willReturn($additionalWebspaces)->shouldBeCalled();
 
         $target = $this->prophesize(DimensionContentInterface::class);
         $target->willImplement(WebspaceInterface::class);
         $target->setMainWebspace($mainWebspace)->shouldBeCalled();
+        $target->setAdditionalWebspaces($additionalWebspaces)->shouldBeCalled();
 
         $merger->merge($target->reveal(), $source->reveal());
     }
@@ -77,10 +80,12 @@ class WebspaceMergerTest extends TestCase
         $source = $this->prophesize(DimensionContentInterface::class);
         $source->willImplement(WebspaceInterface::class);
         $source->getMainWebspace()->willReturn(null)->shouldBeCalled();
+        $source->getAdditionalWebspaces()->willReturn([])->shouldBeCalled();
 
         $target = $this->prophesize(DimensionContentInterface::class);
         $target->willImplement(WebspaceInterface::class);
         $target->setMainWebspace(Argument::any())->shouldNotBeCalled();
+        $target->setAdditionalWebspaces(Argument::any())->shouldNotBeCalled();
 
         $merger->merge($target->reveal(), $source->reveal());
     }

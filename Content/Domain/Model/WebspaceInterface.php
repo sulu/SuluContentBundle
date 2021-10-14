@@ -18,4 +18,14 @@ interface WebspaceInterface
     public function getMainWebspace(): ?string;
 
     public function setMainWebspace(?string $mainWebspace): void;
+
+    /**
+     * @return string[]
+     */
+    public function getAdditionalWebspaces(): array;
+
+    /**
+     * @param string[] $additionalWebspaces
+     */
+    public function setAdditionalWebspaces(array $additionalWebspaces): void;
 }
