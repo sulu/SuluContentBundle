@@ -94,7 +94,7 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $entityManager->createQueryBuilder()->willReturn($queryBuilder->reveal());
         $queryBuilder->select('entity')->willReturn($queryBuilder->reveal());
         $queryBuilder->from(Example::class, 'entity')->willReturn($queryBuilder->reveal());
-        $queryBuilder->where('entity.id = :id')->willReturn($queryBuilder->reveal());
+        $queryBuilder->where('entity = :id')->willReturn($queryBuilder->reveal());
         $queryBuilder->setParameter('id', '123-123-123')->willReturn($queryBuilder->reveal());
         $queryBuilder->getQuery()->willReturn($query);
         $query->getSingleResult()->willReturn($contentRichEntity->reveal());
@@ -127,7 +127,7 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $entityManager->createQueryBuilder()->willReturn($queryBuilder->reveal());
         $queryBuilder->select('entity')->willReturn($queryBuilder->reveal());
         $queryBuilder->from(Example::class, 'entity')->willReturn($queryBuilder->reveal());
-        $queryBuilder->where('entity.id = :id')->willReturn($queryBuilder->reveal());
+        $queryBuilder->where('entity = :id')->willReturn($queryBuilder->reveal());
         $queryBuilder->setParameter('id', '123-123-123')->willReturn($queryBuilder->reveal());
         $queryBuilder->getQuery()->willReturn($query);
         $query->getSingleResult()->willThrow(new NoResultException());
@@ -159,7 +159,7 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $entityManager->createQueryBuilder()->willReturn($queryBuilder->reveal());
         $queryBuilder->select('entity')->willReturn($queryBuilder->reveal());
         $queryBuilder->from(Example::class, 'entity')->willReturn($queryBuilder->reveal());
-        $queryBuilder->where('entity.id = :id')->willReturn($queryBuilder->reveal());
+        $queryBuilder->where('entity = :id')->willReturn($queryBuilder->reveal());
         $queryBuilder->setParameter('id', '123-123-123')->willReturn($queryBuilder->reveal());
         $queryBuilder->getQuery()->willReturn($query);
         $query->getSingleResult()->willReturn($contentRichEntity->reveal());
@@ -197,7 +197,7 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $entityManager->createQueryBuilder()->willReturn($queryBuilder->reveal());
         $queryBuilder->select('entity')->willReturn($queryBuilder->reveal());
         $queryBuilder->from(Example::class, 'entity')->willReturn($queryBuilder->reveal());
-        $queryBuilder->where('entity.id = :id')->willReturn($queryBuilder->reveal());
+        $queryBuilder->where('entity = :id')->willReturn($queryBuilder->reveal());
         $queryBuilder->setParameter('id', '123-123-123')->willReturn($queryBuilder->reveal());
         $queryBuilder->getQuery()->willReturn($query);
         $query->getSingleResult()->willReturn($contentRichEntity->reveal());
@@ -234,7 +234,7 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $entityManager->createQueryBuilder()->willReturn($queryBuilder->reveal());
         $queryBuilder->select('entity')->willReturn($queryBuilder->reveal());
         $queryBuilder->from(Example::class, 'entity')->willReturn($queryBuilder->reveal());
-        $queryBuilder->where('entity.id = :id')->willReturn($queryBuilder->reveal());
+        $queryBuilder->where('entity = :id')->willReturn($queryBuilder->reveal());
         $queryBuilder->setParameter('id', '123-123-123')->willReturn($queryBuilder->reveal());
         $queryBuilder->getQuery()->willReturn($query);
         $query->getSingleResult()->willReturn($contentRichEntity->reveal());
@@ -277,7 +277,7 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $entityManager->createQueryBuilder()->willReturn($queryBuilder->reveal());
         $queryBuilder->select('entity')->willReturn($queryBuilder->reveal());
         $queryBuilder->from(Example::class, 'entity')->willReturn($queryBuilder->reveal());
-        $queryBuilder->where('entity.id = :id')->willReturn($queryBuilder->reveal());
+        $queryBuilder->where('entity = :id')->willReturn($queryBuilder->reveal());
         $queryBuilder->setParameter('id', '123-123-123')->willReturn($queryBuilder->reveal());
         $queryBuilder->getQuery()->willReturn($query);
         $query->getSingleResult()->willReturn($contentRichEntity->reveal());
@@ -343,7 +343,7 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $entityManager->createQueryBuilder()->willReturn($queryBuilder->reveal());
         $queryBuilder->select('entity')->willReturn($queryBuilder->reveal());
         $queryBuilder->from(Example::class, 'entity')->willReturn($queryBuilder->reveal());
-        $queryBuilder->where('entity.id = :id')->willReturn($queryBuilder->reveal());
+        $queryBuilder->where('entity = :id')->willReturn($queryBuilder->reveal());
         $queryBuilder->setParameter('id', '123-123-123')->willReturn($queryBuilder->reveal());
         $queryBuilder->getQuery()->willReturn($query);
         $query->getSingleResult()->willReturn($contentRichEntity->reveal());
@@ -394,7 +394,7 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $entityManager->createQueryBuilder()->willReturn($queryBuilder->reveal());
         $queryBuilder->select('entity')->willReturn($queryBuilder->reveal());
         $queryBuilder->from(Example::class, 'entity')->willReturn($queryBuilder->reveal());
-        $queryBuilder->where('entity.id = :id')->willReturn($queryBuilder->reveal());
+        $queryBuilder->where('entity = :id')->willReturn($queryBuilder->reveal());
         $queryBuilder->setParameter('id', '123-123-123')->willReturn($queryBuilder->reveal());
         $queryBuilder->getQuery()->willReturn($query);
         $query->getSingleResult()->willReturn($contentRichEntity->reveal());
@@ -431,7 +431,7 @@ class ContentRouteDefaultsProviderTest extends TestCase
         $entityManager->createQueryBuilder()->willReturn($queryBuilder->reveal());
         $queryBuilder->select('entity')->willReturn($queryBuilder->reveal());
         $queryBuilder->from(Example::class, 'entity')->willReturn($queryBuilder->reveal());
-        $queryBuilder->where('entity.id = :id')->willReturn($queryBuilder->reveal());
+        $queryBuilder->where('entity = :id')->willReturn($queryBuilder->reveal());
         $queryBuilder->setParameter('id', '123-123-123')->willReturn($queryBuilder->reveal());
         $queryBuilder->getQuery()->willReturn($query);
         $query->getSingleResult()->willReturn($contentRichEntity->reveal());
