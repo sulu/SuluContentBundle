@@ -17,6 +17,10 @@
         </service>
 
         <service id="sulu_content.seo_merger" class="Sulu\Bundle\ContentBundle\Content\Application\ContentMerger\Merger\SeoMerger">
+            <tag name="sulu_content.merger" priority="24"/>
+        </service>
+
+        <service id="sulu_content.webspace_merger" class="Sulu\Bundle\ContentBundle\Content\Application\ContentMerger\Merger\WebspaceMerger">
             <tag name="sulu_content.merger" priority="16"/>
         </service>
 

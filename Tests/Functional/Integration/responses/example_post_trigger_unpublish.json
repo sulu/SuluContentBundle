@@ -27,5 +27,7 @@
     "template": "example-2",
     "title": "Test Example",
     "url": "\/my-example",
-    "workflowPlace": "unpublished"
+    "workflowPlace": "unpublished",
+    "mainWebspace": "sulu-io",
+    "additionalWebspaces": ["sulu-io", "sulu-io2"]
 }
