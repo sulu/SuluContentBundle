@@ -22,16 +22,42 @@ interface DimensionContentInterface
 
     public function getLocale(): ?string;
 
+    /**
+     * @internal should only be set by content bundle services not from outside
+     */
     public function setLocale(?string $locale): void;
+
+    /**
+     * @internal should only be set by content bundle services not from outside
+     */
+    public function setGhostLocale(?string $ghostLocale): void;
+
+    public function getGhostLocale(): ?string;
+
+    /**
+     * @internal should only be set by content bundle services not from outside
+     */
+    public function addAvailableLocale(string $availableLocale): void;
+
+    /**
+     * @return string[]|null
+     */
+    public function getAvailableLocales(): ?array;
 
     public function getStage(): string;
 
+    /**
+     * @internal should only be set by content bundle services not from outside
+     */
     public function setStage(string $stage): void;
 
     public function getResource(): ContentRichEntityInterface;
 
     public function isMerged(): bool;
 
+    /**
+     * @internal should only be set by content bundle services not from outside
+     */
     public function markAsMerged(): void;
 
     /**

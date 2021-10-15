@@ -97,6 +97,8 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         $fieldDescriptors = $this->fieldDescriptorFactory->getFieldDescriptors(Example::RESOURCE_KEY);
         /** @var DoctrineListBuilder $listBuilder */
         $listBuilder = $this->listBuilderFactory->create(Example::class);
+        $listBuilder->addSelectField($fieldDescriptors['locale']);
+        $listBuilder->addSelectField($fieldDescriptors['ghostLocale']);
         $listBuilder->setParameter('locale', $request->query->get('locale'));
         $this->restHelper->initializeListBuilder($listBuilder, $fieldDescriptors);
 
@@ -183,6 +185,23 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         $action = $request->query->get('action');
 
         switch ($action) {
+            case 'copy-locale':
+                $dimensionContent = $this->contentManager->copy(
+                    $example,
+                    [
+                        'stage' => DimensionContentInterface::STAGE_DRAFT,
+                        'locale' => $request->query->get('src'),
+                    ],
+                    $example,
+                    [
+                        'stage' => DimensionContentInterface::STAGE_DRAFT,
+                        'locale' => $request->query->get('dest'),
+                    ]
+                );
+
+                $this->entityManager->flush();
+
+                return $this->handleView($this->view($this->normalize($example, $dimensionContent)));
             case 'unpublish':
                 $dimensionContent = $this->contentManager->applyTransition(
                     $example,

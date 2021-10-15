@@ -23,8 +23,7 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Webmozart\Assert\Assert;
 
 /**
- * TODO add loadGhost functionality
- *      add loadShadow functionality.
+ * TODO add loadShadow functionality.
  *
  * @final
  */
@@ -88,6 +87,7 @@ class DimensionContentQueryEnhancer
      *     tagNames?: string[],
      *     tagOperator?: 'AND'|'OR',
      *     templateKeys?: string[],
+     *     loadGhost?: bool,
      * } $filters
      */
     public function addFilters(
@@ -111,6 +111,11 @@ class DimensionContentQueryEnhancer
             if (null === $value) {
                 $queryBuilder->andWhere('filterDimensionContent.' . $key . ' IS NULL');
 
+                continue;
+            }
+
+            if ('locale' === $key && ($filters['loadGhost'] ?? false)) {
+                // do not filter by locale when loadGhost is active
                 continue;
             }
 

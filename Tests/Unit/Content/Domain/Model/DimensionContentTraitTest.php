@@ -45,6 +45,31 @@ class DimensionContentTraitTest extends TestCase
         $this->assertSame('de', $model->getLocale());
     }
 
+    public function testGetSetGhostLocale(): void
+    {
+        $model = $this->getDimensionContentInstance();
+        $model->setGhostLocale('de');
+        $this->assertSame('de', $model->getGhostLocale());
+    }
+
+    public function testAddGetAvailableLocales(): void
+    {
+        $model = $this->getDimensionContentInstance();
+        $this->assertNull($model->getAvailableLocales());
+        $model->addAvailableLocale('en');
+        $model->addAvailableLocale('de');
+        $this->assertSame(['en', 'de'], $model->getAvailableLocales());
+    }
+
+    public function testAddSameAvailableLocale(): void
+    {
+        $model = $this->getDimensionContentInstance();
+        $this->assertNull($model->getAvailableLocales());
+        $model->addAvailableLocale('de');
+        $model->addAvailableLocale('de');
+        $this->assertSame(['de'], $model->getAvailableLocales());
+    }
+
     public function testGetSetStage(): void
     {
         $model = $this->getDimensionContentInstance();

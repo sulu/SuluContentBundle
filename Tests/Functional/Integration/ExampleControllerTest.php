@@ -167,6 +167,36 @@ class ExampleControllerTest extends SuluTestCase
 
     /**
      * @depends testPost
+     */
+    public function testGetGhostLocale(int $id): void
+    {
+        $this->client->request('GET', '/admin/api/examples/' . $id . '?locale=de');
+        $response = $this->client->getResponse();
+        $this->assertResponseSnapshot('example_get_ghost_locale.json', $response, 200);
+
+        self::ensureKernelShutdown();
+
+        $websiteClient = $this->createWebsiteClient();
+        $websiteClient->request('GET', '/de/my-example');
+
+        $response = $websiteClient->getResponse();
+        $this->assertHttpStatusCode(404, $response);
+    }
+
+    /**
+     * @depends testPost
+     */
+    public function testPostTriggerCopyLocale(int $id): void
+    {
+        $this->client->request('POST', '/admin/api/examples/' . $id . '?locale=de&action=copy-locale&src=en&dest=de');
+
+        $response = $this->client->getResponse();
+
+        $this->assertResponseSnapshot('example_post_trigger_copy_locale.json', $response, 200);
+    }
+
+    /**
+     * @depends testPost
      * @depends testGet
      */
     public function testPut(int $id): void

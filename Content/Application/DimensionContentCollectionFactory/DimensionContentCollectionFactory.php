@@ -13,8 +13,6 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Application\DimensionContentCollectionFactory;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\ContentDataMapperInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Factory\DimensionContentCollectionFactoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
@@ -60,41 +58,42 @@ class DimensionContentCollectionFactory implements DimensionContentCollectionFac
         $dimensionContentCollection = $this->dimensionContentRepository->load($contentRichEntity, $dimensionAttributes);
         $dimensionAttributes = $dimensionContentCollection->getDimensionAttributes();
 
-        $orderedContentDimensions = \iterator_to_array($dimensionContentCollection);
-        $dimensionContents = new ArrayCollection($orderedContentDimensions);
-
         $unlocalizedAttributes = $dimensionAttributes;
         $unlocalizedAttributes['locale'] = null;
 
-        // get or create unlocalized dimension content
         $unlocalizedDimensionContent = $dimensionContentCollection->getDimensionContent($unlocalizedAttributes);
 
         if (!$unlocalizedDimensionContent) {
             $unlocalizedDimensionContent = $this->createContentDimension(
                 $contentRichEntity,
-                $dimensionContents,
                 $unlocalizedAttributes
             );
-            $orderedContentDimensions[] = $unlocalizedDimensionContent;
         }
 
         $localizedDimensionContent = null;
-        if (isset($dimensionAttributes['locale'])) {
-            // get or create localized dimension content
+        $locale = $dimensionAttributes['locale'] ?? null;
+        if ($locale) {
             $localizedDimensionContent = $dimensionContentCollection->getDimensionContent($dimensionAttributes);
 
             if (!$localizedDimensionContent) {
                 $localizedDimensionContent = $this->createContentDimension(
                     $contentRichEntity,
-                    $dimensionContents,
                     $dimensionAttributes
                 );
-                $orderedContentDimensions[] = $localizedDimensionContent;
+
+                $unlocalizedDimensionContent->addAvailableLocale($locale);
+
+                if (!$unlocalizedDimensionContent->getGhostLocale()) {
+                    $unlocalizedDimensionContent->setGhostLocale($locale);
+                }
             }
         }
 
         $dimensionContentCollection = new DimensionContentCollection(
-            $orderedContentDimensions,
+            \array_filter([
+                $unlocalizedDimensionContent,
+                $localizedDimensionContent,
+            ]),
             $dimensionAttributes,
             $dimensionContentCollection->getDimensionContentClass()
         );
@@ -105,12 +104,10 @@ class DimensionContentCollectionFactory implements DimensionContentCollectionFac
     }
 
     /**
-     * @param Collection<int, DimensionContentInterface> $dimensionContents
      * @param mixed[] $attributes
      */
     private function createContentDimension(
         ContentRichEntityInterface $contentRichEntity,
-        Collection $dimensionContents,
         array $attributes
     ): DimensionContentInterface {
         $dimensionContent = $contentRichEntity->createDimensionContent();
@@ -120,7 +117,6 @@ class DimensionContentCollectionFactory implements DimensionContentCollectionFac
         }
 
         $contentRichEntity->addDimensionContent($dimensionContent);
-        $dimensionContents->add($dimensionContent);
 
         return $dimensionContent;
     }

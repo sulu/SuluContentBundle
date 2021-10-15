@@ -21,6 +21,16 @@ trait DimensionContentTrait
     protected $locale;
 
     /**
+     * @var string|null
+     */
+    protected $ghostLocale;
+
+    /**
+     * @var string[]|null
+     */
+    protected $availableLocales;
+
+    /**
      * @var string
      */
     protected $stage = DimensionContentInterface::STAGE_DRAFT;
@@ -30,6 +40,9 @@ trait DimensionContentTrait
      */
     private $isMerged = false;
 
+    /**
+     * @internal should only be set by content bundle services not from outside
+     */
     public function setLocale(?string $locale): void
     {
         $this->locale = $locale;
@@ -40,6 +53,41 @@ trait DimensionContentTrait
         return $this->locale;
     }
 
+    /**
+     * @internal should only be set by content bundle services not from outside
+     */
+    public function setGhostLocale(?string $ghostLocale): void
+    {
+        $this->ghostLocale = $ghostLocale;
+    }
+
+    public function getGhostLocale(): ?string
+    {
+        return $this->ghostLocale;
+    }
+
+    /**
+     * @internal should only be set by content bundle services not from outside
+     */
+    public function addAvailableLocale(string $availableLocale): void
+    {
+        if (null === $this->availableLocales) {
+            $this->availableLocales = [];
+        }
+
+        if (!\in_array($availableLocale, $this->availableLocales, true)) {
+            $this->availableLocales[] = $availableLocale;
+        }
+    }
+
+    public function getAvailableLocales(): ?array
+    {
+        return $this->availableLocales;
+    }
+
+    /**
+     * @internal should only be set by content bundle services not from outside
+     */
     public function setStage(string $stage): void
     {
         $this->stage = $stage;
@@ -55,6 +103,9 @@ trait DimensionContentTrait
         return $this->isMerged;
     }
 
+    /**
+     * @internal should only be set by content bundle services not from outside
+     */
     public function markAsMerged(): void
     {
         $this->isMerged = true;

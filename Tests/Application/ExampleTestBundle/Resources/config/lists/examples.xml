@@ -11,17 +11,56 @@
         </join>
     </joins>
 
+    <joins name="unlocalizedDimensionContent">
+        <join>
+            <entity-name>unlocalizedDimensionContent</entity-name>
+            <field-name>Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example.dimensionContents</field-name>
+            <method>LEFT</method>
+            <condition>unlocalizedDimensionContent.locale IS NULL AND unlocalizedDimensionContent.stage = 'draft'</condition>
+        </join>
+    </joins>
+
+    <joins name="ghostDimensionContent" ref="unlocalizedDimensionContent">
+        <join>
+            <entity-name>ghostDimensionContent</entity-name>
+            <field-name>Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example.dimensionContents</field-name>
+            <method>LEFT</method>
+            <condition>ghostDimensionContent.locale = unlocalizedDimensionContent.ghostLocale AND ghostDimensionContent.stage = 'draft'</condition>
+        </join>
+    </joins>
+
     <properties>
         <property name="id" translation="sulu_admin.id">
             <field-name>id</field-name>
             <entity-name>Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example</entity-name>
         </property>
 
-        <property name="title" visibility="yes" translation="sulu_admin.title">
-            <field-name>title</field-name>
-            <entity-name>dimensionContent</entity-name>
+        <case-property name="title" translation="sulu_admin.title" visibility="always" searchability="yes">
+            <field>
+                <field-name>title</field-name>
+                <entity-name>dimensionContent</entity-name>
 
-            <joins ref="dimensionContent"/>
+                <joins ref="dimensionContent"/>
+            </field>
+
+            <field>
+                <field-name>title</field-name>
+                <entity-name>ghostDimensionContent</entity-name>
+
+                <joins ref="ghostDimensionContent"/>
+            </field>
+
+            <transformer type="title"/>
+        </case-property>
+
+        <property name="locale" translation="sulu_admin.locale" visibility="never">
+            <field-name>locale</field-name>
+            <entity-name>dimensionContent</entity-name>
+        </property>
+
+        <property name="ghostLocale" translation="sulu_admin.ghost_locale" visibility="never">
+            <field-name>ghostLocale</field-name>
+            <entity-name>unlocalizedDimensionContent</entity-name>
         </property>
     </properties>
 </list>

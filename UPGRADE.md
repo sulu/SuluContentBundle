@@ -2,6 +2,46 @@
 
 ## 0.7.0
 
+### Add ghostLocale and availableLocales field
+
+To support multi localization feature of sulu a ghostLocale need to be added to
+the dimension content tables.
+
+```sql
+ALTER TABLE test_example_dimension_contents ADD ghostLocale VARCHAR(7) DEFAULT NULL, ADD availableLocales JSON DEFAULT NULL; -- replace `test_example_dimension_contents` with your table
+
+-- Update ghostLocale:
+UPDATE test_example_dimension_contents dc -- replace `test_example_dimension_contents` with your table
+INNER JOIN test_example_dimension_contents dc2 -- replace `test_example_dimension_contents` with your table
+    ON dc2.stage = dc.stage
+        AND dc2.example_id = dc.example_id -- replace `example_id` with your relation
+        AND dc2.locale IS NOT NULL
+SET dc.ghostLocale = dc2.locale
+WHERE
+    dc.ghostLocale IS NULL
+    AND dc.locale IS NULL;
+
+-- Update availableLocales:
+UPDATE test_example_dimension_contents dc -- replace `test_example_dimension_contents` with your table
+LEFT JOIN (
+    SELECT
+        dc3.stage,
+        dc3.example_id, -- replace `example_id` with your relation
+        CONCAT('["', REPLACE(GROUP_CONCAT(dc3.locale), ',', '","'), '"]') as availableLocales
+    FROM test_example_dimension_contents dc3 -- replace `test_example_dimension_contents` with your table
+         WHERE locale IS NOT NULL
+         GROUP BY
+             dc3.example_id, -- replace `example_id` with your relation
+             dc3.stage
+    ) as dc4 ON
+        dc4.example_id = dc.example_id -- replace `example_id` with your relation
+        AND dc4.stage = dc.stage
+SET dc.availableLocales = dc4.availableLocales
+WHERE
+    dc.availableLocales IS NULL
+    AND dc.locale IS NULL;
+```
+
 ### ContentMapperInterface changed
 
 The `ContentMapperInterface` was changed as a preparation for refactoring the `DimensionContentCollection`:
