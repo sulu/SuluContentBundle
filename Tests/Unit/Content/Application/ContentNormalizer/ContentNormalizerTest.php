@@ -68,6 +68,8 @@ class ContentNormalizerTest extends TestCase
                 $this->resource = $resource;
                 $this->locale = 'de';
                 $this->stage = 'live';
+                $this->ghostLocale = 'de';
+                $this->availableLocales = ['de'];
             }
 
             public static function getResourceKey(): string
@@ -83,6 +85,8 @@ class ContentNormalizerTest extends TestCase
 
         $contentNormalizer = $this->createContentNormalizerInstance();
         $this->assertSame([
+            'availableLocales' => ['de'],
+            'ghostLocale' => 'de',
             'id' => 5,
             'locale' => 'de',
             'stage' => 'live',
@@ -130,6 +134,10 @@ class ContentNormalizerTest extends TestCase
             }
         };
 
+        $object->setGhostLocale('en');
+        $object->addAvailableLocale('en');
+        $object->addAvailableLocale('de');
+
         $tag1 = $this->prophesize(TagInterface::class);
         $tag1->getId()->willReturn(1);
         $tag1->getName()->willReturn('Tag 1');
@@ -168,6 +176,7 @@ class ContentNormalizerTest extends TestCase
         $contentNormalizer = $this->createContentNormalizerInstance();
 
         $this->assertSame([
+            'availableLocales' => ['en', 'de'],
             'excerptCategories' => [
                 3,
                 4,
@@ -181,6 +190,7 @@ class ContentNormalizerTest extends TestCase
                 'Tag 2',
             ],
             'excerptTitle' => 'Excerpt Title',
+            'ghostLocale' => 'en',
             'id' => 5,
             'locale' => 'de',
             'published' => '2020-02-02T12:30:00+00:00',

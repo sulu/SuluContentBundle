@@ -85,6 +85,33 @@ class DimensionContentQueryEnhancerTest extends SuluTestCase
         $this->assertCount(2, $examples);
     }
 
+    public function testFindByGhostLocaleAndStage(): void
+    {
+        static::purgeDatabase();
+
+        $example = static::createExample();
+        $example2 = static::createExample();
+        $example3 = static::createExample();
+        static::createExampleContent($example, ['title' => 'Example A']);
+        static::createExampleContent($example, ['title' => 'Example A', 'stage' => 'live']);
+        static::createExampleContent($example2, ['title' => 'Example B']);
+        static::createExampleContent($example3, ['title' => 'Example C']);
+        static::createExampleContent($example3, ['title' => 'Example C', 'stage' => 'live']);
+        static::getEntityManager()->flush();
+        static::getEntityManager()->clear();
+
+        $examples = \iterator_to_array($this->exampleRepository->findBy(['locale' => 'de', 'stage' => 'live']));
+        $this->assertCount(0, $examples);
+
+        $examples = \iterator_to_array($this->exampleRepository->findBy([
+            'loadGhost' => true,
+            'locale' => 'de',
+            'stage' => 'live',
+        ]));
+
+        $this->assertCount(2, $examples);
+    }
+
     public function testGroupContentAdmin(): void
     {
         $example = static::createExample();

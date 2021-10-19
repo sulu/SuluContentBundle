@@ -2,7 +2,8 @@
     "author": null,
     "authored": "2020-05-08T00:00:00+00:00",
     "availableLocales": [
-        "en"
+        "en",
+        "de"
     ],
     "excerptCategories": [],
     "excerptDescription": "Excerpt Description",
@@ -17,10 +18,10 @@
     "ghostLocale": "en",
     "id": "@integer@",
     "images": null,
-    "locale": "en",
+    "locale": "de",
     "published": null,
     "publishedState": false,
-    "seoCanonicalUrl": "https:\/\/sulu.io\/",
+    "seoCanonicalUrl": "https://sulu.io/",
     "seoDescription": "Seo Description",
     "seoHideInSitemap": true,
     "seoKeywords": "Seo Keyword 1, Seo Keyword 2",
@@ -30,7 +31,6 @@
     "stage": "draft",
     "template": "example-2",
     "title": "Test Example",
-    "url": "\/my-example",
-    "workflowPlace": "unpublished",
-    "mainWebspace": "sulu-io"
+    "url": "/my-example",
+    "workflowPlace": "unpublished"
 }

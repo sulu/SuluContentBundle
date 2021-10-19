@@ -181,6 +181,11 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
                 ]
             );
 
+            if (!$resolvedDimensionContent->getLocale()) {
+                // avoid 500 error when ghostLocale is loaded by still use correct locale in serialize method
+                $resolvedDimensionContent->setLocale($locale);
+            }
+
             return $resolvedDimensionContent;
         } catch (ContentNotFoundException $exception) {
             return null;

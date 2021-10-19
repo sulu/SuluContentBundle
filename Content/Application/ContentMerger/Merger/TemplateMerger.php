@@ -15,7 +15,11 @@ namespace Sulu\Bundle\ContentBundle\Content\Application\ContentMerger\Merger;
 
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 
-class TemplateMerger implements MergerInterface
+/**
+ * @internal This class should not be instantiated by a project.
+ *           Create your own merger instead.
+ */
+final class TemplateMerger implements MergerInterface
 {
     public function merge(object $targetObject, object $sourceObject): void
     {

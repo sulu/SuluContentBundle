@@ -37,6 +37,26 @@ trait DimensionContentMockWrapperTrait
         $this->instance->setLocale($locale);
     }
 
+    public function getGhostLocale(): ?string
+    {
+        return $this->instance->getGhostLocale();
+    }
+
+    public function setGhostLocale(?string $ghostLocale): void
+    {
+        $this->instance->setGhostLocale($ghostLocale);
+    }
+
+    public function getAvailableLocales(): ?array
+    {
+        return $this->instance->getAvailableLocales();
+    }
+
+    public function addAvailableLocale(string $availableLocale): void
+    {
+        $this->instance->addAvailableLocale($availableLocale);
+    }
+
     public function getStage(): string
     {
         return $this->instance->getStage();

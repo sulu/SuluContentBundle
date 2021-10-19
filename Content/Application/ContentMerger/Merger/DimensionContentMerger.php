@@ -13,30 +13,30 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentMerger\Merger;
 
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\AuthorInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 
 /**
  * @internal This class should not be instantiated by a project.
  *           Create your own merger instead.
  */
-final class AuthorMerger implements MergerInterface
+final class DimensionContentMerger implements MergerInterface
 {
     public function merge(object $targetObject, object $sourceObject): void
     {
-        if (!$targetObject instanceof AuthorInterface) {
+        if (!$targetObject instanceof DimensionContentInterface) {
             return;
         }
 
-        if (!$sourceObject instanceof AuthorInterface) {
+        if (!$sourceObject instanceof DimensionContentInterface) {
             return;
         }
 
-        if ($author = $sourceObject->getAuthor()) {
-            $targetObject->setAuthor($author);
+        if ($ghostLocale = $sourceObject->getGhostLocale()) {
+            $targetObject->setGhostLocale($ghostLocale);
         }
 
-        if ($authored = $sourceObject->getAuthored()) {
-            $targetObject->setAuthored($authored);
+        foreach ($sourceObject->getAvailableLocales() ?: [] as $availableLocale) {
+            $targetObject->addAvailableLocale($availableLocale);
         }
     }
 }
