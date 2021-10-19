@@ -27,6 +27,7 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\WebspaceInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Doctrine\MetadataLoader;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleDimensionContent;
@@ -66,6 +67,7 @@ class MetadataLoaderTest extends TestCase
         $reflectionClass->implementsInterface(ExcerptInterface::class)->willReturn(\in_array(ExcerptInterface::class, $interfaces, true));
         $reflectionClass->implementsInterface(TemplateInterface::class)->willReturn(\in_array(TemplateInterface::class, $interfaces, true));
         $reflectionClass->implementsInterface(WorkflowInterface::class)->willReturn(\in_array(WorkflowInterface::class, $interfaces, true));
+        $reflectionClass->implementsInterface(WebspaceInterface::class)->willReturn(\in_array(WebspaceInterface::class, $interfaces, true));
         $reflectionClass->implementsInterface(AuthorInterface::class)->willReturn(\in_array(AuthorInterface::class, $interfaces, true));
 
         foreach ($interfaces as $interface) {
@@ -242,6 +244,17 @@ class MetadataLoaderTest extends TestCase
             [
                 'author' => true,
             ],
+        ];
+
+        yield [
+            [
+                WebspaceInterface::class,
+            ],
+            [
+                'mainWebspace' => true,
+            ],
+            [],
+            [],
         ];
     }
 }

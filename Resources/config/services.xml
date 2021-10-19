@@ -26,6 +26,13 @@
         </service>
 
         <service id="Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Admin\ContentViewBuilderFactoryInterface" alias="sulu_content.content_view_builder_factory"/>
+        <service
+            id="sulu_content.webspace_select"
+            class="Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Page\Select\WebspaceSelect"
+            public="true"
+        >
+            <argument type="service" id="sulu_core.webspace.webspace_manager"/>
+        </service>
 
         <!-- ContentMerger -->
         <service id="sulu_content.content_merger" class="Sulu\Bundle\ContentBundle\Content\Application\ContentMerger\ContentMerger">
