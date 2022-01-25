@@ -15,6 +15,7 @@ namespace Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Route;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NoResultException;
+use Doctrine\ORM\Query\Expr\Join;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolverInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
@@ -121,8 +122,15 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
             $contentRichEntity = $this->entityManager->createQueryBuilder()
                 ->select('entity')
                 ->from($entityClass, 'entity')
+                ->innerJoin(
+                    'entity.dimensionContents',
+                    'dimensionContent',
+                    Join::WITH,
+                    'dimensionContent.locale = :locale'
+                )
                 ->where('entity = :id')
                 ->setParameter('id', $id)
+                ->setParameter('locale', $locale)
                 ->getQuery()
                 ->getSingleResult();
         } catch (NoResultException $exception) {

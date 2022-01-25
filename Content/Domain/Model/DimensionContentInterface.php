@@ -40,6 +40,11 @@ interface DimensionContentInterface
     public function addAvailableLocale(string $availableLocale): void;
 
     /**
+     * @internal should only be set by content bundle services not from outside
+     */
+    public function removeAvailableLocale(string $availableLocale): void;
+
+    /**
      * @return string[]|null
      */
     public function getAvailableLocales(): ?array;

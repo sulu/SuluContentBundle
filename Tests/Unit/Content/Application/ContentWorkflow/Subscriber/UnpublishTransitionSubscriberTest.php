@@ -24,6 +24,8 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInt
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionContentRepositoryInterface;
+use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
+use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleDimensionContent;
 use Symfony\Component\Workflow\Event\TransitionEvent;
 use Symfony\Component\Workflow\Marking;
 
@@ -197,10 +199,21 @@ class UnpublishTransitionSubscriberTest extends TestCase
             $entityManager->reveal()
         );
 
-        $localizedLiveDimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $example = new Example();
+        $localizedLiveDimensionContent = new ExampleDimensionContent($example);
+        $localizedLiveDimensionContent->setStage('live');
+        $localizedLiveDimensionContent->setLocale('en');
         $dimensionContentCollection = $this->prophesize(DimensionContentCollectionInterface::class);
         $dimensionContentCollection->getDimensionContent(['locale' => 'en', 'stage' => 'live'])
             ->willReturn($localizedLiveDimensionContent)
+            ->shouldBeCalled();
+
+        $unlocalizedLiveDimensionContent = new ExampleDimensionContent($example);
+        $unlocalizedLiveDimensionContent->setStage('live');
+        $unlocalizedLiveDimensionContent->addAvailableLocale('en');
+        $unlocalizedLiveDimensionContent->addAvailableLocale('de');
+        $dimensionContentCollection->getDimensionContent(['locale' => null, 'stage' => 'live'])
+            ->willReturn($unlocalizedLiveDimensionContent)
             ->shouldBeCalled();
 
         $liveDimensionAttributes = \array_merge($dimensionAttributes, ['stage' => DimensionContentInterface::STAGE_LIVE]);
@@ -212,5 +225,6 @@ class UnpublishTransitionSubscriberTest extends TestCase
         $entityManager->remove($localizedLiveDimensionContent)->shouldBeCalled();
 
         $contentUnpublishSubscriber->onUnpublish($event);
+        $this->assertSame(['de'], $unlocalizedLiveDimensionContent->getAvailableLocales());
     }
 }

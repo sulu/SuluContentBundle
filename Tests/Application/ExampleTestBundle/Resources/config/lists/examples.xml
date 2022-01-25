@@ -11,7 +11,7 @@
         </join>
     </joins>
 
-    <joins name="unlocalizedDimensionContent">
+    <joins name="unlocalizedDimensionContent" ref="dimensionContent">
         <join>
             <entity-name>unlocalizedDimensionContent</entity-name>
             <field-name>Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example.dimensionContents</field-name>
@@ -25,13 +25,14 @@
             <entity-name>ghostDimensionContent</entity-name>
             <field-name>Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example.dimensionContents</field-name>
             <method>LEFT</method>
-            <condition>ghostDimensionContent.locale = unlocalizedDimensionContent.ghostLocale AND ghostDimensionContent.stage = 'draft'</condition>
+            <condition>ghostDimensionContent.locale = unlocalizedDimensionContent.ghostLocale AND ghostDimensionContent.stage = 'draft' AND dimensionContent IS NULL</condition>
         </join>
     </joins>
 
     <properties>
-        <property name="id" translation="sulu_admin.id">
-            <field-name>id</field-name>
+        <!-- TODO should be uuid not id -->
+        <property name="id" translation="sulu_admin.uuid">
+            <field-name>uuid</field-name>
             <entity-name>Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example</entity-name>
         </property>
 
@@ -59,8 +60,8 @@
         </property>
 
         <property name="ghostLocale" translation="sulu_admin.ghost_locale" visibility="never">
-            <field-name>ghostLocale</field-name>
-            <entity-name>unlocalizedDimensionContent</entity-name>
+            <field-name>locale</field-name>
+            <entity-name>ghostDimensionContent</entity-name>
         </property>
     </properties>
 </list>
