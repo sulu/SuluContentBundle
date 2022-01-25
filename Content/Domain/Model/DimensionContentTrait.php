@@ -80,6 +80,22 @@ trait DimensionContentTrait
         }
     }
 
+    /**
+     * @internal should only be set by content bundle services not from outside
+     */
+    public function removeAvailableLocale(string $availableLocale): void
+    {
+        if (null === $this->availableLocales) {
+            return;
+        }
+
+        $removeIndex = \array_search($availableLocale, $this->availableLocales, true);
+        if (false !== $removeIndex) {
+            unset($this->availableLocales[$removeIndex]);
+            $this->availableLocales = \array_values($this->availableLocales);
+        }
+    }
+
     public function getAvailableLocales(): ?array
     {
         return $this->availableLocales;

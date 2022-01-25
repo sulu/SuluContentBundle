@@ -68,12 +68,21 @@ class UnpublishTransitionSubscriber implements EventSubscriberInterface
         }
 
         $liveDimensionAttributes = \array_merge($dimensionAttributes, ['stage' => DimensionContentInterface::STAGE_LIVE]);
-
         $dimensionContentCollection = $this->dimensionContentRepository->load($contentRichEntity, $liveDimensionAttributes);
         $localizedLiveDimensionContent = $dimensionContentCollection->getDimensionContent($liveDimensionAttributes);
 
         if (!$localizedLiveDimensionContent) {
             throw new ContentNotFoundException($contentRichEntity, $liveDimensionAttributes);
+        }
+
+        $locale = $localizedLiveDimensionContent->getLocale();
+
+        if ($locale) {
+            $unlocalizedLiveDimensionAttributes = \array_merge($liveDimensionAttributes, ['locale' => null]);
+
+            /** @var DimensionContentInterface $unlocalizedLiveDimensionContent */
+            $unlocalizedLiveDimensionContent = $dimensionContentCollection->getDimensionContent($unlocalizedLiveDimensionAttributes);
+            $unlocalizedLiveDimensionContent->removeAvailableLocale($locale);
         }
 
         $this->entityManager->remove($localizedLiveDimensionContent);

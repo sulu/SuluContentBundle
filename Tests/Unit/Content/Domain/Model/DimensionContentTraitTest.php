@@ -70,6 +70,46 @@ class DimensionContentTraitTest extends TestCase
         $this->assertSame(['de'], $model->getAvailableLocales());
     }
 
+    public function testRemoveAvailableLocaleFirst(): void
+    {
+        $model = $this->getDimensionContentInstance();
+        $this->assertNull($model->getAvailableLocales());
+        $model->addAvailableLocale('de');
+        $model->addAvailableLocale('en');
+        $this->assertSame(['de', 'en'], $model->getAvailableLocales());
+        $model->removeAvailableLocale('de');
+        $this->assertSame(['en'], $model->getAvailableLocales());
+    }
+
+    public function testRemoveAvailableLocaleLast(): void
+    {
+        $model = $this->getDimensionContentInstance();
+        $this->assertNull($model->getAvailableLocales());
+        $model->addAvailableLocale('de');
+        $model->addAvailableLocale('en');
+        $this->assertSame(['de', 'en'], $model->getAvailableLocales());
+        $model->removeAvailableLocale('en');
+        $this->assertSame(['de'], $model->getAvailableLocales());
+    }
+
+    public function testRemoveAvailableLocaleNotSet(): void
+    {
+        $model = $this->getDimensionContentInstance();
+        $this->assertNull($model->getAvailableLocales());
+        $model->addAvailableLocale('en');
+        $this->assertSame(['en'], $model->getAvailableLocales());
+        $model->removeAvailableLocale('de');
+        $this->assertSame(['en'], $model->getAvailableLocales());
+    }
+
+    public function testRemoveAvailableLocaleEmpty(): void
+    {
+        $model = $this->getDimensionContentInstance();
+        $this->assertNull($model->getAvailableLocales());
+        $model->removeAvailableLocale('de');
+        $this->assertNull($model->getAvailableLocales());
+    }
+
     public function testGetSetStage(): void
     {
         $model = $this->getDimensionContentInstance();
