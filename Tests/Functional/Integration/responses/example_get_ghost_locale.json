@@ -12,6 +12,7 @@
     "ghostLocale": "en",
     "id": "@integer@",
     "locale": null,
+    "mainWebspace": null,
     "published": null,
     "publishedState": false,
     "seoCanonicalUrl": null,

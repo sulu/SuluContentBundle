@@ -19,6 +19,7 @@
     "id": "@integer@",
     "images": null,
     "locale": "de",
+    "mainWebspace": "sulu-io",
     "published": null,
     "publishedState": false,
     "seoCanonicalUrl": "https://sulu.io/",

@@ -17,6 +17,7 @@
     "ghostLocale": "en",
     "id": "@integer@",
     "images": null,
+    "mainWebspace": "sulu-io",
     "locale": "en",
     "published": null,
     "publishedState": false,
@@ -31,6 +32,5 @@
     "template": "example-2",
     "title": "Test Example",
     "url": "/my-example",
-    "workflowPlace": "unpublished",
-    "mainWebspace": "sulu-io"
+    "workflowPlace": "unpublished"
 }
