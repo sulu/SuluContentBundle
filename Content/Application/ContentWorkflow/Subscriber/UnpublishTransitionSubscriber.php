@@ -76,11 +76,14 @@ class UnpublishTransitionSubscriber implements EventSubscriberInterface
         }
 
         $locale = $localizedLiveDimensionContent->getLocale();
-        $unlocalizedLiveDimensionAttributes = \array_merge($liveDimensionAttributes, ['locale' => null]);
 
-        /** @var DimensionContentInterface $unlocalizedLiveDimensionContent */
-        $unlocalizedLiveDimensionContent = $dimensionContentCollection->getDimensionContent($unlocalizedLiveDimensionAttributes);
-        $unlocalizedLiveDimensionContent->removeAvailableLocale($locale);
+        if ($locale) {
+            $unlocalizedLiveDimensionAttributes = \array_merge($liveDimensionAttributes, ['locale' => null]);
+
+            /** @var DimensionContentInterface $unlocalizedLiveDimensionContent */
+            $unlocalizedLiveDimensionContent = $dimensionContentCollection->getDimensionContent($unlocalizedLiveDimensionAttributes);
+            $unlocalizedLiveDimensionContent->removeAvailableLocale($locale);
+        }
 
         $this->entityManager->remove($localizedLiveDimensionContent);
     }

@@ -86,11 +86,12 @@ trait DimensionContentTrait
     public function removeAvailableLocale(string $availableLocale): void
     {
         if (null === $this->availableLocales) {
-            $this->availableLocales = [];
+            return;
         }
 
-        if (\in_array($availableLocale, $this->availableLocales, true)) {
-            unset($this->availableLocales[\array_search($availableLocale, $this->availableLocales, true)]);
+        $removeIndex = \array_search($availableLocale, $this->availableLocales, true);
+        if (false !== $removeIndex) {
+            unset($this->availableLocales[$removeIndex]);
             $this->availableLocales = \array_values($this->availableLocales);
         }
     }
