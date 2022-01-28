@@ -19,15 +19,21 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 interface ContentIndexerInterface
 {
     /**
-     * @param mixed[] $dimensionAttributes
+     * @param array{
+     *    locale?: string,
+     *    stage?: string|null,
+     * } $dimensionAttributes
      */
     public function index(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes): DimensionContentInterface;
 
     public function indexDimensionContent(DimensionContentInterface $dimensionContent): void;
 
     /**
-     * @param mixed $id
-     * @param mixed[] $dimensionAttributes
+     * @param int|string $id
+     * @param array{
+     *    locale?: string,
+     *    stage?: string|null,
+     * } $dimensionAttributes
      */
     public function deindex(string $resourceKey, $id, array $dimensionAttributes = []): void;
 

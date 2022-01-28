@@ -21,7 +21,7 @@ jobs:
             fail-fast: false
             matrix:
                 include:
-                    - php-version: '7.2'
+                    - php-version: '7.3'
                       coverage: false
                       dependency-versions: 'lowest'
                       env:
@@ -34,6 +34,12 @@ jobs:
                           SYMFONY_DEPRECATIONS_HELPER: weak
 
                     - php-version: '8.0'
+                      coverage: false
+                      dependency-versions: 'highest'
+                      env:
+                          SYMFONY_DEPRECATIONS_HELPER: weak
+
+                    - php-version: '8.1'
                       coverage: false
                       dependency-versions: 'highest'
                       env:

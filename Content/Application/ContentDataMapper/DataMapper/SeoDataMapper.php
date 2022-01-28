@@ -18,6 +18,17 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
 
 class SeoDataMapper implements DataMapperInterface
 {
+    /**
+     * @param array{
+     *     seoTitle?: string|null,
+     *     seoDescription?: string|null,
+     *     seoKeywords?: string|null,
+     *     seoCanonicalUrl?: string|null,
+     *     seoHideInSitemap?: bool,
+     *     seoNoFollow?: bool,
+     *     seoNoIndex?: bool,
+     * } $data
+     */
     public function map(
         DimensionContentInterface $unlocalizedDimensionContent,
         DimensionContentInterface $localizedDimensionContent,
@@ -27,20 +38,12 @@ class SeoDataMapper implements DataMapperInterface
             return;
         }
 
-        $this->setSeoData($localizedDimensionContent, $data);
-    }
-
-    /**
-     * @param mixed[] $data
-     */
-    private function setSeoData(SeoInterface $dimensionContent, array $data): void
-    {
-        $dimensionContent->setSeoTitle($data['seoTitle'] ?? null);
-        $dimensionContent->setSeoDescription($data['seoDescription'] ?? null);
-        $dimensionContent->setSeoKeywords($data['seoKeywords'] ?? null);
-        $dimensionContent->setSeoCanonicalUrl($data['seoCanonicalUrl'] ?? null);
-        $dimensionContent->setSeoHideInSitemap($data['seoHideInSitemap'] ?? false);
-        $dimensionContent->setSeoNoFollow($data['seoNoFollow'] ?? false);
-        $dimensionContent->setSeoNoIndex($data['seoNoIndex'] ?? false);
+        $localizedDimensionContent->setSeoTitle($data['seoTitle'] ?? null);
+        $localizedDimensionContent->setSeoDescription($data['seoDescription'] ?? null);
+        $localizedDimensionContent->setSeoKeywords($data['seoKeywords'] ?? null);
+        $localizedDimensionContent->setSeoCanonicalUrl($data['seoCanonicalUrl'] ?? null);
+        $localizedDimensionContent->setSeoHideInSitemap($data['seoHideInSitemap'] ?? false);
+        $localizedDimensionContent->setSeoNoFollow($data['seoNoFollow'] ?? false);
+        $localizedDimensionContent->setSeoNoIndex($data['seoNoIndex'] ?? false);
     }
 }

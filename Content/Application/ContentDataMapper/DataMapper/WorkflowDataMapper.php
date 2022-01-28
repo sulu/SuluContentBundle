@@ -18,6 +18,11 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 
 class WorkflowDataMapper implements DataMapperInterface
 {
+    /**
+     * @param array{
+     *     published?: string|null,
+     * } $data
+     */
     public function map(
         DimensionContentInterface $unlocalizedDimensionContent,
         DimensionContentInterface $localizedDimensionContent,
@@ -73,6 +78,7 @@ class WorkflowDataMapper implements DataMapperInterface
             return;
         }
 
+        /** @var string|null $published */
         $published = $data['published'] ?? null;
 
         if (!$published) {

@@ -17,6 +17,12 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 
 class TemplateNormalizer implements NormalizerInterface
 {
+    /**
+     * @param array{
+     *     templateKey: string,
+     *     templateData: mixed[],
+     * } $normalizedData
+     */
     public function enhance(object $object, array $normalizedData): array
     {
         if (!$object instanceof TemplateInterface) {

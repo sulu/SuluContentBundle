@@ -30,17 +30,6 @@ use Webmozart\Assert\Assert;
 class DimensionContentQueryEnhancer
 {
     /**
-     * @var ContentMetadataInspectorInterface
-     */
-    private $contentMetadataInspector;
-
-    public function __construct(
-        ContentMetadataInspectorInterface $contentMetadataInspector
-    ) {
-        $this->contentMetadataInspector = $contentMetadataInspector;
-    }
-
-    /**
      * Withs represents additional selects which can be load to join and select specific sub entities.
      * They are used by groups and fields.
      */
@@ -78,7 +67,7 @@ class DimensionContentQueryEnhancer
      *
      * @param class-string<DimensionContentInterface> $dimensionContentClassName
      * @param array{
-     *     locale?: string|null,
+     *     locale: string,
      *     stage?: string|null,
      *     categoryIds?: int[],
      *     categoryKeys?: string[],
@@ -96,6 +85,12 @@ class DimensionContentQueryEnhancer
         string $dimensionContentClassName,
         array $filters
     ): void {
+        /**
+         * @var array{
+         *     locale: string|null,
+         *     stage: string,
+         * } $effectiveAttributes
+         */
         $effectiveAttributes = $dimensionContentClassName::getEffectiveDimensionAttributes($filters);
 
         $queryBuilder->leftJoin(
@@ -106,7 +101,6 @@ class DimensionContentQueryEnhancer
         );
 
         // TODO filter to shadow dimension
-
         foreach ($effectiveAttributes as $key => $value) {
             if (null === $value) {
                 $queryBuilder->andWhere('filterDimensionContent.' . $key . ' IS NULL');

@@ -28,7 +28,10 @@ class DimensionContentCollection implements \IteratorAggregate, DimensionContent
     private $dimensionContents;
 
     /**
-     * @var mixed[]
+     * @var array{
+     *     locale: string,
+     *     stage: string,
+     * }
      */
     private $dimensionAttributes;
 
@@ -38,7 +41,10 @@ class DimensionContentCollection implements \IteratorAggregate, DimensionContent
     private $dimensionContentClass;
 
     /**
-     * @var mixed[]
+     * @var array{
+     *     locale: null,
+     *     stage: string,
+     * }
      */
     private $defaultDimensionAttributes;
 
@@ -46,7 +52,10 @@ class DimensionContentCollection implements \IteratorAggregate, DimensionContent
      * DimensionContentCollection constructor.
      *
      * @param DimensionContentInterface[] $dimensionContents
-     * @param mixed[] $dimensionAttributes
+     * @param array{
+     *     locale: string,
+     *     stage?: string|null,
+     * } $dimensionAttributes
      * @param class-string<DimensionContentInterface> $dimensionContentClass
      */
     public function __construct(

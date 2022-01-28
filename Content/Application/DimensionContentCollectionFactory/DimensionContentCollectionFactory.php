@@ -70,30 +70,27 @@ class DimensionContentCollectionFactory implements DimensionContentCollectionFac
             );
         }
 
-        $localizedDimensionContent = null;
-        $locale = $dimensionAttributes['locale'] ?? null;
-        if ($locale) {
-            $localizedDimensionContent = $dimensionContentCollection->getDimensionContent($dimensionAttributes);
+        $locale = $dimensionAttributes['locale'];
+        $localizedDimensionContent = $dimensionContentCollection->getDimensionContent($dimensionAttributes);
 
-            if (!$localizedDimensionContent) {
-                $localizedDimensionContent = $this->createContentDimension(
-                    $contentRichEntity,
-                    $dimensionAttributes
-                );
+        if (!$localizedDimensionContent) {
+            $localizedDimensionContent = $this->createContentDimension(
+                $contentRichEntity,
+                $dimensionAttributes
+            );
 
-                $unlocalizedDimensionContent->addAvailableLocale($locale);
+            $unlocalizedDimensionContent->addAvailableLocale($locale);
 
-                if (!$unlocalizedDimensionContent->getGhostLocale()) {
-                    $unlocalizedDimensionContent->setGhostLocale($locale);
-                }
+            if (!$unlocalizedDimensionContent->getGhostLocale()) {
+                $unlocalizedDimensionContent->setGhostLocale($locale);
             }
         }
 
         $dimensionContentCollection = new DimensionContentCollection(
-            \array_filter([
+            [
                 $unlocalizedDimensionContent,
                 $localizedDimensionContent,
-            ]),
+            ],
             $dimensionAttributes,
             $dimensionContentCollection->getDimensionContentClass()
         );

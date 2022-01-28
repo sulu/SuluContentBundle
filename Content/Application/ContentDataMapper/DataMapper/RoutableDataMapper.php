@@ -47,12 +47,20 @@ class RoutableDataMapper implements DataMapperInterface
     private $conflictResolver;
 
     /**
-     * @var array<string, array<mixed>>
+     * @var array<string, array{
+     *      resource_key: string,
+     *      entityClass: string|null,
+     *      options: mixed[]|null,
+     * }>
      */
     private $routeMappings;
 
     /**
-     * @param array<string, array<mixed>> $routeMappings
+     * @param array<string, array{
+     *      resource_key: string,
+     *      entityClass: string|null,
+     *      options: mixed[]|null,
+     * }> $routeMappings
      */
     public function __construct(
         StructureMetadataFactoryInterface $factory,
@@ -130,10 +138,10 @@ class RoutableDataMapper implements DataMapperInterface
             throw new \RuntimeException(\sprintf('No route mapping found for "%s".', $resourceKey));
         }
 
+        /** @var string|null $routePath */
         $routePath = $data[$name] ?? null;
 
         if (!$routePath) {
-            /** @var mixed $routeGenerationData */
             $routeGenerationData = \array_merge(
                 $data,
                 [
@@ -153,7 +161,8 @@ class RoutableDataMapper implements DataMapperInterface
         }
 
         if (DimensionContentInterface::STAGE_LIVE === $localizedDimensionContent->getStage()) {
-            if (!$localizedDimensionContent->getResourceId()) {
+            $resourceId = $localizedDimensionContent->getResourceId();
+            if (!$resourceId) {
                 // TODO route bundle should work to update the entity later with a resourceId over UPDATE SQL statement
                 throw new \RuntimeException('Expected a LocalizedDimensionContent with a resourceId.');
             }
@@ -161,7 +170,7 @@ class RoutableDataMapper implements DataMapperInterface
             // route should only be updated in live dimension
             $route = $this->routeManager->createOrUpdateByAttributes(
                 $entityClass,
-                (string) $localizedDimensionContent->getResourceId(),
+                (string) $resourceId,
                 $locale,
                 $routePath,
                 false

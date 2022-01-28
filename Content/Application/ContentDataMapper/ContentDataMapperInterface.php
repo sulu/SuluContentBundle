@@ -19,7 +19,10 @@ interface ContentDataMapperInterface
 {
     /**
      * @param array<string, mixed> $data
-     * @param mixed[] $dimensionAttributes
+     * @param array{
+     *     locale: string,
+     *     stage?: string|null,
+     * } $dimensionAttributes
      */
     public function map(
         DimensionContentCollectionInterface $dimensionContentCollection,

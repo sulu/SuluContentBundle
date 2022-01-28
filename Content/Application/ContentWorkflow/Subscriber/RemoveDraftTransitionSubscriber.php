@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\Subscriber;
 
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentCopier\ContentCopierInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\ContentWorkflowInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
@@ -39,6 +40,15 @@ class RemoveDraftTransitionSubscriber implements EventSubscriberInterface
             return;
         }
 
+        /**
+         * @var array{
+         *     dimensionAttributes?: array{
+         *         locale: string,
+         *     },
+         *     dimensionContentCollection?: DimensionContentCollectionInterface,
+         *     contentRichEntity?: object,
+         * } $context
+         */
         $context = $transitionEvent->getContext();
 
         $dimensionAttributes = $context[ContentWorkflowInterface::DIMENSION_ATTRIBUTES_CONTEXT_KEY] ?? null;
@@ -51,7 +61,20 @@ class RemoveDraftTransitionSubscriber implements EventSubscriberInterface
             throw new \RuntimeException('Transition context must contain "contentRichEntity".');
         }
 
+        /**
+         * @var array{
+         *    locale: string,
+         *    stage: string,
+         * } $draftDimensionAttributes
+         */
         $draftDimensionAttributes = \array_merge($dimensionAttributes, ['stage' => DimensionContentInterface::STAGE_DRAFT]);
+
+        /**
+         * @var array{
+         *    locale: string,
+         *    stage: string,
+         * } $liveDimensionAttributes
+         */
         $liveDimensionAttributes = \array_merge($dimensionAttributes, ['stage' => DimensionContentInterface::STAGE_LIVE]);
 
         $this->contentCopier->copy(

@@ -91,7 +91,10 @@ class ContentIndexer implements ContentIndexerInterface
     }
 
     /**
-     * @param mixed[] $dimensionAttributes
+     * @param array{
+     *    locale?: string|null,
+     *    stage?: string|null,
+     * } $dimensionAttributes
      */
     private function loadDimensionContent(
         ContentRichEntityInterface $contentRichEntity,

@@ -55,6 +55,15 @@ class UnpublishTransitionSubscriber implements EventSubscriberInterface
             $dimensionContent->setWorkflowPublished(null);
         }
 
+        /**
+         * @var array{
+         *     dimensionAttributes?: array{
+         *         locale: string,
+         *     },
+         *     dimensionContentCollection?: DimensionContentCollectionInterface,
+         *     contentRichEntity?: object,
+         * } $context
+         */
         $context = $transitionEvent->getContext();
 
         $dimensionAttributes = $context[ContentWorkflowInterface::DIMENSION_ATTRIBUTES_CONTEXT_KEY] ?? null;

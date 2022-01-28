@@ -19,7 +19,10 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 interface ContentResolverInterface
 {
     /**
-     * @param mixed[] $dimensionAttributes
+     * @param array{
+     *     locale?: string|null,
+     *     stage?: string|null,
+     * } $dimensionAttributes
      */
     public function resolve(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes): DimensionContentInterface;
 }

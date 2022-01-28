@@ -66,14 +66,32 @@ interface DimensionContentInterface
     public function markAsMerged(): void;
 
     /**
-     * @return mixed[]
+     * @internal should only be used by content bundle services
+     *
+     * @return array{
+     *     locale: null,
+     *     stage: string,
+     * }
      */
     public static function getDefaultDimensionAttributes(): array;
 
     /**
-     * @param mixed[] $dimensionAttributes
+     * @internal should only be used by content bundle services
      *
-     * @return mixed[]
+     * TODO there is an edge case where locale: null is given and locale: null returned by DimensionContentQueryEnhancer.
+     *      Find a way to set locale return type by
+     *
+     * @template T of string|null
+     *
+     * @param array{
+     *     locale: T,
+     *     stage?: string|null,
+     * } $dimensionAttributes
+     *
+     * @return array{
+     *     locale: T,
+     *     stage: string,
+     * }
      */
     public static function getEffectiveDimensionAttributes(array $dimensionAttributes): array;
 }

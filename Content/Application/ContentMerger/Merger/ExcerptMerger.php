@@ -52,15 +52,11 @@ final class ExcerptMerger implements MergerInterface
         }
 
         if ($excerptTags = $sourceObject->getExcerptTags()) {
-            if (!empty($excerptTags)) {
-                $targetObject->setExcerptTags($excerptTags);
-            }
+            $targetObject->setExcerptTags($excerptTags);
         }
 
         if ($excerptCategories = $sourceObject->getExcerptCategories()) {
-            if (!empty($excerptCategories)) {
-                $targetObject->setExcerptCategories($excerptCategories);
-            }
+            $targetObject->setExcerptCategories($excerptCategories);
         }
     }
 }

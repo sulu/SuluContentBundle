@@ -18,14 +18,17 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 class ContentNotFoundException extends \Exception
 {
     /**
-     * @param array<string, string|int|float|bool|null> $dimensionAttributes
+     * @param array{
+     *     locale?: string|null,
+     *     stage?: string|null,
+     * } $dimensionAttributes
      */
     public function __construct(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes)
     {
         parent::__construct(\sprintf(
             'Could not load content with id "%s" and attributes: %s',
             $contentRichEntity->getId(),
-            \json_encode($dimensionAttributes)
+            \json_encode($dimensionAttributes, JSON_THROW_ON_ERROR)
         ));
     }
 }

@@ -20,8 +20,14 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 interface ContentCopierInterface
 {
     /**
-     * @param mixed[] $sourceDimensionAttributes
-     * @param mixed[] $targetDimensionAttributes
+     * @param array{
+     *     locale: string,
+     *     stage?: string|null,
+     * } $sourceDimensionAttributes
+     * @param array{
+     *     locale: string,
+     *     stage?: string|null,
+     * } $targetDimensionAttributes
      */
     public function copy(
         ContentRichEntityInterface $sourceContentRichEntity,
@@ -31,7 +37,10 @@ interface ContentCopierInterface
     ): DimensionContentInterface;
 
     /**
-     * @param mixed[] $targetDimensionAttributes
+     * @param array{
+     *     locale: string,
+     *     stage?: string|null,
+     * } $targetDimensionAttributes
      */
     public function copyFromDimensionContentCollection(
         DimensionContentCollectionInterface $dimensionContentCollection,
@@ -40,7 +49,10 @@ interface ContentCopierInterface
     ): DimensionContentInterface;
 
     /**
-     * @param mixed[] $targetDimensionAttributes
+     * @param array{
+     *     locale: string,
+     *     stage?: string|null,
+     * } $targetDimensionAttributes
      */
     public function copyFromDimensionContent(
         DimensionContentInterface $dimensionContent,

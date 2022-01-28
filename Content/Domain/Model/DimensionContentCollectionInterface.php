@@ -19,7 +19,10 @@ namespace Sulu\Bundle\ContentBundle\Content\Domain\Model;
 interface DimensionContentCollectionInterface extends \Traversable, \Countable
 {
     /**
-     * @param mixed[] $dimensionAttributes
+     * @param array{
+     *     locale?: string|null,
+     *     stage?: string|null,
+     * } $dimensionAttributes
      */
     public function getDimensionContent(array $dimensionAttributes): ?DimensionContentInterface;
 
@@ -29,7 +32,10 @@ interface DimensionContentCollectionInterface extends \Traversable, \Countable
     public function getDimensionContentClass(): string;
 
     /**
-     * @return mixed[]
+     * @return array{
+     *     locale: string,
+     *     stage: string,
+     * }
      */
     public function getDimensionAttributes(): array;
 }

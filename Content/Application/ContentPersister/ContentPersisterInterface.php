@@ -20,7 +20,10 @@ interface ContentPersisterInterface
 {
     /**
      * @param mixed[] $data
-     * @param mixed[] $dimensionAttributes
+     * @param array{
+     *     locale: string,
+     *     stage?: string|null,
+     * } $dimensionAttributes
      */
     public function persist(ContentRichEntityInterface $contentRichEntity, array $data, array $dimensionAttributes): DimensionContentInterface;
 }

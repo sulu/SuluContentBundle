@@ -142,6 +142,12 @@ trait DimensionContentTrait
         // Ignore keys that are not part of the default attributes
         $dimensionAttributes = \array_intersect_key($dimensionAttributes, $defaultValues);
 
+        /**
+         * @var array{
+         *     locale: string,
+         *     stage: string,
+         * } $dimensionAttributes
+         */
         $dimensionAttributes = \array_merge(
             $defaultValues,
             $dimensionAttributes

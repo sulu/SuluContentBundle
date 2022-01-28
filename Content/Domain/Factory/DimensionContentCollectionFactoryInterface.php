@@ -20,7 +20,10 @@ interface DimensionContentCollectionFactoryInterface
 {
     /**
      * @param array<string, mixed> $data
-     * @param mixed[] $dimensionAttributes
+     * @param array{
+     *     locale: string,
+     *     stage?: string|null,
+     * } $dimensionAttributes
      */
     public function create(
         ContentRichEntityInterface $contentRichEntity,

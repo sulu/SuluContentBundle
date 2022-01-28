@@ -19,13 +19,19 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 interface ContentManagerInterface
 {
     /**
-     * @param mixed[] $dimensionAttributes
+     * @param array{
+     *    locale: string,
+     *    stage?: string|null,
+     * } $dimensionAttributes
      */
     public function resolve(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes): DimensionContentInterface;
 
     /**
      * @param mixed[] $data
-     * @param mixed[] $dimensionAttributes
+     * @param array{
+     *    locale: string,
+     *    stage?: string|null,
+     * } $dimensionAttributes
      */
     public function persist(ContentRichEntityInterface $contentRichEntity, array $data, array $dimensionAttributes): DimensionContentInterface;
 
@@ -35,8 +41,14 @@ interface ContentManagerInterface
     public function normalize(DimensionContentInterface $dimensionContent): array;
 
     /**
-     * @param mixed[] $sourceDimensionAttributes
-     * @param mixed[] $targetDimensionAttributes
+     * @param array{
+     *    locale: string,
+     *    stage?: string|null,
+     * } $sourceDimensionAttributes
+     * @param array{
+     *    locale: string,
+     *    stage?: string|null,
+     * } $targetDimensionAttributes
      */
     public function copy(
         ContentRichEntityInterface $sourceContentRichEntity,
@@ -46,7 +58,10 @@ interface ContentManagerInterface
     ): DimensionContentInterface;
 
     /**
-     * @param mixed[] $dimensionAttributes
+     * @param array{
+     *    locale: string,
+     *    stage?: string|null,
+     * } $dimensionAttributes
      */
     public function applyTransition(
         ContentRichEntityInterface $contentRichEntity,
@@ -55,13 +70,19 @@ interface ContentManagerInterface
     ): DimensionContentInterface;
 
     /**
-     * @param mixed[] $dimensionAttributes
+     * @param array{
+     *    locale?: string,
+     *    stage?: string|null,
+     * } $dimensionAttributes
      */
     public function index(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes): DimensionContentInterface;
 
     /**
-     * @param mixed $id
-     * @param mixed[] $dimensionAttributes
+     * @param int|string $id
+     * @param array{
+     *    locale?: string,
+     *    stage?: string|null,
+     * } $dimensionAttributes
      */
     public function deindex(string $resourceKey, $id, array $dimensionAttributes = []): void;
 }
