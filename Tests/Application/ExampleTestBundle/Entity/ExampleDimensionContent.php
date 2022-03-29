@@ -82,7 +82,7 @@ class ExampleDimensionContent implements DimensionContentInterface, ExcerptInter
     public function setTemplateData(array $templateData): void
     {
         if (\array_key_exists('title', $templateData)) {
-            $this->title = $templateData['title'] ?? null;
+            $this->title = $templateData['title'];
         }
 
         $this->parentSetTemplateData($templateData);

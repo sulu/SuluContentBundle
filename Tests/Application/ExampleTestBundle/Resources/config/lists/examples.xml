@@ -56,11 +56,15 @@
         <property name="locale" translation="sulu_admin.locale" visibility="never">
             <field-name>locale</field-name>
             <entity-name>dimensionContent</entity-name>
+
+            <joins ref="dimensionContent"/>
         </property>
 
         <property name="ghostLocale" translation="sulu_admin.ghost_locale" visibility="never">
             <field-name>ghostLocale</field-name>
             <entity-name>unlocalizedDimensionContent</entity-name>
+
+            <joins ref="unlocalizedDimensionContent"/>
         </property>
     </properties>
 </list>
