@@ -40,10 +40,10 @@ jobs:
                           SYMFONY_DEPRECATIONS_HELPER: weak
 
                     - php-version: '8.1'
-                        coverage: false
-                        dependency-versions: 'highest'
-                        env:
-                            SYMFONY_DEPRECATIONS_HELPER: weak
+                      coverage: false
+                      dependency-versions: 'highest'
+                      env:
+                          SYMFONY_DEPRECATIONS_HELPER: weak
 
         services:
             mysql:
