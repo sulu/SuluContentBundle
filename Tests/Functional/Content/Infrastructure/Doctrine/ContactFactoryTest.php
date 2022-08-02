@@ -26,7 +26,7 @@ class ContactFactoryTest extends SuluTestCase
 
     public function createContactFactory(): ContactFactoryInterface
     {
-        return self::$container->get('sulu_content.contact_factory');
+        return self::getContainer()->get('sulu_content.contact_factory');
     }
 
     /**

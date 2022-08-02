@@ -29,7 +29,7 @@ class DimensionContentRepositoryTest extends SuluTestCase
 
     public function createContentDimensionRepository(): DimensionContentRepositoryInterface
     {
-        return self::$container->get('sulu_content.dimension_content_repository');
+        return self::getContainer()->get('sulu_content.dimension_content_repository');
     }
 
     public function testLoadExistAll(): void
