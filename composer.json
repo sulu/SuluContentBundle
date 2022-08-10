@@ -105,7 +105,6 @@
         "check-coverage": [
             "@php vendor/bin/code-coverage-checker \"Tests/reports/coverage.php\" \"line\" \"100.00\" \"Content\" \"DependencyInjection\""
         ],
-        "deptract": "vendor/bin/deptrac",
         "phpstan": [
             "Tests/Application/bin/adminconsole cache:warmup --env dev",
             "@test install",

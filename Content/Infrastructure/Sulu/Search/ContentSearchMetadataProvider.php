@@ -341,7 +341,7 @@ class ContentSearchMetadataProvider implements ProviderInterface
                     // @codeCoverageIgnoreStart
                     $metadata->setImageUrlField($this->getContentField($property));
                     break;
-                // @codeCoverageIgnoreEnd
+                    // @codeCoverageIgnoreEnd
                 default:
                     // TODO FIXME add test case for this
                     // @codeCoverageIgnoreStart
@@ -352,7 +352,7 @@ class ContentSearchMetadataProvider implements ProviderInterface
                             implode(', ', ['title', 'description', 'image'])
                         )
                     );
-                    // @codeCoverageIgnoreEnd
+                // @codeCoverageIgnoreEnd
             }
 
             return;
