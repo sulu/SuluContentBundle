@@ -9,35 +9,29 @@ This source file is subject to the MIT license that is bundled
 with this source code in the file LICENSE.
 EOF;
 
+$finder = PhpCsFixer\Finder::create()
+    ->exclude(['Tests/Application/var/cache'])
+    ->in(__DIR__);
+
 $config = new PhpCsFixer\Config();
 $config->setRiskyAllowed(true)
     ->setRules([
         '@Symfony' => true,
-        '@Symfony:risky' => true,
+        'array_syntax' => ['syntax' => 'short'],
         'class_definition' => false,
         'concat_space' => ['spacing' => 'one'],
-        'declare_strict_types' => true,
         'function_declaration' => ['closure_function_spacing' => 'none'],
         'header_comment' => ['header' => $header],
+        'native_constant_invocation' => true,
+        'native_function_casing' => true,
         'native_function_invocation' => ['include' => ['@internal']],
         'no_superfluous_phpdoc_tags' => ['allow_mixed' => true, 'remove_inheritdoc' => true],
-        'no_useless_else' => true,
-        'no_useless_return' => true,
-        'php_unit_strict' => true,
+        'ordered_imports' => true,
         'phpdoc_align' => ['align' => 'left'],
-        'phpdoc_order' => true,
-        'phpdoc_to_comment' => false,
         'phpdoc_types_order' => false,
         'single_line_throw' => false,
-        'strict_comparison' => true,
-        'strict_param' => true,
+        'single_line_comment_spacing' => false,
     ])
-    ->setFinder(
-        PhpCsFixer\Finder::create()
-            ->exclude('vendor')
-            ->exclude('cache')
-            ->exclude('Tests/reports/')
-            ->in(__DIR__)
-    );
+    ->setFinder($finder);
 
 return $config;

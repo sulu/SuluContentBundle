@@ -11,8 +11,9 @@
 # coverall
 /php-coveralls.phar
 
-# php-cs
+# php-cs-fixer
 .php-cs-fixer.cache
+php-cs-fixer
 
 # System files
 .DS_Store

@@ -33,8 +33,7 @@ class ContentIndexerTest extends TestCase
         SearchManagerInterface $searchManager,
         ContentResolverInterface $contentResolver
     ): ContentIndexerInterface {
-        /** @var SearchManager $searchManager */
-
+        /* @var SearchManager $searchManager */
         return new ContentIndexer($searchManager, $contentResolver);
     }
 
