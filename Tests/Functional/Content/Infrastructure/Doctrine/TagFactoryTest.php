@@ -31,7 +31,7 @@ class TagFactoryTest extends SuluTestCase
         self::bootKernel();
         self::purgeDatabase();
 
-        $this->tagFactory = self::$container->get('sulu_content.tag_factory');
+        $this->tagFactory = self::getContainer()->get('sulu_content.tag_factory');
     }
 
     /**
@@ -72,7 +72,7 @@ class TagFactoryTest extends SuluTestCase
         $this->getEntityManager()->persist($this->createOtherEntity());
 
         /** @var TagRepositoryInterface $tagRepository */
-        $tagRepository = self::$container->get('sulu.repository.tag');
+        $tagRepository = self::getContainer()->get('sulu.repository.tag');
         $tag = $tagRepository->createNew();
         $tag->setName('Other Tag');
         $this->getEntityManager()->persist($tag);
@@ -138,7 +138,7 @@ class TagFactoryTest extends SuluTestCase
     private function createTags(array $existTagNames = []): void
     {
         /** @var TagRepositoryInterface $tagRepository */
-        $tagRepository = self::$container->get('sulu.repository.tag');
+        $tagRepository = self::getContainer()->get('sulu.repository.tag');
 
         foreach ($existTagNames as $existTagName) {
             $existTag = $tagRepository->createNew();
