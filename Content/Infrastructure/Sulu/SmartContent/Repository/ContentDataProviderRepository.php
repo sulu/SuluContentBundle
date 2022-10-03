@@ -25,7 +25,6 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
 {
     public const CONTENT_RICH_ENTITY_ALIAS = 'entity';
     public const LOCALIZED_DIMENSION_CONTENT_ALIAS = 'localizedContent';
-    public const UNLOCALIZED_DIMENSION_CONTENT_ALIAS = 'unlocalizedContent';
 
     /**
      * @var ContentManagerInterface
@@ -376,6 +375,7 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
         }
 
         $queryBuilder
+            ->addSelect($alias . '.' . $sortColumn)
             ->orderBy($alias . '.' . $sortColumn, $sortMethod);
 
         return $parameters;
@@ -461,13 +461,11 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
 
         return $this->entityManager->createQueryBuilder()
             ->select(self::CONTENT_RICH_ENTITY_ALIAS . '.' . $this->getEntityIdentifierFieldName() . ' as id')
+            ->distinct()
             ->from($this->contentRichEntityClass, self::CONTENT_RICH_ENTITY_ALIAS)
             ->innerJoin(self::CONTENT_RICH_ENTITY_ALIAS . '.dimensionContents', self::LOCALIZED_DIMENSION_CONTENT_ALIAS)
             ->andWhere(self::LOCALIZED_DIMENSION_CONTENT_ALIAS . '.stage = (:stage)')
             ->andWhere(self::LOCALIZED_DIMENSION_CONTENT_ALIAS . '.locale = (:locale)')
-            ->innerJoin(self::CONTENT_RICH_ENTITY_ALIAS . '.dimensionContents', self::UNLOCALIZED_DIMENSION_CONTENT_ALIAS)
-            ->andWhere(self::UNLOCALIZED_DIMENSION_CONTENT_ALIAS . '.stage = (:stage)')
-            ->andWhere(self::UNLOCALIZED_DIMENSION_CONTENT_ALIAS . '.locale IS NULL')
             ->setParameter('stage', $stage)
             ->setParameter('locale', $locale);
     }
