@@ -48,7 +48,7 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
     protected $contentRichEntityClass;
 
     /**
-     * @var ClassMetadata
+     * @var ClassMetadata<ContentRichEntityInterface>
      */
     protected $contentRichEntityClassMetadata;
 
@@ -67,7 +67,9 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
         $this->showDrafts = $showDrafts;
         $this->contentRichEntityClass = $contentRichEntityClass;
 
-        $this->contentRichEntityClassMetadata = $this->entityManager->getClassMetadata($this->contentRichEntityClass);
+        /** @var ClassMetadata<ContentRichEntityInterface> $contentRichEntityClassMetadata */
+        $contentRichEntityClassMetadata = $this->entityManager->getClassMetadata($this->contentRichEntityClass);
+        $this->contentRichEntityClassMetadata = $contentRichEntityClassMetadata;
     }
 
     /**

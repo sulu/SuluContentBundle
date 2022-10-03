@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 use Sulu\Bundle\ContentBundle\Tests\Application\Kernel;
 use Sulu\Component\HttpKernel\SuluKernel;
-use Symfony\Component\Debug\Debug;
+use Symfony\Component\ErrorHandler\Debug;
 use Symfony\Component\HttpFoundation\Request;
 
 // Webserver should run under dev for development
