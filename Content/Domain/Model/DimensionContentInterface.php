@@ -15,8 +15,8 @@ namespace Sulu\Bundle\ContentBundle\Content\Domain\Model;
 
 interface DimensionContentInterface
 {
-    const STAGE_DRAFT = 'draft';
-    const STAGE_LIVE = 'live';
+    public const STAGE_DRAFT = 'draft';
+    public const STAGE_LIVE = 'live';
 
     public static function getResourceKey(): string;
 

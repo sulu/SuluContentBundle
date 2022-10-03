@@ -51,8 +51,8 @@ class RemoveDraftTransitionSubscriber implements EventSubscriberInterface
             throw new \RuntimeException('Transition context must contain "contentRichEntity".');
         }
 
-        $draftDimensionAttributes = array_merge($dimensionAttributes, ['stage' => DimensionContentInterface::STAGE_DRAFT]);
-        $liveDimensionAttributes = array_merge($dimensionAttributes, ['stage' => DimensionContentInterface::STAGE_LIVE]);
+        $draftDimensionAttributes = \array_merge($dimensionAttributes, ['stage' => DimensionContentInterface::STAGE_DRAFT]);
+        $liveDimensionAttributes = \array_merge($dimensionAttributes, ['stage' => DimensionContentInterface::STAGE_LIVE]);
 
         $this->contentCopier->copy(
             $contentRichEntity,

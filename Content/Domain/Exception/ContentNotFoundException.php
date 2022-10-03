@@ -22,10 +22,10 @@ class ContentNotFoundException extends \Exception
      */
     public function __construct(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes)
     {
-        parent::__construct(sprintf(
+        parent::__construct(\sprintf(
             'Could not load content with id "%s" and attributes: %s',
             $contentRichEntity->getId(),
-            json_encode($dimensionAttributes)
+            \json_encode($dimensionAttributes)
         ));
     }
 }

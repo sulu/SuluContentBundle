@@ -173,7 +173,7 @@ class ContentTeaserProviderTest extends WebsiteTestCase
      */
     private function mapTeasers(array $teasers): array
     {
-        return array_map(function (Teaser $teaser) {
+        return \array_map(function(Teaser $teaser) {
             return [
                 'id' => $teaser->getId(),
                 'type' => $teaser->getType(),

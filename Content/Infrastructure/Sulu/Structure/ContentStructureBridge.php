@@ -260,7 +260,7 @@ class ContentStructureBridge implements StructureInterface
      */
     public function getPropertyNames()
     {
-        return array_keys($this->structure->getChildren());
+        return \array_keys($this->structure->getChildren());
     }
 
     public function setType($type): void
@@ -429,7 +429,7 @@ class ContentStructureBridge implements StructureInterface
     protected function createReadOnlyException(string $method): \BadMethodCallException
     {
         return new \BadMethodCallException(
-            sprintf(
+            \sprintf(
                 'Compatibility layer StructureBridge instances are readonly. Tried to call "%s"',
                 $method
             )

@@ -23,7 +23,7 @@ class SeoDataMapper implements DataMapperInterface
         DimensionContentCollectionInterface $dimensionContentCollection
     ): void {
         $dimensionAttributes = $dimensionContentCollection->getDimensionAttributes();
-        $unlocalizedDimensionAttributes = array_merge($dimensionAttributes, ['locale' => null]);
+        $unlocalizedDimensionAttributes = \array_merge($dimensionAttributes, ['locale' => null]);
         $unlocalizedObject = $dimensionContentCollection->getDimensionContent($unlocalizedDimensionAttributes);
 
         if (!$unlocalizedObject instanceof SeoInterface) {
@@ -34,7 +34,7 @@ class SeoDataMapper implements DataMapperInterface
 
         if ($localizedObject) {
             if (!$localizedObject instanceof SeoInterface) {
-                throw new \RuntimeException(sprintf('Expected "$localizedObject" from type "%s" but "%s" given.', SeoInterface::class, \get_class($localizedObject)));
+                throw new \RuntimeException(\sprintf('Expected "$localizedObject" from type "%s" but "%s" given.', SeoInterface::class, \get_class($localizedObject)));
             }
 
             $this->setSeoData($localizedObject, $data);

@@ -29,9 +29,6 @@ use Sulu\Bundle\TagBundle\Tag\TagInterface;
 
 class MetadataLoader implements EventSubscriber
 {
-    /**
-     * {@inheritdoc}
-     */
     public function getSubscribedEvents()
     {
         return [
@@ -186,7 +183,7 @@ class MetadataLoader implements EventSubscriber
             $nullable = false;
         }
 
-        $metadata->mapField(array_merge([
+        $metadata->mapField(\array_merge([
             'fieldName' => $name,
             'columnName' => $name,
             'type' => $type,
@@ -197,10 +194,10 @@ class MetadataLoader implements EventSubscriber
     private function getRelationTableName(ClassMetadataInfo $metadata, string $relationName): string
     {
         $inflector = InflectorFactory::create()->build();
-        $tableNameParts = explode('_', $metadata->getTableName());
+        $tableNameParts = \explode('_', $metadata->getTableName());
         $singularName = $inflector->singularize($tableNameParts[\count($tableNameParts) - 1]) . '_';
         $tableNameParts[\count($tableNameParts) - 1] = $singularName;
 
-        return implode('_', $tableNameParts) . $inflector->tableize($relationName);
+        return \implode('_', $tableNameParts) . $inflector->tableize($relationName);
     }
 }

@@ -26,8 +26,8 @@ class ContentSitemapProviderTest extends SuluTestCase
     use AssertSnapshotTrait;
     use CreateExampleTrait;
 
-    const SCHEME = 'https';
-    const HOST = 'localhost';
+    public const SCHEME = 'https';
+    public const HOST = 'localhost';
 
     /**
      * @var ContentSitemapProvider
@@ -164,20 +164,20 @@ class ContentSitemapProviderTest extends SuluTestCase
      */
     private function mapSitemapEntries(array $sitemapEntries): array
     {
-        usort(
+        \usort(
             $sitemapEntries,
-            function (SitemapUrl $a, SitemapUrl $b) {
-                return strcmp($a->getLoc(), $b->getLoc());
+            function(SitemapUrl $a, SitemapUrl $b) {
+                return \strcmp($a->getLoc(), $b->getLoc());
             }
         );
 
-        return array_map(
-            function (SitemapUrl $sitemapUrl) {
+        return \array_map(
+            function(SitemapUrl $sitemapUrl) {
                 return [
                     'locale' => $sitemapUrl->getLocale(),
                     'defaultLocale' => $sitemapUrl->getDefaultLocale(),
                     'loc' => $sitemapUrl->getLoc(),
-                    'alternateLinks' => array_map(function (SitemapAlternateLink $alternateLink) {
+                    'alternateLinks' => \array_map(function(SitemapAlternateLink $alternateLink) {
                         return [
                             'locale' => $alternateLink->getLocale(),
                             'href' => $alternateLink->getHref(),

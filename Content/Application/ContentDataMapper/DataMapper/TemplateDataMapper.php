@@ -43,7 +43,7 @@ class TemplateDataMapper implements DataMapperInterface
         DimensionContentCollectionInterface $dimensionContentCollection
     ): void {
         $dimensionAttributes = $dimensionContentCollection->getDimensionAttributes();
-        $unlocalizedDimensionAttributes = array_merge($dimensionAttributes, ['locale' => null]);
+        $unlocalizedDimensionAttributes = \array_merge($dimensionAttributes, ['locale' => null]);
         $unlocalizedObject = $dimensionContentCollection->getDimensionContent($unlocalizedDimensionAttributes);
 
         if (!$unlocalizedObject instanceof TemplateInterface) {
@@ -73,7 +73,7 @@ class TemplateDataMapper implements DataMapperInterface
 
         if ($localizedObject) {
             if (!$localizedObject instanceof TemplateInterface) {
-                throw new \RuntimeException(sprintf('Expected "$localizedObject" from type "%s" but "%s" given.', TemplateInterface::class, \get_class($localizedObject)));
+                throw new \RuntimeException(\sprintf('Expected "$localizedObject" from type "%s" but "%s" given.', TemplateInterface::class, \get_class($localizedObject)));
             }
 
             $localizedObject->setTemplateKey($template);
@@ -86,7 +86,7 @@ class TemplateDataMapper implements DataMapperInterface
         }
 
         // Unlocalized dimensions can contain data of different templates so we need to merge them together
-        $unlocalizedObject->setTemplateData(array_merge(
+        $unlocalizedObject->setTemplateData(\array_merge(
             $unlocalizedObject->getTemplateData(),
             $unlocalizedData
         ));
@@ -102,7 +102,7 @@ class TemplateDataMapper implements DataMapperInterface
         $metadata = $this->factory->getStructureMetadata($type, $template);
 
         if (!$metadata) {
-            throw new \RuntimeException(sprintf('Could not find structure "%s" of type "%s".', $template, $type));
+            throw new \RuntimeException(\sprintf('Could not find structure "%s" of type "%s".', $template, $type));
         }
 
         $unlocalizedData = [];

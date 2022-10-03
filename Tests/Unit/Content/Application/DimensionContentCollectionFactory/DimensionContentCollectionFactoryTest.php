@@ -76,8 +76,8 @@ class DimensionContentCollectionFactoryTest extends TestCase
         $contentDataMapper->map(
             $data,
             Argument::that(
-                function (DimensionContentCollectionInterface $collection) use ($dimensionContent1, $dimensionContent2) {
-                    return [$dimensionContent1->reveal(), $dimensionContent2->reveal()] === iterator_to_array($collection);
+                function(DimensionContentCollectionInterface $collection) use ($dimensionContent1, $dimensionContent2) {
+                    return [$dimensionContent1->reveal(), $dimensionContent2->reveal()] === \iterator_to_array($collection);
                 }
             )
         )->shouldBeCalled();
@@ -102,7 +102,7 @@ class DimensionContentCollectionFactoryTest extends TestCase
         $this->assertSame($attributes, $dimensionContentCollection->getDimensionAttributes());
         $this->assertSame(
             [$dimensionContent1->reveal(), $dimensionContent2->reveal()],
-            iterator_to_array($dimensionContentCollection)
+            \iterator_to_array($dimensionContentCollection)
         );
     }
 
@@ -142,8 +142,8 @@ class DimensionContentCollectionFactoryTest extends TestCase
         $contentDataMapper->map(
             $data,
             Argument::that(
-                function (DimensionContentCollectionInterface $collection) use ($dimensionContent1, $dimensionContent2) {
-                    return [$dimensionContent1->reveal(), $dimensionContent2->reveal()] === iterator_to_array($collection);
+                function(DimensionContentCollectionInterface $collection) use ($dimensionContent1, $dimensionContent2) {
+                    return [$dimensionContent1->reveal(), $dimensionContent2->reveal()] === \iterator_to_array($collection);
                 }
             )
         )->shouldBeCalled();
@@ -166,7 +166,7 @@ class DimensionContentCollectionFactoryTest extends TestCase
         $this->assertSame($attributes, $dimensionContentCollection->getDimensionAttributes());
         $this->assertSame(
             [$dimensionContent1->reveal(), $dimensionContent2->reveal()],
-            iterator_to_array($dimensionContentCollection)
+            \iterator_to_array($dimensionContentCollection)
         );
     }
 
@@ -200,8 +200,8 @@ class DimensionContentCollectionFactoryTest extends TestCase
         $contentDataMapper->map(
             $data,
             Argument::that(
-                function (DimensionContentCollectionInterface $collection) use ($dimensionContent1, $dimensionContent2) {
-                    return [$dimensionContent1->reveal(), $dimensionContent2->reveal()] === iterator_to_array($collection);
+                function(DimensionContentCollectionInterface $collection) use ($dimensionContent1, $dimensionContent2) {
+                    return [$dimensionContent1->reveal(), $dimensionContent2->reveal()] === \iterator_to_array($collection);
                 }
             )
         )->shouldBeCalled();
@@ -224,7 +224,7 @@ class DimensionContentCollectionFactoryTest extends TestCase
         $this->assertSame($attributes, $dimensionContentCollection->getDimensionAttributes());
         $this->assertSame(
             [$dimensionContent1->reveal(), $dimensionContent2->reveal()],
-            iterator_to_array($dimensionContentCollection)
+            \iterator_to_array($dimensionContentCollection)
         );
     }
 }

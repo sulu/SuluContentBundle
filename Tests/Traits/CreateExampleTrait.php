@@ -54,7 +54,7 @@ trait CreateExampleTrait
 
         $slugger = new AsciiSlugger();
 
-        $fillWithdefaultData = function (array $data) use ($slugger): array {
+        $fillWithdefaultData = function(array $data) use ($slugger): array {
             // the example default template has the following required fields
             $data['title'] = $data['title'] ?? 'Test Example';
             $data['url'] = $data['url'] ?? '/' . $slugger->slug($data['title'])->toString();
@@ -133,7 +133,7 @@ trait CreateExampleTrait
                     ['stage' => DimensionContentInterface::STAGE_LIVE, 'locale' => $locale],
                     ExampleDimensionContent::class
                 );
-                $liveData['published'] = date('Y-m-d H:i:s');
+                $liveData['published'] = \date('Y-m-d H:i:s');
                 $contentDataMapper->map($fillWithdefaultData($liveData), $liveDimensionContentCollection);
 
                 if ($options['create_route'] ?? false) {

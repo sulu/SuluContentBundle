@@ -77,7 +77,7 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
         }
 
         if (!$entity instanceof TemplateInterface) {
-            throw new \RuntimeException(sprintf('Expected to get "%s" from ContentResolver but "%s" given.', TemplateInterface::class, \get_class($entity)));
+            throw new \RuntimeException(\sprintf('Expected to get "%s" from ContentResolver but "%s" given.', TemplateInterface::class, \get_class($entity)));
         }
 
         try {
@@ -110,8 +110,8 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
     public function supports($entityClass)
     {
         // need to support DimensionContentInterface::class because of the ContentObjectProvider::deserialize() method
-        return is_a($entityClass, ContentRichEntityInterface::class, true)
-            || is_a($entityClass, DimensionContentInterface::class, true);
+        return \is_a($entityClass, ContentRichEntityInterface::class, true)
+            || \is_a($entityClass, DimensionContentInterface::class, true);
     }
 
     protected function loadEntity(string $entityClass, string $id, string $locale): ?TemplateInterface
@@ -143,7 +143,7 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
             );
 
             if (!$resolvedDimensionContent instanceof TemplateInterface) {
-                throw new \RuntimeException(sprintf('Expected to get "%s" from ContentResolver but "%s" given.', TemplateInterface::class, \get_class($resolvedDimensionContent)));
+                throw new \RuntimeException(\sprintf('Expected to get "%s" from ContentResolver but "%s" given.', TemplateInterface::class, \get_class($resolvedDimensionContent)));
             }
 
             return $resolvedDimensionContent;
@@ -166,7 +166,7 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
             || !$this->cacheLifetimeResolver->supports($cacheLifetime['type'], $cacheLifetime['value'])
         ) {
             // TODO FIXME add test case for this
-            throw new \InvalidArgumentException(sprintf('Invalid cachelifetime in route default provider: %s', var_export($cacheLifetime, true))); // @codeCoverageIgnore
+            throw new \InvalidArgumentException(\sprintf('Invalid cachelifetime in route default provider: %s', \var_export($cacheLifetime, true))); // @codeCoverageIgnore
         }
 
         return $this->cacheLifetimeResolver->resolve($cacheLifetime['type'], $cacheLifetime['value']);

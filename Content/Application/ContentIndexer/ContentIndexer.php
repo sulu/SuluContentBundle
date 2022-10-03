@@ -65,7 +65,7 @@ class ContentIndexer implements ContentIndexerInterface
         $locale = $dimensionAttributes['locale'] ?? null;
         $stage = $dimensionAttributes['stage'] ?? null;
 
-        $search = $this->searchManager->createSearch(sprintf('__id:"%s"', $id))
+        $search = $this->searchManager->createSearch(\sprintf('__id:"%s"', $id))
             ->indexes($this->getIndexes($resourceKey, $stage));
 
         if ($locale) {
@@ -119,9 +119,9 @@ class ContentIndexer implements ContentIndexerInterface
      */
     private function getIndexes(string $resourceKey, ?string $stage): array
     {
-        return array_filter(
+        return \array_filter(
             $this->searchManager->getIndexNames(),
-            function ($indexName) use ($resourceKey, $stage) {
+            function($indexName) use ($resourceKey, $stage) {
                 if (null === $stage) {
                     return $resourceKey === $indexName || $resourceKey . '_published' === $indexName;
                 }

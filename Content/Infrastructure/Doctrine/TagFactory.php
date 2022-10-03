@@ -52,7 +52,7 @@ class TagFactory implements TagFactoryInterface
         // sort tags by the given names order
         $excerptTags = [];
         foreach ($tags as $tag) {
-            $index = array_search($tag->getName(), $tagNames, true);
+            $index = \array_search($tag->getName(), $tagNames, true);
             $excerptTags[$index] = $tag;
             unset($tagNames[$index]);
         }
@@ -67,7 +67,7 @@ class TagFactory implements TagFactoryInterface
                     continue;
                 }
 
-                $index = array_search($object->getName(), $tagNames, true);
+                $index = \array_search($object->getName(), $tagNames, true);
 
                 if (false === $index) {
                     continue;

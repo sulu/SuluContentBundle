@@ -23,9 +23,9 @@ use Sulu\Component\SmartContent\Orm\DataProviderRepositoryInterface;
 
 class ContentDataProviderRepository implements DataProviderRepositoryInterface
 {
-    const CONTENT_RICH_ENTITY_ALIAS = 'entity';
-    const LOCALIZED_DIMENSION_CONTENT_ALIAS = 'localizedContent';
-    const UNLOCALIZED_DIMENSION_CONTENT_ALIAS = 'unlocalizedContent';
+    public const CONTENT_RICH_ENTITY_ALIAS = 'entity';
+    public const LOCALIZED_DIMENSION_CONTENT_ALIAS = 'localizedContent';
+    public const UNLOCALIZED_DIMENSION_CONTENT_ALIAS = 'unlocalizedContent';
 
     /**
      * @var ContentManagerInterface
@@ -92,9 +92,9 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
 
         $showUnpublished = $this->showDrafts;
 
-        return array_filter(
-            array_map(
-                function (ContentRichEntityInterface $contentRichEntity) use ($locale, $showUnpublished) {
+        return \array_filter(
+            \array_map(
+                function(ContentRichEntityInterface $contentRichEntity) use ($locale, $showUnpublished) {
                     $stage = $showUnpublished
                         ? DimensionContentInterface::STAGE_DRAFT
                         : DimensionContentInterface::STAGE_LIVE;
@@ -139,7 +139,7 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
         if (!empty($categories = $filters['categories'] ?? [])) {
             $categoryOperator = (string) ($filters['categoryOperator'] ?? 'OR');
 
-            $parameters = array_merge(
+            $parameters = \array_merge(
                 $parameters,
                 $this->addCategoryFilter($queryBuilder, $categories, $categoryOperator, 'adminCategories')
             );
@@ -148,7 +148,7 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
         if (!empty($websiteCategories = $filters['websiteCategories'] ?? [])) {
             $websiteCategoryOperator = (string) ($filters['websiteCategoriesOperator'] ?? 'OR');
 
-            $parameters = array_merge(
+            $parameters = \array_merge(
                 $parameters,
                 $this->addCategoryFilter($queryBuilder, $websiteCategories, $websiteCategoryOperator, 'websiteCategories')
             );
@@ -157,7 +157,7 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
         if (!empty($tags = $filters['tags'] ?? [])) {
             $tagOperator = (string) ($filters['tagOperator'] ?? 'OR');
 
-            $parameters = array_merge(
+            $parameters = \array_merge(
                 $parameters,
                 $this->addTagFilter($queryBuilder, $tags, $tagOperator, 'adminTags')
             );
@@ -166,14 +166,14 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
         if (!empty($websiteTags = $filters['websiteTags'] ?? [])) {
             $websiteTagOperator = (string) ($filters['websiteTagsOperator'] ?? 'OR');
 
-            $parameters = array_merge(
+            $parameters = \array_merge(
                 $parameters,
                 $this->addTagFilter($queryBuilder, $websiteTags, $websiteTagOperator, 'websiteTags')
             );
         }
 
         if (!empty($types = $filters['types'] ?? [])) {
-            $parameters = array_merge(
+            $parameters = \array_merge(
                 $parameters,
                 $this->addTypeFilter($queryBuilder, $types, 'adminTypes')
             );
@@ -182,7 +182,7 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
         if ($targetGroupId = $filters['targetGroupId'] ?? null) {
             // TODO FIXME add testcase for this
             // @codeCoverageIgnoreStart
-            $parameters = array_merge(
+            $parameters = \array_merge(
                 $parameters,
                 $this->addTargetGroupFilter($queryBuilder, $targetGroupId, 'targetGroupId')
             );
@@ -194,7 +194,7 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
             // @codeCoverageIgnoreStart
             $includeSubFolders = (bool) ($filters['includeSubFolders'] ?? false);
 
-            $parameters = array_merge(
+            $parameters = \array_merge(
                 $parameters,
                 $this->addDatasourceFilter($queryBuilder, (string) $dataSource, $includeSubFolders, 'datasource')
             );
@@ -204,7 +204,7 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
         if ($sortColumn = $filters['sortBy'] ?? null) {
             $sortMethod = (string) ($filters['sortMethod'] ?? 'asc');
 
-            $parameters = array_merge(
+            $parameters = \array_merge(
                 $parameters,
                 $this->setSortBy($queryBuilder, (string) $sortColumn, $sortMethod)
             );
@@ -233,8 +233,8 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
             $queryBuilder->setMaxResults($limit);
         }
 
-        return array_unique(
-            array_column($queryBuilder->getQuery()->getScalarResult(), 'id')
+        return \array_unique(
+            \array_column($queryBuilder->getQuery()->getScalarResult(), 'id')
         );
     }
 
@@ -278,7 +278,7 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
             $queryBuilder,
             $this->getCategoryRelationFieldName($queryBuilder),
             $categories,
-            mb_strtolower($categoryOperator),
+            \mb_strtolower($categoryOperator),
             $alias
         );
     }
@@ -296,7 +296,7 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
             $queryBuilder,
             $this->getTagRelationFieldName($queryBuilder),
             $tags,
-            mb_strtolower($tagOperator),
+            \mb_strtolower($tagOperator),
             $alias
         );
     }
@@ -310,7 +310,7 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
      */
     protected function addTypeFilter(QueryBuilder $queryBuilder, array $types, string $alias): array
     {
-        $queryBuilder->andWhere(static::LOCALIZED_DIMENSION_CONTENT_ALIAS . ".templateKey IN ('" . implode("','", $types) . "')");
+        $queryBuilder->andWhere(static::LOCALIZED_DIMENSION_CONTENT_ALIAS . ".templateKey IN ('" . \implode("','", $types) . "')");
 
         return [];
     }
@@ -363,9 +363,9 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
 
         $alias = self::LOCALIZED_DIMENSION_CONTENT_ALIAS;
 
-        if (false !== mb_strpos($sortColumn, '.')) {
+        if (false !== \mb_strpos($sortColumn, '.')) {
             // TODO FIXME add testcase for this
-            list($alias, $sortColumn) = explode('.', $sortColumn, 2); // @codeCoverageIgnore
+            list($alias, $sortColumn) = \explode('.', $sortColumn, 2); // @codeCoverageIgnore
         }
 
         if (!\in_array($alias, $queryBuilder->getAllAliases(), true)) {
@@ -489,11 +489,11 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
             ->setParameter('ids', $ids)
             ->getResult();
 
-        $idPositions = array_flip($ids);
+        $idPositions = \array_flip($ids);
 
-        usort(
+        \usort(
             $entities,
-            function (ContentRichEntityInterface $a, ContentRichEntityInterface $b) use ($idPositions, $entityIdentifierFieldName) {
+            function(ContentRichEntityInterface $a, ContentRichEntityInterface $b) use ($idPositions, $entityIdentifierFieldName) {
                 $aId = $this->contentRichEntityClassMetadata->getIdentifierValues($a)[$entityIdentifierFieldName];
                 $bId = $this->contentRichEntityClassMetadata->getIdentifierValues($b)[$entityIdentifierFieldName];
 
