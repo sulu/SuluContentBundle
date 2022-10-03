@@ -376,7 +376,6 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
         }
 
         $queryBuilder
-            ->addSelect($alias . '.' . $sortColumn)
             ->orderBy($alias . '.' . $sortColumn, $sortMethod);
 
         return $parameters;
