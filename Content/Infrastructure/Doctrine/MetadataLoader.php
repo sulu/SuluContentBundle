@@ -48,6 +48,8 @@ class MetadataLoader implements EventSubscriber
             $this->addField($metadata, 'locale', 'string', ['length' => 7, 'nullable' => true]);
 
             $this->addIndex($metadata, 'idx_dimension', ['stage', 'locale']);
+            $this->addIndex($metadata, 'idx_locale', ['locale']);
+            $this->addIndex($metadata, 'idx_stage', ['stage']);
         }
 
         if ($reflection->implementsInterface(SeoInterface::class)) {
