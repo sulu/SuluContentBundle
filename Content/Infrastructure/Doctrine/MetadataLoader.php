@@ -210,6 +210,7 @@ class MetadataLoader implements EventSubscriber
 
     /**
      * @param ClassMetadataInfo<object> $metadata
+     * @param string[] $fields
      */
     private function addIndex(ClassMetadataInfo $metadata, string $name, array $fields): void
     {
