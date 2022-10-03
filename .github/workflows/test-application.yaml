@@ -9,7 +9,7 @@ on:
 
 jobs:
     test:
-        name: 'PHP ${{ matrix.php-version }} (${{ matrix.dependency-versions }}, Lint ${{ matrix.lint }}, Coverage ${{ matrix.coverage }})'
+        name: 'PHP ${{ matrix.php-version }} (${{ matrix.dependency-versions }}, Coverage ${{ matrix.coverage }})'
         runs-on: ubuntu-latest
 
         env:
