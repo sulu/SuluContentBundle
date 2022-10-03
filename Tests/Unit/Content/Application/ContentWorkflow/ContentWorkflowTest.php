@@ -54,14 +54,14 @@ class ContentWorkflowTest extends TestCase
         return new class($workflowMock) extends MockWrapper implements
             DimensionContentInterface,
             WorkflowInterface {
-                use DimensionContentMockWrapperTrait;
-                use WorkflowMockWrapperTrait;
+            use DimensionContentMockWrapperTrait;
+            use WorkflowMockWrapperTrait;
 
-                public static function getWorkflowName(): string
-                {
-                    return 'content_workflow';
-                }
-            };
+            public static function getWorkflowName(): string
+            {
+                return 'content_workflow';
+            }
+        };
     }
 
     public function testTransitionNoWorkflowInterface(): void
