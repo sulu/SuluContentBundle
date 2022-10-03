@@ -403,7 +403,7 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
      */
     protected function appendRelation(QueryBuilder $queryBuilder, string $relation, array $values, string $operator, string $alias): array
     {
-        $queryBuilder->distinct();
+        $queryBuilder->distinct(); // TODO remove distinct and replace joins with subselect filter see: https://github.com/sulu/SuluContentBundle/pull/226
 
         switch ($operator) {
             case 'or':
