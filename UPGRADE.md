@@ -8,6 +8,8 @@ Improve performance of the `*ContentDimension` tables with additional indexes fo
 
 ```sql
 CREATE INDEX idx_dimension ON <your_entity>_content (stage, locale);
+CREATE INDEX idx_locale ON <your_entity>_content (locale);
+CREATE INDEX idx_stage ON <your_entity>_content (stage);
 CREATE INDEX idx_template_key ON <your_entity>_content (templateKey);
 CREATE INDEX idx_workflow_place ON <your_entity>_content (workflowPlace);
 CREATE INDEX idx_workflow_published ON <your_entity>_content (workflowPublished);
