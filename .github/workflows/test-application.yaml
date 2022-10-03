@@ -39,6 +39,12 @@ jobs:
                       env:
                           SYMFONY_DEPRECATIONS_HELPER: weak
 
+                    - php-version: '8.1'
+                      coverage: false
+                      dependency-versions: 'highest'
+                      env:
+                          SYMFONY_DEPRECATIONS_HELPER: weak
+
         services:
             mysql:
                 image: mysql:5.7
@@ -60,7 +66,7 @@ jobs:
                   coverage: pcov
 
             - name: Install composer dependencies
-              uses: ramsey/composer-install@v1
+              uses: ramsey/composer-install@v2
               with:
                   dependency-versions: ${{ matrix.dependency-versions }}
                   composer-options: ${{ matrix.composer-options }}
@@ -103,7 +109,7 @@ jobs:
                   extensions: ctype, iconv, mysql
 
             - name: Install composer dependencies
-              uses: ramsey/composer-install@v1
+              uses: ramsey/composer-install@v2
               with:
                   dependency-versions: highest
 

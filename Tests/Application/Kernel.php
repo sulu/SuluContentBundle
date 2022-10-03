@@ -23,7 +23,7 @@ use Task\TaskBundle\TaskBundle;
 
 class Kernel extends SuluTestKernel
 {
-    public function registerBundles()
+    public function registerBundles(): iterable
     {
         $bundles = parent::registerBundles();
         $bundles[] = new SuluContentBundle();
@@ -54,7 +54,7 @@ class Kernel extends SuluTestKernel
         }
     }
 
-    protected function getKernelParameters()
+    protected function getKernelParameters(): array
     {
         $parameters = parent::getKernelParameters();
 

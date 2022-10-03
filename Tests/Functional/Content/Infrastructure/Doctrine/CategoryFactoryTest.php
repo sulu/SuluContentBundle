@@ -27,7 +27,7 @@ class CategoryFactoryTest extends SuluTestCase
 
     public function createCategoryFactory(): CategoryFactoryInterface
     {
-        return self::$container->get('sulu_content.category_factory');
+        return self::getContainer()->get('sulu_content.category_factory');
     }
 
     /**
