@@ -51,7 +51,7 @@ class SuluContentExtension extends Extension implements PrependExtensionInterfac
         $loader->load('normalizer.xml');
         $loader->load('services.xml');
 
-        if ($container->hasParameter('kernel.bundles')) {
+        if ($container->hasParameter('kernel.bundles')) { // @phpstan-ignore-line
             // TODO FIXME add test here
             // @codeCoverageIgnoreStart
             /** @var string[] $bundles */

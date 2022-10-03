@@ -21,8 +21,8 @@ class Example implements ContentRichEntityInterface
 {
     use ContentRichEntityTrait;
 
-    const RESOURCE_KEY = 'examples';
-    const TEMPLATE_TYPE = 'example';
+    public const RESOURCE_KEY = 'examples';
+    public const TEMPLATE_TYPE = 'example';
 
     /**
      * @var mixed

@@ -119,7 +119,7 @@ class ContentSearchMetadataProviderTest extends SuluTestCase
         $metadata = $this->searchMetadataProvider->getMetadataForObject($dimensionContent);
         $this->assertNotNull($metadata);
         $allIndexMetadata = $metadata->getIndexMetadatas();
-        $indexMetadata = $allIndexMetadata[array_key_first($allIndexMetadata)];
+        $indexMetadata = $allIndexMetadata[\array_key_first($allIndexMetadata)];
 
         $document = $this->objectToDocumentConverter->objectToDocument($indexMetadata, $dimensionContent);
         $documentMetadata = $this->searchMetadataProvider->getMetadataForDocument($document);

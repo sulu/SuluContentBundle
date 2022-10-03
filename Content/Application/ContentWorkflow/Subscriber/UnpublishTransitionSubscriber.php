@@ -67,7 +67,7 @@ class UnpublishTransitionSubscriber implements EventSubscriberInterface
             throw new \RuntimeException('Transition context must contain "contentRichEntity".');
         }
 
-        $liveDimensionAttributes = array_merge($dimensionAttributes, ['stage' => DimensionContentInterface::STAGE_LIVE]);
+        $liveDimensionAttributes = \array_merge($dimensionAttributes, ['stage' => DimensionContentInterface::STAGE_LIVE]);
 
         $dimensionContentCollection = $this->dimensionContentRepository->load($contentRichEntity, $liveDimensionAttributes);
         $localizedLiveDimensionContent = $dimensionContentCollection->getDimensionContent($liveDimensionAttributes);

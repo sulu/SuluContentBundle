@@ -72,7 +72,7 @@ class DimensionContentCollectionTest extends TestCase
         $this->assertSame([
             $dimensionContent1->reveal(),
             $dimensionContent2->reveal(),
-        ], iterator_to_array($dimensionContentCollection));
+        ], \iterator_to_array($dimensionContentCollection));
     }
 
     public function testGetDimensionContentClass(): void

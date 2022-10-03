@@ -26,10 +26,13 @@ class TagFactory implements TagFactoryInterface
     private $entityManager;
 
     /**
-     * @var EntityRepository
+     * @var EntityRepository<TagInterface>
      */
     private $tagRepository;
 
+    /**
+     * @param EntityRepository<TagInterface> $tagRepository
+     */
     public function __construct(EntityManagerInterface $entityManager, EntityRepository $tagRepository)
     {
         $this->entityManager = $entityManager;
@@ -52,7 +55,7 @@ class TagFactory implements TagFactoryInterface
         // sort tags by the given names order
         $excerptTags = [];
         foreach ($tags as $tag) {
-            $index = array_search($tag->getName(), $tagNames, true);
+            $index = \array_search($tag->getName(), $tagNames, true);
             $excerptTags[$index] = $tag;
             unset($tagNames[$index]);
         }
@@ -67,7 +70,7 @@ class TagFactory implements TagFactoryInterface
                     continue;
                 }
 
-                $index = array_search($object->getName(), $tagNames, true);
+                $index = \array_search($object->getName(), $tagNames, true);
 
                 if (false === $index) {
                     continue;

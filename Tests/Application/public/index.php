@@ -13,23 +13,23 @@ declare(strict_types=1);
 
 use Sulu\Bundle\ContentBundle\Tests\Application\Kernel;
 use Sulu\Component\HttpKernel\SuluKernel;
-use Symfony\Component\Debug\Debug;
+use Symfony\Component\ErrorHandler\Debug;
 use Symfony\Component\HttpFoundation\Request;
 
 // Webserver should run under dev for development
 $_SERVER['APP_ENV'] = 'dev';
 $_ENV['APP_ENV'] = 'dev';
 
-require dirname(__DIR__) . '/config/bootstrap.php';
+require \dirname(__DIR__) . '/config/bootstrap.php';
 
 if ($_SERVER['APP_DEBUG']) {
-    umask(0000);
+    \umask(0000);
     Debug::enable();
 }
 
 $suluContext = SuluKernel::CONTEXT_WEBSITE;
 
-if (preg_match('/^\/admin(\/|$)/', $_SERVER['REQUEST_URI'])) {
+if (\preg_match('/^\/admin(\/|$)/', $_SERVER['REQUEST_URI'])) {
     $suluContext = SuluKernel::CONTEXT_ADMIN;
 }
 

@@ -18,9 +18,9 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 
 interface ContentWorkflowInterface
 {
-    const CONTENT_RICH_ENTITY_CONTEXT_KEY = 'contentRichEntity';
-    const DIMENSION_CONTENT_COLLECTION_CONTEXT_KEY = 'dimensionContentCollection';
-    const DIMENSION_ATTRIBUTES_CONTEXT_KEY = 'dimensionAttributes';
+    public const CONTENT_RICH_ENTITY_CONTEXT_KEY = 'contentRichEntity';
+    public const DIMENSION_CONTENT_COLLECTION_CONTEXT_KEY = 'dimensionContentCollection';
+    public const DIMENSION_ATTRIBUTES_CONTEXT_KEY = 'dimensionAttributes';
 
     /**
      * @param mixed[] $dimensionAttributes

@@ -19,6 +19,7 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 
 /**
  * @internal
+ *
  * @implements \IteratorAggregate<DimensionContentInterface>
  */
 class PreviewDimensionContentCollection implements \IteratorAggregate, DimensionContentCollectionInterface
@@ -53,7 +54,7 @@ class PreviewDimensionContentCollection implements \IteratorAggregate, Dimension
 
     public function getDimensionAttributes(): array
     {
-        return array_merge(
+        return \array_merge(
             $this->previewDimensionContent::getDefaultDimensionAttributes(),
             ['locale' => $this->previewLocale]
         );

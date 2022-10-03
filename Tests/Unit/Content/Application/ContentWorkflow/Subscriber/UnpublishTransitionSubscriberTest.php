@@ -160,7 +160,7 @@ class UnpublishTransitionSubscriberTest extends TestCase
             ->willReturn(null)
             ->shouldBeCalled();
 
-        $liveDimensionAttributes = array_merge($dimensionAttributes, ['stage' => DimensionContentInterface::STAGE_LIVE]);
+        $liveDimensionAttributes = \array_merge($dimensionAttributes, ['stage' => DimensionContentInterface::STAGE_LIVE]);
 
         $dimensionContentRepository->load($contentRichEntity->reveal(), $liveDimensionAttributes)
             ->willReturn($dimensionContentCollection)
@@ -203,7 +203,7 @@ class UnpublishTransitionSubscriberTest extends TestCase
             ->willReturn($localizedLiveDimensionContent)
             ->shouldBeCalled();
 
-        $liveDimensionAttributes = array_merge($dimensionAttributes, ['stage' => DimensionContentInterface::STAGE_LIVE]);
+        $liveDimensionAttributes = \array_merge($dimensionAttributes, ['stage' => DimensionContentInterface::STAGE_LIVE]);
 
         $dimensionContentRepository->load($contentRichEntity->reveal(), $liveDimensionAttributes)
             ->willReturn($dimensionContentCollection)

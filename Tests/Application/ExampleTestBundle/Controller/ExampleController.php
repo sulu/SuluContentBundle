@@ -154,7 +154,7 @@ class ExampleController extends AbstractRestController implements ClassResourceI
             $this->entityManager->flush();
 
             // Index live dimension content
-            $this->contentIndexer->index($example, array_merge($dimensionAttributes, [
+            $this->contentIndexer->index($example, \array_merge($dimensionAttributes, [
                 'stage' => DimensionContentInterface::STAGE_LIVE,
             ]));
         }
@@ -193,7 +193,7 @@ class ExampleController extends AbstractRestController implements ClassResourceI
                 $this->entityManager->flush();
 
                 // Deindex live dimension content
-                $this->contentIndexer->deindex(Example::RESOURCE_KEY, $id, array_merge(
+                $this->contentIndexer->deindex(Example::RESOURCE_KEY, $id, \array_merge(
                     $dimensionAttributes,
                     ['stage' => DimensionContentInterface::STAGE_LIVE]
                 ));
@@ -254,7 +254,7 @@ class ExampleController extends AbstractRestController implements ClassResourceI
             $this->entityManager->flush();
 
             // Index live dimension content
-            $this->contentIndexer->index($example, array_merge($dimensionAttributes, [
+            $this->contentIndexer->index($example, \array_merge($dimensionAttributes, [
                 'stage' => DimensionContentInterface::STAGE_LIVE,
             ]));
         }

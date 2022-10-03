@@ -88,7 +88,7 @@ class PreviewDimensionContentCollectionTest extends TestCase
 
         $this->assertSame(
             [$dimensionContent->reveal()],
-            iterator_to_array($previewDimensionContentCollection)
+            \iterator_to_array($previewDimensionContentCollection)
         );
     }
 

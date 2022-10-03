@@ -28,6 +28,7 @@
                 <directory>TestCases/</directory>
                 <directory>Tests/</directory>
                 <directory>vendor/</directory>
+                <file>.php-cs-fixer.dist.php</file>
             </exclude>
         </whitelist>
     </filter>

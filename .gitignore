@@ -28,7 +28,7 @@ package-lock.json
 Tests/Application/var
 Tests/Application/public/build
 Tests/Application/.env.local
-Tests/Application/.env.test.local
+Tests/Application/.env.*.local
 Tests/reports/
 
 # IDEs
