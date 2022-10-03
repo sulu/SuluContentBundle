@@ -124,5 +124,4 @@ jobs:
                   dependency-versions: 'highest'
 
             - name: Lint Code
-              if: ${{ matrix.lint }}
               run: composer lint
