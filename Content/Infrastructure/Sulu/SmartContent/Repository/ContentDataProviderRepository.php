@@ -403,6 +403,8 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
      */
     protected function appendRelation(QueryBuilder $queryBuilder, string $relation, array $values, string $operator, string $alias): array
     {
+        $queryBuilder->distinct();
+
         switch ($operator) {
             case 'or':
                 return $this->appendRelationOr($queryBuilder, $relation, $values, $alias);
@@ -461,7 +463,6 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
 
         return $this->entityManager->createQueryBuilder()
             ->select(self::CONTENT_RICH_ENTITY_ALIAS . '.' . $this->getEntityIdentifierFieldName() . ' as id')
-            ->distinct()
             ->from($this->contentRichEntityClass, self::CONTENT_RICH_ENTITY_ALIAS)
             ->innerJoin(self::CONTENT_RICH_ENTITY_ALIAS . '.dimensionContents', self::LOCALIZED_DIMENSION_CONTENT_ALIAS)
             ->andWhere(self::LOCALIZED_DIMENSION_CONTENT_ALIAS . '.stage = (:stage)')
