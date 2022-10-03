@@ -22,6 +22,7 @@ use Sulu\Bundle\RouteBundle\Entity\RouteRepositoryInterface;
 
 /**
  * @internal
+ *
  * @final
  */
 class RouteRemover implements EventSubscriber

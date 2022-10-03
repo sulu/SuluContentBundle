@@ -136,7 +136,7 @@ class MetadataLoader implements EventSubscriber
             'targetEntity' => $class,
             'joinColumns' => [
                 [
-                    'name' => $namingStrategy->joinKeyColumnName($name),
+                    'name' => $namingStrategy->joinKeyColumnName($name), // @phpstan-ignore-line
                     'referencedColumnName' => $referencedColumnName,
                     'nullable' => $nullable,
                     'onDelete' => 'CASCADE',

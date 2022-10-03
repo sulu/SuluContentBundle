@@ -19,6 +19,7 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 
 /**
  * @internal
+ *
  * @implements \IteratorAggregate<DimensionContentInterface>
  */
 class PreviewDimensionContentCollection implements \IteratorAggregate, DimensionContentCollectionInterface

@@ -1,9 +1,6 @@
 framework:
     profiler: { enabled: true, collect: false }
 
-framework:
-    profiler: { enabled: true, collect: false }
-
 doctrine:
     orm:
         mappings:
