@@ -462,6 +462,8 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
             : DimensionContentInterface::STAGE_LIVE;
 
         return $this->entityManager->createQueryBuilder()
+            // no distinct used here else it would hurt performance of the query: https://github.com/sulu/SuluContentBundle/pull/226
+            // distinct only added in `appendRelation` methods where it is required
             ->select(self::CONTENT_RICH_ENTITY_ALIAS . '.' . $this->getEntityIdentifierFieldName() . ' as id')
             ->from($this->contentRichEntityClass, self::CONTENT_RICH_ENTITY_ALIAS)
             ->innerJoin(self::CONTENT_RICH_ENTITY_ALIAS . '.dimensionContents', self::LOCALIZED_DIMENSION_CONTENT_ALIAS)
