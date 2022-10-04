@@ -25,7 +25,6 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
 {
     public const CONTENT_RICH_ENTITY_ALIAS = 'entity';
     public const LOCALIZED_DIMENSION_CONTENT_ALIAS = 'localizedContent';
-    public const UNLOCALIZED_DIMENSION_CONTENT_ALIAS = 'unlocalizedContent';
 
     /**
      * @var ContentManagerInterface
@@ -404,6 +403,8 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
      */
     protected function appendRelation(QueryBuilder $queryBuilder, string $relation, array $values, string $operator, string $alias): array
     {
+        $queryBuilder->distinct(); // TODO remove distinct and replace joins with subselect filter see: https://github.com/sulu/SuluContentBundle/pull/226
+
         switch ($operator) {
             case 'or':
                 return $this->appendRelationOr($queryBuilder, $relation, $values, $alias);
@@ -461,15 +462,13 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
             : DimensionContentInterface::STAGE_LIVE;
 
         return $this->entityManager->createQueryBuilder()
+            // no distinct used here else it would hurt performance of the query: https://github.com/sulu/SuluContentBundle/pull/226
+            // distinct only added in `appendRelation` methods where it is required
             ->select(self::CONTENT_RICH_ENTITY_ALIAS . '.' . $this->getEntityIdentifierFieldName() . ' as id')
-            ->distinct()
             ->from($this->contentRichEntityClass, self::CONTENT_RICH_ENTITY_ALIAS)
             ->innerJoin(self::CONTENT_RICH_ENTITY_ALIAS . '.dimensionContents', self::LOCALIZED_DIMENSION_CONTENT_ALIAS)
             ->andWhere(self::LOCALIZED_DIMENSION_CONTENT_ALIAS . '.stage = (:stage)')
             ->andWhere(self::LOCALIZED_DIMENSION_CONTENT_ALIAS . '.locale = (:locale)')
-            ->innerJoin(self::CONTENT_RICH_ENTITY_ALIAS . '.dimensionContents', self::UNLOCALIZED_DIMENSION_CONTENT_ALIAS)
-            ->andWhere(self::UNLOCALIZED_DIMENSION_CONTENT_ALIAS . '.stage = (:stage)')
-            ->andWhere(self::UNLOCALIZED_DIMENSION_CONTENT_ALIAS . '.locale IS NULL')
             ->setParameter('stage', $stage)
             ->setParameter('locale', $locale);
     }
