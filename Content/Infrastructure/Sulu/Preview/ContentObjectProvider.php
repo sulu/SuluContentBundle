@@ -23,6 +23,10 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Bundle\PreviewBundle\Preview\Object\PreviewObjectProviderInterface;
 
+/**
+ * @template B of DimensionContentInterface
+ * @template T of ContentRichEntityInterface<B>
+ */
 class ContentObjectProvider implements PreviewObjectProviderInterface
 {
     /**
@@ -41,7 +45,7 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
     private $contentDataMapper;
 
     /**
-     * @var class-string<ContentRichEntityInterface>
+     * @var class-string<T>
      */
     private $contentRichEntityClass;
 
@@ -51,7 +55,7 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
     private $securityContext;
 
     /**
-     * @param class-string<ContentRichEntityInterface> $contentRichEntityClass
+     * @param class-string<T> $contentRichEntityClass
      */
     public function __construct(
         EntityManagerInterface $entityManager,
@@ -68,15 +72,15 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
     }
 
     /**
-     * @param string $id
+     * @param string|int $id
      * @param string $locale
      *
-     * @return DimensionContentInterface|null
+     * @return B|null
      */
     public function getObject($id, $locale)
     {
         try {
-            /** @var ContentRichEntityInterface $contentRichEntity */
+            /** @var T $contentRichEntity */
             $contentRichEntity = $this->entityManager->createQueryBuilder()
                 ->select('entity')
                 ->from($this->contentRichEntityClass, 'entity')
@@ -92,9 +96,9 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
     }
 
     /**
-     * @param DimensionContentInterface $object
+     * @param B $object
      *
-     * @return string
+     * @return string|int
      */
     public function getId($object)
     {
@@ -102,7 +106,7 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
     }
 
     /**
-     * @param DimensionContentInterface $object
+     * @param B $object
      * @param string $locale
      * @param mixed[] $data
      */
@@ -113,9 +117,11 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
     }
 
     /**
-     * @param DimensionContentInterface $object
+     * @param B $object
      * @param string $locale
      * @param mixed[] $context
+     *
+     * @return B
      */
     public function setContext($object, $locale, array $context): DimensionContentInterface
     {
@@ -129,7 +135,7 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
     }
 
     /**
-     * @param DimensionContentInterface $object
+     * @param B $object
      *
      * @return string
      */
@@ -143,12 +149,13 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
 
     /**
      * @param string $serializedObject
-     * @param string $objectClass
+     * @param class-string $objectClass
      *
-     * @return mixed
+     * @return B|null
      */
     public function deserialize($serializedObject, $objectClass)
     {
+        /** @var array{id?: int|string, locale?: string} $data */
         $data = \json_decode($serializedObject, true);
 
         $id = $data['id'] ?? null;
@@ -166,6 +173,11 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
         return $this->securityContext;
     }
 
+    /**
+     * @param T $contentRichEntity
+     *
+     * @return B|null
+     */
     protected function resolveContent(ContentRichEntityInterface $contentRichEntity, string $locale): ?DimensionContentInterface
     {
         try {

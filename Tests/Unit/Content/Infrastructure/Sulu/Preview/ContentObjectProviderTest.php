@@ -25,31 +25,35 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolve
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Preview\ContentObjectProvider;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Preview\PreviewDimensionContentCollection;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Admin\ExampleAdmin;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
+use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleDimensionContent;
+use Sulu\Bundle\TestBundle\Testing\SetGetPrivatePropertyTrait;
 
 class ContentObjectProviderTest extends TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
+    use SetGetPrivatePropertyTrait;
+
     /**
-     * @var ObjectProphecy|EntityManagerInterface
+     * @var ObjectProphecy<EntityManagerInterface>
      */
     private $entityManager;
 
     /**
-     * @var ObjectProphecy|ContentResolverInterface
+     * @var ObjectProphecy<ContentResolverInterface>
      */
     private $contentResolver;
 
     /**
-     * @var ObjectProphecy|ContentDataMapperInterface
+     * @var ObjectProphecy<ContentDataMapperInterface>
      */
     private $contentDataMapper;
 
     /**
-     * @var ContentObjectProvider
+     * @var ContentObjectProvider<ExampleDimensionContent, Example>
      */
     private $contentObjectProvider;
 
@@ -74,21 +78,21 @@ class ContentObjectProviderTest extends TestCase
 
         $this->entityManager->createQueryBuilder()->willReturn($queryBuilder->reveal())->shouldBeCalledTimes(1);
 
-        $queryBuilder->select(Argument::type('string'))->will(function() {
-            return \func_get_arg(\func_num_args() - 2);
-        })->shouldBeCalledTimes(1);
+        $queryBuilder->select(Argument::type('string'))
+            ->willReturn($queryBuilder->reveal())
+            ->shouldBeCalledTimes(1);
 
-        $queryBuilder->from(Argument::type('string'), Argument::type('string'))->will(function() {
-            return \func_get_arg(\func_num_args() - 2);
-        })->shouldBeCalledTimes(1);
+        $queryBuilder->from(Argument::type('string'), Argument::type('string'))
+            ->willReturn($queryBuilder->reveal())
+            ->shouldBeCalledTimes(1);
 
-        $queryBuilder->where(Argument::type('string'))->will(function() {
-            return \func_get_arg(\func_num_args() - 2);
-        })->shouldBeCalledTimes(1);
+        $queryBuilder->where(Argument::type('string'))
+            ->willReturn($queryBuilder->reveal())
+            ->shouldBeCalledTimes(1);
 
-        $queryBuilder->setParameter(Argument::type('string'), Argument::any())->will(function() {
-            return \func_get_arg(\func_num_args() - 2);
-        })->shouldBeCalledTimes(1);
+        $queryBuilder->setParameter(Argument::type('string'), Argument::any())
+            ->willReturn($queryBuilder->reveal())
+            ->shouldBeCalledTimes(1);
 
         $query = $this->prophesize(AbstractQuery::class);
 
@@ -125,21 +129,21 @@ class ContentObjectProviderTest extends TestCase
 
         $this->entityManager->createQueryBuilder()->willReturn($queryBuilder->reveal())->shouldBeCalledTimes(1);
 
-        $queryBuilder->select(Argument::type('string'))->will(function() {
-            return \func_get_arg(\func_num_args() - 2);
-        })->shouldBeCalledTimes(1);
+        $queryBuilder->select(Argument::type('string'))
+            ->willReturn($queryBuilder->reveal())
+            ->shouldBeCalledTimes(1);
 
-        $queryBuilder->from(Argument::type('string'), Argument::type('string'))->will(function() {
-            return \func_get_arg(\func_num_args() - 2);
-        })->shouldBeCalledTimes(1);
+        $queryBuilder->from(Argument::type('string'), Argument::type('string'))
+            ->willReturn($queryBuilder->reveal())
+            ->shouldBeCalledTimes(1);
 
-        $queryBuilder->where(Argument::type('string'))->will(function() {
-            return \func_get_arg(\func_num_args() - 2);
-        })->shouldBeCalledTimes(1);
+        $queryBuilder->where(Argument::type('string'))
+            ->willReturn($queryBuilder->reveal())
+            ->shouldBeCalledTimes(1);
 
-        $queryBuilder->setParameter(Argument::type('string'), Argument::any())->will(function() {
-            return \func_get_arg(\func_num_args() - 2);
-        })->shouldBeCalledTimes(1);
+        $queryBuilder->setParameter(Argument::type('string'), Argument::any())
+            ->willReturn($queryBuilder->reveal())
+            ->shouldBeCalledTimes(1);
 
         $query = $this->prophesize(AbstractQuery::class);
 
@@ -161,13 +165,12 @@ class ContentObjectProviderTest extends TestCase
 
     public function testGetId(int $id = 1): void
     {
-        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
-        $contentRichEntity->getId()->willReturn($id);
+        $contentRichEntity = new Example();
+        static::setPrivateProperty($contentRichEntity, 'id', $id);
 
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent->getResource()->willReturn($contentRichEntity->reveal());
+        $dimensionContent = new ExampleDimensionContent($contentRichEntity);
 
-        $actualId = (string) $this->contentObjectProvider->getId($dimensionContent->reveal());
+        $actualId = (string) $this->contentObjectProvider->getId($dimensionContent);
 
         $this->assertSame((string) $id, $actualId);
     }
@@ -195,15 +198,15 @@ class ContentObjectProviderTest extends TestCase
             'excerptIcon' => ['id' => 4],
         ]
     ): void {
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent = new ExampleDimensionContent(new Example());
 
-        $this->contentObjectProvider->setValues($dimensionContent->reveal(), $locale, $data);
+        $this->contentObjectProvider->setValues($dimensionContent, $locale, $data);
 
         $this->contentDataMapper->map(
             $data,
             Argument::that(
                 function(PreviewDimensionContentCollection $dimensionContentCollection) use ($dimensionContent) {
-                    return $dimensionContent->reveal() === $dimensionContentCollection->getDimensionContent([]);
+                    return $dimensionContent === $dimensionContentCollection->getDimensionContent([]);
                 }
             )
         )->shouldBeCalledTimes(1);
@@ -214,30 +217,28 @@ class ContentObjectProviderTest extends TestCase
      */
     public function testSetContext(string $locale = 'de', array $context = ['template' => 'overview']): void
     {
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent->willImplement(TemplateInterface::class);
+        $dimensionContent = new ExampleDimensionContent(new Example());
 
-        $this->contentObjectProvider->setContext($dimensionContent->reveal(), $locale, $context);
+        $this->contentObjectProvider->setContext($dimensionContent, $locale, $context);
 
-        $dimensionContent->setTemplateKey($context['template'])->shouldBeCalled();
+        $this->assertSame($context['template'], $dimensionContent->getTemplateKey());
     }
 
     public function testSerialize(): void
     {
-        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
-        $contentRichEntity->getId()->willReturn('123-456');
+        $contentRichEntity = new Example();
+        static::setPrivateProperty($contentRichEntity, 'id', '123-456');
 
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent->getResource()->willReturn($contentRichEntity->reveal());
-        $dimensionContent->getLocale()->willReturn('en');
-        $dimensionContent->getStage()->willReturn('draft');
+        $dimensionContent = new ExampleDimensionContent($contentRichEntity);
+        $dimensionContent->setLocale('en');
+        $dimensionContent->setStage('draft');
 
         $serializedObject = \json_encode([
             'id' => '123-456',
             'locale' => 'en',
         ]);
 
-        $result = $this->contentObjectProvider->serialize($dimensionContent->reveal());
+        $result = $this->contentObjectProvider->serialize($dimensionContent);
 
         $this->assertSame($serializedObject, $result);
     }
@@ -248,21 +249,21 @@ class ContentObjectProviderTest extends TestCase
 
         $this->entityManager->createQueryBuilder()->willReturn($queryBuilder->reveal())->shouldBeCalledTimes(1);
 
-        $queryBuilder->select(Argument::type('string'))->will(function() {
-            return \func_get_arg(\func_num_args() - 2);
-        })->shouldBeCalledTimes(1);
+        $queryBuilder->select(Argument::type('string'))
+            ->willReturn($queryBuilder->reveal())
+            ->shouldBeCalledTimes(1);
 
-        $queryBuilder->from(Argument::type('string'), Argument::type('string'))->will(function() {
-            return \func_get_arg(\func_num_args() - 2);
-        })->shouldBeCalledTimes(1);
+        $queryBuilder->from(Argument::type('string'), Argument::type('string'))
+            ->willReturn($queryBuilder->reveal())
+            ->shouldBeCalledTimes(1);
 
-        $queryBuilder->where(Argument::type('string'))->will(function() {
-            return \func_get_arg(\func_num_args() - 2);
-        })->shouldBeCalledTimes(1);
+        $queryBuilder->where(Argument::type('string'))
+            ->willReturn($queryBuilder->reveal())
+            ->shouldBeCalledTimes(1);
 
-        $queryBuilder->setParameter(Argument::type('string'), Argument::any())->will(function() {
-            return \func_get_arg(\func_num_args() - 2);
-        })->shouldBeCalledTimes(1);
+        $queryBuilder->setParameter(Argument::type('string'), Argument::any())
+            ->willReturn($queryBuilder->reveal())
+            ->shouldBeCalledTimes(1);
 
         $query = $this->prophesize(AbstractQuery::class);
 
@@ -272,12 +273,12 @@ class ContentObjectProviderTest extends TestCase
 
         $query->getSingleResult()->willReturn($entity->reveal())->shouldBeCalledTimes(1);
 
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent = new ExampleDimensionContent(new Example());
 
         $this->contentResolver->resolve(
             $entity->reveal(),
             Argument::type('array')
-        )->willReturn($dimensionContent->reveal())->shouldBeCalledTimes(1);
+        )->willReturn($dimensionContent)->shouldBeCalledTimes(1);
 
         $serializedObject = \json_encode([
             'id' => '123-456',
@@ -286,7 +287,7 @@ class ContentObjectProviderTest extends TestCase
 
         $result = $this->contentObjectProvider->deserialize($serializedObject, DimensionContentInterface::class);
 
-        $this->assertSame($dimensionContent->reveal(), $result);
+        $this->assertSame($dimensionContent, $result);
     }
 
     public function testDeserializeIdNull(): void

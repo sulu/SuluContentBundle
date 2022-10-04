@@ -22,6 +22,8 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 
 class WorkflowDataMapperTest extends TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
+
     protected function createWorkflowDataMapperInstance(): WorkflowDataMapper
     {
         return new WorkflowDataMapper();

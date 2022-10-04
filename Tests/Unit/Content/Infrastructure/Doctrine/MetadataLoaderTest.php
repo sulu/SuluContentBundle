@@ -33,6 +33,8 @@ use Sulu\Bundle\TagBundle\Tag\TagInterface;
 
 class MetadataLoaderTest extends TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
+
     protected function getMetadataLoader(): MetadataLoader
     {
         return new MetadataLoader();

@@ -39,6 +39,8 @@ use Sulu\Bundle\TagBundle\Tag\TagInterface;
 
 class ContentNormalizerTest extends TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
+
     protected function createContentNormalizerInstance(): ContentNormalizerInterface
     {
         return new ContentNormalizer([
@@ -59,10 +61,13 @@ class ContentNormalizerTest extends TestCase
             use DimensionContentTrait;
 
             /**
-             * @var ContentRichEntityInterface
+             * @var ContentRichEntityInterface<self>
              */
             protected $resource;
 
+            /**
+             * @param ContentRichEntityInterface<self> $resource
+             */
             public function __construct(ContentRichEntityInterface $resource)
             {
                 $this->resource = $resource;
@@ -75,6 +80,9 @@ class ContentNormalizerTest extends TestCase
                 throw new \RuntimeException('Should not be called while executing tests.');
             }
 
+            /**
+             * @return ContentRichEntityInterface<self>
+             */
             public function getResource(): ContentRichEntityInterface
             {
                 return $this->resource;
@@ -103,10 +111,13 @@ class ContentNormalizerTest extends TestCase
             use WorkflowTrait;
 
             /**
-             * @var ContentRichEntityInterface
+             * @var ContentRichEntityInterface<self>
              */
             protected $resource;
 
+            /**
+             * @param ContentRichEntityInterface<self> $resource
+             */
             public function __construct(ContentRichEntityInterface $resource)
             {
                 $this->resource = $resource;
@@ -124,6 +135,9 @@ class ContentNormalizerTest extends TestCase
                 throw new \RuntimeException('Should not be called while executing tests.');
             }
 
+            /**
+             * @return ContentRichEntityInterface<self>
+             */
             public function getResource(): ContentRichEntityInterface
             {
                 return $this->resource;

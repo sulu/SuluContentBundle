@@ -20,19 +20,26 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\RoutableTrait;
 
 class RoutableTraitTest extends TestCase
 {
-    protected function getRoutableInstance(): RoutableInterface
-    {
-        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
-        $contentRichEntity->getId()->willReturn('content-id-123');
+    use \Prophecy\PhpUnit\ProphecyTrait;
 
-        return new class($contentRichEntity->reveal()) implements RoutableInterface {
+    /**
+     * @template T of ContentRichEntityInterface
+     *
+     * @param T $contentRichEntity
+     */
+    protected function getRoutableInstance(ContentRichEntityInterface $contentRichEntity): RoutableInterface
+    {
+        return new class($contentRichEntity) implements RoutableInterface {
             use RoutableTrait;
 
             /**
-             * @var ContentRichEntityInterface
+             * @var T
              */
             private $resource;
 
+            /**
+             * @param T $resource
+             */
             public function __construct(ContentRichEntityInterface $resource)
             {
                 $this->resource = $resource;
@@ -48,6 +55,9 @@ class RoutableTraitTest extends TestCase
                 return 'en';
             }
 
+            /**
+             * @return T
+             */
             public function getResource(): ContentRichEntityInterface
             {
                 return $this->resource;
@@ -57,13 +67,18 @@ class RoutableTraitTest extends TestCase
 
     public function testGetLocale(): void
     {
-        $model = $this->getRoutableInstance();
+        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
+
+        $model = $this->getRoutableInstance($contentRichEntity->reveal());
         $this->assertSame('en', $model->getLocale());
     }
 
     public function testGetResourceId(): void
     {
-        $model = $this->getRoutableInstance();
+        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
+        $contentRichEntity->getId()->willReturn('content-id-123');
+
+        $model = $this->getRoutableInstance($contentRichEntity->reveal());
         $this->assertSame('content-id-123', $model->getResourceId());
     }
 }

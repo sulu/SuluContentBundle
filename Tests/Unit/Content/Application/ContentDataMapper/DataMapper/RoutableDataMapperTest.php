@@ -35,6 +35,8 @@ use Sulu\Component\Content\Metadata\StructureMetadata;
 
 class RoutableDataMapperTest extends TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
+
     /**
      * @param array<string, string> $structureDefaultTypes
      * @param array<string, array<mixed>> $resourceKeyMappings
@@ -64,7 +66,9 @@ class RoutableDataMapperTest extends TestCase
     }
 
     /**
-     * @param ObjectProphecy<DimensionContentInterface> $routableMock
+     * @template T of DimensionContentInterface&TemplateInterface&RoutableInterface
+     *
+     * @param ObjectProphecy<T> $routableMock
      */
     protected function wrapRoutableMock(ObjectProphecy $routableMock): RoutableInterface
     {
@@ -72,6 +76,11 @@ class RoutableDataMapperTest extends TestCase
             DimensionContentInterface,
             TemplateInterface,
             RoutableInterface {
+            /**
+             * @var T
+             */
+            protected $instance;
+
             use DimensionContentMockWrapperTrait, RoutableMockWrapperTrait {
                 RoutableMockWrapperTrait::getLocale insteadof DimensionContentMockWrapperTrait;
                 RoutableMockWrapperTrait::getResourceKey insteadof DimensionContentMockWrapperTrait;

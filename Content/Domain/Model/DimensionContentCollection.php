@@ -17,24 +17,17 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Criteria;
 
 /**
- * @implements \IteratorAggregate<DimensionContentInterface>
+ * @template-covariant T of DimensionContentInterface
+ *
+ * @implements \IteratorAggregate<T>
+ * @implements DimensionContentCollectionInterface<T>
  */
 class DimensionContentCollection implements \IteratorAggregate, DimensionContentCollectionInterface
 {
     /**
-     * @var ArrayCollection<int, DimensionContentInterface>
+     * @var ArrayCollection<int, T>
      */
     private $dimensionContents;
-
-    /**
-     * @var DimensionContentInterface|null
-     */
-    private $unlocalizedDimensionContent;
-
-    /**
-     * @var DimensionContentInterface|null
-     */
-    private $localizedDimensionContent;
 
     /**
      * @var mixed[]
@@ -42,7 +35,7 @@ class DimensionContentCollection implements \IteratorAggregate, DimensionContent
     private $dimensionAttributes;
 
     /**
-     * @var class-string<DimensionContentInterface>
+     * @var class-string<T>
      */
     private $dimensionContentClass;
 
@@ -54,9 +47,9 @@ class DimensionContentCollection implements \IteratorAggregate, DimensionContent
     /**
      * DimensionContentCollection constructor.
      *
-     * @param DimensionContentInterface[] $dimensionContents
+     * @param T[] $dimensionContents
      * @param mixed[] $dimensionAttributes
-     * @param class-string<DimensionContentInterface> $dimensionContentClass
+     * @param class-string<T> $dimensionContentClass
      */
     public function __construct(
         array $dimensionContents,
@@ -66,18 +59,6 @@ class DimensionContentCollection implements \IteratorAggregate, DimensionContent
         $this->dimensionContents = new ArrayCollection($dimensionContents);
         $this->dimensionContentClass = $dimensionContentClass;
         $this->defaultDimensionAttributes = $dimensionContentClass::getDefaultDimensionAttributes();
-
-        $this->unlocalizedDimensionContent = $this->dimensionContents->filter(
-            function(DimensionContentInterface $dimensionContent) {
-                return null === $dimensionContent->getLocale();
-            }
-        )->first() ?: null;
-
-        $this->localizedDimensionContent = $this->dimensionContents->filter(
-            function(DimensionContentInterface $dimensionContent) {
-                return null !== $dimensionContent->getLocale();
-            }
-        )->first() ?: null;
 
         $this->dimensionAttributes = $dimensionAttributes;
     }
@@ -110,6 +91,7 @@ class DimensionContentCollection implements \IteratorAggregate, DimensionContent
         return $this->dimensionAttributes;
     }
 
+    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         return $this->dimensionContents;

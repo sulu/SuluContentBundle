@@ -21,6 +21,8 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
 
 class SeoDataMapperTest extends TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
+
     protected function createSeoDataMapperInstance(): SeoDataMapper
     {
         return new SeoDataMapper();

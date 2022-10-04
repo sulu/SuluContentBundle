@@ -20,16 +20,22 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentTrait;
 
 class DimensionContentTraitTest extends TestCase
 {
-    protected function getDimensionContentInstance(): DimensionContentInterface
+    protected function getDimensionContentInstance(): DimensionContentInterface // @phpstan-ignore-line
     {
         return new class() implements DimensionContentInterface {
             use DimensionContentTrait;
 
+            /**
+             * @return never
+             */
             public static function getResourceKey(): string
             {
                 throw new \RuntimeException('Should not be called while executing tests.');
             }
 
+            /**
+             * @return never
+             */
             public function getResource(): ContentRichEntityInterface
             {
                 throw new \RuntimeException('Should not be called while executing tests.');

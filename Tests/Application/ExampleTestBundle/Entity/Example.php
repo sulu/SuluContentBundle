@@ -17,26 +17,35 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityTrait;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 
+/**
+ * @implements ContentRichEntityInterface<ExampleDimensionContent>
+ */
 class Example implements ContentRichEntityInterface
 {
+    /**
+     * @phpstan-use ContentRichEntityTrait<ExampleDimensionContent>
+     */
     use ContentRichEntityTrait;
 
     public const RESOURCE_KEY = 'examples';
     public const TEMPLATE_TYPE = 'example';
 
     /**
-     * @var mixed
+     * @var int|string
      */
     public $id;
 
     /**
-     * @return mixed
+     * @return int|string
      */
     public function getId()
     {
         return $this->id;
     }
 
+    /**
+     * @return ExampleDimensionContent
+     */
     public function createDimensionContent(): DimensionContentInterface
     {
         $exampleDimensionContent = new ExampleDimensionContent($this);

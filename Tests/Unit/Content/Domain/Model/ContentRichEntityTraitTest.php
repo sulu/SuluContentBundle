@@ -14,17 +14,15 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Domain\Model;
 
 use PHPUnit\Framework\TestCase;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityTrait;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
+use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
+use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleDimensionContent;
 
 class ContentRichEntityTraitTest extends TestCase
 {
-    protected function getContentRichEntityInstance(): ContentRichEntityInterface
+    protected function getContentRichEntityInstance(): Example
     {
-        return new class() implements ContentRichEntityInterface {
-            use ContentRichEntityTrait;
-
+        return new class() extends Example {
             public function createDimensionContent(): DimensionContentInterface
             {
                 throw new \RuntimeException('Should not be called while executing tests.');
@@ -43,21 +41,21 @@ class ContentRichEntityTraitTest extends TestCase
 
         $this->assertEmpty($model->getDimensionContents());
 
-        $modelDimension1 = $this->prophesize(DimensionContentInterface::class);
-        $modelDimension2 = $this->prophesize(DimensionContentInterface::class);
+        $modelDimension1 = new ExampleDimensionContent($model);
+        $modelDimension2 = new ExampleDimensionContent($model);
 
-        $model->addDimensionContent($modelDimension1->reveal());
-        $model->addDimensionContent($modelDimension2->reveal());
+        $model->addDimensionContent($modelDimension1);
+        $model->addDimensionContent($modelDimension2);
 
         $this->assertSame([
-            $modelDimension1->reveal(),
-            $modelDimension2->reveal(),
+            $modelDimension1,
+            $modelDimension2,
         ], \iterator_to_array($model->getDimensionContents()));
 
-        $model->removeDimensionContent($modelDimension2->reveal());
+        $model->removeDimensionContent($modelDimension2);
 
         $this->assertSame([
-            $modelDimension1->reveal(),
+            $modelDimension1,
         ], \iterator_to_array($model->getDimensionContents()));
     }
 }

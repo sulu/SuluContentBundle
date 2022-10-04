@@ -68,7 +68,7 @@ class ExcerptDataMapper implements DataMapperInterface
      */
     private function setExcerptData(ExcerptInterface $dimensionContent, array $data): void
     {
-        $dimensionContent->setExcerptTitle($data['excerptTitle'] ?? null);
+        $dimensionContent->setExcerptTitle($data['excerptTitle'] ?? null); // @phpstan-ignore-line TODO where validate this?
         $dimensionContent->setExcerptDescription($data['excerptDescription'] ?? null);
         $dimensionContent->setExcerptMore($data['excerptMore'] ?? null);
         $dimensionContent->setExcerptImage($data['excerptImage'] ?? null);

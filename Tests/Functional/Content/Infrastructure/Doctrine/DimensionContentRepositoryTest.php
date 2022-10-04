@@ -116,7 +116,10 @@ class DimensionContentRepositoryTest extends SuluTestCase
     }
 
     /**
-     * @param mixed[] $dimensionAttributes
+     * @param array{
+     *     stage?: string,
+     *     locale?: string,
+     * } $dimensionAttributes
      */
     private function createContentDimension(Example $example, array $dimensionAttributes = []): ExampleDimensionContent
     {

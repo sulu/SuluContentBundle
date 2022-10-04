@@ -71,7 +71,9 @@ class ContentDataProvider extends BaseDataProvider
     }
 
     /**
-     * @param DimensionContentInterface[] $data
+     * @template T of DimensionContentInterface
+     *
+     * @param T[] $data
      *
      * @return mixed[]
      */
@@ -90,7 +92,9 @@ class ContentDataProvider extends BaseDataProvider
     /**
      * Decorates result as resource item.
      *
-     * @param DimensionContentInterface[] $data
+     * @template T of DimensionContentInterface
+     *
+     * @param T[] $data
      * @param string $locale
      *
      * @return ResourceItemInterface[]
@@ -113,7 +117,9 @@ class ContentDataProvider extends BaseDataProvider
     }
 
     /**
-     * @param DimensionContentInterface $dimensionContent
+     * @template T of DimensionContentInterface
+     *
+     * @param T $dimensionContent
      *
      * @return mixed
      */
@@ -123,6 +129,10 @@ class ContentDataProvider extends BaseDataProvider
     }
 
     /**
+     * @template T of DimensionContentInterface
+     *
+     * @param T $dimensionContent
+     *
      * @return mixed[]
      */
     protected function normalizeContent(DimensionContentInterface $dimensionContent): array
@@ -131,6 +141,9 @@ class ContentDataProvider extends BaseDataProvider
     }
 
     /**
+     * @template T of DimensionContentInterface
+     *
+     * @param T $dimensionContent
      * @param mixed[] $data
      */
     protected function createDataItem(DimensionContentInterface $dimensionContent, array $data): ItemInterface
@@ -139,7 +152,10 @@ class ContentDataProvider extends BaseDataProvider
     }
 
     /**
+     * @template T of DimensionContentInterface
+     *
      * @param mixed $id
+     * @param T $dimensionContent
      * @param mixed[] $data
      */
     protected function createResourceItem($id, DimensionContentInterface $dimensionContent, array $data): ResourceItemInterface

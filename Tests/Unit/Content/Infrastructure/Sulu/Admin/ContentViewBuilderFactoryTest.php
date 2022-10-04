@@ -45,6 +45,8 @@ use Sulu\Component\Security\Authorization\SecurityCheckerInterface;
 
 class ContentViewBuilderFactoryTest extends TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
+
     protected function createContentViewBuilder(
         ContentMetadataInspectorInterface $contentMetadataInspector,
         SecurityCheckerInterface $securityChecker,
@@ -71,7 +73,12 @@ class ContentViewBuilderFactoryTest extends TestCase
     }
 
     /**
-     * @param class-string<ContentRichEntityInterface> $entityClass
+     * @template B of DimensionContentInterface
+     * @template T of ContentRichEntityInterface<B>
+     *
+     * @param class-string<T> $entityClass
+     *
+     * @return ContentObjectProvider<B, T>
      */
     protected function createContentObjectProvider(
         EntityManagerInterface $entityManager,
@@ -314,6 +321,9 @@ class ContentViewBuilderFactoryTest extends TestCase
                         return 'mock-resource-key';
                     }
 
+                    /**
+                     * @return never
+                     */
                     public function getResource(): ContentRichEntityInterface
                     {
                         throw new \RuntimeException('Should not be called while executing tests.');
@@ -331,6 +341,9 @@ class ContentViewBuilderFactoryTest extends TestCase
                     use SeoTrait;
                     use TemplateTrait;
 
+                    /**
+                     * @return never
+                     */
                     public function getResource(): ContentRichEntityInterface
                     {
                         throw new \RuntimeException('Should not be called while executing tests.');
@@ -361,6 +374,9 @@ class ContentViewBuilderFactoryTest extends TestCase
                     use TemplateTrait;
                     use WorkflowTrait;
 
+                    /**
+                     * @return never
+                     */
                     public function getResource(): ContentRichEntityInterface
                     {
                         throw new \RuntimeException('Should not be called while executing tests.');
@@ -387,6 +403,9 @@ class ContentViewBuilderFactoryTest extends TestCase
     }
 
     /**
+     * @template T of DimensionContentInterface
+     *
+     * @param T $dimensionContentObject
      * @param mixed[] $expectedToolbarActions
      *
      * @dataProvider getContentRichEntityClassData

@@ -11,30 +11,35 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Infrastructure\Sulu\Structure;
+namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Infrastructure\Sulu\Preview;
 
 use PHPUnit\Framework\TestCase;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Preview\PreviewDimensionContentCollection;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleDimensionContent;
 
 class PreviewDimensionContentCollectionTest extends TestCase
 {
+    /**
+     * @template T of ExampleDimensionContent
+     *
+     * @param T|null $previewDimensionContent
+     *
+     * @return PreviewDimensionContentCollection<T|ExampleDimensionContent>
+     */
     protected function createPreviewDimensionContentCollection(
-        ?DimensionContentInterface $previewDimensionContent = null,
+        ?ExampleDimensionContent $previewDimensionContent = null,
         string $locale = 'en'
     ): PreviewDimensionContentCollection {
         return new PreviewDimensionContentCollection(
-            $previewDimensionContent ?: $this->prophesize(DimensionContentInterface::class)->reveal(),
+            $previewDimensionContent ?: new ExampleDimensionContent(new Example()),
             $locale
         );
     }
 
     public function testGetDimensionContentClass(): void
     {
-        $example = $this->prophesize(Example::class);
-        $dimensionContent = new ExampleDimensionContent($example->reveal());
+        $dimensionContent = new ExampleDimensionContent(new Example());
 
         $previewDimensionContentCollection = $this->createPreviewDimensionContentCollection($dimensionContent);
 
@@ -46,28 +51,27 @@ class PreviewDimensionContentCollectionTest extends TestCase
 
     public function testGetDimensionContent(): void
     {
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent = new ExampleDimensionContent(new Example());
 
-        $previewDimensionContentCollection = $this->createPreviewDimensionContentCollection($dimensionContent->reveal());
+        $previewDimensionContentCollection = $this->createPreviewDimensionContentCollection($dimensionContent);
 
         $this->assertSame(
-            $dimensionContent->reveal(),
+            $dimensionContent,
             $previewDimensionContentCollection->getDimensionContent([])
         );
         $this->assertSame(
-            $dimensionContent->reveal(),
+            $dimensionContent,
             $previewDimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => null])
         );
         $this->assertSame(
-            $dimensionContent->reveal(),
+            $dimensionContent,
             $previewDimensionContentCollection->getDimensionContent(['stage' => 'draft', 'locale' => 'en'])
         );
     }
 
     public function testGetDimensionAttributes(): void
     {
-        $example = $this->prophesize(Example::class);
-        $dimensionContent = new ExampleDimensionContent($example->reveal());
+        $dimensionContent = new ExampleDimensionContent(new Example());
 
         $previewDimensionContentCollection = $this->createPreviewDimensionContentCollection(
             $dimensionContent,
@@ -82,21 +86,21 @@ class PreviewDimensionContentCollectionTest extends TestCase
 
     public function testGetIterator(): void
     {
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent = new ExampleDimensionContent(new Example());
 
-        $previewDimensionContentCollection = $this->createPreviewDimensionContentCollection($dimensionContent->reveal());
+        $previewDimensionContentCollection = $this->createPreviewDimensionContentCollection($dimensionContent);
 
         $this->assertSame(
-            [$dimensionContent->reveal()],
+            [$dimensionContent],
             \iterator_to_array($previewDimensionContentCollection)
         );
     }
 
     public function testGetCount(): void
     {
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent = new ExampleDimensionContent(new Example());
 
-        $previewDimensionContentCollection = $this->createPreviewDimensionContentCollection($dimensionContent->reveal());
+        $previewDimensionContentCollection = $this->createPreviewDimensionContentCollection($dimensionContent);
 
         $this->assertCount(1, $previewDimensionContentCollection);
     }

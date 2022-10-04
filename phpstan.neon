@@ -11,18 +11,18 @@ parameters:
     paths:
         - .
     level: max
-    excludes_analyse:
+    excludePaths:
         - %currentWorkingDirectory%/DependencyInjection/Configuration.php
         - %currentWorkingDirectory%/vendor/*
         - %currentWorkingDirectory%/Tests/Application/Kernel.php
         - %currentWorkingDirectory%/Tests/Application/var/*
+        - %currentWorkingDirectory%/Tests/Unit/Mocks/*
     symfony:
         container_xml_path: %currentWorkingDirectory%/Tests/Application/var/cache/admin/dev/Sulu_Bundle_ContentBundle_Tests_Application_KernelDevDebugContainer.xml
         console_application_loader: Tests/phpstan/console-application.php
     doctrine:
         objectManagerLoader: Tests/phpstan/object-manager.php
-    bootstrapFiles:
-        - vendor/bin/.phpunit/phpunit-8.5-0/vendor/autoload.php
+    stubFiles: ["Tests/phpstan/stubs/ObjectProphecy.phpstub", "Tests/phpstan/stubs/ProphecyInterface.phpstub"]
     ignoreErrors:
         - message: "#^Method Sulu\\\\Bundle\\\\ContentBundle\\\\Content\\\\Infrastructure\\\\Sulu\\\\Structure\\\\ContentDocument\\:\\:getStructure\\(\\) should return Sulu\\\\Component\\\\Content\\\\Document\\\\Structure\\\\StructureInterface but returns null\\.$#"
           count: 1

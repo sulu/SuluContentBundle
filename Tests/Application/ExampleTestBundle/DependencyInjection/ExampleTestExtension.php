@@ -86,6 +86,7 @@ class ExampleTestExtension extends Extension implements PrependExtensionInterfac
         if ($container->hasExtension('sulu_search')) {
             $suluSearchConfigs = $container->getExtensionConfig('sulu_search');
 
+            /** @var array{website?: array{ indexes?: array<string, string> }} $suluSearchConfig */
             foreach ($suluSearchConfigs as $suluSearchConfig) {
                 if (isset($suluSearchConfig['website']['indexes'])) {
                     $container->prependExtensionConfig(

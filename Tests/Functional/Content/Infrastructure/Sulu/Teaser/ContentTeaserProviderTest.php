@@ -30,14 +30,9 @@ class ContentTeaserProviderTest extends WebsiteTestCase
     private $exampleTeaserProvider;
 
     /**
-     * @var mixed[]
+     * @var array<int|string>
      */
     private static $exampleIds = [];
-
-    /**
-     * @var mixed
-     */
-    private static $exampleIdNoRoute;
 
     public static function setUpBeforeClass(): void
     {
@@ -109,11 +104,11 @@ class ContentTeaserProviderTest extends WebsiteTestCase
 
         static::getEntityManager()->flush();
 
-        static::$exampleIds[] = $example1->getId();
-        static::$exampleIds[] = $example2->getId();
-        static::$exampleIds[] = $example3->getId();
-        static::$exampleIds[] = $example4->getId();
-        static::$exampleIds[] = $example5->getId();
+        self::$exampleIds[] = $example1->getId();
+        self::$exampleIds[] = $example2->getId();
+        self::$exampleIds[] = $example3->getId();
+        self::$exampleIds[] = $example4->getId();
+        self::$exampleIds[] = $example5->getId();
     }
 
     protected function setUp(): void
@@ -130,7 +125,7 @@ class ContentTeaserProviderTest extends WebsiteTestCase
 
     public function testFindDE(): void
     {
-        $teasers = $this->exampleTeaserProvider->find(static::$exampleIds, 'de');
+        $teasers = $this->exampleTeaserProvider->find(self::$exampleIds, 'de');
 
         $teasers = $this->mapTeasers($teasers);
 
@@ -139,7 +134,7 @@ class ContentTeaserProviderTest extends WebsiteTestCase
 
     public function testFindEN(): void
     {
-        $teasers = $this->exampleTeaserProvider->find(static::$exampleIds, 'en');
+        $teasers = $this->exampleTeaserProvider->find(self::$exampleIds, 'en');
 
         $teasers = $this->mapTeasers($teasers);
 

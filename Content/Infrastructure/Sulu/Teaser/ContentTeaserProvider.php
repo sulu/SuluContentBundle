@@ -26,6 +26,10 @@ use Sulu\Bundle\PageBundle\Teaser\Provider\TeaserProviderInterface;
 use Sulu\Bundle\PageBundle\Teaser\Teaser;
 use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
 
+/**
+ * @template B of DimensionContentInterface
+ * @template T of ContentRichEntityInterface<B>
+ */
 abstract class ContentTeaserProvider implements TeaserProviderInterface
 {
     public const CONTENT_RICH_ENTITY_ALIAS = ContentWorkflowInterface::CONTENT_RICH_ENTITY_CONTEXT_KEY;
@@ -51,7 +55,7 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
     protected $metadataFactory;
 
     /**
-     * @var class-string<ContentRichEntityInterface>
+     * @var class-string<T>
      */
     protected $contentRichEntityClass;
 
@@ -61,7 +65,7 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
     protected $showDrafts;
 
     /**
-     * @param class-string<ContentRichEntityInterface> $contentRichEntityClass
+     * @param class-string<T> $contentRichEntityClass
      * @param bool $showDrafts Inject parameter "sulu_document_manager.show_drafts" here
      */
     public function __construct(
@@ -81,7 +85,7 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
     }
 
     /**
-     * @param mixed[] $ids
+     * @param array<int|string> $ids
      * @param string $locale
      *
      * @return Teaser[]
@@ -115,7 +119,8 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
     }
 
     /**
-     * @param mixed[] $data
+     * @param B $dimensionContent
+     * @param array<string, mixed> $data
      */
     protected function createTeaser(DimensionContentInterface $dimensionContent, array $data, string $locale): ?Teaser
     {
@@ -129,10 +134,10 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
         $title = $this->getTitle($dimensionContent, $data);
 
         /** @var string $description */
-        $description = $this->getDescription($dimensionContent, $data);
+        $description = $this->getDescription($dimensionContent, $data); // @phpstan-ignore-line
 
         /** @var string $moreText */
-        $moreText = $this->getMoreText($dimensionContent, $data);
+        $moreText = $this->getMoreText($dimensionContent, $data); // @phpstan-ignore-line
 
         /** @var int $mediaId */
         $mediaId = $this->getMediaId($dimensionContent, $data);
@@ -150,6 +155,11 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
         );
     }
 
+    /**
+     * @param T $contentRichEntity
+     *
+     * @return B|null
+     */
     protected function resolveContent(ContentRichEntityInterface $contentRichEntity, string $locale): ?DimensionContentInterface
     {
         $stage = $this->showDrafts
@@ -174,6 +184,7 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
     }
 
     /**
+     * @param B $dimensionContent
      * @param mixed[] $data
      */
     protected function getUrl(DimensionContentInterface $dimensionContent, array $data): ?string
@@ -195,7 +206,7 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
 
         foreach ($metadata->getProperties() as $property) {
             if ('route' === $property->getType()) {
-                return $dimensionContent->getTemplateData()[$property->getName()] ?? null;
+                return $dimensionContent->getTemplateData()[$property->getName()] ?? null; // @phpstan-ignore-line
             }
         }
 
@@ -203,6 +214,7 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
     }
 
     /**
+     * @param B $dimensionContent
      * @param mixed[] $data
      */
     protected function getTitle(DimensionContentInterface $dimensionContent, array $data): ?string
@@ -217,7 +229,8 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
     }
 
     /**
-     * @param mixed[] $data
+     * @param B $dimensionContent
+     * @param array{description?: string|null} $data
      */
     protected function getDescription(DimensionContentInterface $dimensionContent, array $data): ?string
     {
@@ -231,7 +244,8 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
     }
 
     /**
-     * @param mixed[] $data
+     * @param B $dimensionContent
+     * @param array{more?: string|null, moreText?: string|null} $data
      */
     protected function getMoreText(DimensionContentInterface $dimensionContent, array $data): ?string
     {
@@ -245,6 +259,7 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
     }
 
     /**
+     * @param B $dimensionContent
      * @param mixed[] $data
      */
     protected function getMediaId(DimensionContentInterface $dimensionContent, array $data): ?int
@@ -252,7 +267,7 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
         if ($dimensionContent instanceof ExcerptInterface) {
             if ($excerptImage = $dimensionContent->getExcerptImage()) {
                 // TODO FIXME create unit test for this
-                return $excerptImage['id'] ?? null; // @codeCoverageIgnore
+                return $excerptImage['id']; // @codeCoverageIgnore
             }
         }
 
@@ -260,6 +275,7 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
     }
 
     /**
+     * @param B $dimensionContent
      * @param mixed[] $data
      *
      * @return mixed[]
@@ -270,15 +286,16 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
     }
 
     /**
-     * @param mixed[] $ids
+     * @param array<int|string> $ids
      *
-     * @return ContentRichEntityInterface[]
+     * @return T[]
      */
     protected function findEntitiesByIds(array $ids): array
     {
         $entityIdField = $this->getEntityIdField();
         $classMetadata = $this->entityManager->getClassMetadata($this->contentRichEntityClass);
 
+        /** @var T[] $entities */
         $entities = $this->entityManager->createQueryBuilder()
             ->select(self::CONTENT_RICH_ENTITY_ALIAS)
             ->from($this->contentRichEntityClass, self::CONTENT_RICH_ENTITY_ALIAS)

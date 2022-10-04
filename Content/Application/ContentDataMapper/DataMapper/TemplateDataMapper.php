@@ -95,7 +95,10 @@ class TemplateDataMapper implements DataMapperInterface
     /**
      * @param mixed[] $data
      *
-     * @return mixed[]
+     * @return array{
+     *     0: mixed[],
+     *     1: mixed[],
+     * }
      */
     private function getTemplateData(array $data, string $type, string $template): array
     {

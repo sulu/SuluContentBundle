@@ -15,21 +15,33 @@ namespace Sulu\Bundle\ContentBundle\Content\Domain\Model;
 
 use Doctrine\Common\Collections\Collection;
 
+/**
+ * @template T of DimensionContentInterface
+ */
 interface ContentRichEntityInterface
 {
     /**
-     * @return mixed
+     * @return int|string
      */
     public function getId();
 
     /**
-     * @return Collection<int, DimensionContentInterface>
+     * @return Collection<int, T>
      */
     public function getDimensionContents(): Collection;
 
+    /**
+     * @return T
+     */
     public function createDimensionContent(): DimensionContentInterface;
 
+    /**
+     * @param T $dimensionContent
+     */
     public function addDimensionContent(DimensionContentInterface $dimensionContent): void;
 
+    /**
+     * @param T $dimensionContent
+     */
     public function removeDimensionContent(DimensionContentInterface $dimensionContent): void;
 }

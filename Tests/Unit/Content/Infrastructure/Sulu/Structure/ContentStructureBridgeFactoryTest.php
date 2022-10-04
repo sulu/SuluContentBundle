@@ -27,6 +27,8 @@ use Sulu\Component\Content\Metadata\StructureMetadata;
 
 class ContentStructureBridgeFactoryTest extends TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
+
     protected function getContentStructureBridgeFactory(
         StructureMetadataFactoryInterface $structureMetadataFactory,
         LegacyPropertyFactory $propertyFactory
@@ -41,6 +43,7 @@ class ContentStructureBridgeFactoryTest extends TestCase
      */
     protected function wrapTemplateMock(ObjectProphecy $templateMock): TemplateInterface
     {
+        /** @var ObjectProphecy<object> $templateMock */
         return new class($templateMock) extends MockWrapper implements TemplateInterface {
             use TemplateMockWrapperTrait;
         };
