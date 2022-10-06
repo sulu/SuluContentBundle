@@ -1,5 +1,16 @@
 # Upgrade
 
+## 0.6.x
+
+### Add jsonb support for postgresql tables
+
+```postgresql
+ALTER TABLE test_example_dimensions
+  ALTER COLUMN templateData
+  SET DATA TYPE jsonb
+  USING templateData::jsonb;
+```
+
 ## 0.6.3
 
 ### Add dimension, templateKey, workflowPublished and workflowPlace indexes
