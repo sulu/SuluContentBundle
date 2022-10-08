@@ -2,14 +2,12 @@
 
 ## 0.6.x
 
-### Add jsonb support for postgresql tables
+### Use jsonb for PostgreSQL json columns
 
-```postgresql
-ALTER TABLE test_example_dimensions
-  ALTER COLUMN templateData
-  SET DATA TYPE jsonb
-  USING templateData::jsonb;
-```
+This effects only PostgreSQL databases:
+
+```sql
+ALTER TABLE <your_entity>_example_dimensions ALTER COLUMN templateData SET DATA TYPE jsonb USING templateData::jsonb;
 
 ## 0.6.3
 
