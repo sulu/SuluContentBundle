@@ -1,5 +1,15 @@
 # Upgrade
 
+## 0.6.x
+
+### Use jsonb for PostgreSQL json columns
+
+This effects only PostgreSQL databases:
+
+```sql
+ALTER TABLE <your_entity>_example_dimensions ALTER COLUMN templateData SET DATA TYPE jsonb USING templateData::jsonb;
+```
+
 ## 0.6.3
 
 ### Add dimension, templateKey, workflowPublished and workflowPlace indexes

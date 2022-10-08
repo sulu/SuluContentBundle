@@ -64,7 +64,7 @@ class MetadataLoader implements EventSubscriber
 
         if ($reflection->implementsInterface(TemplateInterface::class)) {
             $this->addField($metadata, 'templateKey', 'string', ['length' => 32]);
-            $this->addField($metadata, 'templateData', 'json', ['nullable' => false]);
+            $this->addField($metadata, 'templateData', 'json', ['nullable' => false, 'options' => ['jsonb' => true]]);
 
             $this->addIndex($metadata, 'idx_template_key', ['templateKey']);
         }
