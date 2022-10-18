@@ -52,7 +52,7 @@ class SuluContentExtension extends Extension implements PrependExtensionInterfac
         $loader->load('services.xml');
         $loader->load('form-visitor.xml');
 
-        if ($container->hasParameter('kernel.bundles')) {
+        if ($container->hasParameter('kernel.bundles')) { // @phpstan-ignore-line
             // TODO FIXME add test here
             // @codeCoverageIgnoreStart
             /** @var string[] $bundles */

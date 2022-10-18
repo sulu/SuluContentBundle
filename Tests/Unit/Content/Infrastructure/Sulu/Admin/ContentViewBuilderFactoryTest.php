@@ -47,7 +47,7 @@ use Sulu\Component\Security\Authorization\SecurityCheckerInterface;
 class ContentViewBuilderFactoryTest extends TestCase
 {
     /**
-     * @param mixed[] $settingsForms
+     * @param array<string, mixed[]> $settingsForms
      */
     protected function createContentViewBuilder(
         ContentMetadataInspectorInterface $contentMetadataInspector,

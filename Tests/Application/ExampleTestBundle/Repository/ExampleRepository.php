@@ -96,7 +96,7 @@ class ExampleRepository
      *     example_admin?: bool,
      *     example_website?: bool,
      *     with-example-content?: array<string, mixed>,
-     * }|array<string, mixed> $selects
+     * } $selects
      *
      * @throws ExampleNotFoundException
      */
@@ -125,7 +125,7 @@ class ExampleRepository
      *     example_admin?: bool,
      *     example_website?: bool,
      *     with-example-content?: array<string, mixed>,
-     * }|array<string, mixed> $selects
+     * } $selects
      */
     public function findOneBy(array $filters, array $selects = []): ?Example
     {
@@ -163,7 +163,7 @@ class ExampleRepository
         // instead of that the developer need to take that into account
         // in there call of the countBy method.
         unset($filters['page']); // @phpstan-ignore-line
-        unset($filters['limit']);
+        unset($filters['limit']); // @phpstan-ignore-line
 
         /**
          * @see https://github.com/phpstan/phpstan/issues/5223https://github.com/phpstan/phpstan/issues/5223
@@ -185,7 +185,7 @@ class ExampleRepository
 
         $queryBuilder->select('COUNT(DISTINCT example.id)');
 
-        return (int) $queryBuilder->getQuery()->getSingleScalarResult();
+        return (int) $queryBuilder->getQuery()->getSingleScalarResult(); // @phpstan-ignore-line
     }
 
     /**
@@ -211,8 +211,8 @@ class ExampleRepository
      * @param array{
      *     example_admin?: bool,
      *     example_website?: bool,
-     *     with-example-content?: bool|array<string, mixed>,
-     * }|array<string, mixed> $selects
+     *     with-example-content?: array<string, mixed>,
+     * } $selects
      *
      * @return \Generator<Example>
      */
@@ -259,7 +259,11 @@ class ExampleRepository
      *     id?: 'asc'|'desc',
      *     title?: 'asc'|'desc',
      * } $sortBy
-     * @param array<string, boolean> $selects
+     * @param array{
+     *     example_admin?: bool,
+     *     example_website?: bool,
+     *     with-example-content?: array<string, mixed>,
+     * } $selects
      */
     private function createQueryBuilder(array $filters, array $sortBy = [], array $selects = []): QueryBuilder
     {
@@ -315,7 +319,7 @@ class ExampleRepository
 
         if ($selects['with-example-content'] ?? null) {
             /** @var array<string, bool> $contentSelects */
-            $contentSelects = $selects['with-example-content'] ?? [];
+            $contentSelects = $selects['with-example-content'];
 
             $queryBuilder->leftJoin(
                 'example.dimensionContents',

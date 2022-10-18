@@ -21,7 +21,7 @@ use Sulu\Bundle\CategoryBundle\Entity\CategoryTranslation;
 trait CreateCategoryTrait
 {
     /**
-     * @param array{de?: mixed, en?: mixed} $dataSet
+     * @param array{de?: mixed[], en?: mixed[]} $dataSet
      */
     protected static function createCategory(array $dataSet = []): CategoryInterface
     {
@@ -30,11 +30,14 @@ trait CreateCategoryTrait
         $category = new Category();
 
         foreach ($dataSet as $locale => $data) {
+            /** @var string $title */
+            $title = $data['title'] ?? '';
+
             $category->setDefaultLocale($locale);
             $translation = new CategoryTranslation();
             $translation->setCategory($category);
             $translation->setLocale($locale);
-            $translation->setTranslation($data['title'] ?? null);
+            $translation->setTranslation($title);
             $category->addTranslation($translation);
             $entityManager->persist($translation);
         }

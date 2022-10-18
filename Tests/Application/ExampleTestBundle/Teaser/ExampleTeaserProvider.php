@@ -56,7 +56,9 @@ class ExampleTeaserProvider extends ContentTeaserProvider
 
     protected function getDescription(DimensionContentInterface $dimensionContent, array $data): ?string
     {
-        $article = \strip_tags($data['article'] ?? '');
+        /** @var string $article */
+        $article = $data['article'] ?? '';
+        $article = \strip_tags($article);
 
         return $article ?: parent::getDescription($dimensionContent, $data);
     }

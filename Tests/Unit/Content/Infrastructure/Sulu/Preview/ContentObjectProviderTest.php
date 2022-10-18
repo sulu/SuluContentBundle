@@ -76,19 +76,19 @@ class ContentObjectProviderTest extends TestCase
         $this->entityManager->createQueryBuilder()->willReturn($queryBuilder->reveal())->shouldBeCalledTimes(1);
 
         $queryBuilder->select(Argument::type('string'))->will(function() {
-            return \func_get_arg(\func_num_args() - 2);
+            return \func_get_arg(max(\func_num_args() - 2, 0));
         })->shouldBeCalledTimes(1);
 
         $queryBuilder->from(Argument::type('string'), Argument::type('string'))->will(function() {
-            return \func_get_arg(\func_num_args() - 2);
+            return \func_get_arg(max(\func_num_args() - 2, 0));
         })->shouldBeCalledTimes(1);
 
         $queryBuilder->where(Argument::type('string'))->will(function() {
-            return \func_get_arg(\func_num_args() - 2);
+            return \func_get_arg(max(\func_num_args() - 2, 0));
         })->shouldBeCalledTimes(1);
 
         $queryBuilder->setParameter(Argument::type('string'), Argument::any())->will(function() {
-            return \func_get_arg(\func_num_args() - 2);
+            return \func_get_arg(max(\func_num_args() - 2, 0));
         })->shouldBeCalledTimes(1);
 
         $query = $this->prophesize(AbstractQuery::class);
@@ -127,19 +127,19 @@ class ContentObjectProviderTest extends TestCase
         $this->entityManager->createQueryBuilder()->willReturn($queryBuilder->reveal())->shouldBeCalledTimes(1);
 
         $queryBuilder->select(Argument::type('string'))->will(function() {
-            return \func_get_arg(\func_num_args() - 2);
+            return \func_get_arg(max(\func_num_args() - 2, 0));
         })->shouldBeCalledTimes(1);
 
         $queryBuilder->from(Argument::type('string'), Argument::type('string'))->will(function() {
-            return \func_get_arg(\func_num_args() - 2);
+            return \func_get_arg(max(\func_num_args() - 2, 0));
         })->shouldBeCalledTimes(1);
 
         $queryBuilder->where(Argument::type('string'))->will(function() {
-            return \func_get_arg(\func_num_args() - 2);
+            return \func_get_arg(max(\func_num_args() - 2, 0));
         })->shouldBeCalledTimes(1);
 
         $queryBuilder->setParameter(Argument::type('string'), Argument::any())->will(function() {
-            return \func_get_arg(\func_num_args() - 2);
+            return \func_get_arg(max(\func_num_args() - 2, 0));
         })->shouldBeCalledTimes(1);
 
         $query = $this->prophesize(AbstractQuery::class);
@@ -252,19 +252,19 @@ class ContentObjectProviderTest extends TestCase
         $this->entityManager->createQueryBuilder()->willReturn($queryBuilder->reveal())->shouldBeCalledTimes(1);
 
         $queryBuilder->select(Argument::type('string'))->will(function() {
-            return \func_get_arg(\func_num_args() - 2);
+            return \func_get_arg(max(\func_num_args() - 2, 0));
         })->shouldBeCalledTimes(1);
 
         $queryBuilder->from(Argument::type('string'), Argument::type('string'))->will(function() {
-            return \func_get_arg(\func_num_args() - 2);
+            return \func_get_arg(max(\func_num_args() - 2, 0));
         })->shouldBeCalledTimes(1);
 
         $queryBuilder->where(Argument::type('string'))->will(function() {
-            return \func_get_arg(\func_num_args() - 2);
+            return \func_get_arg(max(\func_num_args() - 2, 0));
         })->shouldBeCalledTimes(1);
 
         $queryBuilder->setParameter(Argument::type('string'), Argument::any())->will(function() {
-            return \func_get_arg(\func_num_args() - 2);
+            return \func_get_arg(max(\func_num_args() - 2, 0));
         })->shouldBeCalledTimes(1);
 
         $query = $this->prophesize(AbstractQuery::class);

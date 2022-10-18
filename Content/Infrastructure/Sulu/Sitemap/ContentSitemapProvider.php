@@ -119,6 +119,7 @@ class ContentSitemapProvider implements SitemapProviderInterface
                 $mainRoute = $entityRoutes[$defaultLocale];
                 unset($entityRoutes[$defaultLocale]);
             } else {
+                /** @var RouteInterface $mainRoute */
                 $mainRoute = \array_shift($entityRoutes);
             }
 
@@ -168,7 +169,7 @@ class ContentSitemapProvider implements SitemapProviderInterface
     /**
      * @param RouteInterface[] $routes
      *
-     * @return mixed[]
+     * @return array<string, array<string, RouteInterface>>
      */
     protected function groupRoutesByEntityId(array $routes): array
     {
@@ -188,7 +189,7 @@ class ContentSitemapProvider implements SitemapProviderInterface
     }
 
     /**
-     * @return mixed[]
+     * @return RouteInterface[]
      */
     protected function getRoutes(int $limit, int $offset): array
     {
@@ -201,9 +202,8 @@ class ContentSitemapProvider implements SitemapProviderInterface
             ->setFirstResult($offset)
             ->setMaxResults($limit);
 
-        $result = $queryBuilder->getQuery()->getResult();
-
-        return $result;
+        /** @var RouteInterface[] */
+        return $queryBuilder->getQuery()->getResult();
     }
 
     protected function createRoutesQueryBuilder(): QueryBuilder

@@ -80,6 +80,7 @@ class ContentReindexProvider implements LocalizedReindexProviderInterface
             ->setFirstResult($offset)
             ->setMaxResults($maxResults);
 
+        /** @var ContentRichEntityInterface[] */
         return $queryBuilder->getQuery()->execute();
     }
 
@@ -99,6 +100,7 @@ class ContentReindexProvider implements LocalizedReindexProviderInterface
             ->from($this->contentRichEntityClass, 'contentRichEntity')
             ->select('COUNT(contentRichEntity)');
 
+        /** @var int */
         return $queryBuilder->getQuery()->getSingleScalarResult();
     }
 

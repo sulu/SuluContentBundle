@@ -13,10 +13,14 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Mocks;
 
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
+
 /**
  * Trait for composing a class that wraps a WorkflowInterface mock.
  *
  * @see MockWrapper to learn why this trait is needed.
+ *
+ * @property mixed $instance
  */
 trait WorkflowMockWrapperTrait
 {
@@ -27,21 +31,33 @@ trait WorkflowMockWrapperTrait
 
     public function getWorkflowPlace(): ?string
     {
-        return $this->instance->getWorkflowPlace();
+        /** @var WorkflowInterface $instance */
+        $instance = $this->instance;
+
+        return $instance->getWorkflowPlace();
     }
 
     public function setWorkflowPlace(?string $workflowPlace): void
     {
-        $this->instance->setWorkflowPlace($workflowPlace);
+        /** @var WorkflowInterface $instance */
+        $instance = $this->instance;
+
+        $instance->setWorkflowPlace($workflowPlace);
     }
 
     public function getWorkflowPublished(): ?\DateTimeImmutable
     {
-        return $this->instance->getWorkflowPublished();
+        /** @var WorkflowInterface $instance */
+        $instance = $this->instance;
+
+        return $instance->getWorkflowPublished();
     }
 
     public function setWorkflowPublished(?\DateTimeImmutable $workflowPublished): void
     {
-        $this->instance->setWorkflowPublished($workflowPublished);
+        /** @var WorkflowInterface $instance */
+        $instance = $this->instance;
+
+        $instance->setWorkflowPublished($workflowPublished);
     }
 }

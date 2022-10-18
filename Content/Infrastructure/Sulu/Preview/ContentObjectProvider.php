@@ -98,6 +98,7 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
      */
     public function getId($object)
     {
+        /** @var string */
         return $object->getResource()->getId();
     }
 
@@ -153,9 +154,12 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
      */
     public function deserialize($serializedObject, $objectClass)
     {
+        /** @var mixed[] $data */
         $data = \json_decode($serializedObject, true);
 
+        /** @var string|null $id */
         $id = $data['id'] ?? null;
+        /** @var string|null $locale */
         $locale = $data['locale'] ?? null;
 
         if (!$id || !$locale) {

@@ -30,17 +30,6 @@ use Webmozart\Assert\Assert;
 class DimensionContentQueryEnhancer
 {
     /**
-     * @var ContentMetadataInspectorInterface
-     */
-    private $contentMetadataInspector;
-
-    public function __construct(
-        ContentMetadataInspectorInterface $contentMetadataInspector
-    ) {
-        $this->contentMetadataInspector = $contentMetadataInspector;
-    }
-
-    /**
      * Withs represents additional selects which can be load to join and select specific sub entities.
      * They are used by groups and fields.
      */

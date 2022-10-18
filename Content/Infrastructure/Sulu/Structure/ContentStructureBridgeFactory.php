@@ -53,7 +53,7 @@ class ContentStructureBridgeFactory
             $structureMetadata,
             $this->propertyFactory,
             $object,
-            $id,
+            $id, // @phpstan-ignore-line
             $locale
         );
     }

@@ -13,10 +13,14 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Mocks;
 
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
+
 /**
  * Trait for composing a class that wraps a TemplateInterface mock.
  *
  * @see MockWrapper to learn why this trait is needed.
+ *
+ * @property mixed $instance
  */
 trait TemplateMockWrapperTrait
 {
@@ -27,21 +31,33 @@ trait TemplateMockWrapperTrait
 
     public function getTemplateKey(): ?string
     {
-        return $this->instance->getTemplateKey();
+        /** @var TemplateInterface $instance */
+        $instance = $this->instance;
+
+        return $instance->getTemplateKey();
     }
 
     public function setTemplateKey(string $templateKey): void
     {
-        $this->instance->setTemplateKey($templateKey);
+        /** @var TemplateInterface $instance */
+        $instance = $this->instance;
+
+        $instance->setTemplateKey($templateKey);
     }
 
     public function getTemplateData(): array
     {
-        return $this->instance->getTemplateData();
+        /** @var TemplateInterface $instance */
+        $instance = $this->instance;
+
+        return $instance->getTemplateData();
     }
 
     public function setTemplateData(array $templateData): void
     {
-        $this->instance->setTemplateData($templateData);
+        /** @var TemplateInterface $instance */
+        $instance = $this->instance;
+
+        $instance->setTemplateData($templateData);
     }
 }

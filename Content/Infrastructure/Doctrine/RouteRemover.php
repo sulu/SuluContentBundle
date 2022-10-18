@@ -82,7 +82,10 @@ class RouteRemover implements EventSubscriber
             return;
         }
 
-        foreach ($this->routeRepository->findAllByEntity($entityClass, $object->getId()) as $route) {
+        /** @var string $entityId */
+        $entityId = $object->getId();
+
+        foreach ($this->routeRepository->findAllByEntity($entityClass, $entityId) as $route) {
             $event->getEntityManager()->remove($route);
         }
     }

@@ -65,6 +65,7 @@ class ContentIndexer implements ContentIndexerInterface
         $locale = $dimensionAttributes['locale'] ?? null;
         $stage = $dimensionAttributes['stage'] ?? null;
 
+        /** @var scalar $id */
         $search = $this->searchManager->createSearch(\sprintf('__id:"%s"', $id))
             ->indexes($this->getIndexes($resourceKey, $stage));
 

@@ -50,12 +50,15 @@ class DimensionContentRepositoryTest extends SuluTestCase
         // assert result
         $this->assertCount(2, $dimensionContentCollection);
 
+        /** @var ExampleDimensionContent[] $dimensionContents */
+        $dimensionContents = \iterator_to_array($dimensionContentCollection);
+
         $this->assertSame([
             $dimensionContent1->getId(),
             $dimensionContent2->getId(),
         ], \array_map(function(ExampleDimensionContent $dimensionContent) {
             return $dimensionContent->getId();
-        }, \iterator_to_array($dimensionContentCollection)));
+        }, $dimensionContents));
     }
 
     public function testLoadOneNotExist(): void
@@ -74,11 +77,14 @@ class DimensionContentRepositoryTest extends SuluTestCase
         // assert result
         $this->assertCount(1, $dimensionContentCollection);
 
+        /** @var ExampleDimensionContent[] $dimensionContents */
+        $dimensionContents = \iterator_to_array($dimensionContentCollection);
+
         $this->assertSame([
             $dimensionContent1->getId(),
         ], \array_map(function(ExampleDimensionContent $dimensionContent) {
             return $dimensionContent->getId();
-        }, \iterator_to_array($dimensionContentCollection)));
+        }, $dimensionContents));
     }
 
     public function testLoadExistOrderedDifferent(): void
@@ -99,12 +105,15 @@ class DimensionContentRepositoryTest extends SuluTestCase
         // assert result
         $this->assertCount(2, $dimensionContentCollection);
 
+        /** @var ExampleDimensionContent[] $dimensionContents */
+        $dimensionContents = \iterator_to_array($dimensionContentCollection);
+
         $this->assertSame([
             $dimensionContent1->getId(),
             $dimensionContent2->getId(), // Dimension 2 should be the last one in this case
         ], \array_map(function(ExampleDimensionContent $dimensionContent) {
             return $dimensionContent->getId();
-        }, \iterator_to_array($dimensionContentCollection)));
+        }, $dimensionContents));
     }
 
     private function createContentRichEntity(): Example
@@ -120,8 +129,11 @@ class DimensionContentRepositoryTest extends SuluTestCase
      */
     private function createContentDimension(Example $example, array $dimensionAttributes = []): ExampleDimensionContent
     {
+        /** @var string $stage */
+        $stage = $dimensionAttributes['stage'] ?? DimensionContentInterface::STAGE_DRAFT;
+
         $exampleDimension = new ExampleDimensionContent($example);
-        $exampleDimension->setStage($dimensionAttributes['stage'] ?? DimensionContentInterface::STAGE_DRAFT);
+        $exampleDimension->setStage($stage);
         $exampleDimension->setLocale($dimensionAttributes['locale'] ?? null);
 
         $this->getEntityManager()->persist($exampleDimension);

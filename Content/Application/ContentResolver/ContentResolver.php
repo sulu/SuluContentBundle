@@ -39,6 +39,9 @@ class ContentResolver implements ContentResolverInterface
         $this->contentMerger = $contentMerger;
     }
 
+    /**
+     * @param array<string, scalar> $dimensionAttributes
+     */
     public function resolve(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes): DimensionContentInterface
     {
         $dimensionContentCollection = $this->dimensionContentRepository->load($contentRichEntity, $dimensionAttributes);

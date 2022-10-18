@@ -29,7 +29,7 @@ use Webmozart\Assert\Assert;
 trait CreateExampleTrait
 {
     /**
-     * @param array{de?: mixed, en?: mixed} $dataSet
+     * @param array{de?: mixed[], en?: mixed[]} $dataSet
      * @param array{create_route?: bool} $options
      */
     protected static function createExample(array $dataSet = [], array $options = []): Example
@@ -145,10 +145,15 @@ trait CreateExampleTrait
                 );
 
                 if ($options['create_route'] ?? false) {
+                    /** @var string $path */
+                    $path = $draftLocalizedDimension->getTemplateData()['url'];
+                    /** @var string $id */
+                    $id = $example->getId();
+
                     $route = new Route();
                     $route->setLocale($locale);
-                    $route->setPath($draftLocalizedDimension->getTemplateData()['url']);
-                    $route->setEntityId($example->getId());
+                    $route->setPath($path);
+                    $route->setEntityId($id);
                     $route->setEntityClass(\get_class($example));
 
                     $entityManager->persist($route);

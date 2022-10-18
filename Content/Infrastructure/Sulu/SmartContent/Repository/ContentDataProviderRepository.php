@@ -74,9 +74,9 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
 
     /**
      * @param array<string, mixed> $filters
-     * @param mixed|null $page
-     * @param mixed|null $pageSize
-     * @param mixed|null $limit
+     * @param string|int|null $page
+     * @param string|int|null $pageSize
+     * @param string|int|null $limit
      * @param string $locale
      * @param array<string, mixed> $options
      *
@@ -124,7 +124,7 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
      * @param array<string, mixed> $filters
      * @param array<string, mixed> $options
      *
-     * @return mixed[] entity ids
+     * @return array<int, string|int> entity ids
      */
     protected function findEntityIdsByFilters(
         array $filters,
@@ -139,7 +139,8 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
         $queryBuilder = $this->createEntityIdsQueryBuilder($locale);
 
         if (!empty($categories = $filters['categories'] ?? [])) {
-            $categoryOperator = (string) ($filters['categoryOperator'] ?? 'OR');
+            /** @var mixed[] $categories */
+            $categoryOperator = (string) ($filters['categoryOperator'] ?? 'OR'); // @phpstan-ignore-line
 
             $parameters = \array_merge(
                 $parameters,
@@ -148,7 +149,8 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
         }
 
         if (!empty($websiteCategories = $filters['websiteCategories'] ?? [])) {
-            $websiteCategoryOperator = (string) ($filters['websiteCategoriesOperator'] ?? 'OR');
+            /** @var mixed[] $websiteCategories */
+            $websiteCategoryOperator = (string) ($filters['websiteCategoriesOperator'] ?? 'OR'); // @phpstan-ignore-line
 
             $parameters = \array_merge(
                 $parameters,
@@ -157,7 +159,8 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
         }
 
         if (!empty($tags = $filters['tags'] ?? [])) {
-            $tagOperator = (string) ($filters['tagOperator'] ?? 'OR');
+            /** @var mixed[] $tags */
+            $tagOperator = (string) ($filters['tagOperator'] ?? 'OR'); // @phpstan-ignore-line
 
             $parameters = \array_merge(
                 $parameters,
@@ -166,7 +169,8 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
         }
 
         if (!empty($websiteTags = $filters['websiteTags'] ?? [])) {
-            $websiteTagOperator = (string) ($filters['websiteTagsOperator'] ?? 'OR');
+            /** @var mixed[] $websiteTags */
+            $websiteTagOperator = (string) ($filters['websiteTagsOperator'] ?? 'OR'); // @phpstan-ignore-line
 
             $parameters = \array_merge(
                 $parameters,
@@ -175,6 +179,7 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
         }
 
         if (!empty($types = $filters['types'] ?? [])) {
+            /** @var mixed[] $types */
             $parameters = \array_merge(
                 $parameters,
                 $this->addTypeFilter($queryBuilder, $types, 'adminTypes')
@@ -194,21 +199,23 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
         if ($dataSource = $filters['dataSource'] ?? null) {
             // TODO FIXME add testcase for this
             // @codeCoverageIgnoreStart
+            $dataSource = (string) $dataSource; // @phpstan-ignore-line
             $includeSubFolders = (bool) ($filters['includeSubFolders'] ?? false);
 
             $parameters = \array_merge(
                 $parameters,
-                $this->addDatasourceFilter($queryBuilder, (string) $dataSource, $includeSubFolders, 'datasource')
+                $this->addDatasourceFilter($queryBuilder, $dataSource, $includeSubFolders, 'datasource')
             );
             // @codeCoverageIgnoreEnd
         }
 
         if ($sortColumn = $filters['sortBy'] ?? null) {
-            $sortMethod = (string) ($filters['sortMethod'] ?? 'asc');
+            $sortColumn = (string) $sortColumn; // @phpstan-ignore-line
+            $sortMethod = (string) ($filters['sortMethod'] ?? 'asc'); // @phpstan-ignore-line
 
             $parameters = \array_merge(
                 $parameters,
-                $this->setSortBy($queryBuilder, (string) $sortColumn, $sortMethod)
+                $this->setSortBy($queryBuilder, $sortColumn, $sortMethod)
             );
         }
 
@@ -475,7 +482,7 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
     }
 
     /**
-     * @param mixed[] $ids
+     * @param array<int, string|int> $ids
      *
      * @return ContentRichEntityInterface[]
      */
@@ -483,6 +490,7 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
     {
         $entityIdentifierFieldName = $this->getEntityIdentifierFieldName();
 
+        /** @var ContentRichEntityInterface[] $entities */
         $entities = $this->entityManager->createQueryBuilder()
             ->select(self::CONTENT_RICH_ENTITY_ALIAS)
             ->from($this->contentRichEntityClass, self::CONTENT_RICH_ENTITY_ALIAS)

@@ -70,8 +70,10 @@ class DimensionContentCollectionFactory implements DimensionContentCollectionFac
             );
         }
 
-        $localizedDimensionContent = null;
+        /** @var string|null $locale */
         $locale = $dimensionAttributes['locale'] ?? null;
+        $localizedDimensionContent = null;
+
         if ($locale) {
             $localizedDimensionContent = $dimensionContentCollection->getDimensionContent($dimensionAttributes);
 

@@ -130,10 +130,11 @@ class RoutableDataMapper implements DataMapperInterface
             throw new \RuntimeException(\sprintf('No route mapping found for "%s".', $resourceKey));
         }
 
+        /** @var string|null $routePath */
         $routePath = $data[$name] ?? null;
 
         if (!$routePath) {
-            /** @var mixed $routeGenerationData */
+            /** @var mixed[] $routeGenerationData */
             $routeGenerationData = \array_merge(
                 $data,
                 [
@@ -161,7 +162,7 @@ class RoutableDataMapper implements DataMapperInterface
             // route should only be updated in live dimension
             $route = $this->routeManager->createOrUpdateByAttributes(
                 $entityClass,
-                (string) $localizedDimensionContent->getResourceId(),
+                (string) $localizedDimensionContent->getResourceId(), // @phpstan-ignore-line
                 $locale,
                 $routePath,
                 false
@@ -173,7 +174,7 @@ class RoutableDataMapper implements DataMapperInterface
             $route->setPath($routePath);
             $route->setLocale($locale);
             $route->setEntityClass($entityClass);
-            $route->setEntityId((string) $localizedDimensionContent->getResourceId());
+            $route->setEntityId((string) $localizedDimensionContent->getResourceId()); // @phpstan-ignore-line
 
             $routePath = $this->conflictResolver->resolve($route)
                 ->getPath();

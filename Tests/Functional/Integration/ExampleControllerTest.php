@@ -70,8 +70,10 @@ class ExampleControllerTest extends SuluTestCase
         ]) ?: null);
 
         $response = $this->client->getResponse();
+        /** @var mixed[] $content */
         $content = \json_decode((string) $response->getContent(), true);
         $id = $content['id'] ?? null;
+        $this->assertIsInt($id);
 
         $this->assertResponseSnapshot('example_post_publish.json', $response, 201);
         $this->assertNotSame('2020-05-08T00:00:00+00:00', $content['published']);
@@ -144,7 +146,11 @@ class ExampleControllerTest extends SuluTestCase
         $routeRepository = $this->getContainer()->get('sulu.repository.route');
         $this->assertCount(0, $routeRepository->findAll());
 
-        $id = \json_decode((string) $response->getContent(), true)['id'] ?? null;
+        /** @var mixed[] $content */
+        $content = \json_decode((string) $response->getContent(), true);
+        $id = $content['id'] ?? null;
+
+        $this->assertIsInt($id);
 
         return $id;
     }

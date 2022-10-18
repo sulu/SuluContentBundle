@@ -87,7 +87,7 @@ class ExampleTestExtension extends Extension implements PrependExtensionInterfac
             $suluSearchConfigs = $container->getExtensionConfig('sulu_search');
 
             foreach ($suluSearchConfigs as $suluSearchConfig) {
-                if (isset($suluSearchConfig['website']['indexes'])) {
+                if (isset($suluSearchConfig['website']['indexes'])) { // @phpstan-ignore-line
                     $container->prependExtensionConfig(
                         'sulu_search',
                         [

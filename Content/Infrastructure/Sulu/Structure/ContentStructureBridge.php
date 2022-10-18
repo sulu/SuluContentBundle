@@ -417,7 +417,7 @@ class ContentStructureBridge implements StructureInterface
     }
 
     /**
-     * @param mixed $name
+     * @param string $name
      *
      * @return mixed
      */

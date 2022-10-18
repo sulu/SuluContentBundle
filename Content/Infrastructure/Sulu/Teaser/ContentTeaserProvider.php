@@ -81,7 +81,7 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
     }
 
     /**
-     * @param mixed[] $ids
+     * @param array<int, string|int> $ids
      * @param string $locale
      *
      * @return Teaser[]
@@ -125,6 +125,9 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
             return null;
         }
 
+        /** @var string|int $id */
+        $id = $dimensionContent->getResource()->getId();
+
         /** @var string $title */
         $title = $this->getTitle($dimensionContent, $data);
 
@@ -138,7 +141,7 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
         $mediaId = $this->getMediaId($dimensionContent, $data);
 
         return new Teaser(
-            $dimensionContent->getResource()->getId(),
+            $id,
             $this->getResourceKey(),
             $locale,
             $title,
@@ -195,6 +198,7 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
 
         foreach ($metadata->getProperties() as $property) {
             if ('route' === $property->getType()) {
+                /** @var string|null */
                 return $dimensionContent->getTemplateData()[$property->getName()] ?? null;
             }
         }
@@ -227,6 +231,7 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
             }
         }
 
+        /** @var string|null */
         return $data['description'] ?? null;
     }
 
@@ -241,6 +246,7 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
             }
         }
 
+        /** @var string|null */
         return $data['more'] ?? $data['moreText'] ?? null;
     }
 
@@ -252,6 +258,7 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
         if ($dimensionContent instanceof ExcerptInterface) {
             if ($excerptImage = $dimensionContent->getExcerptImage()) {
                 // TODO FIXME create unit test for this
+                /** @var int|null */
                 return $excerptImage['id'] ?? null; // @codeCoverageIgnore
             }
         }
@@ -270,7 +277,7 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
     }
 
     /**
-     * @param mixed[] $ids
+     * @param array<int, string|int> $ids
      *
      * @return ContentRichEntityInterface[]
      */
@@ -279,6 +286,7 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
         $entityIdField = $this->getEntityIdField();
         $classMetadata = $this->entityManager->getClassMetadata($this->contentRichEntityClass);
 
+        /** @var ContentRichEntityInterface[] $entities */
         $entities = $this->entityManager->createQueryBuilder()
             ->select(self::CONTENT_RICH_ENTITY_ALIAS)
             ->from($this->contentRichEntityClass, self::CONTENT_RICH_ENTITY_ALIAS)

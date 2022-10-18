@@ -74,7 +74,7 @@ class SettingsFormPass implements CompilerPassInterface
         }
 
         \uasort($settingsForms, static function($a, $b) {
-            return $b['priority'] ?? 0 <=> $a['priority'] ?? 0;
+            return $b['priority'] ?? 0 <=> $a['priority'] ?? 0; // @phpstan-ignore-line
         });
 
         $container->setParameter('sulu_content.content_settings_forms', $settingsForms);

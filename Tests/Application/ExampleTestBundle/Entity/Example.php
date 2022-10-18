@@ -25,12 +25,12 @@ class Example implements ContentRichEntityInterface
     public const TEMPLATE_TYPE = 'example';
 
     /**
-     * @var mixed
+     * @var int
      */
     public $id;
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getId()
     {

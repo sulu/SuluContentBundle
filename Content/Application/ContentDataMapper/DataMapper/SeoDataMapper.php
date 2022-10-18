@@ -27,11 +27,28 @@ class SeoDataMapper implements DataMapperInterface
             return;
         }
 
+        /** @var array{
+         *     seoTitle?: string|null,
+         *     seoDescription?: string|null,
+         *     seoKeywords?: string|null,
+         *     seoCanonicalUrl?: string|null,
+         *     seoHideInSitemap?: bool,
+         *     seoNoFollow?: bool,
+         *     seoNoIndex?: bool,
+         * } $data */
         $this->setSeoData($localizedDimensionContent, $data);
     }
 
     /**
-     * @param mixed[] $data
+     * @param array{
+     *     seoTitle?: string|null,
+     *     seoDescription?: string|null,
+     *     seoKeywords?: string|null,
+     *     seoCanonicalUrl?: string|null,
+     *     seoHideInSitemap?: bool,
+     *     seoNoFollow?: bool,
+     *     seoNoIndex?: bool,
+     * } $data
      */
     private function setSeoData(SeoInterface $dimensionContent, array $data): void
     {

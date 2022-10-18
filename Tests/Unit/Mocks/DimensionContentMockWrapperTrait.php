@@ -14,11 +14,14 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Mocks;
 
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 
 /**
  * Trait for composing a class that wraps a DimensionContentInterface mock.
  *
  * @see MockWrapper to learn why this trait is needed.
+ *
+ * @property mixed $instance
  */
 trait DimensionContentMockWrapperTrait
 {
@@ -29,62 +32,98 @@ trait DimensionContentMockWrapperTrait
 
     public function getLocale(): ?string
     {
-        return $this->instance->getLocale();
+        /** @var DimensionContentInterface $instance */
+        $instance = $this->instance;
+
+        return $instance->getLocale();
     }
 
     public function setLocale(?string $locale): void
     {
-        $this->instance->setLocale($locale);
+        /** @var DimensionContentInterface $instance */
+        $instance = $this->instance;
+
+        $instance->setLocale($locale);
     }
 
     public function getGhostLocale(): ?string
     {
-        return $this->instance->getGhostLocale();
+        /** @var DimensionContentInterface $instance */
+        $instance = $this->instance;
+
+        return $instance->getGhostLocale();
     }
 
     public function setGhostLocale(?string $ghostLocale): void
     {
-        $this->instance->setGhostLocale($ghostLocale);
+        /** @var DimensionContentInterface $instance */
+        $instance = $this->instance;
+
+        $instance->setGhostLocale($ghostLocale);
     }
 
     public function getAvailableLocales(): ?array
     {
-        return $this->instance->getAvailableLocales();
+        /** @var DimensionContentInterface $instance */
+        $instance = $this->instance;
+
+        return $instance->getAvailableLocales();
     }
 
     public function removeAvailableLocale(string $availableLocale): void
     {
-        $this->instance->removeAvailableLocale();
+        /** @var DimensionContentInterface $instance */
+        $instance = $this->instance;
+
+        $instance->removeAvailableLocale($availableLocale);
     }
 
     public function addAvailableLocale(string $availableLocale): void
     {
-        $this->instance->addAvailableLocale($availableLocale);
+        /** @var DimensionContentInterface $instance */
+        $instance = $this->instance;
+
+        $instance->addAvailableLocale($availableLocale);
     }
 
     public function getStage(): string
     {
-        return $this->instance->getStage();
+        /** @var DimensionContentInterface $instance */
+        $instance = $this->instance;
+
+        return $instance->getStage();
     }
 
-    public function setStage(?string $stage): void
+    public function setStage(string $stage): void
     {
-        $this->instance->setStage($stage);
+        /** @var DimensionContentInterface $instance */
+        $instance = $this->instance;
+
+        $instance->setStage($stage);
     }
 
     public function getResource(): ContentRichEntityInterface
     {
-        return $this->instance->getResource();
+        /** @var DimensionContentInterface $instance */
+        $instance = $this->instance;
+
+        return $instance->getResource();
     }
 
     public function isMerged(): bool
     {
-        return $this->instance->isMerged();
+        /** @var DimensionContentInterface $instance */
+        $instance = $this->instance;
+
+        return $instance->isMerged();
     }
 
     public function markAsMerged(): void
     {
-        $this->instance->markAsMerged();
+        /** @var DimensionContentInterface $instance */
+        $instance = $this->instance;
+
+        $instance->markAsMerged();
     }
 
     public static function getDefaultDimensionAttributes(): array

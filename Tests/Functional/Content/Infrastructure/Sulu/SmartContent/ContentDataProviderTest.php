@@ -23,6 +23,7 @@ use Sulu\Bundle\TagBundle\Tag\TagInterface;
 use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
 use Sulu\Component\SmartContent\ArrayAccessItem;
 use Sulu\Component\SmartContent\DataProviderResult;
+use Sulu\Component\SmartContent\ResourceItemInterface;
 
 class ContentDataProviderTest extends SuluTestCase
 {
@@ -71,7 +72,7 @@ class ContentDataProviderTest extends SuluTestCase
         static::purgeDatabase();
         parent::setUpBeforeClass();
 
-        static::$categoryFoo = static::createCategory([
+        self::$categoryFoo = static::createCategory([
             'en' => [
                 'title' => 'Foo',
             ],
@@ -80,27 +81,27 @@ class ContentDataProviderTest extends SuluTestCase
             ],
         ]);
 
-        static::$categoryBar = static::createCategory([
+        self::$categoryBar = static::createCategory([
             'en' => [
                 'title' => 'Bar',
             ],
         ]);
 
-        static::$categoryBaz = static::createCategory([
+        self::$categoryBaz = static::createCategory([
             'de' => [
                 'title' => 'Baz',
             ],
         ]);
 
-        static::$tagA = static::createTag([
+        self::$tagA = static::createTag([
             'name' => 'tagA',
         ]);
 
-        static::$tagB = static::createTag([
+        self::$tagB = static::createTag([
             'name' => 'tagB',
         ]);
 
-        static::$tagC = static::createTag([
+        self::$tagC = static::createTag([
             'name' => 'tagC',
         ]);
 
@@ -117,12 +118,12 @@ class ContentDataProviderTest extends SuluTestCase
                 'draft' => [
                     'title' => 'example without categories without tags draft',
                     'excerptCategories' => [
-                        static::$categoryFoo->getId(),
-                        static::$categoryBar->getId(),
+                        self::$categoryFoo->getId(),
+                        self::$categoryBar->getId(),
                     ],
                     'excerptTags' => [
-                        static::$tagB->getName(),
-                        static::$tagC->getName(),
+                        self::$tagB->getName(),
+                        self::$tagC->getName(),
                     ],
                 ],
                 'live' => [
@@ -137,7 +138,7 @@ class ContentDataProviderTest extends SuluTestCase
                 'live' => [
                     'title' => 'example with some categories without tags',
                     'excerptCategories' => [
-                        static::$categoryFoo->getId(),
+                        self::$categoryFoo->getId(),
                     ],
                 ],
             ],
@@ -145,7 +146,7 @@ class ContentDataProviderTest extends SuluTestCase
                 'draft' => [
                     'title' => 'example with some categories without tags unpublished',
                     'excerptCategories' => [
-                        static::$categoryFoo->getId(),
+                        self::$categoryFoo->getId(),
                     ],
                     'excerptTags' => [],
                 ],
@@ -158,9 +159,9 @@ class ContentDataProviderTest extends SuluTestCase
                 'live' => [
                     'title' => 'example with all categories without tags',
                     'excerptCategories' => [
-                        static::$categoryFoo->getId(),
-                        static::$categoryBar->getId(),
-                        static::$categoryBaz->getId(),
+                        self::$categoryFoo->getId(),
+                        self::$categoryBar->getId(),
+                        self::$categoryBaz->getId(),
                     ],
                 ],
             ],
@@ -168,9 +169,9 @@ class ContentDataProviderTest extends SuluTestCase
                 'live' => [
                     'title' => 'example with all categories without tags',
                     'excerptCategories' => [
-                        static::$categoryFoo->getId(),
-                        static::$categoryBar->getId(),
-                        static::$categoryBaz->getId(),
+                        self::$categoryFoo->getId(),
+                        self::$categoryBar->getId(),
+                        self::$categoryBaz->getId(),
                     ],
                     'excerptTags' => [],
                 ],
@@ -183,7 +184,7 @@ class ContentDataProviderTest extends SuluTestCase
                 'live' => [
                     'title' => 'example without categories with some tags',
                     'excerptTags' => [
-                        static::$tagA->getName(),
+                        self::$tagA->getName(),
                     ],
                 ],
             ],
@@ -191,7 +192,7 @@ class ContentDataProviderTest extends SuluTestCase
                 'live' => [
                     'title' => 'example without categories with some tags',
                     'excerptTags' => [
-                        static::$tagA->getName(),
+                        self::$tagA->getName(),
                     ],
                 ],
             ],
@@ -203,9 +204,9 @@ class ContentDataProviderTest extends SuluTestCase
                 'live' => [
                     'title' => 'example without categories with all tags',
                     'excerptTags' => [
-                        static::$tagA->getName(),
-                        static::$tagB->getName(),
-                        static::$tagC->getName(),
+                        self::$tagA->getName(),
+                        self::$tagB->getName(),
+                        self::$tagC->getName(),
                     ],
                 ],
             ],
@@ -213,9 +214,9 @@ class ContentDataProviderTest extends SuluTestCase
                 'live' => [
                     'title' => 'example without categories with all tags',
                     'excerptTags' => [
-                        static::$tagA->getName(),
-                        static::$tagB->getName(),
-                        static::$tagC->getName(),
+                        self::$tagA->getName(),
+                        self::$tagB->getName(),
+                        self::$tagC->getName(),
                     ],
                 ],
             ],
@@ -227,10 +228,10 @@ class ContentDataProviderTest extends SuluTestCase
                 'live' => [
                     'title' => 'example with some categories with some tags',
                     'excerptCategories' => [
-                        static::$categoryBar->getId(),
+                        self::$categoryBar->getId(),
                     ],
                     'excerptTags' => [
-                        static::$tagB->getName(),
+                        self::$tagB->getName(),
                     ],
                 ],
             ],
@@ -238,10 +239,10 @@ class ContentDataProviderTest extends SuluTestCase
                 'live' => [
                     'title' => 'example with some categories with some tags',
                     'excerptCategories' => [
-                        static::$categoryBar->getId(),
+                        self::$categoryBar->getId(),
                     ],
                     'excerptTags' => [
-                        static::$tagB->getName(),
+                        self::$tagB->getName(),
                     ],
                 ],
             ],
@@ -253,14 +254,14 @@ class ContentDataProviderTest extends SuluTestCase
                 'live' => [
                     'title' => 'example with all categories with all tags',
                     'excerptCategories' => [
-                        static::$categoryFoo->getId(),
-                        static::$categoryBar->getId(),
-                        static::$categoryBaz->getId(),
+                        self::$categoryFoo->getId(),
+                        self::$categoryBar->getId(),
+                        self::$categoryBaz->getId(),
                     ],
                     'excerptTags' => [
-                        static::$tagA->getName(),
-                        static::$tagB->getName(),
-                        static::$tagC->getName(),
+                        self::$tagA->getName(),
+                        self::$tagB->getName(),
+                        self::$tagC->getName(),
                     ],
                 ],
             ],
@@ -268,14 +269,14 @@ class ContentDataProviderTest extends SuluTestCase
                 'live' => [
                     'title' => 'example with all categories with all tags',
                     'excerptCategories' => [
-                        static::$categoryFoo->getId(),
-                        static::$categoryBar->getId(),
-                        static::$categoryBaz->getId(),
+                        self::$categoryFoo->getId(),
+                        self::$categoryBar->getId(),
+                        self::$categoryBaz->getId(),
                     ],
                     'excerptTags' => [
-                        static::$tagA->getName(),
-                        static::$tagB->getName(),
-                        static::$tagC->getName(),
+                        self::$tagA->getName(),
+                        self::$tagB->getName(),
+                        self::$tagC->getName(),
                     ],
                 ],
             ],
@@ -302,7 +303,7 @@ class ContentDataProviderTest extends SuluTestCase
     public function testResolveDataItems(): void
     {
         foreach ($this->filters() as $dataset) {
-            list($name, $locale, $page, $pageSize, $limit, $filters, $expectedCount, $expectedHasNextPage) = $dataset;
+            [$name, $locale, $page, $pageSize, $limit, $filters, $expectedCount, $expectedHasNextPage] = $dataset;
 
             /** @var string $name */
             /** @var string $locale */
@@ -389,7 +390,7 @@ class ContentDataProviderTest extends SuluTestCase
     /**
      * This method can't be a phpunit dataProvider, because then it wouldn't be possible to access the categories, because they don't exist at the time a dataProvider is called.
      *
-     * @return mixed[]
+     * @return array<int, mixed[]>
      */
     public function filters(): array
     {
@@ -442,9 +443,9 @@ class ContentDataProviderTest extends SuluTestCase
                 null,
                 [
                     'categories' => [
-                        static::$categoryFoo->getId(),
-                        static::$categoryBar->getId(),
-                        static::$categoryBaz->getId(),
+                        self::$categoryFoo->getId(),
+                        self::$categoryBar->getId(),
+                        self::$categoryBaz->getId(),
                     ],
                     'categoryOperator' => 'OR',
                 ],
@@ -459,9 +460,9 @@ class ContentDataProviderTest extends SuluTestCase
                 null,
                 [
                     'tags' => [
-                        static::$tagA,
-                        static::$tagB,
-                        static::$tagC,
+                        self::$tagA,
+                        self::$tagB,
+                        self::$tagC,
                     ],
                     'tagOperator' => 'OR',
                 ],
@@ -476,15 +477,15 @@ class ContentDataProviderTest extends SuluTestCase
                 null,
                 [
                     'categories' => [
-                        static::$categoryFoo->getId(),
-                        static::$categoryBar->getId(),
-                        static::$categoryBaz->getId(),
+                        self::$categoryFoo->getId(),
+                        self::$categoryBar->getId(),
+                        self::$categoryBaz->getId(),
                     ],
                     'categoryOperator' => 'OR',
                     'tags' => [
-                        static::$tagA,
-                        static::$tagB,
-                        static::$tagC,
+                        self::$tagA,
+                        self::$tagB,
+                        self::$tagC,
                     ],
                     'tagOperator' => 'OR',
                 ],
@@ -499,12 +500,12 @@ class ContentDataProviderTest extends SuluTestCase
                 null,
                 [
                     'categories' => [
-                        static::$categoryFoo->getId(),
+                        self::$categoryFoo->getId(),
                     ],
                     'categoryOperator' => 'AND',
                     'websiteCategories' => [
-                        static::$categoryBar->getId(),
-                        static::$categoryBaz->getId(),
+                        self::$categoryBar->getId(),
+                        self::$categoryBaz->getId(),
                     ],
                     'websiteCategoriesOperator' => 'OR',
                 ],
@@ -519,11 +520,11 @@ class ContentDataProviderTest extends SuluTestCase
                 null,
                 [
                     'categories' => [
-                        static::$categoryFoo->getId(),
+                        self::$categoryFoo->getId(),
                     ],
                     'websiteCategories' => [
-                        static::$categoryBar->getId(),
-                        static::$categoryBaz->getId(),
+                        self::$categoryBar->getId(),
+                        self::$categoryBaz->getId(),
                     ],
                     'categoryOperator' => 'AND',
                     'websiteCategoriesOperator' => 'AND',
@@ -539,11 +540,11 @@ class ContentDataProviderTest extends SuluTestCase
                 null,
                 [
                     'tags' => [
-                        static::$tagA,
-                        static::$tagB,
+                        self::$tagA,
+                        self::$tagB,
                     ],
                     'websiteTags' => [
-                        static::$tagC,
+                        self::$tagC,
                     ],
                     'tagOperator' => 'AND',
                     'websiteTagsOperator' => 'AND',
@@ -559,15 +560,15 @@ class ContentDataProviderTest extends SuluTestCase
                 null,
                 [
                     'categories' => [
-                        static::$categoryFoo->getId(),
-                        static::$categoryBar->getId(),
-                        static::$categoryBaz->getId(),
+                        self::$categoryFoo->getId(),
+                        self::$categoryBar->getId(),
+                        self::$categoryBaz->getId(),
                     ],
                     'categoryOperator' => 'AND',
                     'tags' => [
-                        static::$tagA,
-                        static::$tagB,
-                        static::$tagC,
+                        self::$tagA,
+                        self::$tagB,
+                        self::$tagC,
                     ],
                     'tagOperator' => 'AND',
                 ],
@@ -611,6 +612,9 @@ class ContentDataProviderTest extends SuluTestCase
      */
     private function mapDataProviderResult(DataProviderResult $dataProviderResult): array
     {
+        /** @var ArrayAccessItem[] $items */
+        $items = $dataProviderResult->getItems();
+
         return \array_map(function(ArrayAccessItem $item) {
             return [
                 'id' => $item->getId(),
@@ -621,6 +625,6 @@ class ContentDataProviderTest extends SuluTestCase
                 'title' => $item['title'],
                 'url' => $item['url'],
             ];
-        }, $dataProviderResult->getItems());
+        }, $items);
     }
 }

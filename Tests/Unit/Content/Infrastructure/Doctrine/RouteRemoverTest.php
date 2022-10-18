@@ -44,10 +44,10 @@ class RouteRemoverTest extends TestCase
     private $routeRepository;
 
     /**
-     * @var mixed[]
+     * @var array<string, mixed[]>
      */
     private $routeMappings = [
-        [
+        ExampleDimensionContent::class => [
             'resource_key' => 'examples',
             'entityClass' => ExampleDimensionContent::class,
         ],

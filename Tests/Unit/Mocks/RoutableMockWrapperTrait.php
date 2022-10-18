@@ -13,10 +13,14 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Mocks;
 
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\RoutableInterface;
+
 /**
  * Trait for composing a class that wraps a RoutableInterface mock.
  *
  * @see MockWrapper to learn why this trait is needed.
+ *
+ * @property mixed $instance
  */
 trait RoutableMockWrapperTrait
 {
@@ -27,11 +31,17 @@ trait RoutableMockWrapperTrait
 
     public function getResourceId()
     {
-        return $this->instance->getResourceId();
+        /** @var RoutableInterface $instance */
+        $instance = $this->instance;
+
+        return $instance->getResourceId();
     }
 
     public function getLocale(): ?string
     {
-        return $this->instance->getLocale();
+        /** @var RoutableInterface $instance */
+        $instance = $this->instance;
+
+        return $instance->getLocale();
     }
 }

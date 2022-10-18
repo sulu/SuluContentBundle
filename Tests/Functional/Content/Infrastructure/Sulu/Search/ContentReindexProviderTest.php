@@ -27,11 +27,6 @@ class ContentReindexProviderTest extends SuluTestCase
     use CreateExampleTrait;
 
     /**
-     * @var ContentManagerInterface
-     */
-    private $contentManager;
-
-    /**
      * @var ContentReindexProvider
      */
     private $reindexProvider;
@@ -50,7 +45,7 @@ class ContentReindexProviderTest extends SuluTestCase
     {
         static::purgeDatabase();
 
-        static::$example1 = static::createExample(
+        self::$example1 = static::createExample(
             [
                 'en' => [
                     'draft' => [
@@ -65,7 +60,7 @@ class ContentReindexProviderTest extends SuluTestCase
             ]
         );
 
-        static::$example2 = static::createExample(
+        self::$example2 = static::createExample(
             [
                 'en' => [
                     'draft' => [
@@ -80,7 +75,6 @@ class ContentReindexProviderTest extends SuluTestCase
 
     protected function setUp(): void
     {
-        $this->contentManager = $this->getContainer()->get('sulu_content.content_manager');
         $this->reindexProvider = $this->getContainer()->get('example_test.example_reindex_provider');
     }
 
@@ -88,8 +82,8 @@ class ContentReindexProviderTest extends SuluTestCase
     {
         $examples = $this->reindexProvider->provide(ExampleDimensionContent::class, 0, 10);
 
-        $this->assertContains(static::$example1, $examples);
-        $this->assertContains(static::$example2, $examples);
+        $this->assertContains(self::$example1, $examples);
+        $this->assertContains(self::$example2, $examples);
         $this->assertCount(2, $examples);
     }
 
@@ -117,7 +111,7 @@ class ContentReindexProviderTest extends SuluTestCase
 
     public function testGetLocalesForObject(): void
     {
-        $locales = $this->reindexProvider->getLocalesForObject(static::$example1);
+        $locales = $this->reindexProvider->getLocalesForObject(self::$example1);
 
         $this->assertSame(['en', 'de'], $locales);
     }
@@ -136,14 +130,14 @@ class ContentReindexProviderTest extends SuluTestCase
         $property->setAccessible(true);
         $property->setValue($this->reindexProvider, SuluKernel::CONTEXT_WEBSITE);
 
-        $locales = $this->reindexProvider->getLocalesForObject(static::$example1);
+        $locales = $this->reindexProvider->getLocalesForObject(self::$example1);
 
         $this->assertSame(['de'], $locales);
     }
 
     public function testTranslateObject(): void
     {
-        $translatedObject = $this->reindexProvider->translateObject(static::$example1, 'en');
+        $translatedObject = $this->reindexProvider->translateObject(self::$example1, 'en');
 
         $this->assertInstanceOf(DimensionContentInterface::class, $translatedObject);
 
@@ -165,7 +159,7 @@ class ContentReindexProviderTest extends SuluTestCase
         $property->setAccessible(true);
         $property->setValue($this->reindexProvider, SuluKernel::CONTEXT_WEBSITE);
 
-        $translatedObject = $this->reindexProvider->translateObject(static::$example1, 'de');
+        $translatedObject = $this->reindexProvider->translateObject(self::$example1, 'de');
 
         $this->assertInstanceOf(DimensionContentInterface::class, $translatedObject);
 
@@ -188,7 +182,7 @@ class ContentReindexProviderTest extends SuluTestCase
         $property->setValue($this->reindexProvider, SuluKernel::CONTEXT_WEBSITE);
 
         $this->assertNull(
-            $this->reindexProvider->translateObject(static::$example1, 'en')
+            $this->reindexProvider->translateObject(self::$example1, 'en')
         );
     }
 
