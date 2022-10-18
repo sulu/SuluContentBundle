@@ -26,7 +26,7 @@ use Sulu\Component\Content\Metadata\ItemMetadata;
 use Sulu\Component\Content\Metadata\PropertyMetadata;
 use Sulu\Component\Content\Metadata\StructureMetadata;
 
-class ContentStructureBridge implements StructureInterface
+class ContentStructureBridge implements StructureInterface, RoutableStructureInterface
 {
     /**
      * @var StructureMetadata
@@ -128,6 +128,21 @@ class ContentStructureBridge implements StructureInterface
     public function getController(): ?string
     {
         return $this->structure->getController();
+    }
+
+    /**
+     * @return array{
+     *     type: string,
+     *     value: string,
+     * }
+     */
+    public function getCacheLifeTime(): array
+    {
+        /** @var array{
+         *     type: string,
+         *     value: string,
+         * } */
+        return $this->structure->getCacheLifetime();
     }
 
     public function getCreator(): ?int
