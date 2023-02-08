@@ -58,6 +58,17 @@ services:
         tags:
             - { name: sulu.teaser.provider, alias: examples }
 
+    example_test.example_link_provider:
+        class: Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Link\ExampleLinkProvider
+        public: true
+        arguments:
+            - '@sulu_content.content_manager'
+            - '@sulu_page.structure.factory'
+            - '@doctrine.orm.entity_manager'
+        tags:
+            - { name: sulu.link.provider, alias: examples }
+
+
     example_test.example_data_provider_repository:
         class: Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\SmartContent\Repository\ContentDataProviderRepository
         public: true
