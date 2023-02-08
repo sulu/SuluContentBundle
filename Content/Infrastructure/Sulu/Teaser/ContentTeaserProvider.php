@@ -19,9 +19,9 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentMetadataInspector\Conte
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
-use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Trait\FindContentRichEntitiesTrait;
-use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Trait\ResolveContentDimensionUrlTrait;
-use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Trait\ResolveContentTrait;
+use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Traits\FindContentRichEntitiesTrait;
+use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Traits\ResolveContentDimensionUrlTrait;
+use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Traits\ResolveContentTrait;
 use Sulu\Bundle\PageBundle\Teaser\Provider\TeaserProviderInterface;
 use Sulu\Bundle\PageBundle\Teaser\Teaser;
 use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;

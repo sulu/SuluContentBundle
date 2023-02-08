@@ -24,7 +24,11 @@ class ContentLinkProviderTest extends WebsiteTestCase
 {
     use AssertSnapshotTrait;
     use CreateExampleTrait;
-    private ExampleLinkProvider $exampleLinkProvider;
+
+    /**
+     * @var ExampleLinkProvider
+     */
+    private $exampleLinkProvider;
 
     /**
      * @var mixed[]

@@ -17,9 +17,9 @@ use Doctrine\ORM\EntityManagerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentManager\ContentManagerInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
-use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Trait\FindContentRichEntitiesTrait;
-use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Trait\ResolveContentDimensionUrlTrait;
-use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Trait\ResolveContentTrait;
+use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Traits\FindContentRichEntitiesTrait;
+use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Traits\ResolveContentDimensionUrlTrait;
+use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Traits\ResolveContentTrait;
 use Sulu\Bundle\MarkupBundle\Markup\Link\LinkItem;
 use Sulu\Bundle\MarkupBundle\Markup\Link\LinkProviderInterface;
 use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
@@ -30,19 +30,31 @@ abstract class ContentLinkProvider implements LinkProviderInterface
     use ResolveContentDimensionUrlTrait;
     use ResolveContentTrait;
 
-    protected StructureMetadataFactoryInterface $structureMetadataFactory;
+    /**
+     * @var StructureMetadataFactoryInterface
+     */
+    protected $structureMetadataFactory;
 
-    protected ContentManagerInterface $contentManager;
+    /**
+     * @var ContentManagerInterface
+     */
+    protected $contentManager;
 
-    protected EntityManagerInterface $entityManager;
+    /**
+     * @var EntityManagerInterface
+     */
+    protected $entityManager;
 
-    protected string $contentRichEntityClass;
+    /**
+     * @var string
+     */
+    protected $contentRichEntityClass;
 
     public function __construct(
         ContentManagerInterface $contentManager,
         StructureMetadataFactoryInterface $structureMetadataFactory,
         EntityManagerInterface $entityManager,
-        string $contentRichEntityClass,
+        string $contentRichEntityClass
     ) {
         $this->contentManager = $contentManager;
         $this->structureMetadataFactory = $structureMetadataFactory;
