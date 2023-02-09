@@ -16,19 +16,21 @@ namespace Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Teaser;
 use Doctrine\ORM\EntityManagerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentManager\ContentManagerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentMetadataInspector\ContentMetadataInspectorInterface;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\ContentWorkflowInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
+use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Traits\FindContentRichEntitiesTrait;
+use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Traits\ResolveContentDimensionUrlTrait;
+use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Traits\ResolveContentTrait;
 use Sulu\Bundle\PageBundle\Teaser\Provider\TeaserProviderInterface;
 use Sulu\Bundle\PageBundle\Teaser\Teaser;
 use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
 
 abstract class ContentTeaserProvider implements TeaserProviderInterface
 {
-    public const CONTENT_RICH_ENTITY_ALIAS = ContentWorkflowInterface::CONTENT_RICH_ENTITY_CONTEXT_KEY;
+    use FindContentRichEntitiesTrait;
+    use ResolveContentDimensionUrlTrait;
+    use ResolveContentTrait;
 
     /**
      * @var ContentManagerInterface
@@ -150,58 +152,6 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
         );
     }
 
-    protected function resolveContent(ContentRichEntityInterface $contentRichEntity, string $locale): ?DimensionContentInterface
-    {
-        $stage = $this->showDrafts
-            // TODO FIXME add testcase for it
-            ? DimensionContentInterface::STAGE_DRAFT // @codeCoverageIgnore
-            : DimensionContentInterface::STAGE_LIVE;
-
-        try {
-            $resolvedDimensionContent = $this->contentManager->resolve($contentRichEntity, [
-                'locale' => $locale,
-                'stage' => $stage,
-            ]);
-        } catch (ContentNotFoundException $exception) {
-            return null;
-        }
-
-        if ($stage !== $resolvedDimensionContent->getStage() || $locale !== $resolvedDimensionContent->getLocale()) {
-            return null;
-        }
-
-        return $resolvedDimensionContent;
-    }
-
-    /**
-     * @param mixed[] $data
-     */
-    protected function getUrl(DimensionContentInterface $dimensionContent, array $data): ?string
-    {
-        if (!$dimensionContent instanceof TemplateInterface) {
-            // TODO FIXME add testcase for it
-            return null; // @codeCoverageIgnore
-        }
-
-        $type = $dimensionContent::getTemplateType();
-        $template = $dimensionContent->getTemplateKey();
-
-        $metadata = $this->metadataFactory->getStructureMetadata($type, $template);
-
-        if (!$metadata) {
-            // TODO FIXME add testcase for it
-            return null; // @codeCoverageIgnore
-        }
-
-        foreach ($metadata->getProperties() as $property) {
-            if ('route' === $property->getType()) {
-                return $dimensionContent->getTemplateData()[$property->getName()] ?? null;
-            }
-        }
-
-        return null;
-    }
-
     /**
      * @param mixed[] $data
      */
@@ -269,37 +219,11 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
         return [];
     }
 
-    /**
-     * @param mixed[] $ids
-     *
-     * @return ContentRichEntityInterface[]
-     */
-    protected function findEntitiesByIds(array $ids): array
+    protected function getResourceKey(): string
     {
-        $entityIdField = $this->getEntityIdField();
-        $classMetadata = $this->entityManager->getClassMetadata($this->contentRichEntityClass);
+        $dimensionContentClass = $this->contentMetadataInspector->getDimensionContentClass($this->contentRichEntityClass);
 
-        $entities = $this->entityManager->createQueryBuilder()
-            ->select(self::CONTENT_RICH_ENTITY_ALIAS)
-            ->from($this->contentRichEntityClass, self::CONTENT_RICH_ENTITY_ALIAS)
-            ->where(self::CONTENT_RICH_ENTITY_ALIAS . '.' . $entityIdField . ' IN (:ids)')
-            ->getQuery()
-            ->setParameter('ids', $ids)
-            ->getResult();
-
-        $idPositions = \array_flip($ids);
-
-        \usort(
-            $entities,
-            function(ContentRichEntityInterface $a, ContentRichEntityInterface $b) use ($idPositions, $classMetadata, $entityIdField) {
-                $aId = $classMetadata->getIdentifierValues($a)[$entityIdField];
-                $bId = $classMetadata->getIdentifierValues($b)[$entityIdField];
-
-                return $idPositions[$aId] - $idPositions[$bId];
-            }
-        );
-
-        return $entities;
+        return $dimensionContentClass::getResourceKey();
     }
 
     protected function getEntityIdField(): string
@@ -307,10 +231,23 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
         return 'id';
     }
 
-    protected function getResourceKey(): string
+    protected function getContentRichEntityClass(): string
     {
-        $dimensionContentClass = $this->contentMetadataInspector->getDimensionContentClass($this->contentRichEntityClass);
+        return $this->contentRichEntityClass;
+    }
 
-        return $dimensionContentClass::getResourceKey();
+    protected function getEntityManager(): EntityManagerInterface
+    {
+        return $this->entityManager;
+    }
+
+    protected function getStructureMetadataFactory(): StructureMetadataFactoryInterface
+    {
+        return $this->metadataFactory;
+    }
+
+    protected function getContentManager(): ContentManagerInterface
+    {
+        return $this->contentManager;
     }
 }
