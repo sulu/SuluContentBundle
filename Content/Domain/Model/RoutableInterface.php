@@ -21,7 +21,7 @@ interface RoutableInterface
     public static function getResourceKey(): string;
 
     /**
-     * @return mixed
+     * @return int|string
      */
     public function getResourceId();
 

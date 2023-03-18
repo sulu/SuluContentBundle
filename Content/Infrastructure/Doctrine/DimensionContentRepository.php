@@ -48,6 +48,14 @@ class DimensionContentRepository implements DimensionContentRepositoryInterface
         $this->dimensionContentQueryEnhancer = $dimensionContentQueryEnhancer;
     }
 
+    /**
+     * @template T of DimensionContentInterface
+     *
+     * @param ContentRichEntityInterface<T> $contentRichEntity
+     * @param mixed[] $dimensionAttributes
+     *
+     * @return DimensionContentCollectionInterface<T>
+     */
     public function load(
         ContentRichEntityInterface $contentRichEntity,
         array $dimensionAttributes
@@ -67,7 +75,7 @@ class DimensionContentRepository implements DimensionContentRepositoryInterface
             [DimensionContentQueryEnhancer::GROUP_SELECT_CONTENT_ADMIN => true]
         );
 
-        /** @var DimensionContentInterface[] $dimensionContents */
+        /** @var T[] $dimensionContents */
         $dimensionContents = $queryBuilder->getQuery()->getResult();
 
         return new DimensionContentCollection(

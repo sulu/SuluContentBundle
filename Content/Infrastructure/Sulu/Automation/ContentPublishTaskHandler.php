@@ -18,6 +18,7 @@ use Sulu\Bundle\AutomationBundle\TaskHandler\AutomationTaskHandlerInterface;
 use Sulu\Bundle\AutomationBundle\TaskHandler\TaskHandlerConfiguration;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentManager\ContentManagerInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -63,6 +64,15 @@ class ContentPublishTaskHandler implements AutomationTaskHandlerInterface
         return TaskHandlerConfiguration::create($this->translator->trans('sulu_content.task_handler.publish', [], 'admin'));
     }
 
+    /**
+     * @template T of DimensionContentInterface
+     *
+     * @param array{
+     *     class: class-string<ContentRichEntityInterface<T>>,
+     *     id: int|string,
+     *     locale: string,
+     * } $workload
+     */
     public function handle($workload)
     {
         if (!\is_array($workload)) {
@@ -70,11 +80,9 @@ class ContentPublishTaskHandler implements AutomationTaskHandlerInterface
             return; // @codeCoverageIgnore
         }
 
-        /** @var class-string<ContentRichEntityInterface> $class */
         $class = $workload['class'];
         $repository = $this->entityManager->getRepository($class);
 
-        /** @var ContentRichEntityInterface|null $entity */
         $entity = $repository->findOneBy(['id' => $workload['id']]);
         if (null === $entity) {
             // TODO FIXME add test case for this

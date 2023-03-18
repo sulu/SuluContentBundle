@@ -25,6 +25,8 @@ use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example
 
 class ContentPersisterTest extends TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
+
     protected function createContentPersisterInstance(
         DimensionContentCollectionFactoryInterface $dimensionContentCollectionFactory,
         ContentMergerInterface $contentMerger

@@ -14,11 +14,15 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Content\Domain\Exception;
 
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 
 class ContentNotFoundException extends \Exception
 {
     /**
-     * @param array<string, string|int|float|bool|null> $dimensionAttributes
+     * @template T of DimensionContentInterface
+     *
+     * @param ContentRichEntityInterface<T> $contentRichEntity
+     * @param mixed[] $dimensionAttributes
      */
     public function __construct(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes)
     {

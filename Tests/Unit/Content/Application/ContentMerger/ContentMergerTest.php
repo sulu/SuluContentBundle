@@ -18,13 +18,14 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentMerger\ContentMerger;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentMerger\ContentMergerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentMerger\Merger\MergerInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollection;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleDimensionContent;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 class ContentMergerTest extends TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
+
     /**
      * @param iterable<MergerInterface> $mergers
      */
@@ -44,7 +45,7 @@ class ContentMergerTest extends TestCase
             $merger2->reveal(),
         ]);
 
-        $mergedDimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $mergedDimensionContent = $this->prophesize(ExampleDimensionContent::class);
 
         $resource = $this->prophesize(Example::class);
         $resource->createDimensionContent()

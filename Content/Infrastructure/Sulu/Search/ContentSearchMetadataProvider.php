@@ -31,6 +31,10 @@ use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
 use Sulu\Component\Content\Metadata\PropertyMetadata;
 use Sulu\Component\Content\Metadata\StructureMetadata;
 
+/**
+ * @template B of DimensionContentInterface
+ * @template T of ContentRichEntityInterface<B>
+ */
 class ContentSearchMetadataProvider implements ProviderInterface
 {
     public const SEARCH_FIELD_TAG = 'sulu.search.field';
@@ -63,17 +67,17 @@ class ContentSearchMetadataProvider implements ProviderInterface
     private $structureFactory;
 
     /**
-     * @var class-string<ContentRichEntityInterface>
+     * @var class-string<T>
      */
     private $contentRichEntityClass;
 
     /**
-     * @var class-string<DimensionContentInterface>|null
+     * @var class-string<B>|null
      */
     private $dimensionContentClass = null;
 
     /**
-     * @param class-string<ContentRichEntityInterface> $contentRichEntityClass
+     * @param class-string<T> $contentRichEntityClass
      */
     public function __construct(
         ContentMetadataInspectorInterface $contentMetadataInspector,
@@ -170,7 +174,7 @@ class ContentSearchMetadataProvider implements ProviderInterface
         $indexMeta->setIdField($this->searchMetadataFactory->createMetadataField('resourceId'));
         $indexMeta->setLocaleField($this->searchMetadataFactory->createMetadataField('locale'));
 
-        /** @var class-string<DimensionContentInterface> $dimensionContentClass */
+        /** @var class-string<B> $dimensionContentClass */
         $dimensionContentClass = $this->getDimensionContentClass();
 
         if (!\is_a($dimensionContentClass, DimensionContentInterface::class, true)) {
@@ -372,7 +376,7 @@ class ContentSearchMetadataProvider implements ProviderInterface
     }
 
     /**
-     * @return class-string<DimensionContentInterface>
+     * @return class-string<B>
      */
     private function getDimensionContentClass(): string
     {

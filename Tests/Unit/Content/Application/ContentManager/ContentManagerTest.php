@@ -27,6 +27,8 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 
 class ContentManagerTest extends TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
+
     protected function createContentManagerInstance(
         ContentResolverInterface $contentResolver,
         ContentPersisterInterface $contentPersister,

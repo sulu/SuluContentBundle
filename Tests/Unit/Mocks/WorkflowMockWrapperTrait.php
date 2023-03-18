@@ -13,10 +13,14 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Mocks;
 
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
+
 /**
  * Trait for composing a class that wraps a WorkflowInterface mock.
  *
  * @see MockWrapper to learn why this trait is needed.
+ *
+ * @property WorkflowInterface $instance
  */
 trait WorkflowMockWrapperTrait
 {

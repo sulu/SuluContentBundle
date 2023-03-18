@@ -19,24 +19,44 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 interface ContentManagerInterface
 {
     /**
+     * @template T of DimensionContentInterface
+     *
+     * @param ContentRichEntityInterface<T> $contentRichEntity
      * @param mixed[] $dimensionAttributes
+     *
+     * @return T
      */
     public function resolve(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes): DimensionContentInterface;
 
     /**
+     * @template T of DimensionContentInterface
+     *
+     * @param ContentRichEntityInterface<T> $contentRichEntity
      * @param mixed[] $data
      * @param mixed[] $dimensionAttributes
+     *
+     * @return T
      */
     public function persist(ContentRichEntityInterface $contentRichEntity, array $data, array $dimensionAttributes): DimensionContentInterface;
 
     /**
+     * @template T of DimensionContentInterface
+     *
+     * @param T $dimensionContent
+     *
      * @return mixed[]
      */
     public function normalize(DimensionContentInterface $dimensionContent): array;
 
     /**
+     * @template T of DimensionContentInterface
+     *
+     * @param ContentRichEntityInterface<T> $sourceContentRichEntity
      * @param mixed[] $sourceDimensionAttributes
+     * @param ContentRichEntityInterface<T> $targetContentRichEntity
      * @param mixed[] $targetDimensionAttributes
+     *
+     * @return T
      */
     public function copy(
         ContentRichEntityInterface $sourceContentRichEntity,
@@ -46,7 +66,12 @@ interface ContentManagerInterface
     ): DimensionContentInterface;
 
     /**
+     * @template T of DimensionContentInterface
+     *
+     * @param ContentRichEntityInterface<T> $contentRichEntity
      * @param mixed[] $dimensionAttributes
+     *
+     * @return T
      */
     public function applyTransition(
         ContentRichEntityInterface $contentRichEntity,
@@ -55,12 +80,17 @@ interface ContentManagerInterface
     ): DimensionContentInterface;
 
     /**
+     * @template T of DimensionContentInterface
+     *
+     * @param ContentRichEntityInterface<T> $contentRichEntity
      * @param mixed[] $dimensionAttributes
+     *
+     * @return T
      */
     public function index(ContentRichEntityInterface $contentRichEntity, array $dimensionAttributes): DimensionContentInterface;
 
     /**
-     * @param mixed $id
+     * @param int|string $id
      * @param mixed[] $dimensionAttributes
      */
     public function deindex(string $resourceKey, $id, array $dimensionAttributes = []): void;

@@ -29,7 +29,7 @@ use Webmozart\Assert\Assert;
 trait CreateExampleTrait
 {
     /**
-     * @param array{de?: mixed, en?: mixed} $dataSet
+     * @param array<string, array{ draft?: array<string, mixed>, live?: array<string, mixed> }> $dataSet
      * @param array{create_route?: bool} $options
      */
     protected static function createExample(array $dataSet = [], array $options = []): Example
@@ -82,7 +82,7 @@ trait CreateExampleTrait
 
         foreach ($dataSet as $locale => $data) {
             // draft data
-            $draftData = $data['draft'] ?? $data['live'];
+            $draftData = $data['draft'] ?? $data['live'] ?? [];
             $liveData = $data['live'] ?? null;
 
             // create localized draft dimension
@@ -147,8 +147,11 @@ trait CreateExampleTrait
                 if ($options['create_route'] ?? false) {
                     $route = new Route();
                     $route->setLocale($locale);
-                    $route->setPath($draftLocalizedDimension->getTemplateData()['url']);
-                    $route->setEntityId($example->getId());
+
+                    /** @var array{url: string} $draftTemplateData */
+                    $draftTemplateData = $draftLocalizedDimension->getTemplateData();
+                    $route->setPath($draftTemplateData['url']);
+                    $route->setEntityId($example->getId()); // @phpstan-ignore-line
                     $route->setEntityClass(\get_class($example));
 
                     $entityManager->persist($route);

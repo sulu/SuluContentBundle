@@ -30,6 +30,10 @@ use Sulu\Component\Localization\Localization;
 use Sulu\Component\Webspace\Manager\WebspaceManagerInterface;
 use Sulu\Component\Webspace\PortalInformation;
 
+/**
+ * @template B of DimensionContentInterface
+ * @template T of ContentRichEntityInterface<B>
+ */
 class ContentSitemapProvider implements SitemapProviderInterface
 {
     public const ROUTE_ALIAS = 'route';
@@ -52,7 +56,7 @@ class ContentSitemapProvider implements SitemapProviderInterface
     protected $kernelEnvironment;
 
     /**
-     * @var class-string<ContentRichEntityInterface>
+     * @var class-string<T>
      */
     protected $contentRichEntityClass;
 
@@ -68,7 +72,7 @@ class ContentSitemapProvider implements SitemapProviderInterface
 
     /**
      * @param string $kernelEnvironment Inject parameter "kernel.environment" here
-     * @param class-string<ContentRichEntityInterface> $contentRichEntityClass Classname that is used in the route table
+     * @param class-string<T> $contentRichEntityClass Classname that is used in the route table
      * @param class-string<RouteInterface> $routeClass
      */
     public function __construct(
@@ -168,7 +172,7 @@ class ContentSitemapProvider implements SitemapProviderInterface
     /**
      * @param RouteInterface[] $routes
      *
-     * @return mixed[]
+     * @return array<string, non-empty-array<string, RouteInterface>>
      */
     protected function groupRoutesByEntityId(array $routes): array
     {
@@ -188,7 +192,7 @@ class ContentSitemapProvider implements SitemapProviderInterface
     }
 
     /**
-     * @return mixed[]
+     * @return RouteInterface[]
      */
     protected function getRoutes(int $limit, int $offset): array
     {
@@ -201,9 +205,8 @@ class ContentSitemapProvider implements SitemapProviderInterface
             ->setFirstResult($offset)
             ->setMaxResults($limit);
 
-        $result = $queryBuilder->getQuery()->getResult();
-
-        return $result;
+        /** @var RouteInterface[] */
+        return $queryBuilder->getQuery()->getResult();
     }
 
     protected function createRoutesQueryBuilder(): QueryBuilder

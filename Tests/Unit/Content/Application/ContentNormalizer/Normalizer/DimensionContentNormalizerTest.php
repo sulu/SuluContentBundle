@@ -20,6 +20,8 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 
 class DimensionContentNormalizerTest extends TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
+
     protected function createDimensionContentNormalizerInstance(): DimensionContentNormalizer
     {
         return new DimensionContentNormalizer();

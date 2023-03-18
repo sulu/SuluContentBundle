@@ -18,12 +18,15 @@ use Doctrine\Common\Collections\Criteria;
 use Sulu\Component\Util\SortUtils;
 
 /**
- * @implements \IteratorAggregate<DimensionContentInterface>
+ * @template-covariant T of DimensionContentInterface
+ *
+ * @implements \IteratorAggregate<T>
+ * @implements DimensionContentCollectionInterface<T>
  */
 class DimensionContentCollection implements \IteratorAggregate, DimensionContentCollectionInterface
 {
     /**
-     * @var ArrayCollection<int, DimensionContentInterface>
+     * @var ArrayCollection<int, T>
      */
     private $dimensionContents;
 
@@ -33,7 +36,7 @@ class DimensionContentCollection implements \IteratorAggregate, DimensionContent
     private $dimensionAttributes;
 
     /**
-     * @var class-string<DimensionContentInterface>
+     * @var class-string<T>
      */
     private $dimensionContentClass;
 
@@ -45,9 +48,9 @@ class DimensionContentCollection implements \IteratorAggregate, DimensionContent
     /**
      * DimensionContentCollection constructor.
      *
-     * @param DimensionContentInterface[] $dimensionContents
+     * @param T[] $dimensionContents
      * @param mixed[] $dimensionAttributes
-     * @param class-string<DimensionContentInterface> $dimensionContentClass
+     * @param class-string<T> $dimensionContentClass
      */
     public function __construct(
         array $dimensionContents,
@@ -92,6 +95,7 @@ class DimensionContentCollection implements \IteratorAggregate, DimensionContent
         return $this->dimensionAttributes;
     }
 
+    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         return $this->dimensionContents;

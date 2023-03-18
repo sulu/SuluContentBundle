@@ -15,6 +15,7 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentDataMa
 
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\DataMapper\RoutableDataMapper;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
@@ -32,25 +33,26 @@ use Sulu\Component\Content\Metadata\StructureMetadata;
 
 class RoutableDataMapperTest extends TestCase
 {
+    use ProphecyTrait;
     use SetGetPrivatePropertyTrait;
 
     /**
-     * @var ObjectProphecy|StructureMetadataFactoryInterface
+     * @var ObjectProphecy<StructureMetadataFactoryInterface>
      */
     private $structureMetadataFactory;
 
     /**
-     * @var ObjectProphecy|RouteGeneratorInterface
+     * @var ObjectProphecy<RouteGeneratorInterface>
      */
     private $routeGenerator;
 
     /**
-     * @var ObjectProphecy|RouteManagerInterface
+     * @var ObjectProphecy<RouteManagerInterface>
      */
     private $routeManager;
 
     /**
-     * @var ObjectProphecy|ConflictResolverInterface
+     * @var ObjectProphecy<ConflictResolverInterface>
      */
     private $conflictResolver;
 

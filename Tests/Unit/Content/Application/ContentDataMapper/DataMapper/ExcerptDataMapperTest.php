@@ -15,6 +15,7 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentDataMa
 
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Sulu\Bundle\CategoryBundle\Entity\Category;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\DataMapper\ExcerptDataMapper;
@@ -27,6 +28,8 @@ use Sulu\Bundle\TagBundle\Entity\Tag;
 
 class ExcerptDataMapperTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var ObjectProphecy|TagFactoryInterface
      */

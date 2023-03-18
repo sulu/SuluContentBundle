@@ -14,12 +14,16 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper;
 
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 
 interface ContentDataMapperInterface
 {
     /**
-     * @param array<string, mixed> $data
+     * @template T of DimensionContentInterface
+     *
+     * @param DimensionContentCollectionInterface<T> $dimensionContentCollection
      * @param mixed[] $dimensionAttributes
+     * @param array<string, mixed> $data
      */
     public function map(
         DimensionContentCollectionInterface $dimensionContentCollection,

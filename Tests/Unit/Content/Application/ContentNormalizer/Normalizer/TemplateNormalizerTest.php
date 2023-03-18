@@ -19,6 +19,8 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 
 class TemplateNormalizerTest extends TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
+
     protected function createTemplateNormalizerInstance(): TemplateNormalizer
     {
         return new TemplateNormalizer();

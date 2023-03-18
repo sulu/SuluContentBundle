@@ -104,7 +104,12 @@ class DimensionContentCollectionFactory implements DimensionContentCollectionFac
     }
 
     /**
+     * @template T of DimensionContentInterface
+     *
+     * @param ContentRichEntityInterface<T> $contentRichEntity
      * @param mixed[] $attributes
+     *
+     * @return T
      */
     private function createContentDimension(
         ContentRichEntityInterface $contentRichEntity,

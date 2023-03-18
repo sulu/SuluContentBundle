@@ -24,6 +24,8 @@ use Sulu\Bundle\TagBundle\Tag\TagInterface;
 
 class ExcerptMergerTest extends TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
+
     protected function getExcerptMergerInstance(): MergerInterface
     {
         return new ExcerptMerger();

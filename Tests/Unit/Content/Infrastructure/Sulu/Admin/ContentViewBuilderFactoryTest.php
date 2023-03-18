@@ -15,6 +15,7 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Infrastructure\Sulu\Admin
 
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Sulu\Bundle\AdminBundle\Admin\View\FormViewBuilderInterface;
 use Sulu\Bundle\AdminBundle\Admin\View\PreviewFormViewBuilderInterface;
 use Sulu\Bundle\AdminBundle\Admin\View\ViewBuilderFactory;
@@ -46,6 +47,8 @@ use Sulu\Component\Security\Authorization\SecurityCheckerInterface;
 
 class ContentViewBuilderFactoryTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @param mixed[] $settingsForms
      */
@@ -77,7 +80,12 @@ class ContentViewBuilderFactoryTest extends TestCase
     }
 
     /**
-     * @param class-string<ContentRichEntityInterface> $entityClass
+     * @template B of DimensionContentInterface
+     * @template T of ContentRichEntityInterface<B>
+     *
+     * @param class-string<T> $entityClass
+     *
+     * @return ContentObjectProvider<B, T>
      */
     protected function createContentObjectProvider(
         EntityManagerInterface $entityManager,
@@ -330,6 +338,9 @@ class ContentViewBuilderFactoryTest extends TestCase
                         return 'mock-resource-key';
                     }
 
+                    /**
+                     * @return never
+                     */
                     public function getResource(): ContentRichEntityInterface
                     {
                         throw new \RuntimeException('Should not be called while executing tests.');
@@ -348,6 +359,9 @@ class ContentViewBuilderFactoryTest extends TestCase
                     use SeoTrait;
                     use TemplateTrait;
 
+                    /**
+                     * @return never
+                     */
                     public function getResource(): ContentRichEntityInterface
                     {
                         throw new \RuntimeException('Should not be called while executing tests.');
@@ -379,6 +393,9 @@ class ContentViewBuilderFactoryTest extends TestCase
                     use TemplateTrait;
                     use WorkflowTrait;
 
+                    /**
+                     * @return never
+                     */
                     public function getResource(): ContentRichEntityInterface
                     {
                         throw new \RuntimeException('Should not be called while executing tests.');
@@ -406,6 +423,9 @@ class ContentViewBuilderFactoryTest extends TestCase
     }
 
     /**
+     * @template T of DimensionContentInterface
+     *
+     * @param T $dimensionContentObject
      * @param mixed[] $expectedToolbarActions
      *
      * @dataProvider getContentRichEntityClassData

@@ -30,6 +30,8 @@ use Sulu\Component\Content\Metadata\StructureMetadata;
 
 class ContentStructureBridgeTest extends TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
+
     protected function createStructureBridge(
         ?TemplateInterface $content = null,
         ?StructureMetadata $structure = null,

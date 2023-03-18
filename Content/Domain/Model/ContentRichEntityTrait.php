@@ -16,15 +16,18 @@ namespace Sulu\Bundle\ContentBundle\Content\Domain\Model;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
+/**
+ * @template T of DimensionContentInterface
+ */
 trait ContentRichEntityTrait
 {
     /**
-     * @var ArrayCollection<int, DimensionContentInterface>
+     * @var ArrayCollection<int, T>
      */
     protected $dimensionContents;
 
     /**
-     * @return Collection<int, DimensionContentInterface>
+     * @return Collection<int, T>
      */
     public function getDimensionContents(): Collection
     {
@@ -33,6 +36,9 @@ trait ContentRichEntityTrait
         return $this->dimensionContents;
     }
 
+    /**
+     * @param T $dimensionContent
+     */
     public function addDimensionContent(DimensionContentInterface $dimensionContent): void
     {
         $this->initializeDimensionContents();
@@ -40,6 +46,9 @@ trait ContentRichEntityTrait
         $this->dimensionContents->add($dimensionContent);
     }
 
+    /**
+     * @param T $dimensionContent
+     */
     public function removeDimensionContent(DimensionContentInterface $dimensionContent): void
     {
         $this->initializeDimensionContents();

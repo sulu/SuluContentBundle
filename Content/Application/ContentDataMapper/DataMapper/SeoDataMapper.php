@@ -35,7 +35,7 @@ class SeoDataMapper implements DataMapperInterface
      */
     private function setSeoData(SeoInterface $dimensionContent, array $data): void
     {
-        $dimensionContent->setSeoTitle($data['seoTitle'] ?? null);
+        $dimensionContent->setSeoTitle($data['seoTitle'] ?? null); // @phpstan-ignore-line TODO where validate this?
         $dimensionContent->setSeoDescription($data['seoDescription'] ?? null);
         $dimensionContent->setSeoKeywords($data['seoKeywords'] ?? null);
         $dimensionContent->setSeoCanonicalUrl($data['seoCanonicalUrl'] ?? null);
