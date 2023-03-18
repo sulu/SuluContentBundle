@@ -29,6 +29,7 @@
                 <directory>Tests/</directory>
                 <directory>vendor/</directory>
                 <file>.php-cs-fixer.dist.php</file>
+                <file>Content/Infrastructure/Sulu/Structure/RoutableStructureInterface.php</file>
             </exclude>
         </whitelist>
     </filter>

@@ -157,6 +157,20 @@ class ContentStructureBridgeTest extends TestCase
         );
     }
 
+    public function testGetCacheLifeTime(): void
+    {
+        $structure = $this->prophesize(StructureMetadata::class);
+
+        $structure->getCacheLifeTime()->willReturn(['type' => 'type', 'value' => 'value']);
+
+        $structure = $this->createStructureBridge(null, $structure->reveal());
+
+        $this->assertSame(
+            ['type' => 'type', 'value' => 'value'],
+            $structure->getCacheLifeTime()
+        );
+    }
+
     public function testGetKey(): void
     {
         $structure = $this->prophesize(StructureMetadata::class);

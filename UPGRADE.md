@@ -88,6 +88,31 @@ The `DataMapperInterface` was changed to make it easier to set localized and unl
     ): void;
 ```
 
+## 0.6.x
+
+### Use jsonb for PostgreSQL json columns
+
+This effects only PostgreSQL databases:
+
+```sql
+ALTER TABLE <your_entity>_example_dimensions ALTER COLUMN templateData SET DATA TYPE jsonb USING templateData::jsonb;
+```
+
+## 0.6.3
+
+### Add dimension, templateKey, workflowPublished and workflowPlace indexes
+
+Improve performance of the `*ContentDimension` tables with additional indexes for the database:
+
+```sql
+CREATE INDEX idx_dimension ON <your_entity>_content (stage, locale);
+CREATE INDEX idx_locale ON <your_entity>_content (locale);
+CREATE INDEX idx_stage ON <your_entity>_content (stage);
+CREATE INDEX idx_template_key ON <your_entity>_content (templateKey);
+CREATE INDEX idx_workflow_place ON <your_entity>_content (workflowPlace);
+CREATE INDEX idx_workflow_published ON <your_entity>_content (workflowPublished);
+```
+
 ## 0.6.0
 
 ### Adjusted ContentDataMapper to accept DimensionContentCollection instead of separate objects

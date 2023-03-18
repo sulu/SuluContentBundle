@@ -17,6 +17,7 @@ use Doctrine\Common\EventSubscriber;
 use Doctrine\Inflector\InflectorFactory;
 use Doctrine\ORM\Event\LoadClassMetadataEventArgs;
 use Doctrine\ORM\Events;
+use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Sulu\Bundle\CategoryBundle\Entity\CategoryInterface;
 use Sulu\Bundle\ContactBundle\Entity\ContactInterface;
@@ -50,6 +51,9 @@ class MetadataLoader implements EventSubscriber
             $this->addField($metadata, 'locale', 'string', ['length' => 7, 'nullable' => true]);
             $this->addField($metadata, 'ghostLocale', 'string', ['length' => 7, 'nullable' => true]);
             $this->addField($metadata, 'availableLocales', 'json', ['nullable' => true]);
+            $this->addIndex($metadata, 'idx_dimension', ['stage', 'locale']);
+            $this->addIndex($metadata, 'idx_locale', ['locale']);
+            $this->addIndex($metadata, 'idx_stage', ['stage']);
         }
 
         if ($reflection->implementsInterface(SeoInterface::class)) {
@@ -64,7 +68,9 @@ class MetadataLoader implements EventSubscriber
 
         if ($reflection->implementsInterface(TemplateInterface::class)) {
             $this->addField($metadata, 'templateKey', 'string', ['length' => 32]);
-            $this->addField($metadata, 'templateData', 'json', ['nullable' => false]);
+            $this->addField($metadata, 'templateData', 'json', ['nullable' => false, 'options' => ['jsonb' => true]]);
+
+            $this->addIndex($metadata, 'idx_template_key', ['templateKey']);
         }
 
         if ($reflection->implementsInterface(ExcerptInterface::class)) {
@@ -109,6 +115,9 @@ class MetadataLoader implements EventSubscriber
         if ($reflection->implementsInterface(WorkflowInterface::class)) {
             $this->addField($metadata, 'workflowPlace', 'string', ['length' => 32, 'nullable' => true]);
             $this->addField($metadata, 'workflowPublished', 'datetime_immutable', ['nullable' => true]);
+
+            $this->addIndex($metadata, 'idx_workflow_place', ['workflowPlace']);
+            $this->addIndex($metadata, 'idx_workflow_published', ['workflowPublished']);
         }
     }
 
@@ -211,6 +220,17 @@ class MetadataLoader implements EventSubscriber
             'type' => $type,
             'nullable' => $nullable,
         ], $mapping));
+    }
+
+    /**
+     * @param ClassMetadataInfo<object> $metadata
+     * @param string[] $fields
+     */
+    private function addIndex(ClassMetadataInfo $metadata, string $name, array $fields): void
+    {
+        $builder = new ClassMetadataBuilder($metadata);
+
+        $builder->addIndex($fields, $name);
     }
 
     /**
