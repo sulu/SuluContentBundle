@@ -50,7 +50,7 @@ class ContentViewBuilderFactoryTest extends TestCase
     use ProphecyTrait;
 
     /**
-     * @param mixed[] $settingsForms
+     * @param array<string, array{instanceOf: class-string}> $settingsForms
      */
     protected function createContentViewBuilder(
         ContentMetadataInspectorInterface $contentMetadataInspector,

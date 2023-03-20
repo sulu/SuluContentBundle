@@ -32,6 +32,9 @@ use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
  */
 abstract class ContentTeaserProvider implements TeaserProviderInterface
 {
+    /**
+     * @phpstan-use FindContentRichEntitiesTrait<T>
+     */
     use FindContentRichEntitiesTrait;
     use ResolveContentDimensionUrlTrait;
     use ResolveContentTrait;
@@ -241,6 +244,9 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
         return 'id';
     }
 
+    /**
+     * @return class-string<T>
+     */
     protected function getContentRichEntityClass(): string
     {
         return $this->contentRichEntityClass;

@@ -81,7 +81,7 @@ class UnpublishTransitionSubscriber implements EventSubscriberInterface
             $unlocalizedLiveDimensionAttributes = \array_merge($liveDimensionAttributes, ['locale' => null]);
 
             /** @var DimensionContentInterface $unlocalizedLiveDimensionContent */
-            $unlocalizedLiveDimensionContent = $dimensionContentCollection->getDimensionContent($unlocalizedLiveDimensionAttributes);
+            $unlocalizedLiveDimensionContent = $dimensionContentCollection->getDimensionContent($unlocalizedLiveDimensionAttributes);  // @phpstan-ignore-line we can not define the generic of DimensionContentInterface here
             $unlocalizedLiveDimensionContent->removeAvailableLocale($locale);
         }
 

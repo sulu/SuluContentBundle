@@ -31,12 +31,12 @@ class Example implements ContentRichEntityInterface
     public const TEMPLATE_TYPE = 'example';
 
     /**
-     * @var int|string
+     * @var int
      */
     public $id;
 
     /**
-     * @return int|string
+     * @return int
      */
     public function getId()
     {

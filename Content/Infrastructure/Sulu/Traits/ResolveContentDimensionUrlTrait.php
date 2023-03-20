@@ -17,9 +17,15 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
 
+/**
+ * @internal
+ */
 trait ResolveContentDimensionUrlTrait
 {
     /**
+     * @template C of DimensionContentInterface
+     *
+     * @param C $dimensionContent
      * @param mixed[] $data
      */
     protected function getUrl(DimensionContentInterface $dimensionContent, array $data): ?string
@@ -41,6 +47,7 @@ trait ResolveContentDimensionUrlTrait
 
         foreach ($metadata->getProperties() as $property) {
             if ('route' === $property->getType()) {
+                /** @var string|null */
                 return $dimensionContent->getTemplateData()[$property->getName()] ?? null;
             }
         }

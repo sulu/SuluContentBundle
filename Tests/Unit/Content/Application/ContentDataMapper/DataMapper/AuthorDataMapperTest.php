@@ -15,6 +15,7 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentDataMa
 
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Sulu\Bundle\ContactBundle\Entity\Contact;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\DataMapper\AuthorDataMapper;
@@ -25,8 +26,10 @@ use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example
 
 class AuthorDataMapperTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
-     * @var ObjectProphecy|ContactFactoryInterface
+     * @var ObjectProphecy<ContactFactoryInterface>
      */
     private $contactFactory;
 

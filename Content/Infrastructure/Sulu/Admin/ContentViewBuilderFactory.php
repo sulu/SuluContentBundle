@@ -51,12 +51,12 @@ class ContentViewBuilderFactory implements ContentViewBuilderFactoryInterface
     private $securityChecker;
 
     /**
-     * @var array<string, mixed[]>
+     * @var array<string, array{instanceOf: class-string}>
      */
     private $settingsForms;
 
     /**
-     * @param array<string, mixed[]> $settingsForms
+     * @param array<string, array{instanceOf: class-string}> $settingsForms
      */
     public function __construct(
         ViewBuilderFactoryInterface $viewBuilderFactory,

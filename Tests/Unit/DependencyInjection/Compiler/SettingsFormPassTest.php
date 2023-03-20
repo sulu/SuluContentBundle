@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\DependencyInjection\Compiler;
 
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\AuthorInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
 use Sulu\Bundle\ContentBundle\DependencyInjection\Compiler\SettingsFormPass;
@@ -21,6 +22,8 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class SettingsFormPassTest extends TestCase
 {
+    use ProphecyTrait;
+
     public function testProcess(): void
     {
         $directories = [

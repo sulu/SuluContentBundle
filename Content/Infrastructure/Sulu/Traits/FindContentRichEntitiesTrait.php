@@ -17,12 +17,17 @@ use Doctrine\ORM\EntityManagerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\ContentWorkflowInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 
+/**
+ * @template D of ContentRichEntityInterface
+ *
+ * @internal
+ */
 trait FindContentRichEntitiesTrait
 {
     /**
      * @param string[]|int[] $ids
      *
-     * @return ContentRichEntityInterface[]
+     * @return D[]
      */
     protected function findEntitiesByIds(array $ids): array
     {
@@ -31,6 +36,7 @@ trait FindContentRichEntitiesTrait
         $contentRichEntityClass = $this->getContentRichEntityClass();
         $classMetadata = $entityManager->getClassMetadata($contentRichEntityClass);
 
+        /** @var D[] $entities */
         $entities = $entityManager->createQueryBuilder()
             ->select(ContentWorkflowInterface::CONTENT_RICH_ENTITY_CONTEXT_KEY)
             ->from($contentRichEntityClass, ContentWorkflowInterface::CONTENT_RICH_ENTITY_CONTEXT_KEY)
@@ -56,6 +62,9 @@ trait FindContentRichEntitiesTrait
 
     abstract protected function getEntityIdField(): string;
 
+    /**
+     * @return class-string<D>
+     */
     abstract protected function getContentRichEntityClass(): string;
 
     abstract protected function getEntityManager(): EntityManagerInterface;

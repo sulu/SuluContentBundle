@@ -1,5 +1,4 @@
 includes:
-    - phpstan-baseline.neon
     - vendor/jangregor/phpstan-prophecy/extension.neon
     - vendor/phpstan/phpstan-symfony/extension.neon
     - vendor/phpstan/phpstan-doctrine/extension.neon
@@ -19,9 +18,9 @@ parameters:
         - %currentWorkingDirectory%/Tests/Application/var/*
         - %currentWorkingDirectory%/Tests/Unit/Mocks/*
     symfony:
-        container_xml_path: %currentWorkingDirectory%/Tests/Application/var/cache/admin/dev/Sulu_Bundle_ContentBundle_Tests_Application_KernelDevDebugContainer.xml
-        console_application_loader: Tests/phpstan/console-application.php
-        constant_hassers: false
+        containerXmlPath: %currentWorkingDirectory%/Tests/Application/var/cache/admin/dev/Sulu_Bundle_ContentBundle_Tests_Application_KernelDevDebugContainer.xml
+        consoleApplicationLoader: Tests/phpstan/console-application.php
+        constantHassers: false
     doctrine:
         objectManagerLoader: Tests/phpstan/object-manager.php
     stubFiles: ["Tests/phpstan/stubs/ObjectProphecy.phpstub", "Tests/phpstan/stubs/ProphecyInterface.phpstub"]

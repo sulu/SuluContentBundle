@@ -31,7 +31,7 @@ class ContentLinkProviderTest extends WebsiteTestCase
     private $exampleLinkProvider;
 
     /**
-     * @var mixed[]
+     * @var string[]
      */
     private static $exampleIds = [];
 
@@ -101,11 +101,11 @@ class ContentLinkProviderTest extends WebsiteTestCase
 
         static::getEntityManager()->flush();
 
-        static::$exampleIds[] = $example1->getId();
-        static::$exampleIds[] = $example2->getId();
-        static::$exampleIds[] = $example3->getId();
-        static::$exampleIds[] = $example4->getId();
-        static::$exampleIds[] = $example5->getId();
+        self::$exampleIds[] = (string) $example1->getId();
+        self::$exampleIds[] = (string) $example2->getId();
+        self::$exampleIds[] = (string) $example3->getId();
+        self::$exampleIds[] = (string) $example4->getId();
+        self::$exampleIds[] = (string) $example5->getId();
     }
 
     protected function setUp(): void
@@ -124,13 +124,13 @@ class ContentLinkProviderTest extends WebsiteTestCase
 
     public function testPreloadDE(): void
     {
-        $links = $this->exampleLinkProvider->preload(static::$exampleIds, 'de');
+        $links = $this->exampleLinkProvider->preload(self::$exampleIds, 'de');
         $this->assertArraySnapshot('links_de.json', $this->mapLinks($links));
     }
 
     public function testPreloadEN(): void
     {
-        $links = $this->exampleLinkProvider->preload(static::$exampleIds, 'en');
+        $links = $this->exampleLinkProvider->preload(self::$exampleIds, 'en');
         $this->assertArraySnapshot('links_en.json', $this->mapLinks($links));
     }
 
