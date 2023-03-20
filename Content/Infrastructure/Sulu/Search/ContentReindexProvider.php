@@ -23,6 +23,10 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 use Sulu\Component\HttpKernel\SuluKernel;
 
+/**
+ * @template B of DimensionContentInterface
+ * @template T of ContentRichEntityInterface<B>
+ */
 class ContentReindexProvider implements LocalizedReindexProviderInterface
 {
     /**
@@ -46,17 +50,17 @@ class ContentReindexProvider implements LocalizedReindexProviderInterface
     private $context;
 
     /**
-     * @var class-string<ContentRichEntityInterface>
+     * @var class-string<T>
      */
     private $contentRichEntityClass;
 
     /**
-     * @var class-string<DimensionContentInterface>|null
+     * @var class-string<B>|null
      */
     private $dimensionContentClass = null;
 
     /**
-     * @param class-string<ContentRichEntityInterface> $contentRichEntityClass
+     * @param class-string<T> $contentRichEntityClass
      */
     public function __construct(
         EntityManagerInterface $entityManager,
@@ -80,6 +84,7 @@ class ContentReindexProvider implements LocalizedReindexProviderInterface
             ->setFirstResult($offset)
             ->setMaxResults($maxResults);
 
+        /** @var array<T> */
         return $queryBuilder->getQuery()->execute();
     }
 
@@ -99,6 +104,7 @@ class ContentReindexProvider implements LocalizedReindexProviderInterface
             ->from($this->contentRichEntityClass, 'contentRichEntity')
             ->select('COUNT(contentRichEntity)');
 
+        /** @var int */
         return $queryBuilder->getQuery()->getSingleScalarResult();
     }
 
@@ -178,7 +184,7 @@ class ContentReindexProvider implements LocalizedReindexProviderInterface
     }
 
     /**
-     * @return class-string<DimensionContentInterface>
+     * @return class-string<B>
      */
     private function getDimensionContentClass(): string
     {

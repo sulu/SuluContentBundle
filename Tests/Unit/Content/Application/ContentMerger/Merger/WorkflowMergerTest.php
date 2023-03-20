@@ -21,6 +21,8 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 
 class WorkflowMergerTest extends TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
+
     protected function getWorkflowMergerInstance(): MergerInterface
     {
         return new WorkflowMerger();

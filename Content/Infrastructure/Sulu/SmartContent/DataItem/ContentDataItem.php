@@ -21,11 +21,14 @@ use Sulu\Component\SmartContent\ItemInterface;
 use Sulu\Component\SmartContent\PublishInterface;
 
 /**
+ * @template T of DimensionContentInterface
+ *
  * @Serializer\ExclusionPolicy("all")
  */
 class ContentDataItem extends ArrayAccessItem implements ItemInterface, PublishInterface
 {
     /**
+     * @param T $dimensionContent
      * @param mixed[] $data
      */
     public function __construct(DimensionContentInterface $dimensionContent, array $data)
@@ -101,9 +104,12 @@ class ContentDataItem extends ArrayAccessItem implements ItemInterface, PublishI
         return WorkflowInterface::WORKFLOW_PLACE_PUBLISHED === $dimensionContent->getWorkflowPlace();
     }
 
+    /**
+     * @return T
+     */
     protected function getDimensionContent(): DimensionContentInterface
     {
-        /** @var DimensionContentInterface $dimensionContent */
+        /** @var T $dimensionContent */
         $dimensionContent = $this->getResource();
 
         return $dimensionContent;

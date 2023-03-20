@@ -23,7 +23,12 @@ interface ContentWorkflowInterface
     public const DIMENSION_ATTRIBUTES_CONTEXT_KEY = 'dimensionAttributes';
 
     /**
+     * @template T of DimensionContentInterface
+     *
+     * @param ContentRichEntityInterface<T> $contentRichEntity
      * @param mixed[] $dimensionAttributes
+     *
+     * @return T
      */
     public function apply(
         ContentRichEntityInterface $contentRichEntity,

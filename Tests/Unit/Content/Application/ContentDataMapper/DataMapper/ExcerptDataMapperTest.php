@@ -24,6 +24,8 @@ use Sulu\Bundle\TagBundle\Tag\TagInterface;
 
 class ExcerptDataMapperTest extends TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
+
     protected function createExcerptDataMapperInstance(
         TagFactoryInterface $tagFactory,
         CategoryFactoryInterface $categoryFactory

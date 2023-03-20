@@ -88,6 +88,7 @@ class WorkflowDataMapper implements DataMapperInterface
             return;
         }
 
+        /** @var string|null $published */
         $published = $data['published'] ?? null;
 
         if (!$published) {

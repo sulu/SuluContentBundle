@@ -14,17 +14,21 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Content\Domain\Model;
 
 /**
- * @extends \Traversable<DimensionContentInterface>
+ * @template-covariant T of DimensionContentInterface
+ *
+ * @extends \Traversable<T>
  */
 interface DimensionContentCollectionInterface extends \Traversable, \Countable
 {
     /**
      * @param mixed[] $dimensionAttributes
+     *
+     * @return T|null
      */
     public function getDimensionContent(array $dimensionAttributes): ?DimensionContentInterface;
 
     /**
-     * @return class-string<DimensionContentInterface>
+     * @return class-string<T>
      */
     public function getDimensionContentClass(): string;
 

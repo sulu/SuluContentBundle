@@ -28,6 +28,8 @@ use Sulu\Component\Content\Metadata\StructureMetadata;
 
 class TemplateDataMapperTest extends TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
+
     /**
      * @param array<string, string> $structureDefaultTypes
      */
@@ -39,15 +41,22 @@ class TemplateDataMapperTest extends TestCase
     }
 
     /**
-     * @param ObjectProphecy<DimensionContentInterface> $tempplateMock
+     * @template T of DimensionContentInterface&TemplateInterface
+     *
+     * @param ObjectProphecy<T> $templateMock
      */
-    protected function wrapTemplateMock(ObjectProphecy $tempplateMock): TemplateInterface
+    protected function wrapTemplateMock(ObjectProphecy $templateMock): TemplateInterface
     {
-        return new class($tempplateMock) extends MockWrapper implements
+        return new class($templateMock) extends MockWrapper implements
             DimensionContentInterface,
             TemplateInterface {
             use DimensionContentMockWrapperTrait;
             use TemplateMockWrapperTrait;
+
+            /**
+             * @var T
+             */
+            protected $instance;
         };
     }
 

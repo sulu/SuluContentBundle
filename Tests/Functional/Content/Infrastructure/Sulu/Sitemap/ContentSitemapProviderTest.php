@@ -14,6 +14,8 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Functional\Content\Infrastructure\Sulu\Sitemap;
 
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Sitemap\ContentSitemapProvider;
+use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
+use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleDimensionContent;
 use Sulu\Bundle\ContentBundle\Tests\Traits\AssertSnapshotTrait;
 use Sulu\Bundle\ContentBundle\Tests\Traits\CreateExampleTrait;
 use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
@@ -30,7 +32,7 @@ class ContentSitemapProviderTest extends SuluTestCase
     public const HOST = 'localhost';
 
     /**
-     * @var ContentSitemapProvider
+     * @var ContentSitemapProvider<ExampleDimensionContent, Example>
      */
     private $contentSitemapProvider;
 

@@ -159,7 +159,7 @@ trait ExcerptTrait
     }
 
     /**
-     * @return mixed[]|null
+     * @return array{id: int}|null
      */
     public function getExcerptImage(): ?array
     {
@@ -173,7 +173,7 @@ trait ExcerptTrait
     }
 
     /**
-     * @param mixed[]|null $excerptImage
+     * @param array{id: int}|null $excerptImage
      */
     public function setExcerptImage(?array $excerptImage): void
     {
@@ -181,7 +181,7 @@ trait ExcerptTrait
     }
 
     /**
-     * @return mixed[]|null
+     * @return array{id: int}|null
      */
     public function getExcerptIcon(): ?array
     {
@@ -195,7 +195,7 @@ trait ExcerptTrait
     }
 
     /**
-     * @param mixed[]|null $excerptIcon
+     * @param array{id: int}|null $excerptIcon
      */
     public function setExcerptIcon(?array $excerptIcon): void
     {

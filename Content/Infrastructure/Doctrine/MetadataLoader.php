@@ -112,8 +112,9 @@ class MetadataLoader implements EventSubscriber
      * @codeCoverageIgnore
      *
      * @param ClassMetadataInfo<object> $metadata
+     * @param class-string $class
      */
-    private function addManyToOne(
+    private function addManyToOne(// @phpstan-ignore-line ignore unused method
         LoadClassMetadataEventArgs $event,
         ClassMetadataInfo $metadata,
         string $name,
@@ -143,6 +144,7 @@ class MetadataLoader implements EventSubscriber
 
     /**
      * @param ClassMetadataInfo<object> $metadata
+     * @param class-string $class
      */
     private function addManyToMany(
         LoadClassMetadataEventArgs $event,

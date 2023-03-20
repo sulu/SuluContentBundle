@@ -43,6 +43,14 @@ class DimensionContentRepository implements DimensionContentRepositoryInterface
         $this->contentMetadataInspector = $contentMetadataInspector;
     }
 
+    /**
+     * @template T of DimensionContentInterface
+     *
+     * @param ContentRichEntityInterface<T> $contentRichEntity
+     * @param mixed[] $dimensionAttributes
+     *
+     * @return DimensionContentCollectionInterface<T>
+     */
     public function load(
         ContentRichEntityInterface $contentRichEntity,
         array $dimensionAttributes
@@ -61,7 +69,7 @@ class DimensionContentRepository implements DimensionContentRepositoryInterface
         $queryBuilder->addCriteria($this->getAttributesCriteria('dimensionContent', $effectiveAttributes));
         $this->addSortBy($queryBuilder, $effectiveAttributes);
 
-        /** @var DimensionContentInterface[] $dimensionContents */
+        /** @var T[] $dimensionContents */
         $dimensionContents = $queryBuilder->getQuery()->getResult();
 
         return new DimensionContentCollection(
@@ -106,7 +114,9 @@ class DimensionContentRepository implements DimensionContentRepositoryInterface
     }
 
     /**
-     * @param class-string<DimensionContentInterface> $className
+     * @template T of ContentRichEntityInterface
+     *
+     * @param class-string<DimensionContentInterface<T>> $className
      * @param mixed[] $attributes
      *
      * @return mixed[]

@@ -44,7 +44,7 @@ class ContentStructureBridge implements StructureInterface, RoutableStructureInt
     protected $content;
 
     /**
-     * @var string
+     * @var string|int
      */
     protected $id;
 
@@ -58,11 +58,14 @@ class ContentStructureBridge implements StructureInterface, RoutableStructureInt
      */
     private $loadedProperties = [];
 
+    /**
+     * @param string|int $id
+     */
     public function __construct(
         StructureMetadata $structure,
         LegacyPropertyFactory $propertyFactory,
         TemplateInterface $content,
-        string $id,
+        $id,
         string $locale
     ) {
         $this->structure = $structure;
@@ -108,11 +111,11 @@ class ContentStructureBridge implements StructureInterface, RoutableStructureInt
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getUuid()
     {
-        return $this->id;
+        return (string) $this->id;
     }
 
     public function setUuid($uuid): void
@@ -324,6 +327,7 @@ class ContentStructureBridge implements StructureInterface, RoutableStructureInt
     /**
      * @return mixed[]
      */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         return $this->toArray(true);
@@ -432,7 +436,7 @@ class ContentStructureBridge implements StructureInterface, RoutableStructureInt
     }
 
     /**
-     * @param mixed $name
+     * @param string $name
      *
      * @return mixed
      */

@@ -26,6 +26,8 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 
 class ContentCopierTest extends TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
+
     protected function createContentCopierInstance(
         ContentResolverInterface $contentResolver,
         ContentMergerInterface $contentMerger,

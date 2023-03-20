@@ -27,6 +27,9 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateTrait;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowTrait;
 
+/**
+ * @implements DimensionContentInterface<Example>
+ */
 class ExampleDimensionContent implements DimensionContentInterface, ExcerptInterface, SeoInterface, TemplateInterface, RoutableInterface, WorkflowInterface
 {
     use DimensionContentTrait;
@@ -89,7 +92,7 @@ class ExampleDimensionContent implements DimensionContentInterface, ExcerptInter
 
     public function setTemplateData(array $templateData): void
     {
-        $this->setTitle($templateData['title']);
+        $this->setTitle($templateData['title']); // @phpstan-ignore-line
         unset($templateData['title']);
         $this->parentSetTemplateData($templateData);
     }

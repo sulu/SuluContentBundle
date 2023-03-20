@@ -21,6 +21,8 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInt
 
 class ContentDataMapperTest extends TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
+
     /**
      * @param iterable<DataMapperInterface> $dataMappers
      */

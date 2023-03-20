@@ -309,7 +309,7 @@ class ExampleController extends AbstractRestController implements ClassResourceI
      *
      * @return mixed[]
      */
-    protected function normalize(Example $example, DimensionContentInterface $dimensionContent): array
+    protected function normalize(Example $example, ExampleDimensionContent $dimensionContent): array
     {
         $normalizedContent = $this->contentManager->normalize($dimensionContent);
 

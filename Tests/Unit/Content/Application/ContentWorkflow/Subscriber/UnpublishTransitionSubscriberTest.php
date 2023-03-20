@@ -29,6 +29,8 @@ use Symfony\Component\Workflow\Marking;
 
 class UnpublishTransitionSubscriberTest extends TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
+
     public function createContentUnpublishSubscriberInstance(
         DimensionContentRepositoryInterface $dimensionContentRepository,
         EntityManagerInterface $entityManager

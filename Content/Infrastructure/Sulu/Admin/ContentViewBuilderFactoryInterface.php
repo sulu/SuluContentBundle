@@ -16,11 +16,14 @@ namespace Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Admin;
 use Sulu\Bundle\AdminBundle\Admin\View\ToolbarAction;
 use Sulu\Bundle\AdminBundle\Admin\View\ViewBuilderInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 
 interface ContentViewBuilderFactoryInterface
 {
     /**
-     * @param class-string<ContentRichEntityInterface> $contentRichEntityClass
+     * @template T of DimensionContentInterface
+     *
+     * @param class-string<ContentRichEntityInterface<T>> $contentRichEntityClass
      *
      * @return array<string, ToolbarAction>
      */
@@ -29,7 +32,9 @@ interface ContentViewBuilderFactoryInterface
     ): array;
 
     /**
-     * @param class-string<ContentRichEntityInterface> $contentRichEntityClass
+     * @template T of DimensionContentInterface
+     *
+     * @param class-string<ContentRichEntityInterface<T>> $contentRichEntityClass
      * @param array<string, ToolbarAction> $toolbarActions
      *
      * @return ViewBuilderInterface[]

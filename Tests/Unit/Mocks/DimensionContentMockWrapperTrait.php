@@ -14,11 +14,14 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Mocks;
 
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 
 /**
  * Trait for composing a class that wraps a DimensionContentInterface mock.
  *
  * @see MockWrapper to learn why this trait is needed.
+ *
+ * @property DimensionContentInterface $instance
  */
 trait DimensionContentMockWrapperTrait
 {
@@ -42,7 +45,7 @@ trait DimensionContentMockWrapperTrait
         return $this->instance->getStage();
     }
 
-    public function setStage(?string $stage): void
+    public function setStage(string $stage): void
     {
         $this->instance->setStage($stage);
     }

@@ -20,12 +20,15 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 /**
  * @internal
  *
- * @implements \IteratorAggregate<DimensionContentInterface>
+ * @template-covariant T of DimensionContentInterface
+ *
+ * @implements DimensionContentCollectionInterface<T>
+ * @implements \IteratorAggregate<T>
  */
 class PreviewDimensionContentCollection implements \IteratorAggregate, DimensionContentCollectionInterface
 {
     /**
-     * @var DimensionContentInterface
+     * @var T
      */
     private $previewDimensionContent;
 
@@ -34,6 +37,9 @@ class PreviewDimensionContentCollection implements \IteratorAggregate, Dimension
      */
     private $previewLocale;
 
+    /**
+     * @param T $previewDimensionContent
+     */
     public function __construct(
         DimensionContentInterface $previewDimensionContent,
         string $previewLocale
@@ -60,7 +66,7 @@ class PreviewDimensionContentCollection implements \IteratorAggregate, Dimension
         );
     }
 
-    public function getIterator()
+    public function getIterator(): \Traversable
     {
         return new ArrayCollection([$this->previewDimensionContent]);
     }

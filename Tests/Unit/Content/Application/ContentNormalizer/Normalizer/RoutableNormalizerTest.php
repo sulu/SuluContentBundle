@@ -19,6 +19,8 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\RoutableInterface;
 
 class RoutableNormalizerTest extends TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
+
     protected function createRoutableNormalizerInstance(): RoutableNormalizer
     {
         return new RoutableNormalizer();

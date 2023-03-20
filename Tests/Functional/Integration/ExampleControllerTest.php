@@ -68,10 +68,11 @@ class ExampleControllerTest extends SuluTestCase
 
         $response = $this->client->getResponse();
         $content = \json_decode((string) $response->getContent(), true);
-        $id = $content['id'] ?? null;
+        /** @var int $id */
+        $id = $content['id'] ?? null; // @phpstan-ignore-line
 
         $this->assertResponseSnapshot('example_post_publish.json', $response, 201);
-        $this->assertNotSame('2020-05-08T00:00:00+00:00', $content['published']);
+        $this->assertNotSame('2020-05-08T00:00:00+00:00', $content['published']); // @phpstan-ignore-line
 
         self::ensureKernelShutdown();
 
@@ -136,7 +137,8 @@ class ExampleControllerTest extends SuluTestCase
 
         $this->assertResponseSnapshot('example_post.json', $response, 201);
 
-        $id = \json_decode((string) $response->getContent(), true)['id'] ?? null;
+        /** @var int $id */
+        $id = \json_decode((string) $response->getContent(), true)['id'] ?? null; // @phpstan-ignore-line
 
         return $id;
     }

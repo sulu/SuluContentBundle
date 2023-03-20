@@ -13,6 +13,9 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Domain\Model;
 
+/**
+ * @template T of ContentRichEntityInterface
+ */
 interface DimensionContentInterface
 {
     public const STAGE_DRAFT = 'draft';
@@ -28,6 +31,9 @@ interface DimensionContentInterface
 
     public function setStage(string $stage): void;
 
+    /**
+     * @return T
+     */
     public function getResource(): ContentRichEntityInterface;
 
     public function isMerged(): bool;

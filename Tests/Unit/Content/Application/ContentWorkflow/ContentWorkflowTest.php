@@ -34,6 +34,8 @@ use Sulu\Bundle\ContentBundle\Tests\Unit\Mocks\WorkflowMockWrapperTrait;
 
 class ContentWorkflowTest extends TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
+
     protected function createContentWorkflowInstance(
         DimensionContentRepositoryInterface $dimensionContentRepository,
         ContentMergerInterface $contentMerger
@@ -45,17 +47,24 @@ class ContentWorkflowTest extends TestCase
     }
 
     /**
-     * @param ObjectProphecy<DimensionContentInterface> $workflowMock
+     * @template T of DimensionContentInterface&WorkflowInterface
      *
-     * @return DimensionContentInterface&WorkflowInterface
+     * @param ObjectProphecy<T> $templateMock
+     *
+     * @return T
      */
-    protected function wrapWorkflowMock(ObjectProphecy $workflowMock)
+    protected function wrapWorkflowMock(ObjectProphecy $templateMock): WorkflowInterface
     {
-        return new class($workflowMock) extends MockWrapper implements
+        return new class($templateMock) extends MockWrapper implements // @phpstan-ignore-line
             DimensionContentInterface,
             WorkflowInterface {
             use DimensionContentMockWrapperTrait;
             use WorkflowMockWrapperTrait;
+
+            /**
+             * @var T
+             */
+            protected $instance;
 
             public static function getWorkflowName(): string
             {
