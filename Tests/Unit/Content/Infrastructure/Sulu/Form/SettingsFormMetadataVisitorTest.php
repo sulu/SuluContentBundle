@@ -15,6 +15,7 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Infrastructure\Sulu\Autom
 
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Sulu\Bundle\AdminBundle\Metadata\FormMetadata\FormMetadata;
 use Sulu\Bundle\AdminBundle\Metadata\FormMetadata\ItemMetadata;
@@ -25,8 +26,10 @@ use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Form\SettingsFormMetad
 
 class SettingsFormMetadataVisitorTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
-     * @var ObjectProphecy|XmlFormMetadataLoader
+     * @var ObjectProphecy<XmlFormMetadataLoader>
      */
     private $xmlFormMetadataLoader;
 

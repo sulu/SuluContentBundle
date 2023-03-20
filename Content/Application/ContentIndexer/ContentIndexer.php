@@ -91,7 +91,12 @@ class ContentIndexer implements ContentIndexerInterface
     }
 
     /**
+     * @template T of DimensionContentInterface
+     *
+     * @param ContentRichEntityInterface<T> $contentRichEntity
      * @param mixed[] $dimensionAttributes
+     *
+     * @return T
      */
     private function loadDimensionContent(
         ContentRichEntityInterface $contentRichEntity,

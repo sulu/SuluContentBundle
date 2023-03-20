@@ -61,10 +61,13 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
     }
 
     /**
-     * @param string $entityClass
+     * @template B of DimensionContentInterface
+     * @template T of ContentRichEntityInterface<B>
+     *
+     * @param class-string<T> $entityClass
      * @param string $id
      * @param string $locale
-     * @param DimensionContentInterface|null $object
+     * @param B|null $object
      *
      * @return mixed[]
      */
@@ -96,6 +99,11 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
         ];
     }
 
+    /**
+     * @template T of DimensionContentInterface
+     *
+     * @param class-string<ContentRichEntityInterface<T>> $entityClass
+     */
     public function isPublished($entityClass, $id, $locale)
     {
         $entity = $this->loadEntity($entityClass, $id, $locale);
@@ -114,10 +122,15 @@ class ContentRouteDefaultsProvider implements RouteDefaultsProviderInterface
             || \is_a($entityClass, DimensionContentInterface::class, true);
     }
 
+    /**
+     * @template T of DimensionContentInterface
+     *
+     * @param class-string<ContentRichEntityInterface<T>> $entityClass
+     */
     protected function loadEntity(string $entityClass, string $id, string $locale): ?TemplateInterface
     {
         try {
-            /** @var ContentRichEntityInterface $contentRichEntity */
+            /** @var ContentRichEntityInterface<T> $contentRichEntity */
             $contentRichEntity = $this->entityManager->createQueryBuilder()
                 ->select('entity')
                 ->from($entityClass, 'entity')

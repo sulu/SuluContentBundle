@@ -14,12 +14,15 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentNormalizer\Normalizer;
 
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Sulu\Bundle\ContactBundle\Entity\ContactInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentNormalizer\Normalizer\AuthorNormalizer;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\AuthorInterface;
 
 class AuthorNormalizerTest extends TestCase
 {
+    use ProphecyTrait;
+
     protected function createAuthorNormalizerInstance(): AuthorNormalizer
     {
         return new AuthorNormalizer();

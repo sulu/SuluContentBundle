@@ -19,14 +19,18 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 interface ContentMetadataInspectorInterface
 {
     /**
-     * @param class-string<ContentRichEntityInterface> $contentRichEntityClass
+     * @template T of DimensionContentInterface
      *
-     * @return class-string<DimensionContentInterface>
+     * @param class-string<ContentRichEntityInterface<T>> $contentRichEntityClass
+     *
+     * @return class-string<T>
      */
     public function getDimensionContentClass(string $contentRichEntityClass): string;
 
     /**
-     * @param class-string<ContentRichEntityInterface> $contentRichEntityClass
+     * @template T of DimensionContentInterface
+     *
+     * @param class-string<ContentRichEntityInterface<T>> $contentRichEntityClass
      */
     public function getDimensionContentPropertyName(string $contentRichEntityClass): string;
 }

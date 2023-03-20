@@ -71,6 +71,7 @@ class DimensionContentCollectionFactory implements DimensionContentCollectionFac
         }
 
         $localizedDimensionContent = null;
+        /** @var string|null $locale */
         $locale = $dimensionAttributes['locale'] ?? null;
         if ($locale) {
             $localizedDimensionContent = $dimensionContentCollection->getDimensionContent($dimensionAttributes);
@@ -104,7 +105,12 @@ class DimensionContentCollectionFactory implements DimensionContentCollectionFac
     }
 
     /**
+     * @template T of DimensionContentInterface
+     *
+     * @param ContentRichEntityInterface<T> $contentRichEntity
      * @param mixed[] $attributes
+     *
+     * @return T
      */
     private function createContentDimension(
         ContentRichEntityInterface $contentRichEntity,

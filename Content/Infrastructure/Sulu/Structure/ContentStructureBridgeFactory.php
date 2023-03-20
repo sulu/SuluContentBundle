@@ -36,7 +36,7 @@ class ContentStructureBridgeFactory
     }
 
     /**
-     * @param mixed $id
+     * @param string|int $id
      */
     public function getBridge(TemplateInterface $object, $id, string $locale): ContentStructureBridge
     {

@@ -19,8 +19,13 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 interface ContentPersisterInterface
 {
     /**
+     * @template T of DimensionContentInterface
+     *
+     * @param ContentRichEntityInterface<T> $contentRichEntity
      * @param mixed[] $data
      * @param mixed[] $dimensionAttributes
+     *
+     * @return T
      */
     public function persist(ContentRichEntityInterface $contentRichEntity, array $data, array $dimensionAttributes): DimensionContentInterface;
 }

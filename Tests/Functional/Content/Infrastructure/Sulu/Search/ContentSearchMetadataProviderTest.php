@@ -16,9 +16,10 @@ namespace Sulu\Bundle\ContentBundle\Tests\Functional\Content\Infrastructure\Sulu
 use Massive\Bundle\SearchBundle\Search\Metadata\ClassMetadata;
 use Massive\Bundle\SearchBundle\Search\ObjectToDocumentConverter;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentManager\ContentManagerInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Search\ContentSearchMetadataProvider;
+use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
+use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleDimensionContent;
 use Sulu\Bundle\ContentBundle\Tests\Traits\CreateExampleTrait;
 use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
 
@@ -37,12 +38,12 @@ class ContentSearchMetadataProviderTest extends SuluTestCase
     private $objectToDocumentConverter;
 
     /**
-     * @var ContentSearchMetadataProvider
+     * @var ContentSearchMetadataProvider<ExampleDimensionContent, Example>
      */
     private $searchMetadataProvider;
 
     /**
-     * @var ContentRichEntityInterface
+     * @var Example
      */
     private static $example1;
 
@@ -51,7 +52,7 @@ class ContentSearchMetadataProviderTest extends SuluTestCase
         static::purgeDatabase();
         parent::setUpBeforeClass();
 
-        static::$example1 = static::createExample([
+        self::$example1 = static::createExample([
             'en' => [
                 'draft' => [
                     'title' => 'example-1',
@@ -71,7 +72,7 @@ class ContentSearchMetadataProviderTest extends SuluTestCase
 
     public function testGetMetadataForObject(): void
     {
-        $dimensionContent = $this->contentManager->resolve(static::$example1, [
+        $dimensionContent = $this->contentManager->resolve(self::$example1, [
             'stage' => DimensionContentInterface::STAGE_DRAFT,
             'locale' => 'en',
         ]);
@@ -93,7 +94,7 @@ class ContentSearchMetadataProviderTest extends SuluTestCase
     {
         $this->assertNull(
             $this->searchMetadataProvider->getMetadataForObject(
-                (object) static::$example1->getDimensionContents()->first()
+                (object) self::$example1->getDimensionContents()->first()
             )
         );
     }
@@ -111,7 +112,7 @@ class ContentSearchMetadataProviderTest extends SuluTestCase
 
     public function testGetMetadataForDocument(): void
     {
-        $dimensionContent = $this->contentManager->resolve(static::$example1, [
+        $dimensionContent = $this->contentManager->resolve(self::$example1, [
             'stage' => DimensionContentInterface::STAGE_DRAFT,
             'locale' => 'en',
         ]);

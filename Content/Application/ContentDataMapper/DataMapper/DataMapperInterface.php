@@ -18,6 +18,10 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 interface DataMapperInterface
 {
     /**
+     * @template T of DimensionContentInterface
+     *
+     * @param T $unlocalizedDimensionContent
+     * @param T $localizedDimensionContent
      * @param array<string, mixed> $data
      */
     public function map(

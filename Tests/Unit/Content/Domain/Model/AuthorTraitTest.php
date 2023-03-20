@@ -14,12 +14,15 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Domain\Model;
 
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Sulu\Bundle\ContactBundle\Entity\ContactInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\AuthorInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\AuthorTrait;
 
 class AuthorTraitTest extends TestCase
 {
+    use ProphecyTrait;
+
     protected function getAuthorInstance(): AuthorInterface
     {
         return new class() implements AuthorInterface {

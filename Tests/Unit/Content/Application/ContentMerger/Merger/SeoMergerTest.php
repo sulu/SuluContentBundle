@@ -22,6 +22,8 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
 
 class SeoMergerTest extends TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
+
     protected function getSeoMergerInstance(): MergerInterface
     {
         return new SeoMerger();

@@ -38,12 +38,12 @@ class RouteRemover implements EventSubscriber
     private $routeRepository;
 
     /**
-     * @var array<string, array<mixed>>
+     * @var array<string|int, array{resource_key: string, entityClass?: string}>
      */
     private $routeMappings;
 
     /**
-     * @param array<string, array<mixed>> $routeMappings
+     * @param array<string|int, array{resource_key: string, entityClass?: string}> $routeMappings
      */
     public function __construct(
         ContentMetadataInspectorInterface $contentMetadataInspector,
@@ -73,6 +73,7 @@ class RouteRemover implements EventSubscriber
         $entityClass = null;
         foreach ($this->routeMappings as $key => $mapping) {
             if ($resourceKey === $mapping['resource_key']) {
+                /** @var class-string $entityClass */
                 $entityClass = $mapping['entityClass'] ?? $key;
                 break;
             }
@@ -82,7 +83,7 @@ class RouteRemover implements EventSubscriber
             return;
         }
 
-        foreach ($this->routeRepository->findAllByEntity($entityClass, $object->getId()) as $route) {
+        foreach ($this->routeRepository->findAllByEntity($entityClass, (string) $object->getId()) as $route) {
             $event->getEntityManager()->remove($route);
         }
     }

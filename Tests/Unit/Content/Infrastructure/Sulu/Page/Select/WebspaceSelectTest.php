@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Infrastructure\Sulu\Page\Select;
 
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Page\Select\WebspaceSelect;
 use Sulu\Component\Webspace\Manager\WebspaceCollection;
@@ -22,8 +23,10 @@ use Sulu\Component\Webspace\Webspace;
 
 class WebspaceSelectTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
-     * @var ObjectProphecy|WebspaceManagerInterface
+     * @var ObjectProphecy<WebspaceManagerInterface>
      */
     private $webspaceManager;
 

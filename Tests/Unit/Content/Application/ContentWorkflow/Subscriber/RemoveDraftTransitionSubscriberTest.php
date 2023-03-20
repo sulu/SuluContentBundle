@@ -26,6 +26,8 @@ use Symfony\Component\Workflow\Marking;
 
 class RemoveDraftTransitionSubscriberTest extends TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
+
     public function createContentRemoveDraftSubscriberInstance(
         ContentCopierInterface $contentCopier
     ): RemoveDraftTransitionSubscriber {

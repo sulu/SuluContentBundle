@@ -21,6 +21,10 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Component\SmartContent\Orm\DataProviderRepositoryInterface;
 
+/**
+ * @template B of DimensionContentInterface
+ * @template T of ContentRichEntityInterface<B>
+ */
 class ContentDataProviderRepository implements DataProviderRepositoryInterface
 {
     public const CONTENT_RICH_ENTITY_ALIAS = 'entity';
@@ -42,18 +46,18 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
     protected $showDrafts;
 
     /**
-     * @var class-string<ContentRichEntityInterface>
+     * @var class-string<T>
      */
     protected $contentRichEntityClass;
 
     /**
-     * @var ClassMetadataInfo<ContentRichEntityInterface>
+     * @var ClassMetadataInfo<T>
      */
     protected $contentRichEntityClassMetadata;
 
     /**
      * @param bool $showDrafts Inject parameter "sulu_document_manager.show_drafts" here
-     * @param class-string<ContentRichEntityInterface> $contentRichEntityClass
+     * @param class-string<T> $contentRichEntityClass
      */
     public function __construct(
         ContentManagerInterface $contentManager,
@@ -66,20 +70,35 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
         $this->showDrafts = $showDrafts;
         $this->contentRichEntityClass = $contentRichEntityClass;
 
-        /** @var ClassMetadataInfo<ContentRichEntityInterface> $contentRichEntityClassMetadata */
+        /** @var ClassMetadataInfo<T> $contentRichEntityClassMetadata */
         $contentRichEntityClassMetadata = $this->entityManager->getClassMetadata($this->contentRichEntityClass);
         $this->contentRichEntityClassMetadata = $contentRichEntityClassMetadata;
     }
 
     /**
-     * @param array<string, mixed> $filters
-     * @param mixed|null $page
-     * @param mixed|null $pageSize
-     * @param mixed|null $limit
+     * @param array{
+     *     categories?: int[],
+     *     categoryOperator?: 'AND'|'OR',
+     *     websiteCategories?: int[],
+     *     websiteCategoriesOperator?: 'AND'|'OR',
+     *     tags?: string[],
+     *     tagOperator?: 'AND'|'OR',
+     *     websiteTags?: string[],
+     *     websiteTagsOperator?: 'AND'|'OR',
+     *     types?: string[],
+     *     targetGroupId?: int,
+     *     dataSource?: string|int,
+     *     includeSubFolders?: bool,
+     *     sortBy?: string,
+     *     sortMethod?: 'asc'|'desc',
+     * } $filters
+     * @param int|null $page
+     * @param int|null $pageSize
+     * @param int|null $limit
      * @param string $locale
      * @param array<string, mixed> $options
      *
-     * @return DimensionContentInterface[]
+     * @return B[]
      */
     public function findByFilters($filters, $page, $pageSize, $limit, $locale, $options = []): array
     {
@@ -93,12 +112,11 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
 
         $showUnpublished = $this->showDrafts;
 
+        /** @var B[] */
         return \array_filter(
             \array_map(
                 function(ContentRichEntityInterface $contentRichEntity) use ($locale, $showUnpublished) {
-                    $stage = $showUnpublished
-                        ? DimensionContentInterface::STAGE_DRAFT
-                        : DimensionContentInterface::STAGE_LIVE;
+                    $stage = $showUnpublished ? DimensionContentInterface::STAGE_DRAFT : DimensionContentInterface::STAGE_LIVE;
 
                     $resolvedDimensionContent = $this->contentManager->resolve(
                         $contentRichEntity,
@@ -120,10 +138,27 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
     }
 
     /**
-     * @param array<string, mixed> $filters
+     * TODO check "tagOperator"|"tagsOperator" vs "websiteTagOperator"|"websiteTagsOperator".
+     *
+     * @param array{
+     *     categories?: int[],
+     *     categoryOperator?: 'AND'|'OR',
+     *     websiteCategories?: int[],
+     *     websiteCategoriesOperator?: 'AND'|'OR',
+     *     tags?: string[],
+     *     tagOperator?: 'AND'|'OR',
+     *     websiteTags?: string[],
+     *     websiteTagsOperator?: 'AND'|'OR',
+     *     types?: string[],
+     *     targetGroupId?: int,
+     *     dataSource?: string|int,
+     *     includeSubFolders?: bool,
+     *     sortBy?: string,
+     *     sortMethod?: 'asc'|'desc',
+     * } $filters
      * @param array<string, mixed> $options
      *
-     * @return mixed[] entity ids
+     * @return array<string|int> entity ids
      */
     protected function findEntityIdsByFilters(
         array $filters,
@@ -457,9 +492,7 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
 
     protected function createEntityIdsQueryBuilder(string $locale): QueryBuilder
     {
-        $stage = $this->showDrafts
-            ? DimensionContentInterface::STAGE_DRAFT
-            : DimensionContentInterface::STAGE_LIVE;
+        $stage = $this->showDrafts ? DimensionContentInterface::STAGE_DRAFT : DimensionContentInterface::STAGE_LIVE;
 
         return $this->entityManager->createQueryBuilder()
             // no distinct used here else it would hurt performance of the query: https://github.com/sulu/SuluContentBundle/pull/226
@@ -474,14 +507,15 @@ class ContentDataProviderRepository implements DataProviderRepositoryInterface
     }
 
     /**
-     * @param mixed[] $ids
+     * @param array<int|string> $ids
      *
-     * @return ContentRichEntityInterface[]
+     * @return T[]
      */
     protected function findEntitiesByIds(array $ids): array
     {
         $entityIdentifierFieldName = $this->getEntityIdentifierFieldName();
 
+        /** @var T[] $entities */
         $entities = $this->entityManager->createQueryBuilder()
             ->select(self::CONTENT_RICH_ENTITY_ALIAS)
             ->from($this->contentRichEntityClass, self::CONTENT_RICH_ENTITY_ALIAS)

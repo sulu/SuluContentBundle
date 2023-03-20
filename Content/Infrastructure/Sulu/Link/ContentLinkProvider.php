@@ -24,8 +24,15 @@ use Sulu\Bundle\MarkupBundle\Markup\Link\LinkItem;
 use Sulu\Bundle\MarkupBundle\Markup\Link\LinkProviderInterface;
 use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
 
+/**
+ * @template B of DimensionContentInterface
+ * @template T of ContentRichEntityInterface<B>
+ */
 abstract class ContentLinkProvider implements LinkProviderInterface
 {
+    /**
+     * @phpstan-use FindContentRichEntitiesTrait<T>
+     */
     use FindContentRichEntitiesTrait;
     use ResolveContentDimensionUrlTrait;
     use ResolveContentTrait;
@@ -46,10 +53,13 @@ abstract class ContentLinkProvider implements LinkProviderInterface
     protected $entityManager;
 
     /**
-     * @var string
+     * @var class-string<T>
      */
     protected $contentRichEntityClass;
 
+    /**
+     * @param class-string<T> $contentRichEntityClass
+     */
     public function __construct(
         ContentManagerInterface $contentManager,
         StructureMetadataFactoryInterface $structureMetadataFactory,
@@ -73,7 +83,6 @@ abstract class ContentLinkProvider implements LinkProviderInterface
             \array_values(
                 \array_filter(
                     \array_map(function(ContentRichEntityInterface $contentRichEntity) use ($locale, $published) {
-                        /** @var DimensionContentInterface|null $resolvedDimensionContent */
                         $resolvedDimensionContent = $this->resolveContent($contentRichEntity, $locale, !$published);
 
                         if (!$resolvedDimensionContent) {
@@ -83,7 +92,7 @@ abstract class ContentLinkProvider implements LinkProviderInterface
                         $data = $this->contentManager->normalize($resolvedDimensionContent);
 
                         return new LinkItem(
-                            $contentRichEntity->getId(),
+                            (string) $contentRichEntity->getId(),
                             (string) $this->getTitle($resolvedDimensionContent, $data),
                             (string) $this->getUrl($resolvedDimensionContent, $data),
                             $published
@@ -94,6 +103,8 @@ abstract class ContentLinkProvider implements LinkProviderInterface
     }
 
     /**
+     * @param B $dimensionContent
+     *
      * @param mixed[] $data
      */
     protected function getTitle(DimensionContentInterface $dimensionContent, array $data): ?string
@@ -106,6 +117,9 @@ abstract class ContentLinkProvider implements LinkProviderInterface
         return 'id';
     }
 
+    /**
+     * @return class-string<T>
+     */
     protected function getContentRichEntityClass(): string
     {
         return $this->contentRichEntityClass;

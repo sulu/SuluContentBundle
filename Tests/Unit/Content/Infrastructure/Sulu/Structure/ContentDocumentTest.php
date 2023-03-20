@@ -22,6 +22,8 @@ use Sulu\Component\Content\Compat\StructureInterface;
 
 class ContentDocumentTest extends TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
+
     protected function createContentDocument(
         ?TemplateInterface $content = null,
         string $locale = 'en'

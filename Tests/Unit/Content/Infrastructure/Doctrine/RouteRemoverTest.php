@@ -18,6 +18,7 @@ use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Events;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentMetadataInspector\ContentMetadataInspectorInterface;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Doctrine\RouteRemover;
@@ -28,23 +29,25 @@ use Sulu\Bundle\RouteBundle\Model\RouteInterface;
 
 class RouteRemoverTest extends TestCase
 {
+    use ProphecyTrait;
+
     public static function getResourceKey(): string
     {
         return 'test';
     }
 
     /**
-     * @var ContentMetadataInspectorInterface|ObjectProphecy
+     * @var ObjectProphecy<ContentMetadataInspectorInterface>
      */
     private $contentMetadataInspector;
 
     /**
-     * @var RouteRepositoryInterface|ObjectProphecy
+     * @var ObjectProphecy<RouteRepositoryInterface>
      */
     private $routeRepository;
 
     /**
-     * @var mixed[]
+     * @var array<string|int, array{resource_key: string, entityClass?: string}>
      */
     private $routeMappings = [
         [

@@ -29,6 +29,8 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 
 class ContentIndexerTest extends TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
+
     protected function createContentIndexerInstance(
         SearchManagerInterface $searchManager,
         ContentResolverInterface $contentResolver

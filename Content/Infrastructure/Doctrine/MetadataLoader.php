@@ -125,6 +125,7 @@ class MetadataLoader implements EventSubscriber
      * @codeCoverageIgnore
      *
      * @param ClassMetadataInfo<object> $metadata
+     * @param class-string $class
      */
     private function addManyToOne(
         LoadClassMetadataEventArgs $event,
@@ -157,6 +158,7 @@ class MetadataLoader implements EventSubscriber
 
     /**
      * @param ClassMetadataInfo<object> $metadata
+     * @param class-string $class
      */
     private function addManyToMany(
         LoadClassMetadataEventArgs $event,

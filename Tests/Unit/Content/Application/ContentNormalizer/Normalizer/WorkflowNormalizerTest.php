@@ -19,6 +19,8 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 
 class WorkflowNormalizerTest extends TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
+
     protected function createWorkflowNormalizerInstance(): WorkflowNormalizer
     {
         return new WorkflowNormalizer();

@@ -15,6 +15,7 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentMerger
 
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentMerger\Merger\MergerInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentMerger\Merger\WebspaceMerger;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
@@ -22,6 +23,8 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\WebspaceInterface;
 
 class WebspaceMergerTest extends TestCase
 {
+    use ProphecyTrait;
+
     protected function getWebspaceMergerInstance(): MergerInterface
     {
         return new WebspaceMerger();

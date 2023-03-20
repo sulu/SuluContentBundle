@@ -16,7 +16,6 @@ namespace Sulu\Bundle\ContentBundle\Content\Infrastructure\Doctrine;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
-use Sulu\Bundle\ContentBundle\Content\Application\ContentMetadataInspector\ContentMetadataInspectorInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
@@ -29,17 +28,6 @@ use Webmozart\Assert\Assert;
  */
 class DimensionContentQueryEnhancer
 {
-    /**
-     * @var ContentMetadataInspectorInterface
-     */
-    private $contentMetadataInspector;
-
-    public function __construct(
-        ContentMetadataInspectorInterface $contentMetadataInspector
-    ) {
-        $this->contentMetadataInspector = $contentMetadataInspector;
-    }
-
     /**
      * Withs represents additional selects which can be load to join and select specific sub entities.
      * They are used by groups and fields.
@@ -76,7 +64,9 @@ class DimensionContentQueryEnhancer
      * TODO it should be possible to add custom filters for all contents here example when the
      *     excerpt tab and entity get extended with an additional field.
      *
-     * @param class-string<DimensionContentInterface> $dimensionContentClassName
+     * @template T of DimensionContentInterface
+     *
+     * @param class-string<T> $dimensionContentClassName
      * @param array{
      *     locale?: string|null,
      *     stage?: string|null,
@@ -238,7 +228,9 @@ class DimensionContentQueryEnhancer
      * TODO it should be possible to add custom select for all contents here example when the
      *     excerpt tab and entity get extended with additional relation.
      *
-     * @param class-string<DimensionContentInterface> $dimensionContentClassName
+     * @template T of DimensionContentInterface
+     *
+     * @param class-string<T> $dimensionContentClassName
      * @param mixed[] $dimensionAttributes
      * @param array{
      *     content_admin?: bool,

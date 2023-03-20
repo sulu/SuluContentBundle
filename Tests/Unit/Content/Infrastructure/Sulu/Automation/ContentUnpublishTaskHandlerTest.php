@@ -22,28 +22,32 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentManager\ContentManagerI
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Automation\ContentUnpublishTaskHandler;
+use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
 use Sulu\Bundle\PageBundle\Document\PageDocument;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ContentUnpublishTaskHandlerTest extends TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
+
     /**
-     * @var EntityManagerInterface|ObjectProphecy
+     * @var ObjectProphecy<EntityManagerInterface>
      */
     private $entityManager;
 
     /**
-     * @var ObjectRepository<ContentRichEntityInterface>|ObjectProphecy
+     * @var ObjectProphecy<ObjectRepository<Example>>
      */
     private $repository;
 
     /**
-     * @var ContentManagerInterface|ObjectProphecy
+     * @var ObjectProphecy<ContentManagerInterface>
      */
     private $contentManager;
+
     /**
-     * @var TranslatorInterface|ObjectProphecy
+     * @var ObjectProphecy<TranslatorInterface>
      */
     private $translator;
 
@@ -66,8 +70,7 @@ class ContentUnpublishTaskHandlerTest extends TestCase
 
     public function testUnpublish(): void
     {
-        /** @var ContentRichEntityInterface|ObjectProphecy $entity */
-        $entity = $this->prophesize(ContentRichEntityInterface::class);
+        $entity = new Example();
 
         $class = ContentRichEntityInterface::class;
         $id = 1;
@@ -78,11 +81,11 @@ class ContentUnpublishTaskHandlerTest extends TestCase
             ->shouldBeCalled();
 
         $this->repository->findOneBy(Argument::is(['id' => $id]))
-            ->willReturn($entity->reveal())
+            ->willReturn($entity)
             ->shouldBeCalled();
 
         $this->contentManager->applyTransition(
-            Argument::is($entity->reveal()),
+            Argument::is($entity),
             Argument::is(['locale' => $locale]),
             Argument::is(WorkflowInterface::WORKFLOW_TRANSITION_UNPUBLISH)
         )->shouldBeCalled();
@@ -107,10 +110,9 @@ class ContentUnpublishTaskHandlerTest extends TestCase
 
     public function testSupports(): void
     {
-        /** @var ContentRichEntityInterface|ObjectProphecy $entity */
-        $entity = $this->prophesize(ContentRichEntityInterface::class);
+        $entity = new Example();
 
-        $this->assertTrue($this->handler->supports(\get_class($entity->reveal())));
+        $this->assertTrue($this->handler->supports(\get_class($entity)));
         $this->assertFalse($this->handler->supports(PageDocument::class));
     }
 

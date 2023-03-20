@@ -23,6 +23,8 @@ use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example
 
 class ContentMetadataInspectorTest extends TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
+
     protected function createContentMetadataInspectorTestInstance(
         EntityManagerInterface $entityManager
     ): ContentMetadataInspectorInterface {

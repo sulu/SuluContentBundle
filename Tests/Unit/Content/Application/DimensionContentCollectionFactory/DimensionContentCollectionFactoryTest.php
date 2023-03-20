@@ -28,9 +28,13 @@ use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 class DimensionContentCollectionFactoryTest extends TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
+
     /**
+     * @template T of DimensionContentInterface
+     *
      * @param mixed[] $dimensionAttributes
-     * @param DimensionContentInterface[] $existDimensionContents
+     * @param T[] $existDimensionContents
      */
     protected function createDimensionContentCollectionFactoryInstance(
         array $dimensionAttributes,

@@ -130,10 +130,11 @@ class RoutableDataMapper implements DataMapperInterface
             throw new \RuntimeException(\sprintf('No route mapping found for "%s".', $resourceKey));
         }
 
-        $routePath = $data[$name] ?? null;
+        /** @var string $routePath */
+        $routePath = $data[$name] ?? '';
 
         if (!$routePath) {
-            /** @var mixed $routeGenerationData */
+            /** @var mixed[] $routeGenerationData */
             $routeGenerationData = \array_merge(
                 $data,
                 [

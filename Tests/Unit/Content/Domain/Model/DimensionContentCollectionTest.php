@@ -16,14 +16,16 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Domain\Model;
 use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollection;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
-use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
+use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleDimensionContent;
 
 class DimensionContentCollectionTest extends TestCase
 {
     /**
-     * @param DimensionContentInterface[] $dimensionContents
+     * @param ExampleDimensionContent[] $dimensionContents
      * @param mixed[] $dimensionAttributes
+     *
+     * @return DimensionContentCollectionInterface<ExampleDimensionContent>
      */
     protected function createDimensionContentCollectionInstance(
         array $dimensionContents,
@@ -34,18 +36,18 @@ class DimensionContentCollectionTest extends TestCase
 
     public function testCount(): void
     {
-        $dimensionContent1 = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent1->getLocale()->willReturn(null);
-        $dimensionContent1->getStage()->willReturn('draft');
-        $dimensionContent2 = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent2->getLocale()->willReturn('de');
-        $dimensionContent2->getStage()->willReturn('draft');
+        $example = new Example();
+        $dimensionContent1 = new ExampleDimensionContent($example);
+        $dimensionContent1->setStage('draft');
+        $dimensionContent2 = new ExampleDimensionContent($example);
+        $dimensionContent2->setLocale('de');
+        $dimensionContent2->setStage('draft');
 
         $attributes = ['locale' => 'de'];
 
         $dimensionContentCollection = $this->createDimensionContentCollectionInstance([
-            $dimensionContent1->reveal(),
-            $dimensionContent2->reveal(),
+            $dimensionContent1,
+            $dimensionContent2,
         ], $attributes);
 
         $this->assertCount(2, $dimensionContentCollection);
@@ -55,62 +57,63 @@ class DimensionContentCollectionTest extends TestCase
 
     public function testSortedByAttributes(): void
     {
-        $dimensionContent1 = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent1->getLocale()->willReturn(null);
-        $dimensionContent1->getStage()->willReturn('draft');
-        $dimensionContent2 = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent2->getLocale()->willReturn('de');
-        $dimensionContent2->getStage()->willReturn('draft');
+
+        $example = new Example();
+        $dimensionContent1 = new ExampleDimensionContent($example);
+        $dimensionContent1->setStage('draft');
+        $dimensionContent2 = new ExampleDimensionContent($example);
+        $dimensionContent2->setLocale('de');
+        $dimensionContent2->setStage('draft');
 
         $attributes = ['locale' => 'de'];
 
         $dimensionContentCollection = $this->createDimensionContentCollectionInstance([
-            $dimensionContent2->reveal(),
-            $dimensionContent1->reveal(),
+            $dimensionContent2,
+            $dimensionContent1,
         ], $attributes);
 
         $this->assertSame([
-            $dimensionContent1->reveal(),
-            $dimensionContent2->reveal(),
+            $dimensionContent1,
+            $dimensionContent2,
         ], \iterator_to_array($dimensionContentCollection));
     }
 
     public function testIterator(): void
     {
-        $dimensionContent1 = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent1->getLocale()->willReturn(null);
-        $dimensionContent1->getStage()->willReturn('draft');
-        $dimensionContent2 = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent2->getLocale()->willReturn('de');
-        $dimensionContent2->getStage()->willReturn('draft');
+        $example = new Example();
+        $dimensionContent1 = new ExampleDimensionContent($example);
+        $dimensionContent1->setStage('draft');
+        $dimensionContent2 = new ExampleDimensionContent($example);
+        $dimensionContent2->setLocale('de');
+        $dimensionContent2->setStage('draft');
 
         $attributes = ['locale' => 'de'];
 
         $dimensionContentCollection = $this->createDimensionContentCollectionInstance([
-            $dimensionContent1->reveal(),
-            $dimensionContent2->reveal(),
+            $dimensionContent1,
+            $dimensionContent2,
         ], $attributes);
 
         $this->assertSame([
-            $dimensionContent1->reveal(),
-            $dimensionContent2->reveal(),
+            $dimensionContent1,
+            $dimensionContent2,
         ], \iterator_to_array($dimensionContentCollection));
     }
 
     public function testGetDimensionContentClass(): void
     {
-        $dimensionContent1 = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent1->getLocale()->willReturn(null);
-        $dimensionContent1->getStage()->willReturn('draft');
-        $dimensionContent2 = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent2->getLocale()->willReturn('de');
-        $dimensionContent2->getStage()->willReturn('draft');
+        $example = new Example();
+        $dimensionContent1 = new ExampleDimensionContent($example);
+        $dimensionContent1->setStage('draft');
+        $dimensionContent2 = new ExampleDimensionContent($example);
+        $dimensionContent2->setLocale('de');
+        $dimensionContent2->setStage('draft');
 
         $attributes = ['locale' => 'de'];
 
         $dimensionContentCollection = $this->createDimensionContentCollectionInstance([
-            $dimensionContent1->reveal(),
-            $dimensionContent2->reveal(),
+            $dimensionContent1,
+            $dimensionContent2,
         ], $attributes);
 
         $this->assertSame(
@@ -121,20 +124,20 @@ class DimensionContentCollectionTest extends TestCase
 
     public function testGetDimensionAttributes(): void
     {
-        $dimensionContent1 = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent1->getLocale()->willReturn(null);
-        $dimensionContent1->getStage()->willReturn('draft');
-        $dimensionContent2 = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent2->getLocale()->willReturn('de');
-        $dimensionContent2->getStage()->willReturn('draft');
+        $example = new Example();
+        $dimensionContent1 = new ExampleDimensionContent($example);
+        $dimensionContent1->setStage('draft');
+        $dimensionContent2 = new ExampleDimensionContent($example);
+        $dimensionContent2->setLocale('de');
+        $dimensionContent2->setStage('draft');
 
         $attributes = [
             'locale' => 'de',
         ];
 
         $dimensionContentCollection = $this->createDimensionContentCollectionInstance([
-            $dimensionContent1->reveal(),
-            $dimensionContent2->reveal(),
+            $dimensionContent1,
+            $dimensionContent2,
         ], $attributes);
 
         $this->assertSame(
@@ -148,40 +151,40 @@ class DimensionContentCollectionTest extends TestCase
 
     public function testGetDimensionContent(): void
     {
-        $dimensionContent1 = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent1->getLocale()->willReturn(null);
-        $dimensionContent1->getStage()->willReturn('draft');
-        $dimensionContent2 = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent2->getLocale()->willReturn('de');
-        $dimensionContent2->getStage()->willReturn('draft');
+        $example = new Example();
+        $dimensionContent1 = new ExampleDimensionContent($example);
+        $dimensionContent1->setStage('draft');
+        $dimensionContent2 = new ExampleDimensionContent($example);
+        $dimensionContent2->setLocale('de');
+        $dimensionContent2->setStage('draft');
 
         $attributes = ['locale' => 'de'];
 
         $dimensionContentCollection = $this->createDimensionContentCollectionInstance([
-            $dimensionContent1->reveal(),
-            $dimensionContent2->reveal(),
+            $dimensionContent1,
+            $dimensionContent2,
         ], $attributes);
 
         $this->assertSame(
-            $dimensionContent2->reveal(),
+            $dimensionContent2,
             $dimensionContentCollection->getDimensionContent($attributes)
         );
     }
 
     public function testGetDimensionContentNotExist(): void
     {
-        $dimensionContent1 = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent1->getLocale()->willReturn(null);
-        $dimensionContent1->getStage()->willReturn('draft');
-        $dimensionContent2 = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent2->getLocale()->willReturn('de');
-        $dimensionContent2->getStage()->willReturn('draft');
+        $example = new Example();
+        $dimensionContent1 = new ExampleDimensionContent($example);
+        $dimensionContent1->setStage('draft');
+        $dimensionContent2 = new ExampleDimensionContent($example);
+        $dimensionContent2->setLocale('de');
+        $dimensionContent2->setStage('draft');
 
         $attributes = ['locale' => 'de'];
 
         $dimensionContentCollection = $this->createDimensionContentCollectionInstance([
-            $dimensionContent1->reveal(),
-            $dimensionContent2->reveal(),
+            $dimensionContent1,
+            $dimensionContent2,
         ], $attributes);
 
         $this->assertNull($dimensionContentCollection->getDimensionContent(['locale' => 'en']));

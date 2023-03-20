@@ -52,13 +52,13 @@ final class ExcerptMerger implements MergerInterface
         }
 
         if ($excerptTags = $sourceObject->getExcerptTags()) {
-            if (!empty($excerptTags)) {
+            if (\count($excerptTags) > 0) { // @phpstan-ignore-line false positive for phpstan thinks it is a non-empty-array
                 $targetObject->setExcerptTags($excerptTags);
             }
         }
 
         if ($excerptCategories = $sourceObject->getExcerptCategories()) {
-            if (!empty($excerptCategories)) {
+            if (\count($excerptCategories) > 0) { // @phpstan-ignore-line false positive for phpstan thinks it is a non-empty-array
                 $targetObject->setExcerptCategories($excerptCategories);
             }
         }

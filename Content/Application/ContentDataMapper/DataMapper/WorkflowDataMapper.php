@@ -31,7 +31,9 @@ class WorkflowDataMapper implements DataMapperInterface
     }
 
     /**
-     * @param WorkflowInterface&DimensionContentInterface $object
+     * @template T of DimensionContentInterface
+     *
+     * @param WorkflowInterface&T $object
      * @param mixed[] $data
      */
     private function setWorkflowData(WorkflowInterface $object, array $data): void
@@ -41,7 +43,9 @@ class WorkflowDataMapper implements DataMapperInterface
     }
 
     /**
-     * @param WorkflowInterface&DimensionContentInterface $object
+     * @template T of DimensionContentInterface
+     *
+     * @param WorkflowInterface&T $object
      * @param mixed[] $data
      */
     private function setInitialPlaceToDraftDimension(WorkflowInterface $object, array $data): void
@@ -61,7 +65,9 @@ class WorkflowDataMapper implements DataMapperInterface
     }
 
     /**
-     * @param WorkflowInterface&DimensionContentInterface $object
+     * @template T of DimensionContentInterface
+     *
+     * @param WorkflowInterface&T $object
      * @param mixed[] $data
      */
     private function setPublishedToLiveDimension(WorkflowInterface $object, array $data): void
@@ -73,6 +79,7 @@ class WorkflowDataMapper implements DataMapperInterface
             return;
         }
 
+        /** @var string|null $published */
         $published = $data['published'] ?? null;
 
         if (!$published) {

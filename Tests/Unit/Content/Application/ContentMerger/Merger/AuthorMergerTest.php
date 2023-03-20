@@ -15,6 +15,7 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentMerger
 
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Sulu\Bundle\ContactBundle\Entity\ContactInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentMerger\Merger\AuthorMerger;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentMerger\Merger\MergerInterface;
@@ -23,6 +24,8 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 
 class AuthorMergerTest extends TestCase
 {
+    use ProphecyTrait;
+
     protected function getAuthorMergerInstance(): MergerInterface
     {
         return new AuthorMerger();

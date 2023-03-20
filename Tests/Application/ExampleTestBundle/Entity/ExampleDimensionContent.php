@@ -31,6 +31,9 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\WebspaceTrait;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowTrait;
 
+/**
+ * @implements DimensionContentInterface<Example>
+ */
 class ExampleDimensionContent implements DimensionContentInterface, ExcerptInterface, SeoInterface, TemplateInterface, RoutableInterface, WorkflowInterface, AuthorInterface, WebspaceInterface
 {
     use AuthorTrait;

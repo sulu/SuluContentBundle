@@ -27,6 +27,8 @@ use Symfony\Component\Workflow\Marking;
 
 class PublishTransitionSubscriberTest extends TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
+
     public function createContentPublisherSubscriberInstance(
         ContentCopierInterface $contentCopier
     ): PublishTransitionSubscriber {

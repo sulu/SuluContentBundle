@@ -19,6 +19,8 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 
 class ExcerptNormalizerTest extends TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
+
     protected function createExcerptNormalizerInstance(): ExcerptNormalizer
     {
         return new ExcerptNormalizer();

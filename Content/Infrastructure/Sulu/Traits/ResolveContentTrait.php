@@ -18,8 +18,18 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 
+/**
+ * @internal
+ */
 trait ResolveContentTrait
 {
+    /**
+     * @template E of DimensionContentInterface
+     *
+     * @param ContentRichEntityInterface<E> $contentRichEntity
+     *
+     * @return E|null
+     */
     protected function resolveContent(ContentRichEntityInterface $contentRichEntity, string $locale, bool $showDrafts = false): ?DimensionContentInterface
     {
         $stage = $showDrafts

@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ContentDataMapper\DataMapper;
 
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\DataMapper\WebspaceDataMapper;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
@@ -25,8 +26,10 @@ use Sulu\Component\Webspace\Webspace;
 
 class WebspaceDataMapperTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
-     * @var ObjectProphecy|WebspaceManagerInterface
+     * @var ObjectProphecy<WebspaceManagerInterface>
      */
     private $webspaceManager;
 
