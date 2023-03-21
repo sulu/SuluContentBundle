@@ -22,9 +22,15 @@ jobs:
             fail-fast: false
             matrix:
                 include:
-                    - php-version: '8.1'
+                    - php-version: '8.0'
                       coverage: false
                       dependency-versions: 'lowest'
+                      env:
+                          SYMFONY_DEPRECATIONS_HELPER: disabled
+
+                    - php-version: '8.1'
+                      coverage: false
+                      dependency-versions: 'highest'
                       env:
                           SYMFONY_DEPRECATIONS_HELPER: weak
 
@@ -95,7 +101,7 @@ jobs:
             - name: Install and configure PHP
               uses: shivammathur/setup-php@v2
               with:
-                  php-version: 8.1
+                  php-version: 8.0
                   extensions: ctype, iconv, mysql
 
             - name: Install composer dependencies
