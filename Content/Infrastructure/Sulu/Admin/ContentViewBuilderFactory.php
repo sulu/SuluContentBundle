@@ -22,12 +22,16 @@ use Sulu\Bundle\AdminBundle\Admin\View\ViewBuilderInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentMetadataInspector\ContentMetadataInspectorInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ShadowInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 use Sulu\Bundle\PreviewBundle\Preview\Object\PreviewObjectProviderRegistryInterface;
 use Sulu\Component\Security\Authorization\PermissionTypes;
 use Sulu\Component\Security\Authorization\SecurityCheckerInterface;
 
+/**
+ * @final
+ */
 class ContentViewBuilderFactory implements ContentViewBuilderFactoryInterface
 {
     /**
@@ -215,6 +219,14 @@ class ContentViewBuilderFactory implements ContentViewBuilderFactoryInterface
                     $resourceKey,
                     $seoAndExcerptToolbarActions
                 );
+            }
+
+            if (\is_subclass_of($dimensionContentClass, ShadowInterface::class)) {
+                foreach ($views as $view) {
+                    if ($view instanceof FormViewBuilderInterface || $view instanceof PreviewFormViewBuilderInterface) {
+                        $view->setTabCondition('shadowOn != true');
+                    }
+                }
             }
 
             $views[] = $this->createSettingsFormView(

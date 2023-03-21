@@ -6,6 +6,10 @@
         "en",
         "de"
     ],
+    "contentLocales": [
+        "en",
+        "de"
+    ],
     "blocks": null,
     "description": null,
     "excerptCategories": [],
@@ -31,6 +35,9 @@
     "seoNoFollow": false,
     "seoNoIndex": false,
     "seoTitle": "Seo Title 2",
+    "shadowLocale": null,
+    "shadowLocales": [],
+    "shadowOn": false,
     "stage": "draft",
     "template": "default",
     "title": "Test Example 2",

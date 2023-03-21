@@ -5,6 +5,10 @@
     "sulu_content.published": "Veröffentlicht am",
     "sulu_content.author": "Autor",
     "sulu_content.authored_date": "Verfasst am",
+    "sulu_content.shadow_page": "Shadow Seite",
+    "sulu_content.enable_shadow_page": "Shadow Seite aktivieren",
+    "sulu_content.enable_shadow_page_info_text": "",
+    "sulu_content.shadow_locale": "Shadow sprache",
     "sulu_content.webspace": "Webspace",
     "sulu_content.main_webspace": "Hauptwebspace",
     "sulu_content.additional_webspaces": "Weitere Webspaces"

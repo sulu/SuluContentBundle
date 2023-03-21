@@ -16,6 +16,7 @@ parameters:
         - %currentWorkingDirectory%/vendor/*
         - %currentWorkingDirectory%/Tests/Application/Kernel.php
         - %currentWorkingDirectory%/Tests/Application/var/*
+        - %currentWorkingDirectory%/Tests/Application/assets/*
         - %currentWorkingDirectory%/Tests/Unit/Mocks/*
     symfony:
         containerXmlPath: %currentWorkingDirectory%/Tests/Application/var/cache/admin/dev/Sulu_Bundle_ContentBundle_Tests_Application_KernelDevDebugContainer.xml

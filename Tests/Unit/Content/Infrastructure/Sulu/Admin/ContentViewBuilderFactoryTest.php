@@ -140,18 +140,27 @@ class ContentViewBuilderFactoryTest extends TestCase
         $this->assertInstanceOf(FormViewBuilderInterface::class, $views[0]);
         $this->assertSame('add_parent_key.content', $views[0]->getName());
         $this->assertSame(Example::TEMPLATE_TYPE, $views[0]->getView()->getOption('formKey'));
+        $this->assertSame('shadowOn != true', $views[0]->getView()->getOption('tabCondition'));
 
         $this->assertInstanceOf(FormViewBuilderInterface::class, $views[1]);
         $this->assertSame('edit_parent_key.content', $views[1]->getName());
         $this->assertSame(Example::TEMPLATE_TYPE, $views[1]->getView()->getOption('formKey'));
+        $this->assertSame('shadowOn != true', $views[1]->getView()->getOption('tabCondition'));
 
         $this->assertInstanceOf(FormViewBuilderInterface::class, $views[2]);
         $this->assertSame('edit_parent_key.seo', $views[2]->getName());
         $this->assertSame('content_seo', $views[2]->getView()->getOption('formKey'));
+        $this->assertSame('shadowOn != true', $views[2]->getView()->getOption('tabCondition'));
 
         $this->assertInstanceOf(FormViewBuilderInterface::class, $views[3]);
         $this->assertSame('edit_parent_key.excerpt', $views[3]->getName());
         $this->assertSame('content_excerpt', $views[3]->getView()->getOption('formKey'));
+        $this->assertSame('shadowOn != true', $views[3]->getView()->getOption('tabCondition'));
+
+        $this->assertInstanceOf(FormViewBuilderInterface::class, $views[4]);
+        $this->assertSame('edit_parent_key.settings', $views[4]->getName());
+        $this->assertSame('content_settings', $views[4]->getView()->getOption('formKey'));
+        $this->assertNull($views[4]->getView()->getOption('tabCondition'));
     }
 
     public function testCreateViewsWithPreview(): void
@@ -187,6 +196,7 @@ class ContentViewBuilderFactoryTest extends TestCase
         $this->assertInstanceOf(PreviewFormViewBuilderInterface::class, $views[0]);
         $this->assertInstanceOf(PreviewFormViewBuilderInterface::class, $views[1]);
         $this->assertInstanceOf(PreviewFormViewBuilderInterface::class, $views[2]);
+        $this->assertInstanceOf(PreviewFormViewBuilderInterface::class, $views[3]);
     }
 
     /**

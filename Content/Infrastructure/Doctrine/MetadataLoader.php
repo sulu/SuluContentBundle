@@ -25,6 +25,7 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\AuthorInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ShadowInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WebspaceInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
@@ -53,7 +54,7 @@ final class MetadataLoader implements EventSubscriber
             $this->addField($metadata, 'stage', 'string', ['length' => 16, 'nullable' => false]);
             $this->addField($metadata, 'locale', 'string', ['length' => 7, 'nullable' => true]);
             $this->addField($metadata, 'ghostLocale', 'string', ['length' => 7, 'nullable' => true]);
-            $this->addField($metadata, 'availableLocales', 'json', ['nullable' => true]);
+            $this->addField($metadata, 'availableLocales', 'json', ['nullable' => true, 'options' => ['jsonb' => true]]);
             $this->addIndex($metadata, 'idx_dimension', ['stage', 'locale']);
             $this->addIndex($metadata, 'idx_locale', ['locale']);
             $this->addIndex($metadata, 'idx_stage', ['stage']);
@@ -108,6 +109,11 @@ final class MetadataLoader implements EventSubscriber
 
         if ($reflection->implementsInterface(WebspaceInterface::class)) {
             $this->addField($metadata, 'mainWebspace', 'string', ['nullable' => true]);
+        }
+
+        if ($reflection->implementsInterface(ShadowInterface::class)) {
+            $this->addField($metadata, 'shadowLocale', 'string', ['length' => 7, 'nullable' => true]);
+            $this->addField($metadata, 'shadowLocales', 'json', ['nullable' => true, 'options' => ['jsonb' => true]]);
         }
 
         if ($reflection->implementsInterface(AuthorInterface::class)) {
