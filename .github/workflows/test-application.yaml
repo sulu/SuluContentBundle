@@ -14,7 +14,7 @@ jobs:
 
         env:
             APP_ENV: test
-            DATABASE_URL: mysql://root:root@127.0.0.1:3306/su_content_test?serverVersion=8.0
+            DATABASE_URL: mysql://root:root@127.0.0.1:3306/su_content_test?serverVersion=5.7.32
             DATABASE_CHARSET: utf8mb4
             DATABASE_COLLATE: utf8mb4_unicode_ci
 
@@ -54,7 +54,7 @@ jobs:
 
         services:
             mysql:
-                image: mysql:8.0
+                image: mysql:5.7
                 env:
                     MYSQL_ROOT_PASSWORD: root
                 ports:
