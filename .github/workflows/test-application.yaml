@@ -14,7 +14,7 @@ jobs:
 
         env:
             APP_ENV: test
-            DATABASE_URL: mysql://root:root@127.0.0.1:3306/su_content_test?serverVersion=5.7.32
+            DATABASE_URL: mysql://root:root@127.0.0.1:3306/su_content_test?serverVersion=8.0.29
             DATABASE_CHARSET: utf8mb4
             DATABASE_COLLATE: utf8mb4_unicode_ci
 
@@ -22,39 +22,21 @@ jobs:
             fail-fast: false
             matrix:
                 include:
-                    - php-version: '7.3'
+                    - php-version: '8.1'
                       coverage: false
                       dependency-versions: 'lowest'
-                      env:
-                          SYMFONY_DEPRECATIONS_HELPER: disabled
-
-                    - php-version: '7.4'
-                      coverage: false
-                      dependency-versions: 'highest'
-                      env:
-                          SYMFONY_DEPRECATIONS_HELPER: weak
-
-                    - php-version: '8.0'
-                      coverage: false
-                      dependency-versions: 'highest'
-                      env:
-                          SYMFONY_DEPRECATIONS_HELPER: weak
-
-                    - php-version: '8.1'
-                      coverage: true
-                      dependency-versions: 'highest'
                       env:
                           SYMFONY_DEPRECATIONS_HELPER: weak
 
                     - php-version: '8.2'
-                      coverage: false
+                      coverage: true
                       dependency-versions: 'highest'
                       env:
                           SYMFONY_DEPRECATIONS_HELPER: weak
 
         services:
             mysql:
-                image: mysql:5.7
+                image: mysql:8.0
                 env:
                     MYSQL_ROOT_PASSWORD: root
                 ports:
@@ -113,7 +95,7 @@ jobs:
             - name: Install and configure PHP
               uses: shivammathur/setup-php@v2
               with:
-                  php-version: 8.0
+                  php-version: 8.1
                   extensions: ctype, iconv, mysql
 
             - name: Install composer dependencies

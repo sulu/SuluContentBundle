@@ -2,6 +2,10 @@
 
 ## 0.7.0
 
+### Require PHP 8.1
+
+The SuluContentBundle now requires atleast PHP 8.1.
+
 ### Add ghostLocale and availableLocales field
 
 To support multi localization feature of sulu a ghostLocale need to be added to
