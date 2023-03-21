@@ -31,7 +31,10 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 use Sulu\Bundle\MediaBundle\Entity\MediaInterface;
 use Sulu\Bundle\TagBundle\Tag\TagInterface;
 
-class MetadataLoader implements EventSubscriber
+/**
+ * @internal
+ */
+final class MetadataLoader implements EventSubscriber
 {
     public function getSubscribedEvents()
     {
