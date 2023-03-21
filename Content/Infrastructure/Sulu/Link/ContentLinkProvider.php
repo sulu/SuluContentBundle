@@ -104,7 +104,6 @@ abstract class ContentLinkProvider implements LinkProviderInterface
 
     /**
      * @param B $dimensionContent
-     *
      * @param mixed[] $data
      */
     protected function getTitle(DimensionContentInterface $dimensionContent, array $data): ?string

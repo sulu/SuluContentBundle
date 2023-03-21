@@ -57,7 +57,6 @@ class DimensionContentCollectionTest extends TestCase
 
     public function testSortedByAttributes(): void
     {
-
         $example = new Example();
         $dimensionContent1 = new ExampleDimensionContent($example);
         $dimensionContent1->setStage('draft');
