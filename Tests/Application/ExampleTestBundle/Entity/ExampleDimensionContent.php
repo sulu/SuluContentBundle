@@ -24,6 +24,8 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\RoutableInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\RoutableTrait;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoTrait;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ShadowInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ShadowTrait;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateTrait;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WebspaceInterface;
@@ -34,13 +36,14 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowTrait;
 /**
  * @implements DimensionContentInterface<Example>
  */
-class ExampleDimensionContent implements DimensionContentInterface, ExcerptInterface, SeoInterface, TemplateInterface, RoutableInterface, WorkflowInterface, AuthorInterface, WebspaceInterface
+class ExampleDimensionContent implements DimensionContentInterface, ExcerptInterface, SeoInterface, TemplateInterface, RoutableInterface, WorkflowInterface, AuthorInterface, WebspaceInterface, ShadowInterface
 {
     use AuthorTrait;
     use DimensionContentTrait;
     use ExcerptTrait;
     use RoutableTrait;
     use SeoTrait;
+    use ShadowTrait;
     use TemplateTrait {
         setTemplateData as parentSetTemplateData;
     }

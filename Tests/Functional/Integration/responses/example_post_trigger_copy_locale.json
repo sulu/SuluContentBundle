@@ -5,6 +5,10 @@
         "en",
         "de"
     ],
+    "contentLocales": [
+        "en",
+        "de"
+    ],
     "excerptCategories": [],
     "excerptDescription": "Excerpt Description",
     "excerptIcon": null,
@@ -29,6 +33,9 @@
     "seoNoFollow": true,
     "seoNoIndex": true,
     "seoTitle": "Seo Title",
+    "shadowLocale": null,
+    "shadowLocales": [],
+    "shadowOn": false,
     "stage": "draft",
     "template": "example-2",
     "title": "Test Example",

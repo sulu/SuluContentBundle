@@ -26,6 +26,7 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\AuthorInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ShadowInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WebspaceInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
@@ -71,6 +72,7 @@ class MetadataLoaderTest extends TestCase
         $reflectionClass->implementsInterface(WorkflowInterface::class)->willReturn(\in_array(WorkflowInterface::class, $interfaces, true));
         $reflectionClass->implementsInterface(WebspaceInterface::class)->willReturn(\in_array(WebspaceInterface::class, $interfaces, true));
         $reflectionClass->implementsInterface(AuthorInterface::class)->willReturn(\in_array(AuthorInterface::class, $interfaces, true));
+        $reflectionClass->implementsInterface(ShadowInterface::class)->willReturn(\in_array(ShadowInterface::class, $interfaces, true));
 
         foreach ($interfaces as $interface) {
             $reflectionClass->implementsInterface($interface)->willReturn(true);
@@ -258,6 +260,18 @@ class MetadataLoaderTest extends TestCase
             ],
             [
                 'mainWebspace' => true,
+            ],
+            [],
+            [],
+        ];
+
+        yield [
+            [
+                ShadowInterface::class,
+            ],
+            [
+                'shadowLocale' => false,
+                'shadowLocales' => false,
             ],
             [],
             [],

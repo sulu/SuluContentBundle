@@ -2,6 +2,15 @@
 
 ## 0.7.0
 
+### Add shadowLocale and shadowLocales fields
+
+To support shadow feature of sulu shadowLocale and shadowLocales fields need to be added to
+the dimension content tables.
+
+```sql
+ALTER TABLE test_example_dimension_contents ADD shadowLocale VARCHAR(7) DEFAULT NULL, ADD shadowLocales JSON DEFAULT NULL; -- replace `test_example_dimension_contents` with your table
+```
+
 ### Add ghostLocale and availableLocales field
 
 To support multi localization feature of sulu a ghostLocale need to be added to
