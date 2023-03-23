@@ -18,6 +18,7 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\ContentWorkflo
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ShadowInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Workflow\Event\TransitionEvent;
@@ -66,12 +67,39 @@ class PublishTransitionSubscriber implements EventSubscriberInterface
             throw new \RuntimeException('No "contentRichEntity" given.');
         }
 
-        $dimensionAttributes['stage'] = DimensionContentInterface::STAGE_LIVE;
+        $sourceDimensionAttributes = $dimensionAttributes;
+        $targetDimensionAttributes = $dimensionAttributes;
+        $targetDimensionAttributes['stage'] = DimensionContentInterface::STAGE_LIVE;
 
-        $this->contentCopier->copyFromDimensionContentCollection(
-            $dimensionContentCollection,
+        $currentDimensionContent = $dimensionContentCollection->getDimensionContent($dimensionAttributes);
+
+        $shadowLocale = $currentDimensionContent instanceof ShadowInterface
+            ? $currentDimensionContent->getShadowLocale()
+            : null;
+
+        if (!$shadowLocale) {
+            $this->contentCopier->copyFromDimensionContentCollection(
+                $dimensionContentCollection,
+                $contentRichEntity,
+                $targetDimensionAttributes
+            );
+
+            return;
+        }
+
+        $sourceDimensionAttributes['locale'] = $shadowLocale;
+        $sourceDimensionAttributes['stage'] = DimensionContentInterface::STAGE_LIVE;
+
+        $this->contentCopier->copy(
             $contentRichEntity,
-            $dimensionAttributes
+            $sourceDimensionAttributes,
+            $contentRichEntity,
+            $targetDimensionAttributes,
+            [
+                // @see \Sulu\Bundle\ContentBundle\Content\Application\ContentDataMapper\DataMapper\ShadowDataMapper::map
+                'shadowOn' => true,
+                'shadowLocale' => $shadowLocale,
+            ]
         );
     }
 

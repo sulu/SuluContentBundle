@@ -60,6 +60,11 @@ final class MetadataLoader implements EventSubscriber
             $this->addIndex($metadata, 'idx_stage', ['stage']);
         }
 
+        if ($reflection->implementsInterface(ShadowInterface::class)) {
+            $this->addField($metadata, 'shadowLocale', 'string', ['length' => 7, 'nullable' => true]);
+            $this->addField($metadata, 'shadowLocales', 'json', ['nullable' => true, 'options' => ['jsonb' => true]]);
+        }
+
         if ($reflection->implementsInterface(SeoInterface::class)) {
             $this->addField($metadata, 'seoTitle');
             $this->addField($metadata, 'seoDescription', 'text');
@@ -109,11 +114,6 @@ final class MetadataLoader implements EventSubscriber
 
         if ($reflection->implementsInterface(WebspaceInterface::class)) {
             $this->addField($metadata, 'mainWebspace', 'string', ['nullable' => true]);
-        }
-
-        if ($reflection->implementsInterface(ShadowInterface::class)) {
-            $this->addField($metadata, 'shadowLocale', 'string', ['length' => 7, 'nullable' => true]);
-            $this->addField($metadata, 'shadowLocales', 'json', ['nullable' => true, 'options' => ['jsonb' => true]]);
         }
 
         if ($reflection->implementsInterface(AuthorInterface::class)) {
