@@ -25,7 +25,7 @@
             <entity-name>ghostDimensionContent</entity-name>
             <field-name>Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example.dimensionContents</field-name>
             <method>LEFT</method>
-            <condition>ghostDimensionContent.locale = unlocalizedDimensionContent.ghostLocale AND ghostDimensionContent.stage = 'draft'</condition>
+            <condition>dimensionContent.locale IS NULL AND ghostDimensionContent.locale = unlocalizedDimensionContent.ghostLocale AND ghostDimensionContent.stage = 'draft'</condition>
         </join>
     </joins>
 
@@ -61,10 +61,10 @@
         </property>
 
         <property name="ghostLocale" translation="sulu_admin.ghost_locale" visibility="never">
-            <field-name>ghostLocale</field-name>
-            <entity-name>unlocalizedDimensionContent</entity-name>
+            <field-name>locale</field-name>
+            <entity-name>ghostDimensionContent</entity-name>
 
-            <joins ref="unlocalizedDimensionContent"/>
+            <joins ref="ghostDimensionContent"/>
         </property>
     </properties>
 </list>
