@@ -13,9 +13,6 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Domain\Model;
 
-/**
- * Marker interface for autoloading the doctrine metadata for routables.
- */
 interface RoutableInterface
 {
     public static function getResourceKey(): string;

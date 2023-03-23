@@ -95,8 +95,6 @@ class DimensionContentQueryEnhancer
             'filterDimensionContent.' . $contentRichEntityAlias . ' = ' . $contentRichEntityAlias . ''
         );
 
-        // TODO filter to shadow dimension
-
         foreach ($effectiveAttributes as $key => $value) {
             if (null === $value) {
                 $queryBuilder->andWhere('filterDimensionContent.' . $key . ' IS NULL');

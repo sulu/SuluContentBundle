@@ -62,10 +62,12 @@ class TemplateDataMapper implements DataMapperInterface
             throw new \RuntimeException('Expected "template" to be set in the data array.');
         }
 
-        list($unlocalizedData, $localizedData, $hasAnyValue) = $this->getTemplateData(
+        [$unlocalizedData, $localizedData, $hasAnyValue] = $this->getTemplateData(
             $data,
             $type,
-            $template
+            $template,
+            $unlocalizedDimensionContent->getTemplateData(),
+            $localizedDimensionContent->getTemplateData()
         );
 
         if (!isset($data['template']) && !$hasAnyValue) {
@@ -75,36 +77,38 @@ class TemplateDataMapper implements DataMapperInterface
 
         $localizedDimensionContent->setTemplateKey($template);
         $localizedDimensionContent->setTemplateData($localizedData);
-
-        $unlocalizedDimensionContent->setTemplateData(\array_merge(
-            $unlocalizedDimensionContent->getTemplateData(),
-            $unlocalizedData
-        ));
+        $unlocalizedDimensionContent->setTemplateData($unlocalizedData);
     }
 
     /**
      * @param mixed[] $data
+     * @param mixed[] $unlocalizedData
+     * @param mixed[] $localizedData
      *
      * @return array{
-     *     0: mixed[],
-     *     1: mixed[],
-     *     2: bool,
+     *      0: mixed[],
+     *      1: mixed[],
+     *      2: bool,
      * }
      */
-    private function getTemplateData(array $data, string $type, string $template): array
-    {
+    private function getTemplateData(
+        array $data,
+        string $type,
+        string $template,
+        array $unlocalizedData,
+        array $localizedData
+    ): array {
         $metadata = $this->factory->getStructureMetadata($type, $template);
 
         if (!$metadata) {
             throw new \RuntimeException(\sprintf('Could not find structure "%s" of type "%s".', $template, $type));
         }
 
-        $unlocalizedData = [];
-        $localizedData = [];
         $hasAnyValue = false;
 
+        $defaultLocalizedData = $localizedData; // use existing localizedData only as default to remove not longer existing properties of the template
+        $localizedData = [];
         foreach ($metadata->getProperties() as $property) {
-            $value = null;
             $name = $property->getName();
 
             // Float are converted to ints in php array as key so we need convert it to string
@@ -112,7 +116,8 @@ class TemplateDataMapper implements DataMapperInterface
                 $name = (string) $name;
             }
 
-            if (\array_key_exists($name, $data)) {
+            $value = $property->isLocalized() ? $defaultLocalizedData[$name] ?? null : $defaultLocalizedData[$name] ?? null;
+            if (\array_key_exists($name, $data)) { // values not explicitly given need to stay untouched for e.g. for shadow pages urls
                 $hasAnyValue = true;
                 $value = $data[$name];
             }

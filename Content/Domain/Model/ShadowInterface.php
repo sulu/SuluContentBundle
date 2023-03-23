@@ -33,7 +33,18 @@ interface ShadowInterface
     public function removeShadowLocale(string $locale): void;
 
     /**
+     * Returns the locales which shadow the given locale.
+     *
      * @return array<string, string>|null
      */
     public function getShadowLocales(): ?array;
+
+    /**
+     * @internal should only be set by content bundle services not from outside
+     *
+     * Returns the locales which shadow the given locale
+     *
+     * @return string[]
+     */
+    public function getShadowLocalesForLocale(string $shadowLocale): array;
 }

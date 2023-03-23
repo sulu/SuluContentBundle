@@ -60,6 +60,18 @@ final class MetadataLoader implements EventSubscriber
             $this->addIndex($metadata, 'idx_stage', ['stage']);
         }
 
+        if ($reflection->implementsInterface(ShadowInterface::class)) {
+            $this->addField($metadata, 'shadowLocale', 'string', ['length' => 7, 'nullable' => true]);
+            $this->addField($metadata, 'shadowLocales', 'json', ['nullable' => true, 'options' => ['jsonb' => true]]);
+        }
+
+        if ($reflection->implementsInterface(TemplateInterface::class)) {
+            $this->addField($metadata, 'templateKey', 'string', ['length' => 32]);
+            $this->addField($metadata, 'templateData', 'json', ['nullable' => false, 'options' => ['jsonb' => true]]);
+
+            $this->addIndex($metadata, 'idx_template_key', ['templateKey']);
+        }
+
         if ($reflection->implementsInterface(SeoInterface::class)) {
             $this->addField($metadata, 'seoTitle');
             $this->addField($metadata, 'seoDescription', 'text');
@@ -68,13 +80,6 @@ final class MetadataLoader implements EventSubscriber
             $this->addField($metadata, 'seoNoIndex', 'boolean');
             $this->addField($metadata, 'seoNoFollow', 'boolean');
             $this->addField($metadata, 'seoHideInSitemap', 'boolean');
-        }
-
-        if ($reflection->implementsInterface(TemplateInterface::class)) {
-            $this->addField($metadata, 'templateKey', 'string', ['length' => 32]);
-            $this->addField($metadata, 'templateData', 'json', ['nullable' => false, 'options' => ['jsonb' => true]]);
-
-            $this->addIndex($metadata, 'idx_template_key', ['templateKey']);
         }
 
         if ($reflection->implementsInterface(ExcerptInterface::class)) {
@@ -109,11 +114,6 @@ final class MetadataLoader implements EventSubscriber
 
         if ($reflection->implementsInterface(WebspaceInterface::class)) {
             $this->addField($metadata, 'mainWebspace', 'string', ['nullable' => true]);
-        }
-
-        if ($reflection->implementsInterface(ShadowInterface::class)) {
-            $this->addField($metadata, 'shadowLocale', 'string', ['length' => 7, 'nullable' => true]);
-            $this->addField($metadata, 'shadowLocales', 'json', ['nullable' => true, 'options' => ['jsonb' => true]]);
         }
 
         if ($reflection->implementsInterface(AuthorInterface::class)) {

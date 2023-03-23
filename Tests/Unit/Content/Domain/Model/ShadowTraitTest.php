@@ -40,11 +40,20 @@ class ShadowTraitTest extends TestCase
     public function testAddRemoveShadowLocales(): void
     {
         $model = $this->getShadowInstance();
-        $Shadowed = new \DateTimeImmutable('2020-05-08T00:00:00+00:00');
+        $this->assertNull($model->getShadowLocales());
+        $model->removeShadowLocale('de');
         $this->assertNull($model->getShadowLocales());
         $model->addShadowLocale('de', 'en');
         $this->assertSame(['de' => 'en'], $model->getShadowLocales());
         $model->removeShadowLocale('de');
-        $this->assertSame([], $model->getShadowLocales());
+        $this->assertNull($model->getShadowLocales());
+    }
+
+    public function testGetShadowLocalesForLocale(): void
+    {
+        $model = $this->getShadowInstance();
+        $this->assertSame([], $model->getShadowLocalesForLocale('en'));
+        $model->addShadowLocale('de', 'en');
+        $this->assertSame(['de'], $model->getShadowLocalesForLocale('en'));
     }
 }

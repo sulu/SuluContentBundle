@@ -365,6 +365,35 @@ class RoutableDataMapperTest extends TestCase
         ], $localizedDimensionContent->getTemplateData());
     }
 
+    public function testMapRoutePropertyFalseName(): void
+    {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Expected a property with the name "url" but "route" given.');
+
+        $data = [
+            'route' => '/test',
+        ];
+
+        $route = new Route();
+        $route->setPath('/test-1');
+
+        $example = new Example();
+        static::setPrivateProperty($example, 'id', 1);
+        $unlocalizedDimensionContent = new ExampleDimensionContent($example);
+        $unlocalizedDimensionContent->setStage('live');
+        $localizedDimensionContent = new ExampleDimensionContent($example);
+        $localizedDimensionContent->setTemplateKey('default');
+        $localizedDimensionContent->setStage('live');
+        $localizedDimensionContent->setLocale('en');
+
+        $this->structureMetadataFactory->getStructureMetadata('example', 'default')
+            ->shouldBeCalled()
+            ->willReturn($this->createRouteStructureMetadata('route'));
+
+        $mapper = $this->createRouteDataMapperInstance();
+        $mapper->map($unlocalizedDimensionContent, $localizedDimensionContent, $data);
+    }
+
     public function testMapRouteDraftDimension(): void
     {
         $data = [
@@ -570,11 +599,11 @@ class RoutableDataMapperTest extends TestCase
         ], $localizedDimensionContent->getTemplateData());
     }
 
-    private function createRouteStructureMetadata(): StructureMetadata
+    private function createRouteStructureMetadata(string $propertyName = 'url'): StructureMetadata
     {
         $property = $this->prophesize(PropertyMetadata::class);
         $property->getType()->willReturn('route');
-        $property->getName()->willReturn('url');
+        $property->getName()->willReturn($propertyName);
 
         $structureMetadata = $this->prophesize(StructureMetadata::class);
         $structureMetadata->getProperties()->willReturn([
