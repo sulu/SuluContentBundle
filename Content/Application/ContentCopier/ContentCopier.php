@@ -60,36 +60,33 @@ class ContentCopier implements ContentCopierInterface
         array $sourceDimensionAttributes,
         ContentRichEntityInterface $targetContentRichEntity,
         array $targetDimensionAttributes,
-        array $data = [],
-        array $ignoredAttributes = []
+        array $options = []
     ): DimensionContentInterface {
         $sourceDimensionContent = $this->contentResolver->resolve($sourceContentRichEntity, $sourceDimensionAttributes);
 
-        return $this->copyFromDimensionContent($sourceDimensionContent, $targetContentRichEntity, $targetDimensionAttributes, $data, $ignoredAttributes);
+        return $this->copyFromDimensionContent($sourceDimensionContent, $targetContentRichEntity, $targetDimensionAttributes, $options);
     }
 
     public function copyFromDimensionContentCollection(
         DimensionContentCollectionInterface $dimensionContentCollection,
         ContentRichEntityInterface $targetContentRichEntity,
         array $targetDimensionAttributes,
-        array $data = [],
-        array $ignoredAttributes = []
+        array $options = []
     ): DimensionContentInterface {
         $sourceDimensionContent = $this->contentMerger->merge($dimensionContentCollection);
 
-        return $this->copyFromDimensionContent($sourceDimensionContent, $targetContentRichEntity, $targetDimensionAttributes, $data, $ignoredAttributes);
+        return $this->copyFromDimensionContent($sourceDimensionContent, $targetContentRichEntity, $targetDimensionAttributes, $options);
     }
 
     public function copyFromDimensionContent(
         DimensionContentInterface $dimensionContent,
         ContentRichEntityInterface $targetContentRichEntity,
         array $targetDimensionAttributes,
-        array $data = [],
-        array $ignoredAttributes = []
+        array $options = []
     ): DimensionContentInterface {
-        $data = \array_replace($this->contentNormalizer->normalize($dimensionContent), $data);
+        $data = \array_replace($this->contentNormalizer->normalize($dimensionContent), $options['data'] ?? []);
 
-        foreach ($ignoredAttributes as $ignoredAttribute) {
+        foreach (($options['ignoredAttributes'] ?? []) as $ignoredAttribute) {
             unset($data[$ignoredAttribute]);
         }
 

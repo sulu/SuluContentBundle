@@ -185,14 +185,14 @@ class ContentCopierTest extends TestCase
         $contentNormalizer->normalize($resolvedSourceContent->reveal())
             ->willReturn([
                 'resolved' => 'content',
-                'data' => 'old',
+                'overwritten' => 'old',
                 'ignored' => 'value',
             ])
             ->shouldBeCalled();
 
         $contentPersister->persist($targetContentRichEntity, [
             'resolved' => 'content',
-            'data' => 'new',
+            'overwritten' => 'new',
         ], $targetDimensionAttributes)
             ->willReturn($resolvedTargetContent->reveal())
             ->shouldBeCalled();
@@ -211,11 +211,13 @@ class ContentCopierTest extends TestCase
                 $targetContentRichEntity->reveal(),
                 $targetDimensionAttributes,
                 [
-                    'data' => 'new',
+                    'data' => [
+                        'overwritten' => 'new',
+                    ],
+                    'ignoredAttributes' => [
+                        'ignored',
+                    ],
                 ],
-                [
-                    'ignored',
-                ]
             )
         );
     }

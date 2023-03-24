@@ -265,9 +265,11 @@ class PublishTransitionSubscriberTest extends TestCase
             $contentRichEntity->reveal(),
             $targetDimensionAttributes,
             [
-                'shadowOn' => true,
-                'shadowLocale' => 'de',
-                'url' => '/test-de',
+                'data' => [
+                    'shadowOn' => true,
+                    'shadowLocale' => 'de',
+                    'url' => '/test-de',
+                ],
             ]
         )
             ->willReturn($resolvedCopiedContent->reveal())
@@ -323,11 +325,12 @@ class PublishTransitionSubscriberTest extends TestCase
             $dimensionContentCollection->reveal(),
             $contentRichEntity->reveal(),
             $targetDimensionAttributes,
-            [],
             [
-                'shadowOn',
-                'shadowLocale',
-                'url',
+                'ignoredAttributes' => [
+                    'shadowOn',
+                    'shadowLocale',
+                    'url',
+                ],
             ]
         )
             ->willReturn($resolvedCopiedContent->reveal())

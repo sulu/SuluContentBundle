@@ -26,8 +26,7 @@ interface ContentCopierInterface
      * @param mixed[] $sourceDimensionAttributes
      * @param ContentRichEntityInterface<T> $targetContentRichEntity
      * @param mixed[] $targetDimensionAttributes
-     * @param mixed[] $data This data is merged with the data of the source content before set on the target content
-     * @param string[] $ignoredAttributes This attributes stayed untouched
+     * @param array{data?: mixed[], ignoredAttributes?: string[]} $options The "data" allows given custom data to the target and "ignoredAttributes" avoids specific attributes to be copied.
      *
      * @return T
      */
@@ -36,8 +35,7 @@ interface ContentCopierInterface
         array $sourceDimensionAttributes,
         ContentRichEntityInterface $targetContentRichEntity,
         array $targetDimensionAttributes,
-        array $data = [],
-        array $ignoredAttributes = []
+        array $options = []
     ): DimensionContentInterface;
 
     /**
@@ -46,8 +44,7 @@ interface ContentCopierInterface
      * @param DimensionContentCollectionInterface<T> $dimensionContentCollection
      * @param ContentRichEntityInterface<T> $targetContentRichEntity
      * @param mixed[] $targetDimensionAttributes
-     * @param mixed[] $data This data is merged with the data of the source content before set on the target content
-     * @param string[] $ignoredAttributes This attributes stayed untouched
+     * @param array{data?: mixed[], ignoredAttributes?: string[]} $options The "data" allows given custom data to the target and "ignoredAttributes" avoids specific attributes to be copied.
      *
      * @return T
      */
@@ -55,8 +52,7 @@ interface ContentCopierInterface
         DimensionContentCollectionInterface $dimensionContentCollection,
         ContentRichEntityInterface $targetContentRichEntity,
         array $targetDimensionAttributes,
-        array $data = [],
-        array $ignoredAttributes = []
+        array $options = []
     ): DimensionContentInterface;
 
     /**
@@ -65,8 +61,7 @@ interface ContentCopierInterface
      * @param T $dimensionContent
      * @param ContentRichEntityInterface<T> $targetContentRichEntity
      * @param mixed[] $targetDimensionAttributes
-     * @param mixed[] $data This data is merged with the data of the source content before set on the target content
-     * @param string[] $ignoredAttributes This attributes stayed untouched
+     * @param array{data?: mixed[], ignoredAttributes?: string[]} $options The "data" allows given custom data to the target and "ignoredAttributes" avoids specific attributes to be copied.
      *
      * @return T
      */
@@ -74,7 +69,6 @@ interface ContentCopierInterface
         DimensionContentInterface $dimensionContent,
         ContentRichEntityInterface $targetContentRichEntity,
         array $targetDimensionAttributes,
-        array $data = [],
-        array $ignoredAttributes = []
+        array $options = []
     ): DimensionContentInterface;
 }

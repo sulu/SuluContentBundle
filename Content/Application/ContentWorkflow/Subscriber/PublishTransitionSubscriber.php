@@ -104,11 +104,12 @@ class PublishTransitionSubscriber implements EventSubscriberInterface
                     $dimensionContentCollection,
                     $contentRichEntity,
                     $targetDimensionAttributes,
-                    [],
                     [
-                        'shadowOn',
-                        'shadowLocale',
-                        'url',
+                        'ignoredAttributes' => [
+                            'shadowOn',
+                            'shadowLocale',
+                            'url',
+                        ],
                     ]
                 );
             }
@@ -134,7 +135,7 @@ class PublishTransitionSubscriber implements EventSubscriberInterface
             $sourceDimensionAttributes,
             $contentRichEntity,
             $targetDimensionAttributes,
-            $data
+            ['data' => $data]
         );
     }
 
