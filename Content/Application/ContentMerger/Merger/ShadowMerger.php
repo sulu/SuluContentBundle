@@ -35,7 +35,7 @@ final class ShadowMerger implements MergerInterface
             $targetObject->setShadowLocale($shadowLocale);
         }
 
-        foreach ($sourceObject->getShadowLocales() ?: [] as $locale => $shadowLocale) {
+        foreach (($sourceObject->getShadowLocales() ?? []) as $locale => $shadowLocale) {
             $targetObject->addShadowLocale($locale, $shadowLocale);
         }
     }

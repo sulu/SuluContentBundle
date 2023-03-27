@@ -55,14 +55,39 @@ trait ShadowTrait
      */
     public function removeShadowLocale(string $locale): void
     {
+        if (!$this->shadowLocales) {
+            return;
+        }
+
         unset($this->shadowLocales[$locale]);
+
+        if (0 === \count($this->shadowLocales)) {
+            $this->shadowLocales = null;
+        }
     }
 
     /**
-     * @return array<string, string>
+     * @internal should only be set by content bundle services not from outside
      */
     public function getShadowLocales(): ?array
     {
         return $this->shadowLocales;
+    }
+
+    /**
+     * @internal should only be set by content bundle services not from outside
+     *
+     * @return string[]
+     */
+    public function getShadowLocalesForLocale(string $shadowLocale): array
+    {
+        $locales = [];
+        foreach (($this->shadowLocales ?? []) as $locale => $localeShadowLocale) {
+            if ($localeShadowLocale === $shadowLocale) {
+                $locales[] = $locale;
+            }
+        }
+
+        return $locales;
     }
 }

@@ -108,6 +108,12 @@ class RoutableDataMapper implements DataMapperInterface
 
         /** @var string $name */
         $name = $property->getName();
+        if ('url' !== $name) {
+            throw new \RuntimeException(\sprintf(
+                'Expected a property with the name "url" but "%s" given.',
+                $name
+            )); // TODO move this validation to a compiler pass see also direct access of 'url'  in PublishTransitionSubscriber class.
+        }
 
         $currentRoutePath = $localizedDimensionContent->getTemplateData()[$name] ?? null;
         if (!\array_key_exists($name, $data) && null !== $currentRoutePath) {
@@ -194,6 +200,7 @@ class RoutableDataMapper implements DataMapperInterface
     private function getRouteProperty(StructureMetadata $metadata): ?PropertyMetadata
     {
         foreach ($metadata->getProperties() as $property) {
+            // TODO add support for page_tree_route field type: https://github.com/sulu/SuluContentBundle/issues/242
             if ('route' === $property->getType()) {
                 return $property;
             }

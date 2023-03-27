@@ -2,6 +2,11 @@
 
 ## 0.7.0
 
+### Route property name forced to `url`
+
+The `route` property requires now to be named `url` to make things easier accessible
+for different parts of the system.
+
 ### Add shadowLocale and shadowLocales fields
 
 To support shadow feature of sulu shadowLocale and shadowLocales fields need to be added to

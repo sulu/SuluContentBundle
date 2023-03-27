@@ -215,9 +215,9 @@ class ContentViewBuilderFactoryTest extends TestCase
                 [
                     ['sulu_admin.save_with_publishing', 'sulu_admin.type', 'sulu_admin.delete', 'sulu_admin.dropdown'],
                     ['sulu_admin.save_with_publishing', 'sulu_admin.type', 'sulu_admin.delete', 'sulu_admin.dropdown'],
-                    ['sulu_admin.save_with_publishing'],
-                    ['sulu_admin.save_with_publishing'],
-                    ['sulu_admin.save_with_publishing'],
+                    ['sulu_admin.save_with_publishing', 'sulu_admin.dropdown'],
+                    ['sulu_admin.save_with_publishing', 'sulu_admin.dropdown'],
+                    ['sulu_admin.save_with_publishing', 'sulu_admin.dropdown'],
                 ],
             ],
             [
@@ -229,9 +229,9 @@ class ContentViewBuilderFactoryTest extends TestCase
                 ],
                 [
                     ['sulu_admin.save_with_publishing', 'sulu_admin.type', 'sulu_admin.delete', 'sulu_admin.dropdown'],
-                    ['sulu_admin.save_with_publishing'],
-                    ['sulu_admin.save_with_publishing'],
-                    ['sulu_admin.save_with_publishing'],
+                    ['sulu_admin.save_with_publishing', 'sulu_admin.dropdown'],
+                    ['sulu_admin.save_with_publishing', 'sulu_admin.dropdown'],
+                    ['sulu_admin.save_with_publishing', 'sulu_admin.dropdown'],
                 ],
             ],
             [
@@ -243,9 +243,9 @@ class ContentViewBuilderFactoryTest extends TestCase
                 ],
                 [
                     ['sulu_admin.save_with_publishing', 'sulu_admin.type'],
-                    ['sulu_admin.save_with_publishing'],
-                    ['sulu_admin.save_with_publishing'],
-                    ['sulu_admin.save_with_publishing'],
+                    ['sulu_admin.save_with_publishing', 'sulu_admin.dropdown'],
+                    ['sulu_admin.save_with_publishing', 'sulu_admin.dropdown'],
+                    ['sulu_admin.save_with_publishing', 'sulu_admin.dropdown'],
                 ],
             ],
             [
@@ -269,9 +269,9 @@ class ContentViewBuilderFactoryTest extends TestCase
                 [
                     ['sulu_admin.save_with_publishing', 'sulu_admin.type', 'sulu_admin.delete'],
                     ['sulu_admin.save_with_publishing', 'sulu_admin.type', 'sulu_admin.delete'],
-                    ['sulu_admin.save_with_publishing'],
-                    ['sulu_admin.save_with_publishing'],
-                    ['sulu_admin.save_with_publishing'],
+                    ['sulu_admin.save_with_publishing', 'sulu_admin.dropdown'],
+                    ['sulu_admin.save_with_publishing', 'sulu_admin.dropdown'],
+                    ['sulu_admin.save_with_publishing', 'sulu_admin.dropdown'],
                 ],
             ],
             [
@@ -284,9 +284,9 @@ class ContentViewBuilderFactoryTest extends TestCase
                 [
                     ['sulu_admin.save_with_publishing', 'sulu_admin.type', 'sulu_admin.dropdown'],
                     ['sulu_admin.save_with_publishing', 'sulu_admin.type', 'sulu_admin.dropdown'],
-                    ['sulu_admin.save_with_publishing'],
-                    ['sulu_admin.save_with_publishing'],
-                    ['sulu_admin.save_with_publishing'],
+                    ['sulu_admin.save_with_publishing', 'sulu_admin.dropdown'],
+                    ['sulu_admin.save_with_publishing', 'sulu_admin.dropdown'],
+                    ['sulu_admin.save_with_publishing', 'sulu_admin.dropdown'],
                 ],
             ],
         ];
@@ -424,9 +424,9 @@ class ContentViewBuilderFactoryTest extends TestCase
                 [
                     ['sulu_admin.save_with_publishing', 'sulu_admin.type', 'sulu_admin.delete', 'sulu_admin.dropdown'],
                     ['sulu_admin.save_with_publishing', 'sulu_admin.type', 'sulu_admin.delete', 'sulu_admin.dropdown'],
-                    ['sulu_admin.save_with_publishing'],
-                    ['sulu_admin.save_with_publishing'],
-                    ['sulu_admin.save_with_publishing'],
+                    ['sulu_admin.save_with_publishing', 'sulu_admin.dropdown'],
+                    ['sulu_admin.save_with_publishing', 'sulu_admin.dropdown'],
+                    ['sulu_admin.save_with_publishing', 'sulu_admin.dropdown'],
                 ],
             ],
         ];

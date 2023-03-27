@@ -59,29 +59,36 @@ class ContentCopier implements ContentCopierInterface
         ContentRichEntityInterface $sourceContentRichEntity,
         array $sourceDimensionAttributes,
         ContentRichEntityInterface $targetContentRichEntity,
-        array $targetDimensionAttributes
+        array $targetDimensionAttributes,
+        array $options = []
     ): DimensionContentInterface {
         $sourceDimensionContent = $this->contentResolver->resolve($sourceContentRichEntity, $sourceDimensionAttributes);
 
-        return $this->copyFromDimensionContent($sourceDimensionContent, $targetContentRichEntity, $targetDimensionAttributes);
+        return $this->copyFromDimensionContent($sourceDimensionContent, $targetContentRichEntity, $targetDimensionAttributes, $options);
     }
 
     public function copyFromDimensionContentCollection(
         DimensionContentCollectionInterface $dimensionContentCollection,
         ContentRichEntityInterface $targetContentRichEntity,
-        array $targetDimensionAttributes
+        array $targetDimensionAttributes,
+        array $options = []
     ): DimensionContentInterface {
         $sourceDimensionContent = $this->contentMerger->merge($dimensionContentCollection);
 
-        return $this->copyFromDimensionContent($sourceDimensionContent, $targetContentRichEntity, $targetDimensionAttributes);
+        return $this->copyFromDimensionContent($sourceDimensionContent, $targetContentRichEntity, $targetDimensionAttributes, $options);
     }
 
     public function copyFromDimensionContent(
         DimensionContentInterface $dimensionContent,
         ContentRichEntityInterface $targetContentRichEntity,
-        array $targetDimensionAttributes
+        array $targetDimensionAttributes,
+        array $options = []
     ): DimensionContentInterface {
-        $data = $this->contentNormalizer->normalize($dimensionContent);
+        $data = \array_replace($this->contentNormalizer->normalize($dimensionContent), $options['data'] ?? []);
+
+        foreach (($options['ignoredAttributes'] ?? []) as $ignoredAttribute) {
+            unset($data[$ignoredAttribute]);
+        }
 
         return $this->contentPersister->persist($targetContentRichEntity, $data, $targetDimensionAttributes);
     }

@@ -158,6 +158,10 @@ class ContentViewBuilderFactory implements ContentViewBuilderFactoryInterface
             $seoAndExcerptToolbarActions = ['save' => $toolbarActions['save']];
             $settingsToolbarActions = ['save' => $toolbarActions['save']];
         }
+        if (isset($toolbarActions['edit'])) {
+            $seoAndExcerptToolbarActions['edit'] = $toolbarActions['edit'];
+            $settingsToolbarActions['edit'] = $toolbarActions['edit'];
+        }
 
         if (!$this->hasPermission($securityContext, PermissionTypes::EDIT)) {
             unset($toolbarActions['save'], $seoAndExcerptToolbarActions['save'], $settingsToolbarActions['save']);
@@ -236,6 +240,12 @@ class ContentViewBuilderFactory implements ContentViewBuilderFactoryInterface
                 $settingsToolbarActions,
                 $dimensionContentClass
             );
+
+            foreach ($views as $view) {
+                if ($view instanceof PreviewFormViewBuilderInterface) {
+                    $view->setPreviewCondition('shadowOn != true');
+                }
+            }
         }
 
         return $views;

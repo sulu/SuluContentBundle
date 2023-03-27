@@ -21,6 +21,11 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Workflow\Event\TransitionEvent;
 
+/**
+ * @final
+ *
+ * @internal this class is internal and should not be extended from or used in another context
+ */
 class RemoveDraftTransitionSubscriber implements EventSubscriberInterface
 {
     /**

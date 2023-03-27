@@ -18,11 +18,17 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentWorkflow\ContentWorkflo
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ShadowInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionContentRepositoryInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Workflow\Event\TransitionEvent;
 
+/**
+ * @final
+ *
+ * @internal this class is internal and should not be extended from or used in another context
+ */
 class UnpublishTransitionSubscriber implements EventSubscriberInterface
 {
     /**
@@ -83,6 +89,10 @@ class UnpublishTransitionSubscriber implements EventSubscriberInterface
             /** @var DimensionContentInterface $unlocalizedLiveDimensionContent */
             $unlocalizedLiveDimensionContent = $dimensionContentCollection->getDimensionContent($unlocalizedLiveDimensionAttributes);  // @phpstan-ignore-line we can not define the generic of DimensionContentInterface here
             $unlocalizedLiveDimensionContent->removeAvailableLocale($locale);
+
+            if ($unlocalizedLiveDimensionContent instanceof ShadowInterface) {
+                $unlocalizedLiveDimensionContent->removeShadowLocale($locale);
+            }
         }
 
         $this->entityManager->remove($localizedLiveDimensionContent);

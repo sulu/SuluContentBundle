@@ -177,20 +177,22 @@ class UnpublishTransitionSubscriberTest extends TestCase
 
     public function testOnUnpublish(): void
     {
-        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
-        $dimensionContent->willImplement(WorkflowInterface::class);
-        $contentRichEntity = $this->prophesize(ContentRichEntityInterface::class);
+        $example = new Example();
+        $dimensionContent = new ExampleDimensionContent($example);
+        $dimensionContent->setStage('stage');
+        $dimensionContent->setLocale('en');
+        $dimensionContent->setWorkflowPublished(new \DateTimeImmutable());
+        $dimensionContent->setShadowLocale('de');
+
         $dimensionAttributes = ['locale' => 'en', 'stage' => 'draft'];
 
-        $dimensionContent->setWorkflowPublished(null)->shouldBeCalled();
-
         $event = new TransitionEvent(
-            $dimensionContent->reveal(),
+            $dimensionContent,
             new Marking()
         );
         $event->setContext([
             ContentWorkflowInterface::DIMENSION_ATTRIBUTES_CONTEXT_KEY => $dimensionAttributes,
-            ContentWorkflowInterface::CONTENT_RICH_ENTITY_CONTEXT_KEY => $contentRichEntity->reveal(),
+            ContentWorkflowInterface::CONTENT_RICH_ENTITY_CONTEXT_KEY => $example,
         ]);
 
         $dimensionContentRepository = $this->prophesize(DimensionContentRepositoryInterface::class);
@@ -201,7 +203,6 @@ class UnpublishTransitionSubscriberTest extends TestCase
             $entityManager->reveal()
         );
 
-        $example = new Example();
         $localizedLiveDimensionContent = new ExampleDimensionContent($example);
         $localizedLiveDimensionContent->setStage('live');
         $localizedLiveDimensionContent->setLocale('en');
@@ -214,13 +215,14 @@ class UnpublishTransitionSubscriberTest extends TestCase
         $unlocalizedLiveDimensionContent->setStage('live');
         $unlocalizedLiveDimensionContent->addAvailableLocale('en');
         $unlocalizedLiveDimensionContent->addAvailableLocale('de');
+        $unlocalizedLiveDimensionContent->addShadowLocale('en', 'de');
         $dimensionContentCollection->getDimensionContent(['locale' => null, 'stage' => 'live'])
             ->willReturn($unlocalizedLiveDimensionContent)
             ->shouldBeCalled();
 
         $liveDimensionAttributes = \array_merge($dimensionAttributes, ['stage' => DimensionContentInterface::STAGE_LIVE]);
 
-        $dimensionContentRepository->load($contentRichEntity->reveal(), $liveDimensionAttributes)
+        $dimensionContentRepository->load($example, $liveDimensionAttributes)
             ->willReturn($dimensionContentCollection)
             ->shouldBeCalled();
 
@@ -228,5 +230,7 @@ class UnpublishTransitionSubscriberTest extends TestCase
 
         $contentUnpublishSubscriber->onUnpublish($event);
         $this->assertSame(['de'], $unlocalizedLiveDimensionContent->getAvailableLocales());
+        $this->assertNull($dimensionContent->getWorkflowPublished());
+        $this->assertNull($unlocalizedLiveDimensionContent->getShadowLocales());
     }
 }

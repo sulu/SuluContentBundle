@@ -26,6 +26,7 @@ interface ContentCopierInterface
      * @param mixed[] $sourceDimensionAttributes
      * @param ContentRichEntityInterface<T> $targetContentRichEntity
      * @param mixed[] $targetDimensionAttributes
+     * @param array{data?: mixed[], ignoredAttributes?: string[]} $options the "data" allows given custom data to the target and "ignoredAttributes" avoids specific attributes to be copied
      *
      * @return T
      */
@@ -33,7 +34,8 @@ interface ContentCopierInterface
         ContentRichEntityInterface $sourceContentRichEntity,
         array $sourceDimensionAttributes,
         ContentRichEntityInterface $targetContentRichEntity,
-        array $targetDimensionAttributes
+        array $targetDimensionAttributes,
+        array $options = []
     ): DimensionContentInterface;
 
     /**
@@ -42,13 +44,15 @@ interface ContentCopierInterface
      * @param DimensionContentCollectionInterface<T> $dimensionContentCollection
      * @param ContentRichEntityInterface<T> $targetContentRichEntity
      * @param mixed[] $targetDimensionAttributes
+     * @param array{data?: mixed[], ignoredAttributes?: string[]} $options the "data" allows given custom data to the target and "ignoredAttributes" avoids specific attributes to be copied
      *
      * @return T
      */
     public function copyFromDimensionContentCollection(
         DimensionContentCollectionInterface $dimensionContentCollection,
         ContentRichEntityInterface $targetContentRichEntity,
-        array $targetDimensionAttributes
+        array $targetDimensionAttributes,
+        array $options = []
     ): DimensionContentInterface;
 
     /**
@@ -57,12 +61,14 @@ interface ContentCopierInterface
      * @param T $dimensionContent
      * @param ContentRichEntityInterface<T> $targetContentRichEntity
      * @param mixed[] $targetDimensionAttributes
+     * @param array{data?: mixed[], ignoredAttributes?: string[]} $options the "data" allows given custom data to the target and "ignoredAttributes" avoids specific attributes to be copied
      *
      * @return T
      */
     public function copyFromDimensionContent(
         DimensionContentInterface $dimensionContent,
         ContentRichEntityInterface $targetContentRichEntity,
-        array $targetDimensionAttributes
+        array $targetDimensionAttributes,
+        array $options = []
     ): DimensionContentInterface;
 }

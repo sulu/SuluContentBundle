@@ -38,6 +38,7 @@ class ShadowDataMapperTest extends TestCase
 
         $unlocalizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
         $localizedDimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $localizedDimensionContent->getLocale()->willReturn('en');
 
         $shadowMapper = $this->createShadowDataMapperInstance();
         $shadowMapper->map($unlocalizedDimensionContent->reveal(), $localizedDimensionContent->reveal(), $data);
@@ -52,6 +53,7 @@ class ShadowDataMapperTest extends TestCase
         $example = new Example();
         $unlocalizedDimensionContent = new ExampleDimensionContent($example);
         $localizedDimensionContent = new ExampleDimensionContent($example);
+        $localizedDimensionContent->setLocale('de');
 
         $shadowMapper = $this->createShadowDataMapperInstance();
         $shadowMapper->map($unlocalizedDimensionContent, $localizedDimensionContent, $data);
@@ -66,6 +68,7 @@ class ShadowDataMapperTest extends TestCase
         $example = new Example();
         $unlocalizedDimensionContent = new ExampleDimensionContent($example);
         $localizedDimensionContent = new ExampleDimensionContent($example);
+        $localizedDimensionContent->setLocale('de');
         $localizedDimensionContent->setShadowLocale('en');
 
         $shadowMapper = $this->createShadowDataMapperInstance();
@@ -84,11 +87,34 @@ class ShadowDataMapperTest extends TestCase
         $example = new Example();
         $unlocalizedDimensionContent = new ExampleDimensionContent($example);
         $localizedDimensionContent = new ExampleDimensionContent($example);
+        $localizedDimensionContent->setLocale('de');
 
         $shadowMapper = $this->createShadowDataMapperInstance();
         $shadowMapper->map($unlocalizedDimensionContent, $localizedDimensionContent, $data);
 
         $this->assertSame('en', $localizedDimensionContent->getShadowLocale());
+        $this->assertSame(['de' => 'en'], $unlocalizedDimensionContent->getShadowLocales());
+    }
+
+    public function testMapDataRemoveShadow(): void
+    {
+        $data = [
+            'shadowOn' => false,
+            'shadowLocale' => null,
+        ];
+
+        $example = new Example();
+        $unlocalizedDimensionContent = new ExampleDimensionContent($example);
+        $unlocalizedDimensionContent->addShadowLocale('de', 'en');
+        $localizedDimensionContent = new ExampleDimensionContent($example);
+        $localizedDimensionContent->setLocale('de');
+        $localizedDimensionContent->setShadowLocale('en');
+
+        $shadowMapper = $this->createShadowDataMapperInstance();
+        $shadowMapper->map($unlocalizedDimensionContent, $localizedDimensionContent, $data);
+
+        $this->assertNull($localizedDimensionContent->getShadowLocale());
+        $this->assertNull($unlocalizedDimensionContent->getShadowLocales());
     }
 
     public function testMapDataNull(): void
@@ -100,12 +126,15 @@ class ShadowDataMapperTest extends TestCase
 
         $example = new Example();
         $unlocalizedDimensionContent = new ExampleDimensionContent($example);
+        $unlocalizedDimensionContent->addShadowLocale('de', 'en');
         $localizedDimensionContent = new ExampleDimensionContent($example);
-        $localizedDimensionContent->setShadowLocale(null);
+        $localizedDimensionContent->setLocale('de');
+        $localizedDimensionContent->setShadowLocale('en');
 
         $shadowMapper = $this->createShadowDataMapperInstance();
         $shadowMapper->map($unlocalizedDimensionContent, $localizedDimensionContent, $data);
 
         $this->assertNull($localizedDimensionContent->getShadowLocale());
+        $this->assertNull($unlocalizedDimensionContent->getShadowLocales());
     }
 }

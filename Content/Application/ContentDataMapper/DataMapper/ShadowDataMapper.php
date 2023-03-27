@@ -23,7 +23,9 @@ class ShadowDataMapper implements DataMapperInterface
         DimensionContentInterface $localizedDimensionContent,
         array $data
     ): void {
-        if (!$localizedDimensionContent instanceof ShadowInterface) {
+        if (!$unlocalizedDimensionContent instanceof ShadowInterface
+            || !$localizedDimensionContent instanceof ShadowInterface
+        ) {
             return;
         }
 
@@ -33,11 +35,19 @@ class ShadowDataMapper implements DataMapperInterface
             /** @var string|null $shadowLocale */
             $shadowLocale = $data['shadowLocale'] ?? null;
 
+            $locale = $localizedDimensionContent->getLocale();
+
             $localizedDimensionContent->setShadowLocale(
-                $shadowOn
+                $shadowOn && $locale
                     ? $shadowLocale
                     : null
             );
+
+            if ($locale && $shadowLocale) {
+                $unlocalizedDimensionContent->addShadowLocale($locale, $shadowLocale);
+            } elseif ($locale) {
+                $unlocalizedDimensionContent->removeShadowLocale($locale);
+            }
         }
     }
 }
