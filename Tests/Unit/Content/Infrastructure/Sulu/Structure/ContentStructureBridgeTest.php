@@ -15,6 +15,7 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Infrastructure\Sulu\Struc
 
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ShadowInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Structure\ContentDocument;
@@ -745,9 +746,9 @@ class ContentStructureBridgeTest extends TestCase
         $content->willImplement(ShadowInterface::class);
         $content->getShadowLocale()->shouldBeCalled()->willReturn('de');
 
-        $structure = $this->createStructureBridge();
+        $structure = $this->createStructureBridge($content->reveal());
 
-        $this->assertNull($structure->getShadowBaseLanguage());
+        $this->assertSame('de', $structure->getShadowBaseLanguage());
     }
 
     public function testGetIsShadowWithShadowEnabled(): void
@@ -756,9 +757,9 @@ class ContentStructureBridgeTest extends TestCase
         $content->willImplement(ShadowInterface::class);
         $content->getShadowLocale()->shouldBeCalled()->willReturn('de');
 
-        $structure = $this->createStructureBridge();
+        $structure = $this->createStructureBridge($content->reveal());
 
-        $this->assertFalse($structure->getIsShadow());
+        $this->assertTrue($structure->getIsShadow());
     }
 
     public function testGetContentLocales(): void
@@ -766,6 +767,16 @@ class ContentStructureBridgeTest extends TestCase
         $structure = $this->createStructureBridge();
 
         $this->assertSame([], $structure->getContentLocales());
+    }
+
+    public function testGetContentLocalesWithDimensionContentInterface(): void
+    {
+        $content = $this->prophesize(TemplateInterface::class);
+        $content->willImplement(DimensionContentInterface::class);
+        $content->getAvailableLocales()->shouldBeCalled()->willReturn(['de', 'en']);
+        $structure = $this->createStructureBridge($content->reveal());
+
+        $this->assertSame(['de', 'en'], $structure->getContentLocales());
     }
 
     public function testGetOriginalTemplate(): void
