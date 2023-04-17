@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Structure;
 
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ShadowInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Component\Content\Compat\Property;
@@ -440,6 +441,12 @@ class ContentStructureBridge implements StructureInterface, RoutableStructureInt
      */
     public function getContentLocales(): array
     {
+        $content = $this->getContent();
+
+        if ($content instanceof DimensionContentInterface) {
+            return $content->getAvailableLocales() ?? [];
+        }
+
         return [];
     }
 

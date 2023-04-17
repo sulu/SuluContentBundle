@@ -15,6 +15,7 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Infrastructure\Sulu\Struc
 
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ShadowInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Structure\ContentDocument;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Structure\ContentStructureBridge;
@@ -722,6 +723,39 @@ class ContentStructureBridgeTest extends TestCase
 
     public function testGetIsShadow(): void
     {
+        $structure = $this->createStructureBridge();
+
+        $this->assertFalse($structure->getIsShadow());
+    }
+
+    public function testGetShadowLocalesWithShadowEnabled(): void
+    {
+        $content = $this->prophesize(TemplateInterface::class);
+        $content->willImplement(ShadowInterface::class);
+        $content->getShadowLocales()->shouldBeCalled()->willReturn(['de' => 'en', 'en' => 'en']);
+
+        $structure = $this->createStructureBridge($content->reveal());
+
+        $this->assertSame(['de' => 'en', 'en' => 'en'], $structure->getShadowLocales());
+    }
+
+    public function testGetShadowBaseLanguageWithShadowEnabled(): void
+    {
+        $content = $this->prophesize(TemplateInterface::class);
+        $content->willImplement(ShadowInterface::class);
+        $content->getShadowLocale()->shouldBeCalled()->willReturn('de');
+
+        $structure = $this->createStructureBridge();
+
+        $this->assertNull($structure->getShadowBaseLanguage());
+    }
+
+    public function testGetIsShadowWithShadowEnabled(): void
+    {
+        $content = $this->prophesize(TemplateInterface::class);
+        $content->willImplement(ShadowInterface::class);
+        $content->getShadowLocale()->shouldBeCalled()->willReturn('de');
+
         $structure = $this->createStructureBridge();
 
         $this->assertFalse($structure->getIsShadow());
