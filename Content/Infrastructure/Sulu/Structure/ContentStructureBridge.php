@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Structure;
 
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ShadowInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Component\Content\Compat\Property;
 use Sulu\Component\Content\Compat\PropertyInterface;
@@ -402,23 +404,35 @@ class ContentStructureBridge implements StructureInterface, RoutableStructureInt
     }
 
     /**
-     * @return string[]
+     * @return array<string, string>
      */
     public function getShadowLocales(): array
     {
+        $content = $this->getContent();
+        if ($content instanceof ShadowInterface) {
+            return $content->getShadowLocales() ?? [];
+        }
+
         return [];
     }
 
-    /**
-     * @return mixed|null
-     */
-    public function getShadowBaseLanguage()
+    public function getShadowBaseLanguage(): ?string
     {
+        $content = $this->getContent();
+        if ($content instanceof ShadowInterface) {
+            return $content->getShadowLocale();
+        }
+
         return null;
     }
 
     public function getIsShadow(): bool
     {
+        $content = $this->getContent();
+        if ($content instanceof ShadowInterface) {
+            return (bool) $content->getShadowLocale();
+        }
+
         return false;
     }
 
@@ -427,6 +441,12 @@ class ContentStructureBridge implements StructureInterface, RoutableStructureInt
      */
     public function getContentLocales(): array
     {
+        $content = $this->getContent();
+
+        if ($content instanceof DimensionContentInterface) {
+            return $content->getAvailableLocales() ?? [];
+        }
+
         return [];
     }
 
