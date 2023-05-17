@@ -18,6 +18,7 @@ use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleDimensionContent;
 use Sulu\Bundle\ContentBundle\Tests\Traits\AssertSnapshotTrait;
 use Sulu\Bundle\ContentBundle\Tests\Traits\CreateExampleTrait;
+use Sulu\Bundle\ContentBundle\Tests\Traits\SetGetPrivatePropertyTrait;
 use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
 use Sulu\Bundle\WebsiteBundle\Sitemap\Sitemap;
 use Sulu\Bundle\WebsiteBundle\Sitemap\SitemapAlternateLink;
@@ -27,6 +28,7 @@ class ContentSitemapProviderTest extends SuluTestCase
 {
     use AssertSnapshotTrait;
     use CreateExampleTrait;
+    use SetGetPrivatePropertyTrait;
 
     public const SCHEME = 'https';
     public const HOST = 'localhost';
@@ -151,6 +153,9 @@ class ContentSitemapProviderTest extends SuluTestCase
 
     public function testGetMaxPage(): void
     {
+        // set page-size to 5 to check if the query behind it is correct
+        $this->setPrivateProperty($this->contentSitemapProvider, 'pageSize', 5);
+
         $this->assertSame(1, $this->contentSitemapProvider->getMaxPage(static::SCHEME, static::HOST));
     }
 
