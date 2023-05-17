@@ -71,6 +71,11 @@ class ContentSitemapProvider implements SitemapProviderInterface
     protected $alias;
 
     /**
+     * @var int
+     */
+    protected $pageSize;
+
+    /**
      * @param string $kernelEnvironment Inject parameter "kernel.environment" here
      * @param class-string<T> $contentRichEntityClass Classname that is used in the route table
      * @param class-string<RouteInterface> $routeClass
@@ -81,7 +86,8 @@ class ContentSitemapProvider implements SitemapProviderInterface
         string $kernelEnvironment,
         string $contentRichEntityClass,
         string $routeClass,
-        string $alias
+        string $alias,
+        int $pageSize = self::PAGE_SIZE
     ) {
         $this->entityManager = $entityManager;
         $this->webspaceManager = $webspaceManager;
@@ -89,11 +95,12 @@ class ContentSitemapProvider implements SitemapProviderInterface
         $this->contentRichEntityClass = $contentRichEntityClass;
         $this->routeClass = $routeClass;
         $this->alias = $alias;
+        $this->pageSize = $pageSize;
     }
 
     public function build($page, $scheme, $host): array
     {
-        $limit = self::PAGE_SIZE;
+        $limit = $this->pageSize;
         $offset = (int) (($page - 1) * $limit);
 
         $portalInformations = $this->webspaceManager->findPortalInformationsByHostIncludingSubdomains(
@@ -162,7 +169,7 @@ class ContentSitemapProvider implements SitemapProviderInterface
                 ->getQuery()
                 ->getSingleScalarResult();
 
-            return (int) \ceil($amount / self::PAGE_SIZE);
+            return (int) \ceil($amount / $this->pageSize);
         } catch (NoResultException|NonUniqueResultException $e) { // @codeCoverageIgnore
             // TODO FIXME add testcase for this
             return 0; // @codeCoverageIgnore
@@ -216,7 +223,7 @@ class ContentSitemapProvider implements SitemapProviderInterface
         return $queryBuilder
             ->from($this->contentRichEntityClass, self::CONTENT_RICH_ENTITY_ALIAS)
             ->innerJoin(self::CONTENT_RICH_ENTITY_ALIAS . '.dimensionContents', self::LOCALIZED_DIMENSION_CONTENT_ALIAS)
-            ->innerJoin($this->routeClass, self::ROUTE_ALIAS, Join::WITH, self::ROUTE_ALIAS . '.entityId = ' . self::CONTENT_RICH_ENTITY_ALIAS . '.' . $this->getEntityIdField())
+            ->innerJoin($this->routeClass, self::ROUTE_ALIAS, Join::WITH, self::ROUTE_ALIAS . '.entityId = ' . self::CONTENT_RICH_ENTITY_ALIAS . '.' . $this->getEntityIdField() . ' AND ' . self::ROUTE_ALIAS . '.locale = ' . self::LOCALIZED_DIMENSION_CONTENT_ALIAS . '.locale')
             ->where(self::LOCALIZED_DIMENSION_CONTENT_ALIAS . '.stage = :stage')
             ->andWhere(self::ROUTE_ALIAS . '.entityClass = :entityClass')
             ->andWhere(self::ROUTE_ALIAS . '.history = :history')

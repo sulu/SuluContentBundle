@@ -151,6 +151,11 @@ class ContentSitemapProviderTest extends SuluTestCase
 
     public function testGetMaxPage(): void
     {
+        // set page-size to 5 to check if the query behind it is correct
+        $reflectionProperty = new \ReflectionProperty(\get_class($this->contentSitemapProvider), 'pageSize');
+        $reflectionProperty->setAccessible(true);
+        $reflectionProperty->setValue($this->contentSitemapProvider, 5);
+
         $this->assertSame(1, $this->contentSitemapProvider->getMaxPage(static::SCHEME, static::HOST));
     }
 
