@@ -86,8 +86,7 @@ class ContentSitemapProvider implements SitemapProviderInterface
         string $kernelEnvironment,
         string $contentRichEntityClass,
         string $routeClass,
-        string $alias,
-        int $pageSize = self::PAGE_SIZE
+        string $alias
     ) {
         $this->entityManager = $entityManager;
         $this->webspaceManager = $webspaceManager;
@@ -95,7 +94,7 @@ class ContentSitemapProvider implements SitemapProviderInterface
         $this->contentRichEntityClass = $contentRichEntityClass;
         $this->routeClass = $routeClass;
         $this->alias = $alias;
-        $this->pageSize = $pageSize;
+        $this->pageSize = self::PAGE_SIZE;
     }
 
     public function build($page, $scheme, $host): array
