@@ -68,7 +68,7 @@ class RoutableDataMapperTest extends TestCase
      * @param array<string, array<mixed>> $resourceKeyMappings
      */
     protected function createRouteDataMapperInstance(
-        ?array $resourceKeyMappings = null
+        array $resourceKeyMappings = null
     ): RoutableDataMapper {
         if (!\is_array($resourceKeyMappings)) {
             $resourceKeyMappings = [

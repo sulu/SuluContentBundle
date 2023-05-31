@@ -23,7 +23,7 @@ trait ShadowTrait
     /**
      * @var string[]|null
      */
-    protected $shadowLocales = null;
+    protected $shadowLocales;
 
     /**
      * @internal should only be set by content bundle services not from outside

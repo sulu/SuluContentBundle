@@ -74,7 +74,7 @@ class ContentSearchMetadataProvider implements ProviderInterface
     /**
      * @var class-string<B>|null
      */
-    private $dimensionContentClass = null;
+    private $dimensionContentClass;
 
     /**
      * @param class-string<T> $contentRichEntityClass

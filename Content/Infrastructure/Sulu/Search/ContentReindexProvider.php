@@ -57,7 +57,7 @@ class ContentReindexProvider implements LocalizedReindexProviderInterface
     /**
      * @var class-string<B>|null
      */
-    private $dimensionContentClass = null;
+    private $dimensionContentClass;
 
     /**
      * @param class-string<T> $contentRichEntityClass

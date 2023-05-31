@@ -58,8 +58,8 @@ class ContentWorkflow implements ContentWorkflowInterface
     public function __construct(
         DimensionContentRepositoryInterface $dimensionContentRepository,
         ContentMergerInterface $contentMerger,
-        ?Registry $workflowRegistry = null,
-        ?EventDispatcherInterface $eventDispatcher = null
+        Registry $workflowRegistry = null,
+        EventDispatcherInterface $eventDispatcher = null
     ) {
         $this->dimensionContentRepository = $dimensionContentRepository;
         $this->contentMerger = $contentMerger;
