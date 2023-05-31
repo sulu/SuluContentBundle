@@ -26,6 +26,7 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolve
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ShadowInterface;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Preview\ContentObjectProvider;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Preview\PreviewDimensionContentCollection;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Admin\ExampleAdmin;
@@ -108,6 +109,63 @@ class ContentObjectProviderTest extends TestCase
         $this->contentResolver->resolve(
             $entity->reveal(),
             Argument::type('array')
+        )->willReturn($dimensionContent->reveal())->shouldBeCalledTimes(1);
+
+        $result = $this->contentObjectProvider->getObject((string) $id, $locale);
+
+        $this->assertSame($dimensionContent->reveal(), $result);
+    }
+
+    public function testGetObjectWithShadow(int $id = 1, string $locale = 'de'): void
+    {
+        $queryBuilder = $this->prophesize(QueryBuilder::class);
+
+        $this->entityManager->createQueryBuilder()->willReturn($queryBuilder->reveal())->shouldBeCalledTimes(1);
+
+        $queryBuilder->select(Argument::type('string'))
+            ->willReturn($queryBuilder->reveal())
+            ->shouldBeCalledTimes(1);
+
+        $queryBuilder->from(Argument::type('string'), Argument::type('string'))
+            ->willReturn($queryBuilder->reveal())
+            ->shouldBeCalledTimes(1);
+
+        $queryBuilder->where(Argument::type('string'))
+            ->willReturn($queryBuilder->reveal())
+            ->shouldBeCalledTimes(1);
+
+        $queryBuilder->setParameter(Argument::type('string'), Argument::any())
+            ->willReturn($queryBuilder->reveal())
+            ->shouldBeCalledTimes(1);
+
+        $query = $this->prophesize(AbstractQuery::class);
+
+        $queryBuilder->getQuery()->willReturn($query->reveal())->shouldBeCalledTimes(1);
+
+        $entity = $this->prophesize(ContentRichEntityInterface::class);
+
+        $query->getSingleResult()->willReturn($entity->reveal())->shouldBeCalledTimes(1);
+
+        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent->willImplement(ShadowInterface::class);
+        $dimensionContent->getShadowLocale()->willReturn('en')->shouldBeCalledTimes(2);
+
+        $this->contentResolver->resolve(
+            $entity->reveal(),
+            [
+                'locale' => 'de',
+                'stage' => DimensionContentInterface::STAGE_DRAFT
+            ]
+        )->willReturn($dimensionContent->reveal())->shouldBeCalledTimes(1);
+
+        $dimensionContent = $this->prophesize(DimensionContentInterface::class);
+        $dimensionContent->getLocale()->willReturn('en');
+        $this->contentResolver->resolve(
+            $entity->reveal(),
+            [
+                'locale' => 'en',
+                'stage' => DimensionContentInterface::STAGE_DRAFT
+            ]
         )->willReturn($dimensionContent->reveal())->shouldBeCalledTimes(1);
 
         $result = $this->contentObjectProvider->getObject((string) $id, $locale);
