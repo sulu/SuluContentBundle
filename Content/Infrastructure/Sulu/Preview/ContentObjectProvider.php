@@ -20,6 +20,7 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolve
 use Sulu\Bundle\ContentBundle\Content\Domain\Exception\ContentNotFoundException;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\ShadowInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Bundle\PreviewBundle\Preview\Object\PreviewObjectProviderInterface;
 
@@ -192,6 +193,17 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
                     'stage' => DimensionContentInterface::STAGE_DRAFT,
                 ]
             );
+
+            // unfortunately we can only check if it is a shadow after the dimensionContent was loaded
+            if ($resolvedDimensionContent instanceof ShadowInterface && $resolvedDimensionContent->getShadowLocale()) {
+                $resolvedDimensionContent = $this->contentResolver->resolve(
+                    $contentRichEntity,
+                    [
+                        'locale' => $resolvedDimensionContent->getShadowLocale(),
+                        'stage' => DimensionContentInterface::STAGE_DRAFT,
+                    ]
+                );
+            }
 
             if (!$resolvedDimensionContent->getLocale()) {
                 // avoid 500 error when ghostLocale is loaded by still use correct locale in serialize method
