@@ -240,12 +240,6 @@ class ContentViewBuilderFactory implements ContentViewBuilderFactoryInterface
                 $settingsToolbarActions,
                 $dimensionContentClass
             );
-
-            foreach ($views as $view) {
-                if ($view instanceof PreviewFormViewBuilderInterface) {
-                    $view->setPreviewCondition('shadowOn != true');
-                }
-            }
         }
 
         return $views;
