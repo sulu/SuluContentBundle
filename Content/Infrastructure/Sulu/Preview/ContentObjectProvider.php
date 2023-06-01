@@ -196,13 +196,7 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
 
             // unfortunately we can only check if it is a shadow after the dimensionContent was loaded
             if ($resolvedDimensionContent instanceof ShadowInterface && $resolvedDimensionContent->getShadowLocale()) {
-                $resolvedDimensionContent = $this->contentResolver->resolve(
-                    $contentRichEntity,
-                    [
-                        'locale' => $resolvedDimensionContent->getShadowLocale(),
-                        'stage' => DimensionContentInterface::STAGE_DRAFT,
-                    ]
-                );
+                return $this->resolveContent($contentRichEntity, $resolvedDimensionContent->getShadowLocale());
             }
 
             if (!$resolvedDimensionContent->getLocale()) {

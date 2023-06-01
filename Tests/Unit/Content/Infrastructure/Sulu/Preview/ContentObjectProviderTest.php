@@ -154,7 +154,7 @@ class ContentObjectProviderTest extends TestCase
             $entity->reveal(),
             [
                 'locale' => 'de',
-                'stage' => DimensionContentInterface::STAGE_DRAFT
+                'stage' => DimensionContentInterface::STAGE_DRAFT,
             ]
         )->willReturn($dimensionContent->reveal())->shouldBeCalledTimes(1);
 
@@ -164,7 +164,7 @@ class ContentObjectProviderTest extends TestCase
             $entity->reveal(),
             [
                 'locale' => 'en',
-                'stage' => DimensionContentInterface::STAGE_DRAFT
+                'stage' => DimensionContentInterface::STAGE_DRAFT,
             ]
         )->willReturn($dimensionContent->reveal())->shouldBeCalledTimes(1);
 
