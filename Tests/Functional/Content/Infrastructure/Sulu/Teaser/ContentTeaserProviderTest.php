@@ -162,7 +162,7 @@ class ContentTeaserProviderTest extends WebsiteTestCase
     }
 
     /**
-     * @param Teaser[]$teasers
+     * @param Teaser[] $teasers
      *
      * @return array<string, mixed>
      */

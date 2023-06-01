@@ -41,7 +41,7 @@ class ContentDataProvider extends BaseDataProvider
         DataProviderRepositoryInterface $repository,
         ArraySerializerInterface $arraySerializer,
         ContentManagerInterface $contentManager,
-        ReferenceStoreInterface $referenceStore = null
+        ?ReferenceStoreInterface $referenceStore = null
     ) {
         parent::__construct($repository, $arraySerializer);
 

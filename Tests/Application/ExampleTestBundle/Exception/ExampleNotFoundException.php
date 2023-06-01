@@ -30,7 +30,7 @@ class ExampleNotFoundException extends \Exception
     /**
      * @param mixed[] $filters
      */
-    public function __construct(array $filters, int $code = 0, \Throwable $previous = null)
+    public function __construct(array $filters, int $code = 0, ?\Throwable $previous = null)
     {
         $this->model = Example::class;
 

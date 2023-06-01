@@ -55,7 +55,7 @@ class ContentViewBuilderFactoryTest extends TestCase
     protected function createContentViewBuilder(
         ContentMetadataInspectorInterface $contentMetadataInspector,
         SecurityCheckerInterface $securityChecker,
-        PreviewObjectProviderRegistryInterface $previewObjectProviderRegistry = null,
+        ?PreviewObjectProviderRegistryInterface $previewObjectProviderRegistry = null,
         array $settingsForms = []
     ): ContentViewBuilderFactoryInterface {
         if (null === $previewObjectProviderRegistry) {

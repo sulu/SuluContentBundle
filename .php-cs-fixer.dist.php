@@ -31,6 +31,8 @@ $config->setRiskyAllowed(true)
         'single_line_throw' => false,
         'strict_comparison' => true,
         'strict_param' => true,
+        'get_class_to_class_keyword' => false, // should be enabled as soon as support for php < 8 is dropped
+        'nullable_type_declaration_for_default_null_value' => true,
     ])
     ->setFinder(
         PhpCsFixer\Finder::create()
