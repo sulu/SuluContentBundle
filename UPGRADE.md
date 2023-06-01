@@ -102,8 +102,6 @@ The `DataMapperInterface` was changed to make it easier to set localized and unl
     ): void;
 ```
 
-## 0.6.x
-
 ### Use jsonb for PostgreSQL json columns
 
 This effects only PostgreSQL databases:
