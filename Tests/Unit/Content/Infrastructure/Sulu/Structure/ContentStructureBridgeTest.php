@@ -35,9 +35,9 @@ class ContentStructureBridgeTest extends TestCase
     use \Prophecy\PhpUnit\ProphecyTrait;
 
     protected function createStructureBridge(
-        TemplateInterface $content = null,
-        StructureMetadata $structure = null,
-        LegacyPropertyFactory $propertyFactory = null,
+        ?TemplateInterface $content = null,
+        ?StructureMetadata $structure = null,
+        ?LegacyPropertyFactory $propertyFactory = null,
         string $id = '123-123-123',
         string $locale = 'en'
     ): ContentStructureBridge {

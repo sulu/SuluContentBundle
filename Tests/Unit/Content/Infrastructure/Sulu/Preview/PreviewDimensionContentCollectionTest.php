@@ -28,7 +28,7 @@ class PreviewDimensionContentCollectionTest extends TestCase
      * @return PreviewDimensionContentCollection<T|ExampleDimensionContent>
      */
     protected function createPreviewDimensionContentCollection(
-        ExampleDimensionContent $previewDimensionContent = null,
+        ?ExampleDimensionContent $previewDimensionContent = null,
         string $locale = 'en'
     ): PreviewDimensionContentCollection {
         return new PreviewDimensionContentCollection(

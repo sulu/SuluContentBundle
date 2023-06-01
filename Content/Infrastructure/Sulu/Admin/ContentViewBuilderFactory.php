@@ -140,9 +140,9 @@ class ContentViewBuilderFactory implements ContentViewBuilderFactoryInterface
     public function createViews(
         string $contentRichEntityClass,
         string $editParentView,
-        string $addParentView = null,
-        string $securityContext = null,
-        array $toolbarActions = null
+        ?string $addParentView = null,
+        ?string $securityContext = null,
+        ?array $toolbarActions = null
     ): array {
         $dimensionContentClass = $this->contentMetadataInspector->getDimensionContentClass($contentRichEntityClass);
 

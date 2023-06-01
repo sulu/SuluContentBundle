@@ -36,7 +36,7 @@ class ContentNormalizer implements ContentNormalizerInterface
      */
     public function __construct(
         iterable $normalizers,
-        SymfonyNormalizerInterface $serializer = null
+        ?SymfonyNormalizerInterface $serializer = null
     ) {
         $this->normalizers = $normalizers;
         $this->serializer = $serializer ?: $this->createSerializer();

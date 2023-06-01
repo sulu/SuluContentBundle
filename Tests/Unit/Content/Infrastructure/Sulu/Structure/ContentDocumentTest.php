@@ -25,7 +25,7 @@ class ContentDocumentTest extends TestCase
     use \Prophecy\PhpUnit\ProphecyTrait;
 
     protected function createContentDocument(
-        TemplateInterface $content = null,
+        ?TemplateInterface $content = null,
         string $locale = 'en'
     ): ContentDocument {
         return new ContentDocument(

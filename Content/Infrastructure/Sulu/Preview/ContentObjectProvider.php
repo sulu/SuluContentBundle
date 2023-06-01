@@ -62,7 +62,7 @@ class ContentObjectProvider implements PreviewObjectProviderInterface
         ContentResolverInterface $contentResolver,
         ContentDataMapperInterface $contentDataMapper,
         string $contentRichEntityClass,
-        string $securityContext = null
+        ?string $securityContext = null
     ) {
         $this->entityManager = $entityManager;
         $this->contentResolver = $contentResolver;
