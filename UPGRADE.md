@@ -117,12 +117,12 @@ ALTER TABLE <your_entity>_example_dimensions ALTER COLUMN templateData SET DATA 
 Improve performance of the `*ContentDimension` tables with additional indexes for the database:
 
 ```sql
-CREATE INDEX idx_dimension ON <your_entity>_content (stage, locale);
-CREATE INDEX idx_locale ON <your_entity>_content (locale);
-CREATE INDEX idx_stage ON <your_entity>_content (stage);
-CREATE INDEX idx_template_key ON <your_entity>_content (templateKey);
-CREATE INDEX idx_workflow_place ON <your_entity>_content (workflowPlace);
-CREATE INDEX idx_workflow_published ON <your_entity>_content (workflowPublished);
+CREATE INDEX idx_<your_entity>_dimension ON <your_entity>_content (stage, locale);
+CREATE INDEX idx_<your_entity>_locale ON <your_entity>_content (locale);
+CREATE INDEX idx_<your_entity>_stage ON <your_entity>_content (stage);
+CREATE INDEX idx_<your_entity>_template_key ON <your_entity>_content (templateKey);
+CREATE INDEX idx_<your_entity>_workflow_place ON <your_entity>_content (workflowPlace);
+CREATE INDEX idx_<your_entity>_workflow_published ON <your_entity>_content (workflowPublished);
 ```
 
 ## 0.6.0
