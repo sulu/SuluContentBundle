@@ -22,6 +22,10 @@ class SettingsFormPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container): void
     {
+        if (!$container->hasExtension('sulu_admin')) {
+            return;
+        }
+
         $formDirectories = $container->getParameter('sulu_admin.forms.directories');
 
         $finder = new Finder();
