@@ -31,6 +31,9 @@ class SettingsFormPassTest extends TestCase
         ];
 
         $container = $this->prophesize(ContainerBuilder::class);
+        $container->hasExtension('sulu_admin')
+            ->shouldBeCalled()
+            ->willReturn(true);
         $container->getParameter('sulu_admin.forms.directories')
             ->shouldBeCalled()
             ->willReturn($directories);
@@ -57,6 +60,9 @@ class SettingsFormPassTest extends TestCase
         ];
 
         $container = $this->prophesize(ContainerBuilder::class);
+        $container->hasExtension('sulu_admin')
+            ->shouldBeCalled()
+            ->willReturn(true);
         $container->getParameter('sulu_admin.forms.directories')
             ->shouldBeCalled()
             ->willReturn($directories);
@@ -75,6 +81,9 @@ class SettingsFormPassTest extends TestCase
         ];
 
         $container = $this->prophesize(ContainerBuilder::class);
+        $container->hasExtension('sulu_admin')
+            ->shouldBeCalled()
+            ->willReturn(true);
         $container->getParameter('sulu_admin.forms.directories')
             ->shouldBeCalled()
             ->willReturn($directories);
@@ -93,12 +102,30 @@ class SettingsFormPassTest extends TestCase
         ];
 
         $container = $this->prophesize(ContainerBuilder::class);
+        $container->hasExtension('sulu_admin')
+            ->shouldBeCalled()
+            ->willReturn(true);
         $container->getParameter('sulu_admin.forms.directories')
             ->shouldBeCalled()
             ->willReturn($directories);
 
         $container->setParameter('sulu_content.content_settings_forms', [])
             ->shouldBeCalled();
+
+        $settingsFormPass = new SettingsFormPass();
+        $settingsFormPass->process($container->reveal());
+    }
+
+    public function testDoNotProcessWithoutAdminBundle(): void
+    {
+        $container = $this->prophesize(ContainerBuilder::class);
+        $container->hasExtension('sulu_admin')
+            ->shouldBeCalled()
+            ->willReturn(false);
+        $container->getParameter('sulu_admin.forms.directories')
+            ->shouldNotBeCalled();
+        $container->setParameter('sulu_content.content_settings_forms', [])
+            ->shouldNotBeCalled();
 
         $settingsFormPass = new SettingsFormPass();
         $settingsFormPass->process($container->reveal());
