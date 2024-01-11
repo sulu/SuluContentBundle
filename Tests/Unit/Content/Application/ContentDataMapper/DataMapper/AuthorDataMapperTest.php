@@ -84,6 +84,8 @@ class AuthorDataMapperTest extends TestCase
         $data = [
             'author' => 1,
             'authored' => '2020-05-08T00:00:00+00:00',
+            'lastModifiedEnabled' => true,
+            'lastModified' => '2024-05-08T00:00:00+00:00',
         ];
 
         $example = new Example();
@@ -100,8 +102,11 @@ class AuthorDataMapperTest extends TestCase
 
         $this->assertSame($contact, $localizedDimensionContent->getAuthor());
         $authored = $localizedDimensionContent->getAuthored();
+        /** @var \DateTimeImmutable $lastModified */
+        $lastModified = $localizedDimensionContent->getLastModified();
         $this->assertNotNull($authored);
         $this->assertSame('2020-05-08T00:00:00+00:00', $authored->format('c'));
+        $this->assertSame('2024-05-08T00:00:00+00:00', $lastModified->format('c'));
     }
 
     public function testMapDataNull(): void
@@ -109,6 +114,8 @@ class AuthorDataMapperTest extends TestCase
         $data = [
             'author' => null,
             'authored' => null,
+            'lastModifiedEnabled' => false,
+            'lastModified' => '2024-05-08T00:00:00+00:00',
         ];
 
         $example = new Example();
@@ -123,6 +130,7 @@ class AuthorDataMapperTest extends TestCase
         $authorMapper = $this->createAuthorDataMapperInstance();
         $authorMapper->map($unlocalizedDimensionContent, $localizedDimensionContent, $data);
 
+        $this->assertNull($localizedDimensionContent->getLastModified());
         $this->assertNull($localizedDimensionContent->getAuthor());
         $this->assertNull($localizedDimensionContent->getAuthored());
     }

@@ -29,5 +29,7 @@
     "stage": "draft",
     "template": null,
     "title": null,
-    "workflowPlace": null
+    "workflowPlace": null,
+    "lastModifiedEnabled": false,
+    "lastModified": null
 }

@@ -40,5 +40,7 @@
     "template": "example-2",
     "title": "Test Example",
     "url": "/my-example",
-    "workflowPlace": "unpublished"
+    "workflowPlace": "unpublished",
+    "lastModifiedEnabled": false,
+    "lastModified": null
 }

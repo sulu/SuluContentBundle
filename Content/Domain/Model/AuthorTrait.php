@@ -30,6 +30,26 @@ trait AuthorTrait
      */
     private $authored;
 
+    /**
+     * @var \DateTimeImmutable|null
+     */
+    private $lastModified;
+
+    public function getLastModifiedEnabled(): ?bool
+    {
+        return null !== $this->lastModified;
+    }
+
+    public function getLastModified(): ?\DateTimeImmutable
+    {
+        return $this->lastModified;
+    }
+
+    public function setLastModified(?\DateTimeImmutable $lastModified): void
+    {
+        $this->lastModified = $lastModified;
+    }
+
     public function getAuthor(): ?ContactInterface
     {
         return $this->author;

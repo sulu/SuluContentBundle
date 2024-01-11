@@ -17,6 +17,12 @@ use Sulu\Bundle\ContactBundle\Entity\ContactInterface;
 
 interface AuthorInterface
 {
+    public function getLastModifiedEnabled(): ?bool;
+
+    public function getLastModified(): ?\DateTimeImmutable;
+
+    public function setLastModified(?\DateTimeImmutable $lastModified): void;
+
     public function getAuthor(): ?ContactInterface;
 
     public function setAuthor(?ContactInterface $author): void;

@@ -47,4 +47,13 @@ class AuthorTraitTest extends TestCase
         $model->setAuthored($authored);
         $this->assertSame($authored, $model->getAuthored());
     }
+
+    public function testGetSetLastModified(): void
+    {
+        $model = $this->getAuthorInstance();
+        $lastModified = new \DateTimeImmutable('2024-05-08T00:00:00+00:00');
+        $model->setLastModified($lastModified);
+        $this->assertTrue($model->getLastModifiedEnabled());
+        $this->assertSame($lastModified, $model->getLastModified());
+    }
 }

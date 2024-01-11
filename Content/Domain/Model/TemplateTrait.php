@@ -43,6 +43,9 @@ trait TemplateTrait
         return $this->templateData;
     }
 
+    /**
+     * @param mixed[] $templateData
+     */
     public function setTemplateData(array $templateData): void
     {
         $this->templateData = $templateData;
