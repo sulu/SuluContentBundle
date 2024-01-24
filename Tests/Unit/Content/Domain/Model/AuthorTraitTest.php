@@ -42,7 +42,7 @@ class AuthorTraitTest extends TestCase
     public function testGetSetAuthored(): void
     {
         $model = $this->getAuthorInstance();
-        $authored = new \DateTimeImmutable('2020-05-08T00:00:00+00:00');
+        $authored = new \DateTime('2020-05-08T00:00:00+00:00');
         $this->assertNull($model->getAuthored());
         $model->setAuthored($authored);
         $this->assertSame($authored, $model->getAuthored());
@@ -51,7 +51,7 @@ class AuthorTraitTest extends TestCase
     public function testGetSetLastModified(): void
     {
         $model = $this->getAuthorInstance();
-        $lastModified = new \DateTimeImmutable('2024-05-08T00:00:00+00:00');
+        $lastModified = new \DateTime('2024-05-08T00:00:00+00:00');
         $model->setLastModified($lastModified);
         $this->assertTrue($model->getLastModifiedEnabled());
         $this->assertSame($lastModified, $model->getLastModified());

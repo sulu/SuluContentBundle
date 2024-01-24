@@ -59,7 +59,7 @@ class AuthorNormalizerTest extends TestCase
 
         $data = [
             'author' => 1,
-            'authored' => new \DateTimeImmutable('2020-05-08T00:00:00+00:00'),
+            'authored' => new \DateTime('2020-05-08T00:00:00+00:00'),
         ];
 
         $this->assertSame(
@@ -76,8 +76,8 @@ class AuthorNormalizerTest extends TestCase
         $contact = $this->prophesize(ContactInterface::class);
         $contact->getId()->shouldBeCalled()->willReturn(1);
         $object->getAuthor()->willReturn($contact->reveal());
-        $authored = new \DateTimeImmutable('2020-05-08T00:00:00+00:00');
-        $lastModified = new \DateTimeImmutable('2022-05-08T00:00:00+00:00');
+        $authored = new \DateTime('2020-05-08T00:00:00+00:00');
+        $lastModified = new \DateTime('2022-05-08T00:00:00+00:00');
 
         $data = [
             'author' => $contact->reveal(),

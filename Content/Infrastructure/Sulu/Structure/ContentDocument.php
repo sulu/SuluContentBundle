@@ -13,12 +13,17 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Infrastructure\Sulu\Structure;
 
+use Sulu\Bundle\ContactBundle\Entity\ContactInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Model\AuthorInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ExcerptInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\SeoInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Component\Content\Document\Behavior\ExtensionBehavior;
+use Sulu\Component\Content\Document\Behavior\LocalizedAuthorBehavior;
+use Sulu\Component\Persistence\Model\UserBlameInterface;
+use Sulu\Component\Security\Authentication\UserInterface;
 
-class ContentDocument implements ExtensionBehavior
+class ContentDocument implements ExtensionBehavior, LocalizedAuthorBehavior
 {
     /**
      * @var TemplateInterface
@@ -150,5 +155,80 @@ class ContentDocument implements ExtensionBehavior
                 $method
             )
         );
+    }
+
+    public function getLastModifiedEnabled(): ?bool
+    {
+        if ($this->content instanceof AuthorInterface) {
+            return $this->content->getLastModifiedEnabled();
+        }
+
+        return null;
+    }
+
+    public function getLastModified(): ?\DateTime
+    {
+        if ($this->content instanceof AuthorInterface) {
+            return $this->content->getLastModified();
+        }
+
+        return null;
+    }
+
+    /**
+     * @param \DateTime|null $lastModified
+     */
+    public function setLastModified($lastModified): void
+    {
+        throw $this->createReadOnlyException(__METHOD__);
+    }
+
+    public function getAuthored(): ?\DateTime
+    {
+        if ($this->content instanceof AuthorInterface) {
+            return $this->content->getAuthored();
+        }
+
+        return null;
+    }
+
+    public function setAuthored($authored): void
+    {
+        throw $this->createReadOnlyException(__METHOD__);
+    }
+
+    public function getAuthor(): ?ContactInterface
+    {
+        if ($this->content instanceof AuthorInterface) {
+            return $this->content->getAuthor();
+        }
+
+        return null;
+    }
+
+    /**
+     * @param ContactInterface|null $contactId
+     */
+    public function setAuthor($contactId): void
+    {
+        throw $this->createReadOnlyException(__METHOD__);
+    }
+
+    public function getCreator(): ?UserInterface
+    {
+        if ($this->content instanceof UserBlameInterface) {
+            return $this->content->getCreator();
+        }
+
+        return null;
+    }
+
+    public function getChanger(): ?UserInterface
+    {
+        if ($this->content instanceof UserBlameInterface) {
+            return $this->content->getChanger();
+        }
+
+        return null;
     }
 }

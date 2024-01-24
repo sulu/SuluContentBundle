@@ -62,8 +62,8 @@ class AuthorMergerTest extends TestCase
         $merger = $this->getAuthorMergerInstance();
 
         $contact = $this->prophesize(ContactInterface::class);
-        $authoredDate = new \DateTimeImmutable('2020-05-08T00:00:00+00:00');
-        $lastModifiedDate = new \DateTimeImmutable('2020-05-08T00:00:00+00:00');
+        $authoredDate = new \DateTime('2020-05-08T00:00:00+00:00');
+        $lastModifiedDate = new \DateTime('2020-05-08T00:00:00+00:00');
 
         $source = $this->prophesize(DimensionContentInterface::class);
         $source->willImplement(AuthorInterface::class);

@@ -102,7 +102,7 @@ class AuthorDataMapperTest extends TestCase
 
         $this->assertSame($contact, $localizedDimensionContent->getAuthor());
         $authored = $localizedDimensionContent->getAuthored();
-        /** @var \DateTimeImmutable $lastModified */
+        /** @var \DateTime $lastModified */
         $lastModified = $localizedDimensionContent->getLastModified();
         $this->assertNotNull($authored);
         $this->assertSame('2020-05-08T00:00:00+00:00', $authored->format('c'));
@@ -122,7 +122,7 @@ class AuthorDataMapperTest extends TestCase
         $unlocalizedDimensionContent = new ExampleDimensionContent($example);
         $localizedDimensionContent = new ExampleDimensionContent($example);
         $localizedDimensionContent->setAuthor(new Contact());
-        $localizedDimensionContent->setAuthored(new \DateTimeImmutable());
+        $localizedDimensionContent->setAuthored(new \DateTime());
 
         $this->contactFactory->create(Argument::cetera())
             ->shouldNotBeCalled();

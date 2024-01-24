@@ -26,12 +26,12 @@ trait AuthorTrait
     private $author;
 
     /**
-     * @var \DateTimeImmutable|null
+     * @var \DateTime|null
      */
     private $authored;
 
     /**
-     * @var \DateTimeImmutable|null
+     * @var \DateTime|null
      */
     private $lastModified;
 
@@ -40,12 +40,12 @@ trait AuthorTrait
         return null !== $this->lastModified;
     }
 
-    public function getLastModified(): ?\DateTimeImmutable
+    public function getLastModified(): ?\DateTime
     {
         return $this->lastModified;
     }
 
-    public function setLastModified(?\DateTimeImmutable $lastModified): void
+    public function setLastModified(?\DateTime $lastModified): void
     {
         $this->lastModified = $lastModified;
     }
@@ -60,12 +60,12 @@ trait AuthorTrait
         $this->author = $author;
     }
 
-    public function getAuthored(): ?\DateTimeImmutable
+    public function getAuthored(): ?\DateTime
     {
         return $this->authored;
     }
 
-    public function setAuthored(?\DateTimeImmutable $authored): void
+    public function setAuthored(?\DateTime $authored): void
     {
         $this->authored = $authored;
     }
