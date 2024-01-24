@@ -117,7 +117,8 @@ final class MetadataLoader implements EventSubscriber
         }
 
         if ($reflection->implementsInterface(AuthorInterface::class)) {
-            $this->addField($metadata, 'authored', 'datetime_immutable', ['nullable' => true]);
+            $this->addField($metadata, 'authored', 'datetime', ['nullable' => true]);
+            $this->addField($metadata, 'lastModified', 'datetime', ['nullable' => true]);
             $this->addManyToOne($event, $metadata, 'author', ContactInterface::class, true);
         }
 

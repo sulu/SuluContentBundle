@@ -62,15 +62,18 @@ class AuthorMergerTest extends TestCase
         $merger = $this->getAuthorMergerInstance();
 
         $contact = $this->prophesize(ContactInterface::class);
-        $authoredDate = new \DateTimeImmutable('2020-05-08T00:00:00+00:00');
+        $authoredDate = new \DateTime('2020-05-08T00:00:00+00:00');
+        $lastModifiedDate = new \DateTime('2020-05-08T00:00:00+00:00');
 
         $source = $this->prophesize(DimensionContentInterface::class);
         $source->willImplement(AuthorInterface::class);
+        $source->getLastModified()->willReturn($lastModifiedDate)->shouldBeCalled();
         $source->getAuthor()->willReturn($contact->reveal())->shouldBeCalled();
         $source->getAuthored()->willReturn($authoredDate)->shouldBeCalled();
 
         $target = $this->prophesize(DimensionContentInterface::class);
         $target->willImplement(AuthorInterface::class);
+        $target->setLastModified($lastModifiedDate)->shouldBeCalled();
         $target->setAuthor($contact->reveal())->shouldBeCalled();
         $target->setAuthored($authoredDate)->shouldBeCalled();
 
@@ -83,11 +86,13 @@ class AuthorMergerTest extends TestCase
 
         $source = $this->prophesize(DimensionContentInterface::class);
         $source->willImplement(AuthorInterface::class);
+        $source->getLastModified()->willReturn(null)->shouldBeCalled();
         $source->getAuthor()->willReturn(null)->shouldBeCalled();
         $source->getAuthored()->willReturn(null)->shouldBeCalled();
 
         $target = $this->prophesize(DimensionContentInterface::class);
         $target->willImplement(AuthorInterface::class);
+        $target->setLastModified(Argument::any())->shouldNotBeCalled();
         $target->setAuthor(Argument::any())->shouldNotBeCalled();
         $target->setAuthored(Argument::any())->shouldNotBeCalled();
 

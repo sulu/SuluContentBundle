@@ -247,6 +247,7 @@ class MetadataLoaderTest extends TestCase
             [
                 'author' => true,
                 'authored' => true,
+                'lastModified' => null,
             ],
             [],
             [

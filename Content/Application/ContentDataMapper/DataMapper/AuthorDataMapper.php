@@ -54,10 +54,18 @@ class AuthorDataMapper implements DataMapperInterface
             );
         }
 
+        if (\array_key_exists('lastModified', $data)) {
+            $dimensionContent->setLastModified(
+                $data['lastModified'] && (\array_key_exists('lastModifiedEnabled', $data) && $data['lastModifiedEnabled'])
+                    ? new \DateTime($data['lastModified'])
+                    : null
+            );
+        }
+
         if (\array_key_exists('authored', $data)) {
             $dimensionContent->setAuthored(
                 $data['authored']
-                    ? new \DateTimeImmutable($data['authored'])
+                    ? new \DateTime($data['authored'])
                     : null
             );
         }
