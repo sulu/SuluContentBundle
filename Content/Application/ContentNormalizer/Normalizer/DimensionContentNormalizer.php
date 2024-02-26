@@ -28,6 +28,7 @@ class DimensionContentNormalizer implements NormalizerInterface
             'merged',
             'dimension',
             'resource',
+            'version',
         ];
     }
 
@@ -40,6 +41,7 @@ class DimensionContentNormalizer implements NormalizerInterface
         $normalizedData['id'] = $object->getResource()->getId();
         $normalizedData['locale'] = $object->getLocale();
         $normalizedData['stage'] = $object->getStage();
+        $normalizedData['version'] = $object->getVersion();
 
         return $normalizedData;
     }

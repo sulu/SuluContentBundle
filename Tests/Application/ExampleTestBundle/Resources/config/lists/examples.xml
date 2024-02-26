@@ -66,5 +66,12 @@
 
             <joins ref="ghostDimensionContent"/>
         </property>
+
+        <property name="version" translation="sulu_admin.version" visibility="never">
+            <field-name>version</field-name>
+            <entity-name>dimensionContent</entity-name>
+
+            <joins ref="dimensionContent"/>
+        </property>
     </properties>
 </list>

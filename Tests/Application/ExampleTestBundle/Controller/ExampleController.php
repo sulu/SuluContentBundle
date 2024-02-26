@@ -97,8 +97,10 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         $fieldDescriptors = $this->fieldDescriptorFactory->getFieldDescriptors(Example::RESOURCE_KEY);
         /** @var DoctrineListBuilder $listBuilder */
         $listBuilder = $this->listBuilderFactory->create(Example::class);
+        $listBuilder->where($fieldDescriptors['version'], (string) DimensionContentInterface::DEFAULT_VERSION);
         $listBuilder->addSelectField($fieldDescriptors['locale']);
         $listBuilder->addSelectField($fieldDescriptors['ghostLocale']);
+        $listBuilder->addSelectField($fieldDescriptors['version']);
         $listBuilder->setParameter('locale', $request->query->get('locale'));
         $this->restHelper->initializeListBuilder($listBuilder, $fieldDescriptors);
 
