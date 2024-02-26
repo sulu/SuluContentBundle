@@ -53,10 +53,12 @@ final class MetadataLoader implements EventSubscriber
         if ($reflection->implementsInterface(DimensionContentInterface::class)) {
             $this->addField($metadata, 'stage', 'string', ['length' => 16, 'nullable' => false]);
             $this->addField($metadata, 'locale', 'string', ['length' => 7, 'nullable' => true]);
+            $this->addField($metadata, 'version', 'integer', ['default' => 0, 'nullable' => true]);
             $this->addField($metadata, 'ghostLocale', 'string', ['length' => 7, 'nullable' => true]);
             $this->addField($metadata, 'availableLocales', 'json', ['nullable' => true, 'options' => ['jsonb' => true]]);
             $this->addIndex($metadata, 'idx_dimension', ['stage', 'locale']);
             $this->addIndex($metadata, 'idx_locale', ['locale']);
+            $this->addIndex($metadata, 'idx_version', ['version']);
             $this->addIndex($metadata, 'idx_stage', ['stage']);
         }
 
