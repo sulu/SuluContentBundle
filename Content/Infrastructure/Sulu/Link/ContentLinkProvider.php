@@ -108,9 +108,7 @@ abstract class ContentLinkProvider implements LinkProviderInterface
      */
     protected function getTitle(DimensionContentInterface $dimensionContent, array $data): ?string
     {
-        $title = $data['title'] ?? $data['name'] ?? null;
-
-        return \is_string($title) ? $title : null;
+        return $data['title'] ?? $data['name'] ?? null;
     }
 
     protected function getEntityIdField(): string

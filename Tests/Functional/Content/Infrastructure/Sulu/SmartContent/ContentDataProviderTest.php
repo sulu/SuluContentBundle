@@ -314,7 +314,7 @@ class ContentDataProviderTest extends SuluTestCase
             /** @var int $expectedCount */
             /** @var bool $expectedHasNextPage */
             $dataProviderResult = $this->contentDataProvider->resolveDataItems(
-                $filters, // @phpstan-ignore-line
+                $filters,
                 [],
                 [
                     'locale' => $locale,

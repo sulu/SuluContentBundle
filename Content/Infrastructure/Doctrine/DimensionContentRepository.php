@@ -66,6 +66,7 @@ class DimensionContentRepository implements DimensionContentRepositoryInterface
         $queryBuilder = $this->entityManager->createQueryBuilder()
             ->from($dimensionContentClass, 'dimensionContent')
             ->where('dimensionContent.' . $mappingProperty . ' = :id')
+            ->andWhere('dimensionContent.version = 0')
             ->setParameter('id', $contentRichEntity->getId());
 
         $this->dimensionContentQueryEnhancer->addSelects(
@@ -83,5 +84,30 @@ class DimensionContentRepository implements DimensionContentRepositoryInterface
             $dimensionAttributes,
             $dimensionContentClass
         );
+    }
+
+    public function getLocales(
+        ContentRichEntityInterface $contentRichEntity,
+        array $dimensionAttributes
+    ): array {
+        $dimensionContentClass = $this->contentMetadataInspector->getDimensionContentClass(\get_class($contentRichEntity));
+        $mappingProperty = $this->contentMetadataInspector->getDimensionContentPropertyName(\get_class($contentRichEntity));
+
+        $queryBuilder = $this->entityManager->createQueryBuilder()
+            ->from($dimensionContentClass, 'dimensionContent')
+            ->select('dimensionContent.locale')
+            ->where('IDENTITY(dimensionContent.' . $mappingProperty . ') = :id')
+            ->andWhere('dimensionContent.locale IS NOT NULL')
+            ->setParameter('id', $contentRichEntity->getId());
+
+        unset($dimensionAttributes['locale']);
+        foreach ($dimensionAttributes as $key => $value) {
+            $queryBuilder->andWhere('dimensionContent.' . $key . ' = :' . $key)
+                ->setParameter(':' . $key, $value);
+        }
+
+        return \array_map(function($row) {
+            return $row['locale'];
+        }, $queryBuilder->getQuery()->getArrayResult());
     }
 }

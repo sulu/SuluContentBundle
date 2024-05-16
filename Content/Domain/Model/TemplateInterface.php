@@ -22,12 +22,12 @@ interface TemplateInterface
     public function setTemplateKey(string $templateKey): void;
 
     /**
-     * @return array<string, mixed>
+     * @return mixed[]
      */
     public function getTemplateData(): array;
 
     /**
-     * @param array<string, mixed> $templateData
+     * @param mixed[] $templateData
      */
     public function setTemplateData(array $templateData): void;
 }

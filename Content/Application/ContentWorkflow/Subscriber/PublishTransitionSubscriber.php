@@ -21,6 +21,7 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ShadowInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\TemplateInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\WorkflowInterface;
+use Sulu\Bundle\ContentBundle\Content\Domain\Repository\DimensionContentRepositoryInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Workflow\Event\TransitionEvent;
 
@@ -36,9 +37,17 @@ class PublishTransitionSubscriber implements EventSubscriberInterface
      */
     private $contentCopier;
 
-    public function __construct(ContentCopierInterface $contentCopier)
-    {
+    /**
+     * @var DimensionContentRepositoryInterface
+     */
+    private $dimensionContentRepository;
+
+    public function __construct(
+        ContentCopierInterface $contentCopier,
+        DimensionContentRepositoryInterface $dimensionContentRepository
+    ) {
         $this->contentCopier = $contentCopier;
+        $this->dimensionContentRepository = $dimensionContentRepository;
     }
 
     public function onPublish(TransitionEvent $transitionEvent): void
@@ -76,6 +85,17 @@ class PublishTransitionSubscriber implements EventSubscriberInterface
         $sourceDimensionAttributes = $dimensionAttributes;
         $targetDimensionAttributes = $dimensionAttributes;
         $targetDimensionAttributes['stage'] = DimensionContentInterface::STAGE_LIVE;
+
+        $publishLocales = $this->dimensionContentRepository->getLocales($contentRichEntity, $dimensionAttributes);
+
+        foreach ($publishLocales as $publishLocale) {
+            $this->contentCopier->copy(
+                $contentRichEntity,
+                \array_merge($dimensionAttributes, ['locale' => $publishLocale]),
+                $contentRichEntity,
+                \array_merge($dimensionAttributes, ['locale' => $publishLocale, 'version' => time()])
+            );
+        }
 
         $shadowLocale = $dimensionContent instanceof ShadowInterface
             ? $dimensionContent->getShadowLocale()

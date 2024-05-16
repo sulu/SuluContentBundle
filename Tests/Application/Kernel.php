@@ -43,7 +43,7 @@ class Kernel extends SuluTestKernel
         return $bundles;
     }
 
-    public function registerContainerConfiguration(LoaderInterface $loader): void
+    public function registerContainerConfiguration(LoaderInterface $loader)
     {
         parent::registerContainerConfiguration($loader);
         $loader->load(__DIR__ . '/config/config_' . $this->getContext() . '.yml');

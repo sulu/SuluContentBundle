@@ -21,6 +21,8 @@ interface DimensionContentInterface
     public const STAGE_DRAFT = 'draft';
     public const STAGE_LIVE = 'live';
 
+    public const DEFAULT_VERSION = 0;
+
     public static function getResourceKey(): string;
 
     public function getLocale(): ?string;
@@ -58,6 +60,10 @@ interface DimensionContentInterface
      * @internal should only be set by content bundle services not from outside
      */
     public function setStage(string $stage): void;
+
+    public function setVersion(int $version): void;
+
+    public function getVersion(): int;
 
     /**
      * @return T

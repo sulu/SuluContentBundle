@@ -99,6 +99,7 @@ class ExampleController extends AbstractRestController implements ClassResourceI
         $listBuilder = $this->listBuilderFactory->create(Example::class);
         $listBuilder->addSelectField($fieldDescriptors['locale']);
         $listBuilder->addSelectField($fieldDescriptors['ghostLocale']);
+        $listBuilder->addSelectField($fieldDescriptors['version']);
         $listBuilder->setParameter('locale', $request->query->get('locale'));
         $this->restHelper->initializeListBuilder($listBuilder, $fieldDescriptors);
 

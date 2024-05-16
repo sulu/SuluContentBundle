@@ -24,7 +24,7 @@ trait TemplateTrait
     private $templateKey;
 
     /**
-     * @var array<string, mixed>
+     * @var mixed[]
      */
     private $templateData = [];
 
@@ -43,9 +43,6 @@ trait TemplateTrait
         return $this->templateData;
     }
 
-    /**
-     * @param array<string, mixed> $templateData
-     */
     public function setTemplateData(array $templateData): void
     {
         $this->templateData = $templateData;

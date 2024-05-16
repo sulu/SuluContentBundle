@@ -17,7 +17,6 @@ use Sulu\Bundle\ContentBundle\Content\Application\ContentMerger\Merger\MergerInt
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentCollectionInterface;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\DimensionContentInterface;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
-use Webmozart\Assert\Assert;
 
 class ContentMerger implements ContentMergerInterface
 {
@@ -42,13 +41,6 @@ class ContentMerger implements ContentMergerInterface
         $this->propertyAccessor = $propertyAccessor;
     }
 
-    /**
-     * @template T of DimensionContentInterface
-     *
-     * @param DimensionContentCollectionInterface<T> $dimensionContentCollection
-     *
-     * @return T
-     */
     public function merge(DimensionContentCollectionInterface $dimensionContentCollection): DimensionContentInterface
     {
         if (!$dimensionContentCollection->count()) {
@@ -60,7 +52,6 @@ class ContentMerger implements ContentMergerInterface
         foreach ($dimensionContentCollection as $dimensionContent) {
             if (!$mergedDimensionContent) {
                 $contentRichEntity = $dimensionContent->getResource();
-                /** @var T $mergedDimensionContent */
                 $mergedDimensionContent = $contentRichEntity->createDimensionContent();
                 $mergedDimensionContent->markAsMerged();
             }
@@ -77,8 +68,6 @@ class ContentMerger implements ContentMergerInterface
                 );
             }
         }
-
-        Assert::notNull($mergedDimensionContent);
 
         return $mergedDimensionContent;
     }

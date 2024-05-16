@@ -162,7 +162,7 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
 
     /**
      * @param B $dimensionContent
-     * @param array<string, mixed> $data
+     * @param mixed[] $data
      */
     protected function getTitle(DimensionContentInterface $dimensionContent, array $data): ?string
     {
@@ -172,9 +172,7 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
             }
         }
 
-        $title = $data['title'] ?? $data['name'] ?? null;
-
-        return \is_string($title) ? $title : null;
+        return $data['title'] ?? $data['name'] ?? null;
     }
 
     /**
