@@ -121,7 +121,7 @@ class ContentDataProvider extends BaseDataProvider
      *
      * @param T $dimensionContent
      *
-     * @return int|string
+     * @return string|int
      */
     protected function getIdForItem($dimensionContent)
     {
