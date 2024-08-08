@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\ContentBundle\Content\UserInterface\Controller\Website;
 
 use Sulu\Bundle\WebsiteBundle\Controller\DefaultController;
+use Sulu\Component\Content\Compat\StructureInterface;
 
 /**
  * TODO this controller will later replace the DefaultController of the WebsiteBundle
@@ -21,4 +22,8 @@ use Sulu\Bundle\WebsiteBundle\Controller\DefaultController;
  */
 class ContentController extends DefaultController
 {
+    public function indexAction(StructureInterface $structure, $preview = false, $partial = false)
+    {
+        return parent::indexAction($structure, $preview, $partial);
+    }
 }
