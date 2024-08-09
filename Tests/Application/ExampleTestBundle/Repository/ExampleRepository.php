@@ -89,6 +89,11 @@ class ExampleRepository implements ContentRichEntityRepositoryInterface
         $this->dimensionContentQueryEnhancer = $dimensionContentQueryEnhancer;
     }
 
+    public static function getResourceKey(): string
+    {
+        return Example::RESOURCE_KEY;
+    }
+
     /**
      * @param array{
      *     id?: int,

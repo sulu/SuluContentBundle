@@ -53,6 +53,8 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
  */
 interface ContentRichEntityRepositoryInterface
 {
+    public static function getResourceKey(): string;
+
     /**
      * @param ContentRichEntityRepositoryFilters $filters
      * @param ContentRichEntityRepositorySortBys $sortBys
