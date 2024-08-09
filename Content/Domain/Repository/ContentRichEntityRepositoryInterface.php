@@ -30,6 +30,8 @@ use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
  *     tagOperator?: 'AND'|'OR',
  *     templateKeys?: string[],
  *     loadGhost?: bool,
+ *     page?: int,
+ *     limit?: int,
  * }
  * @phpstan-type ContentRichEntityRepositorySortBys array{
  *     title?: 'asc'|'desc',
