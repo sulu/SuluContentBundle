@@ -16,10 +16,11 @@ namespace Sulu\Bundle\ContentBundle\Content\Domain\Repository;
 use Sulu\Bundle\ContentBundle\Content\Domain\Model\ContentRichEntityInterface;
 
 /**
+ * @template I of int|string
  * @template T of ContentRichEntityInterface
  *
  * @phpstan-type ContentRichEntityRepositoryFilters array{
- *     identifiers?: array<string>,
+ *     ids?: I[],
  *     locale?: string|null,
  *     stage?: string|null,
  *     categoryIds?: int[],
