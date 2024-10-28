@@ -10,6 +10,12 @@
     ],
     "homepage": "https://github.com/sulu/SuluContentBundle",
     "license": "MIT",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/Prokyonn/sulu.git"
+        }
+    ],
     "require": {
         "php": "^8.0",
         "doctrine/inflector": "^1.4.1 || ^2.0.1",
@@ -20,7 +26,7 @@
         "friendsofsymfony/rest-bundle": "^2.6 || ^3.0",
         "massive/search-bundle": "^2.4",
         "ramsey/uuid": "^3.8 || ^4.0",
-        "sulu/sulu": "^2.5.6 || ^2.6@dev",
+        "sulu/sulu": "dev-feature/content-resolver as 2.6.12",
         "symfony/config": "^5.4 || ^6.0 || ^7.0",
         "symfony/dependency-injection": "^5.4 || ^6.0 || ^7.0",
         "symfony/event-dispatcher": "^5.4 || ^6.0 || ^7.0",
