@@ -13,5 +13,12 @@
                 index-by="type"
             />
         </service>
+
+        <service id="sulu_content.link_resource_loader"
+                 class="Sulu\Bundle\ContentBundle\Content\Application\ResourceLoader\LinkResourceLoader">
+            <argument type="service" id="sulu_markup.link_tag.provider_pool"/>
+
+            <tag name="sulu_content.resource_loader" type="link"/>
+        </service>
     </services>
 </container>

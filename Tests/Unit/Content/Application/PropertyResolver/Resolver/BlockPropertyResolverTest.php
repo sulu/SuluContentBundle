@@ -21,6 +21,7 @@ use Sulu\Bundle\ContentBundle\Content\Application\MetadataResolver\MetadataResol
 use Sulu\Bundle\ContentBundle\Content\Application\PropertyResolver\PropertyResolverProvider;
 use Sulu\Bundle\ContentBundle\Content\Application\PropertyResolver\Resolver\BlockPropertyResolver;
 use Sulu\Bundle\ContentBundle\Content\Application\PropertyResolver\Resolver\DefaultPropertyResolver;
+use Symfony\Component\ErrorHandler\BufferingLogger;
 
 class BlockPropertyResolverTest extends TestCase
 {
@@ -33,7 +34,10 @@ class BlockPropertyResolverTest extends TestCase
         );
         $metadataResolver = new MetadataResolver($propertyResolverProvider);
 
-        $blockPropertyResolver = new BlockPropertyResolver();
+        $blockPropertyResolver = new BlockPropertyResolver(
+            new BufferingLogger(),
+            false
+        );
         $blockPropertyResolver->setMetadataResolver($metadataResolver);
 
         $data = [

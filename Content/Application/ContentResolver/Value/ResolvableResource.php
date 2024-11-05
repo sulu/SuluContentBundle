@@ -18,10 +18,14 @@ namespace Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\Value;
  */
 class ResolvableResource
 {
+    private \Closure $callback;
+
     public function __construct(
         private string|int $id,
         private string $resourceLoaderKey,
+        ?\Closure $resourceCallback = null
     ) {
+        $this->callback = $resourceCallback ?? (static fn (mixed $resource) => $resource);
     }
 
     public function getId(): string|int
@@ -32,5 +36,10 @@ class ResolvableResource
     public function getResourceLoaderKey(): string
     {
         return $this->resourceLoaderKey;
+    }
+
+    public function executeResourceCallback(mixed $resource): mixed
+    {
+        return ($this->callback)($resource);
     }
 }
