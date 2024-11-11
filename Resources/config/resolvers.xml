@@ -82,5 +82,11 @@
 
             <tag name="sulu_content.property_resolver"/>
         </service>
+
+        <service id="sulu_content.teaser_selection_property_resolver"
+                 class="Sulu\Bundle\ContentBundle\Content\Application\PropertyResolver\Resolver\TeaserSelectionPropertyResolver">
+
+            <tag name="sulu_content.property_resolver"/>
+        </service>
     </services>
 </container>

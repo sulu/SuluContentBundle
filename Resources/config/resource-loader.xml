@@ -20,5 +20,12 @@
 
             <tag name="sulu_content.resource_loader" type="link"/>
         </service>
+
+        <service id="sulu_content.teaser_resource_loader"
+        class="Sulu\Bundle\ContentBundle\Content\Application\ResourceLoader\TeaserResourceLoader">
+            <argument type="service" id="sulu_page.teaser.manager"/>
+
+            <tag name="sulu_content.resource_loader" type="teaser"/>
+        </service>
     </services>
 </container>
