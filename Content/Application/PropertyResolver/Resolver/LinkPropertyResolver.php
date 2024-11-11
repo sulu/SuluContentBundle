@@ -39,7 +39,7 @@ class LinkPropertyResolver implements PropertyResolverInterface
             || !\array_key_exists('href', $data)
             || !\array_key_exists('provider', $data)
         ) {
-            return ContentView::create($data, []);
+            return ContentView::create($data, [...$params]);
         }
 
         /** @var string $resourceLoaderKey */

@@ -25,21 +25,73 @@ use Symfony\Component\ErrorHandler\BufferingLogger;
 
 class BlockPropertyResolverTest extends TestCase
 {
-    public function testResolve(): void
+    private BlockPropertyResolver $resolver;
+    private BufferingLogger $logger;
+
+    protected function setUp(): void
     {
-        $propertyResolverProvider = new PropertyResolverProvider(
+        $this->logger = new BufferingLogger();
+        $this->resolver = new BlockPropertyResolver(
+            $this->logger,
+            debug: false,
+        );
+        $metadataResolverProperty = new PropertyResolverProvider(
             new \ArrayIterator([
                 'default' => new DefaultPropertyResolver(),
             ])
         );
-        $metadataResolver = new MetadataResolver($propertyResolverProvider);
+        $metadataResolver = new MetadataResolver($metadataResolverProperty);
+        $this->resolver->setMetadataResolver($metadataResolver);
+    }
 
-        $blockPropertyResolver = new BlockPropertyResolver(
-            new BufferingLogger(),
-            false
-        );
-        $blockPropertyResolver->setMetadataResolver($metadataResolver);
+    public function testResolveEmpty(): void
+    {
+        $contentView = $this->resolver->resolve(null, 'en');
 
+        $this->assertSame([], $contentView->getContent());
+        $this->assertSame([], $contentView->getView());
+        $this->assertCount(0, $this->logger->cleanLogs());
+    }
+
+    public function testResolveParams(): void
+    {
+        $contentView = $this->resolver->resolve([], 'en', ['metadata' => new FieldMetadata('example'), 'custom' => 'params']);
+
+        $this->assertSame([], $contentView->getContent());
+        $this->assertSame([
+            'custom' => 'params',
+        ], $contentView->getView());
+        $this->assertCount(0, $this->logger->cleanLogs());
+    }
+
+    /**
+     * @return iterable<array{
+     *     0: mixed,
+     * }>
+     */
+    public static function provideUnresolvableData(): iterable
+    {
+        yield 'null' => [null];
+        yield 'smart_content' => [['source' => '123']];
+        yield 'single_value' => [1];
+        yield 'object' => [(object) [1, 2]];
+        yield 'non_type_blocks' => [['text' => 'test'], ['text' => '123']];
+    }
+
+    /**
+     * @dataProvider provideUnresolvableData
+     */
+    public function testResolveUnresolvableData(mixed $data): void
+    {
+        $contentView = $this->resolver->resolve($data, 'en', ['metadata' => new FieldMetadata('example')]);
+
+        $this->assertSame([], $contentView->getContent());
+        $this->assertSame([], $contentView->getView());
+        $this->assertCount(0, $this->logger->cleanLogs());
+    }
+
+    public function testResolve(): void
+    {
         $data = [
             [
                 'type' => 'text_block',
@@ -67,14 +119,15 @@ class BlockPropertyResolverTest extends TestCase
             'metadata' => $blockFieldMetadata,
         ];
 
-        $content = $blockPropertyResolver->resolve($data, $locale, $params);
+        $content = $this->resolver->resolve($data, $locale, $params);
         $this->assertInstanceOf(ContentView::class, $content);
-        /** @var mixed[] $innerContent */
+        /** @var ContentView[] $innerContent */
         $innerContent = $content->getContent();
         $this->assertCount(1, $innerContent);
         /** @var mixed[] $blockData */
-        $blockData = $innerContent[0];
+        $blockData = $innerContent[0]->getContent();
         $this->assertSame('text_block', $blockData['type']);
+        $this->assertInstanceOf(ContentView::class, $blockData['title']);
         $this->assertSame('Sulu', $blockData['title']->getContent());
         $this->assertSame([], $blockData['title']->getView());
         $this->assertSame('Sulu is awesome', $blockData['description']->getContent());

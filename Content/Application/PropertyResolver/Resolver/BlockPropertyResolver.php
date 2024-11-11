@@ -39,13 +39,21 @@ class BlockPropertyResolver implements PropertyResolverInterface
     }
 
     /**
-     * @param non-empty-array<array<mixed>> $data
+     * @param array<array<mixed>>|mixed $data
      */
     public function resolve(mixed $data, string $locale, array $params = []): ContentView
     {
         $metadata = $params['metadata'] ?? null;
-        \assert($metadata instanceof FieldMetadata, 'Metadata must be set to resolve hotspots.');
+        $returnedParams = $params;
+        unset($returnedParams['metadata']); // TODO we may should implement a PropertyResolverAwareMetadataInterface
+
+        if (!\is_array($data) || !\array_is_list($data)) {
+            return ContentView::create([], [...$returnedParams]);
+        }
+
+        \assert($metadata instanceof FieldMetadata, 'Metadata must be set to resolve blocks.');
         $metadataTypes = $metadata->getTypes();
+
         $contentViews = [];
         foreach ($data as $key => $block) {
             if (!\is_array($block) || !isset($block['type']) || !\is_string($block['type'])) {
@@ -81,11 +89,13 @@ class BlockPropertyResolver implements PropertyResolverInterface
                     ['type' => $type],
                     $this->metadataResolver->resolveItems($formMetadata->getItems(), $block, $locale)
                 ),
-                []
+                [
+                    ...$returnedParams,
+                ]
             );
         }
 
-        return ContentView::create($contentViews, []);
+        return ContentView::create($contentViews, [...$returnedParams]);
     }
 
     public static function getType(): string
