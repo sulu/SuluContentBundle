@@ -38,9 +38,9 @@ class ContentView
     /**
      * @param mixed[] $view
      */
-    public static function createResolvable(string|int $id, string $resourceLoaderKey, array $view): self
+    public static function createResolvable(string|int $id, string $resourceLoaderKey, array $view, ?\Closure $closure = null): self
     {
-        return new self(new ResolvableResource($id, $resourceLoaderKey), $view);
+        return new self(new ResolvableResource($id, $resourceLoaderKey, $closure), $view);
     }
 
     /**

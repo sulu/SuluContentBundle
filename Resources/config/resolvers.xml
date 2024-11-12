@@ -59,16 +59,26 @@
             />
         </service>
 
-        <service id="sulu_content.property_resolver.default"
+        <service id="sulu_content.default_property_resolver"
                  class="Sulu\Bundle\ContentBundle\Content\Application\PropertyResolver\Resolver\DefaultPropertyResolver">
+
             <tag name="sulu_content.property_resolver"/>
         </service>
 
-        <service id="sulu_content.property_resolver.block"
+        <service id="sulu_content.block_property_resolver"
                  class="Sulu\Bundle\ContentBundle\Content\Application\PropertyResolver\Resolver\BlockPropertyResolver">
+            <argument type="service" id="logger"/>
+            <argument>%kernel.debug%</argument>
+
             <call method="setMetadataResolver">
                 <argument type="service" id="sulu_content.metadata_resolver"/>
             </call>
+
+            <tag name="sulu_content.property_resolver"/>
+        </service>
+
+        <service id="sulu_content.link_property_resolver"
+                 class="Sulu\Bundle\ContentBundle\Content\Application\PropertyResolver\Resolver\LinkPropertyResolver">
 
             <tag name="sulu_content.property_resolver"/>
         </service>

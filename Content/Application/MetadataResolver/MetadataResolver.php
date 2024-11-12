@@ -46,7 +46,7 @@ class MetadataResolver
                     $this->resolveItems($item->getItems(), $data, $locale)
                 );
             } else {
-                $contentViews[$name] = $this->resolveProperty($type, $data[$name], $locale, ['metadata' => $item]);
+                $contentViews[$name] = $this->resolveProperty($type, $data[$name] ?? null, $locale, ['metadata' => $item]);
             }
         }
 

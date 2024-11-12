@@ -17,6 +17,7 @@ use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\ContentBundle\Content\Application\PropertyResolver\PropertyResolverProvider;
 use Sulu\Bundle\ContentBundle\Content\Application\PropertyResolver\Resolver\BlockPropertyResolver;
 use Sulu\Bundle\ContentBundle\Content\Application\PropertyResolver\Resolver\DefaultPropertyResolver;
+use Symfony\Component\ErrorHandler\BufferingLogger;
 
 class PropertyResolverProviderTest extends TestCase
 {
@@ -24,7 +25,10 @@ class PropertyResolverProviderTest extends TestCase
     {
         $propertyResolverProvider = new PropertyResolverProvider(
             new \ArrayIterator([
-                'block' => new BlockPropertyResolver(),
+                'block' => new BlockPropertyResolver(
+                    new BufferingLogger(),
+                    false
+                ),
                 'default' => new DefaultPropertyResolver(),
             ])
         );

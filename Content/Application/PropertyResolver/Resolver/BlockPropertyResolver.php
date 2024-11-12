@@ -13,7 +13,9 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Application\PropertyResolver\Resolver;
 
+use Psr\Log\LoggerInterface;
 use Sulu\Bundle\AdminBundle\Metadata\FormMetadata\FieldMetadata;
+use Sulu\Bundle\AdminBundle\Metadata\FormMetadata\FormMetadata;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\Value\ContentView;
 use Sulu\Bundle\ContentBundle\Content\Application\MetadataResolver\MetadataResolver;
 use Sulu\Bundle\ContentBundle\Content\Application\PropertyResolver\PropertyResolverInterface;
@@ -21,6 +23,12 @@ use Sulu\Bundle\ContentBundle\Content\Application\PropertyResolver\PropertyResol
 class BlockPropertyResolver implements PropertyResolverInterface
 {
     private MetadataResolver $metadataResolver;
+
+    public function __construct(
+        private readonly LoggerInterface $logger,
+        private readonly bool $debug = false,
+    ) {
+    }
 
     /**
      * Prevent circular dependency by injecting the MetadataResolver after instantiation.
@@ -31,27 +39,63 @@ class BlockPropertyResolver implements PropertyResolverInterface
     }
 
     /**
-     * @param array{
-     *     type: string,
-     *     ...
-     * }[] $data
+     * @param array<array<mixed>>|mixed $data
      */
     public function resolve(mixed $data, string $locale, array $params = []): ContentView
     {
-        /** @var FieldMetadata $metadata */
-        $metadata = $params['metadata'];
-        $blockTypes = $metadata->getTypes();
+        $metadata = $params['metadata'] ?? null;
+        $returnedParams = $params;
+        unset($returnedParams['metadata']); // TODO we may should implement a PropertyResolverAwareMetadataInterface
+
+        if (!\is_array($data) || !\array_is_list($data)) {
+            return ContentView::create([], [...$returnedParams]);
+        }
+
+        \assert($metadata instanceof FieldMetadata, 'Metadata must be set to resolve blocks.');
+        $metadataTypes = $metadata->getTypes();
+
         $contentViews = [];
-        foreach ($data as $block) {
+        foreach ($data as $key => $block) {
+            if (!\is_array($block) || !isset($block['type']) || !\is_string($block['type'])) {
+                continue;
+            }
+
             $type = $block['type'];
-            $formMetadata = $blockTypes[$type];
-            $contentViews[] = \array_merge(
-                ['type' => $type],
-                $this->metadataResolver->resolveItems($formMetadata->getItems(), $block, $locale)
+            $formMetadata = $metadataTypes[$type] ?? null;
+
+            if (!$formMetadata instanceof FormMetadata) {
+                $errorMessage = \sprintf(
+                    'Metadata type "%s" in "%s" not found, founded types are: "%s"',
+                    $type,
+                    $metadata->getName(),
+                    \implode('", "', \array_keys($metadataTypes)),
+                );
+
+                $this->logger->error($errorMessage);
+
+                if ($this->debug) {
+                    throw new \UnexpectedValueException($errorMessage);
+                }
+
+                $type = $metadata->getDefaultType();
+                $formMetadata = $metadataTypes[$type] ?? null;
+                if (!$formMetadata instanceof FormMetadata) {
+                    continue;
+                }
+            }
+
+            $contentViews[$key] = ContentView::create(
+                \array_merge(
+                    ['type' => $type],
+                    $this->metadataResolver->resolveItems($formMetadata->getItems(), $block, $locale)
+                ),
+                [
+                    ...$returnedParams,
+                ]
             );
         }
 
-        return ContentView::create($contentViews, []);
+        return ContentView::create($contentViews, [...$returnedParams]);
     }
 
     public static function getType(): string

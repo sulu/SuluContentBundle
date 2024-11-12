@@ -41,7 +41,7 @@ class ContentResolver implements ContentResolverInterface
     public function resolve(DimensionContentInterface $dimensionContent): array
     {
         $contentViews = [];
-        foreach ($this->contentResolvers as $key => $contentResolver) {
+        foreach ($this->contentResolvers as $resolverKey => $contentResolver) {
             $contentView = $contentResolver->resolve($dimensionContent);
 
             if ($contentResolver instanceof TemplateResolver) {
@@ -51,21 +51,16 @@ class ContentResolver implements ContentResolverInterface
                 continue;
             }
 
-            $contentViews[$key] = $contentView;
+            $contentViews[$resolverKey] = $contentView;
         }
-
-        $result = $this->resolveContentViews($contentViews);
-        $resources = $this->loadResolvableResources($result['resolvableResources'], $dimensionContent->getLocale());
-        \array_walk_recursive($result['content'], function(&$value) use ($resources) {
-            if ($value instanceof ResolvableResource) {
-                $value = $resources[$value->getResourceLoaderKey()][$value->getId()];
-            }
-        });
+        $resolvedContent = $this->resolveContentViews($contentViews);
+        $resolvedResources = $this->loadAndResolveResources($resolvedContent['resolvableResources'], $dimensionContent->getLocale());
+        $content = $this->replaceResolvableResourcesWithResolvedValues($resolvedContent['content'], $resolvedResources);
 
         return [
             'resource' => $dimensionContent->getResource(),
-            'content' => $result['content'],
-            'view' => $result['view'],
+            'content' => $content,
+            'view' => $resolvedContent['view'],
         ];
     }
 
@@ -75,7 +70,7 @@ class ContentResolver implements ContentResolverInterface
      * @return array{
      *     content: mixed[],
      *     view: mixed[],
-     *     resolvableResources: array<string, array<int|string>>
+     *     resolvableResources: array<string, array<ResolvableResource>>
      *     }
      */
     private function resolveContentViews(array $contentViews): array
@@ -85,7 +80,7 @@ class ContentResolver implements ContentResolverInterface
         $resolvableResources = [];
 
         foreach ($contentViews as $name => $contentView) {
-            $result = $this->resolveContentView($contentView, $name);
+            $result = $this->resolveContentView($contentView, (string) $name);
             $content = \array_merge($content, $result['content']);
             $view = \array_merge($view, $result['view']);
             $resolvableResources = \array_merge_recursive($resolvableResources, $result['resolvableResources']);
@@ -99,92 +94,117 @@ class ContentResolver implements ContentResolverInterface
     }
 
     /**
-     * @param array<string, array<int|string>> $resolvableResourceIds
-     *
-     * @return array<string, mixed[]>
-     */
-    private function loadResolvableResources(array $resolvableResourceIds, ?string $locale): array
-    {
-        $resources = [];
-        foreach ($resolvableResourceIds as $resourceLoaderKey => $ids) {
-            $resourceLoader = $this->resourceLoaderProvider->getResourceLoader($resourceLoaderKey);
-            if (!$resourceLoader) {
-                throw new \RuntimeException(\sprintf('ResourceLoader with key "%s" not found', $resourceLoaderKey));
-            }
-
-            $resources[$resourceLoaderKey] = $resourceLoader->load($ids, $locale);
-        }
-
-        return $resources;
-    }
-
-    /**
      * @return array{
      *     content: mixed[],
      *     view: mixed[],
-     *     resolvableResources: array<string, array<int|string>>
+     *     resolvableResources: array<string, array<ResolvableResource>>
      *     }
      */
     private function resolveContentView(ContentView $contentView, string $name): array
     {
-        $resolvableResources = [];
-        $content[$name] = $contentView->getContent();
-        $view[$name] = $contentView->getView();
+        $content = $contentView->getContent();
+        $view = $contentView->getView();
 
-        if (\is_array($content[$name])) {
-            foreach ($content[$name] as $index => $value) {
-                $contentViewValues = [];
-                $otherValues = [];
+        $result = [
+            'content' => [],
+            'view' => [],
+            'resolvableResources' => [],
+        ];
+        if (\is_array($content)) {
+            if (\count(\array_filter($content, fn ($entry) => $entry instanceof ContentView)) === \count($content)) {
+                // resolve array of content views
+                $resolvedContentViews = $this->resolveContentViews($content);
+                $result['content'][$name] = $resolvedContentViews['content'];
+                $result['view'][$name] = $resolvedContentViews['view'];
+                $result['resolvableResources'] = \array_merge_recursive($result['resolvableResources'], $resolvedContentViews['resolvableResources']);
 
-                if (\is_array($value)) {
-                    foreach ($value as $key => $entry) {
-                        if ($entry instanceof ResolvableResource) {
-                            $resolvableResources[$entry->getResourceLoaderKey()][] = $entry->getId();
-                        }
+                return $result;
+            }
 
-                        match (true) {
-                            $entry instanceof ContentView => $contentViewValues[$key] = $entry,
-                            default => $otherValues[$key] = $entry,
-                        };
-                    }
+            $resolvableResources = [];
+            foreach ($content as $key => $entry) {
+                // resolve array of mixed content
+                if ($entry instanceof ContentView) {
+                    $resolvedContentView = $this->resolveContentView($entry, $key);
+                    $result['content'][$name] = \array_merge($result['content'][$name] ?? [], $resolvedContentView['content']);
+                    $result['view'][$name] = \array_merge($result['view'][$name] ?? [], $resolvedContentView['view']);
+                    $resolvableResources = \array_merge_recursive($resolvableResources, $resolvedContentView['resolvableResources']);
 
-                    $resolvedContentViews = $this->resolveContentViews($contentViewValues);
-                    $result['content'] = \array_merge(
-                        $resolvedContentViews['content'],
-                        $otherValues,
-                    );
-                    $result['view'] = \array_merge(
-                        $resolvedContentViews['view'],
-                    );
-
-                    $resolvableResources = \array_merge_recursive($resolvableResources, $resolvedContentViews['resolvableResources']);
-
-                    $content[$name][$index] = $result['content'];
-                    $view[$name][$index] = $result['view'];
                     continue;
                 }
 
-                if ($value instanceof ResolvableResource) {
-                    $resolvableResources[$value->getResourceLoaderKey()][] = $value->getId();
+                if ($entry instanceof ResolvableResource) {
+                    $resolvableResources[$entry->getResourceLoaderKey()][] = $entry;
                 }
 
-                $result = $value instanceof ContentView ?
-                    $this->resolveContentView($value, $index) :
-                    [
-                        'content' => $value,
-                        'view' => [],
-                    ];
-
-                // TODO this has to be refactored
-                $content[$name] = \array_merge($content[$name], \is_array($result['content']) ? $result['content'] : [$index => $result['content']]); // @phpstan-ignore-line
-                $view[$name] = \array_merge($view[$name], $result['view']);
+                $result['content'][$name][$key] = $entry;
+                $result['view'][$name][$key] = [];
             }
+
+            $result['resolvableResources'] = $resolvableResources;
+
+            return $result;
         }
 
-        return [
-            'content' => $content,
-            'view' => $view,
-            'resolvableResources' => $resolvableResources,
-        ];
+        if ($content instanceof ResolvableResource) {
+            $result['resolvableResources'][$content->getResourceLoaderKey()][] = $content;
+        }
+
+        $result['content'][$name] = $content;
+        $result['view'][$name] = $view;
+
+        return $result;
+    }
+
+    /**
+     * Loads and resolves resources from various resource loaders.
+     *
+     * @param array<string, array<ResolvableResource>> $resourcesPerLoader Resource loaders and their associated resources to load
+     *
+     * @return array<string, mixed[]> Resolved resources organized by resource loader key
+     */
+    private function loadAndResolveResources(array $resourcesPerLoader, ?string $locale): array
+    {
+        $resolvedResources = [];
+
+        foreach ($resourcesPerLoader as $loaderKey => $resourcesToLoad) {
+            if (!$loaderKey) {
+                throw new \RuntimeException(\sprintf('ResourceLoader key "%s" is invalid', $loaderKey));
+            }
+
+            $resourceLoader = $this->resourceLoaderProvider->getResourceLoader($loaderKey);
+            if (!$resourceLoader) {
+                throw new \RuntimeException(\sprintf('ResourceLoader with key "%s" not found', $loaderKey));
+            }
+
+            $resourceIds = \array_map(fn (ResolvableResource $resource) => $resource->getId(), $resourcesToLoad);
+            $resolvedResources[$loaderKey] = $resourceLoader->load(
+                $resourceIds,
+                $locale
+            );
+        }
+
+        return $resolvedResources;
+    }
+
+    /**
+     * Replaces all instances of ResolvableResource in the given content with their resolved values.
+     *
+     * @param mixed[] $content The content to replace ResolvableResource instances
+     * @param array<string, mixed[]> $resolvedResources The resolved resources, indexed by resource loader key and objectHash
+     *
+     * @return mixed[] The content with all ResolvableResource instances replaced with their resolved values
+     */
+    private function replaceResolvableResourcesWithResolvedValues(array $content, array $resolvedResources): array
+    {
+        \array_walk_recursive($content, function(&$value) use ($resolvedResources) {
+            if ($value instanceof ResolvableResource) {
+                $value = $value->executeResourceCallback(
+                    $resolvedResources[$value->getResourceLoaderKey()][$value->getId()]
+                );
+            }
+        });
+
+        return $content;
     }
 }

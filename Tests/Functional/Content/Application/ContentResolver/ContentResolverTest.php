@@ -25,9 +25,9 @@ use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
 class ContentResolverTest extends SuluTestCase
 {
     use CreateCategoryTrait;
-    use CreateTagTrait;
     use CreateExampleTrait;
     use CreateMediaTrait;
+    use CreateTagTrait;
 
     private ContentResolverInterface $contentResolver;
     private ContentAggregatorInterface $contentAggregator;
@@ -85,13 +85,13 @@ class ContentResolverTest extends SuluTestCase
                                             'ids' => [$media2->getId()],
                                         ],
                                     ],
-                                ]
-                            ]
+                                ],
+                            ],
                         ],
                         'text_line' => 'Lorem Ipsum dolor sit amet',
                         'number' => 1337,
                         'phone' => '+49 123 456 789',
-//                        'tag_selection' => [$tag1->getName()],
+                        //                        'tag_selection' => [$tag1->getName()],
                         'single_select' => 'value-2',
                         'select' => [
                             'value-2',
@@ -116,22 +116,22 @@ class ContentResolverTest extends SuluTestCase
                             'id' => $media1->getId(),
                             'displayOption' => 'left',
                         ],
-//                        'account_selection' => [
-//                            $account1->getId(),
-//                            $account2->getId(),
-//                        ],
-//                        'single_account_selection' => $account1->getId(),
-//                        'contact_selection' => [
-//                            $contact1->getId(),
-//                            $contact2->getId(),
-//                        ],
-//                        'single_contact_selection' => $contact1->getId(),
-//                        'contact_account_selection' => [
-//                            'c'.$contact1->getId(),
-//                            'a'.$account1->getId(),
-//                        ],
+                        //                        'account_selection' => [
+                        //                            $account1->getId(),
+                        //                            $account2->getId(),
+                        //                        ],
+                        //                        'single_account_selection' => $account1->getId(),
+                        //                        'contact_selection' => [
+                        //                            $contact1->getId(),
+                        //                            $contact2->getId(),
+                        //                        ],
+                        //                        'single_contact_selection' => $contact1->getId(),
+                        //                        'contact_account_selection' => [
+                        //                            'c'.$contact1->getId(),
+                        //                            'a'.$account1->getId(),
+                        //                        ],
                         'text_area' => 'Lorem Ipsum dolor sit amet',
-//                        'image_map' =>  //TODO
+                        //                        'image_map' =>  //TODO
                         'blocks2' => [
                             [
                                 'type' => 'editor',
@@ -156,14 +156,14 @@ class ContentResolverTest extends SuluTestCase
                                             'ids' => [$media2->getId()],
                                         ],
                                     ],
-                                ]
-                            ]
+                                ],
+                            ],
                         ],
                         'excerptTitle' => 'excerpt-title-1',
                         'excerptMore' => 'excerpt-more-1',
                         'excerptDescription' => 'excerpt-description-1',
                         'excerptCategories' => [$category1->getId()],
-//                        'excerptTags' => [$tag1->getName()],
+                        //                        'excerptTags' => [$tag1->getName()],
                         'excerptIcon' => [
                             'id' => $media1->getId(),
                         ],
