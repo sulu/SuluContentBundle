@@ -11,7 +11,7 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\ContentBundle\Content\Application\ResourceLoader;
+namespace Sulu\Bundle\ContentBundle\Content\Application\ResourceLoader\Loader;
 
 use Sulu\Bundle\PageBundle\Teaser\TeaserManagerInterface;
 
