@@ -16,7 +16,7 @@ namespace Sulu\Bundle\ContentBundle\Tests\Unit\Content\Application\ResourceLoade
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
-use Sulu\Bundle\ContentBundle\Content\Application\ResourceLoader\LinkResourceLoader;
+use Sulu\Bundle\ContentBundle\Content\Application\ResourceLoader\Loader\LinkResourceLoader;
 use Sulu\Bundle\MarkupBundle\Markup\Link\LinkItem;
 use Sulu\Bundle\MarkupBundle\Markup\Link\LinkProviderInterface;
 use Sulu\Bundle\MarkupBundle\Markup\Link\LinkProviderPoolInterface;

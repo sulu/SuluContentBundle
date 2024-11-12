@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Content\Application\PropertyResolver;
 
+use Sulu\Bundle\ContentBundle\Content\Application\PropertyResolver\Resolver\PropertyResolverInterface;
+
 class PropertyResolverProvider
 {
     /**

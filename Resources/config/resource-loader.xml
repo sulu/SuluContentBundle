@@ -15,10 +15,17 @@
         </service>
 
         <service id="sulu_content.link_resource_loader"
-                 class="Sulu\Bundle\ContentBundle\Content\Application\ResourceLoader\LinkResourceLoader">
+                 class="Sulu\Bundle\ContentBundle\Content\Application\ResourceLoader\Loader\LinkResourceLoader">
             <argument type="service" id="sulu_markup.link_tag.provider_pool"/>
 
             <tag name="sulu_content.resource_loader" type="link"/>
+        </service>
+
+        <service id="sulu_content.teaser_resource_loader"
+        class="Sulu\Bundle\ContentBundle\Content\Application\ResourceLoader\Loader\TeaserResourceLoader">
+            <argument type="service" id="sulu_page.teaser.manager"/>
+
+            <tag name="sulu_content.resource_loader" type="teaser"/>
         </service>
     </services>
 </container>
