@@ -13,6 +13,7 @@ jobs:
         runs-on: ubuntu-latest
 
         env:
+            COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             APP_ENV: test
             DATABASE_URL: mysql://root:root@127.0.0.1:3306/su_content_test?serverVersion=8.0.29
             DATABASE_CHARSET: utf8mb4
@@ -111,6 +112,9 @@ jobs:
     lint:
         name: "PHP Lint"
         runs-on: ubuntu-latest
+
+        env:
+            COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
         steps:
             - name: Checkout project
