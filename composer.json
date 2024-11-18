@@ -26,7 +26,7 @@
         "friendsofsymfony/rest-bundle": "^2.6 || ^3.0",
         "massive/search-bundle": "^2.4",
         "ramsey/uuid": "^3.8 || ^4.0",
-        "sulu/sulu": "dev-feature/content-resolver as 2.6.12",
+        "sulu/sulu": "dev-feature/content-resolver as 3.0.0",
         "symfony/config": "^5.4 || ^6.0 || ^7.0",
         "symfony/dependency-injection": "^5.4 || ^6.0 || ^7.0",
         "symfony/event-dispatcher": "^5.4 || ^6.0 || ^7.0",
