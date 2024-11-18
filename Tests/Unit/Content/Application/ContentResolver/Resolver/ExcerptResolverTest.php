@@ -59,6 +59,7 @@ class ExcerptResolverTest extends TestCase
         $dimensionContent->setExcerptIcon(['id' => 1]);
         $dimensionContent->setExcerptImage(['id' => 2]);
         $tag = new Tag();
+        $tag->setName('Tag 1');
         $this->setPrivateProperty($tag, 'id', 1);
         $dimensionContent->setExcerptTags([$tag]);
         $category = new Category();
@@ -79,7 +80,7 @@ class ExcerptResolverTest extends TestCase
             'excerptMore' => 'Sulu is more awesome',
             'excerptIcon' => ['id' => 1],
             'excerptImage' => ['id' => 2],
-            'excerptTags' => [1],
+            'excerptTags' => ['Tag 1'],
             'excerptCategories' => [1],
         ], 'en')
             ->willReturn(

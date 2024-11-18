@@ -13,12 +13,14 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\Tests\Functional\Content\Application\ContentResolver;
 
+use Sulu\Bundle\CategoryBundle\Entity\Category;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentAggregator\ContentAggregatorInterface;
 use Sulu\Bundle\ContentBundle\Content\Application\ContentResolver\ContentResolverInterface;
 use Sulu\Bundle\ContentBundle\Tests\Functional\Traits\CreateCategoryTrait;
 use Sulu\Bundle\ContentBundle\Tests\Functional\Traits\CreateMediaTrait;
 use Sulu\Bundle\ContentBundle\Tests\Functional\Traits\CreateTagTrait;
 use Sulu\Bundle\ContentBundle\Tests\Traits\CreateExampleTrait;
+use Sulu\Bundle\MediaBundle\Api\Collection;
 use Sulu\Bundle\MediaBundle\Api\Media;
 use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
 
@@ -41,18 +43,11 @@ class ContentResolverTest extends SuluTestCase
         $this->contentAggregator = self::getContainer()->get('sulu_content.content_aggregator');
     }
 
-    public function testResolveContent(): void
+    //TODO add tests for
+    //account selection / contact selection / image map / blocks 2 / excerpt / seo
+
+    public function testResolveContentDefaultFields(): void
     {
-        $category1 = self::createCategory(['key' => 'category-1']);
-        $category2 = self::createCategory(['key' => 'category-2']);
-        $tag1 = self::createTag(['name' => 'tag-1']);
-        $collection1 = self::createCollection(['title' => 'collection-1', 'locale' => 'en']);
-        $mediaType = self::createMediaType(['name' => 'Image', 'description' => 'This is an image']);
-        $media1 = self::createMedia($collection1, $mediaType, ['title' => 'media-1', 'locale' => 'en']);
-        $media2 = self::createMedia($collection1, $mediaType, ['title' => 'media-2', 'locale' => 'en']);
-
-        self::getEntityManager()->flush();
-
         $example1 = static::createExample(
             [
                 'en' => [
@@ -61,37 +56,9 @@ class ContentResolverTest extends SuluTestCase
                         'title' => 'Lorem Ipsum',
                         'url' => '/lorem-ipsum',
                         'text_editor' => '<p>Lorem Ipsum dolor sit amet</p>',
-                        'blocks' => [
-                            [
-                                'type' => 'editor',
-                                'text_editor' => '<p>Block Level 0: Lorem Ipsum dolor sit amet</p>',
-                            ],
-                            [
-                                'type' => 'media',
-                                'media_selection' => [
-                                    'ids' => [$media1->getId()],
-                                ],
-                            ],
-                            [
-                                'type' => 'block',
-                                'blocks' => [
-                                    [
-                                        'type' => 'editor',
-                                        'text_editor' => '<p>Block Level 1: Lorem Ipsum dolor sit amet</p>',
-                                    ],
-                                    [
-                                        'type' => 'media',
-                                        'media_selection' => [
-                                            'ids' => [$media2->getId()],
-                                        ],
-                                    ],
-                                ],
-                            ],
-                        ],
                         'text_line' => 'Lorem Ipsum dolor sit amet',
                         'number' => 1337,
                         'phone' => '+49 123 456 789',
-                        //                        'tag_selection' => [$tag1->getName()],
                         'single_select' => 'value-2',
                         'select' => [
                             'value-2',
@@ -104,72 +71,10 @@ class ContentResolverTest extends SuluTestCase
                         'datetime' => '2020-01-01 13:37:00',
                         'email' => 'example@sulu.io',
                         'external_url' => 'https://sulu.io',
-                        'category_selection' => [$category1->getId(), $category2->getId()],
-                        'single_category_selection' => $category1->getId(),
-                        'collection_selection' => [$collection1->getId()],
-                        'single_collection_selection' => $collection1->getId(),
-                        'media_selection' => [
-                            'ids' => [$media1->getId(), $media2->getId()],
-                            'displayOption' => 'left',
-                        ],
-                        'single_media_selection' => [
-                            'id' => $media1->getId(),
-                            'displayOption' => 'left',
-                        ],
-                        //                        'account_selection' => [
-                        //                            $account1->getId(),
-                        //                            $account2->getId(),
-                        //                        ],
-                        //                        'single_account_selection' => $account1->getId(),
-                        //                        'contact_selection' => [
-                        //                            $contact1->getId(),
-                        //                            $contact2->getId(),
-                        //                        ],
-                        //                        'single_contact_selection' => $contact1->getId(),
-                        //                        'contact_account_selection' => [
-                        //                            'c'.$contact1->getId(),
-                        //                            'a'.$account1->getId(),
-                        //                        ],
                         'text_area' => 'Lorem Ipsum dolor sit amet',
-                        //                        'image_map' =>  //TODO
-                        'blocks2' => [
-                            [
-                                'type' => 'editor',
-                                'text_editor' => '<p>Block2 Level 0: Lorem Ipsum dolor sit amet</p>',
-                            ],
-                            [
-                                'type' => 'media',
-                                'media_selection' => [
-                                    'ids' => [$media1->getId()],
-                                ],
-                            ],
-                            [
-                                'type' => 'block',
-                                'blocks' => [
-                                    [
-                                        'type' => 'editor',
-                                        'text_editor' => '<p>Block2 Level 1: Lorem Ipsum dolor sit amet</p>',
-                                    ],
-                                    [
-                                        'type' => 'media',
-                                        'media_selection' => [
-                                            'ids' => [$media2->getId()],
-                                        ],
-                                    ],
-                                ],
-                            ],
-                        ],
                         'excerptTitle' => 'excerpt-title-1',
                         'excerptMore' => 'excerpt-more-1',
                         'excerptDescription' => 'excerpt-description-1',
-                        'excerptCategories' => [$category1->getId()],
-                        //                        'excerptTags' => [$tag1->getName()],
-                        'excerptIcon' => [
-                            'id' => $media1->getId(),
-                        ],
-                        'excerptImage' => [
-                            'id' => $media2->getId(),
-                        ],
                         'seoTitle' => 'seo-title-1',
                         'seoDescription' => 'seo-description-1',
                         'seoKeywords' => 'seo-keywords-1',
@@ -197,33 +102,6 @@ class ContentResolverTest extends SuluTestCase
         self::assertSame('Lorem Ipsum', $content['title']);
         self::assertSame('/lorem-ipsum', $content['url']);
         self::assertSame('<p>Lorem Ipsum dolor sit amet</p>', $content['text_editor']);
-
-        // block 0
-        self::assertSame('editor', $content['blocks'][0]['type']);
-        self::assertSame('<p>Block Level 0: Lorem Ipsum dolor sit amet</p>', $content['blocks'][0]['text_editor']);
-
-        // block 1
-        self::assertSame('media', $content['blocks'][1]['type']);
-        $mediaApi1 = $content['blocks'][1]['media_selection'][0];
-        self::assertInstanceOf(Media::class, $mediaApi1);
-        self::assertSame($media1->getId(), $mediaApi1->getId());
-        $mediaApi2 = $content['blocks'][1]['media_selection'][1];
-        self::assertInstanceOf(Media::class, $mediaApi2);
-        self::assertSame($media2->getId(), $mediaApi2->getId());
-
-        // block 2
-        self::assertSame('block', $content['blocks'][2]['type']);
-        self::assertSame('<p>Block Level 1: Lorem Ipsum dolor sit amet</p>', $content['blocks'][2]['blocks'][0]['text_editor']);
-        self::assertSame('editor', $content['blocks'][2]['blocks'][0]['type']);
-
-        self::assertSame('media', $content['blocks'][2]['blocks'][1]['type']);
-        $mediaApi1 = $content['blocks'][2]['blocks'][1]['media_selection'][0];
-        self::assertInstanceOf(Media::class, $mediaApi1);
-        self::assertSame($media1->getId(), $mediaApi1->getId());
-        $mediaApi2 = $content['blocks'][2]['blocks'][1]['media_selection'][1];
-        self::assertInstanceOf(Media::class, $mediaApi2);
-        self::assertSame($media2->getId(), $mediaApi2->getId());
-
         self::assertSame('Lorem Ipsum dolor sit amet', $content['text_line']);
         self::assertSame(1337, $content['number']);
         self::assertSame('+49 123 456 789', $content['phone']);
@@ -236,30 +114,339 @@ class ContentResolverTest extends SuluTestCase
         self::assertSame('2020-01-01 13:37:00', $content['datetime']);
         self::assertSame('example@sulu.io', $content['email']);
         self::assertSame('https://sulu.io', $content['external_url']);
+        self::assertSame('Lorem Ipsum dolor sit amet', $content['text_area']);
+        self::assertSame('excerpt-title-1', $content['excerpt']['excerptTitle']);
+        self::assertSame('excerpt-more-1', $content['excerpt']['excerptMore']);
+        self::assertSame('excerpt-description-1', $content['excerpt']['excerptDescription']);
+        self::assertSame('seo-title-1', $content['seo']['seoTitle']);
+        self::assertSame('seo-description-1', $content['seo']['seoDescription']);
+        self::assertSame('seo-keywords-1', $content['seo']['seoKeywords']);
+        self::assertSame('https://sulu.io', $content['seo']['seoCanonicalUrl']);
+        self::assertTrue($content['seo']['seoNoIndex']);
+        self::assertTrue($content['seo']['seoNoFollow']);
+        self::assertTrue($content['seo']['seoHideInSitemap']);
+    }
 
-        self::assertCount(2, $content['category_selection']);
-        $contentCategory1 = $content['category_selection'][0];
-        self::assertSame($category1->getId(), $contentCategory1->getId());
-        $contentCategory2 = $content['category_selection'][1];
-        self::assertSame($category2->getId(), $contentCategory2->getId());
+    public function testResolveMedias(): void
+    {
+        $collection1 = self::createCollection(['title' => 'collection-1', 'locale' => 'en']);
+        $mediaType = self::createMediaType(['name' => 'Image', 'description' => 'This is an image']);
+        $media1 = self::createMedia($collection1, $mediaType, ['title' => 'media-1', 'locale' => 'en']);
+        $media2 = self::createMedia($collection1, $mediaType, ['title' => 'media-2', 'locale' => 'en']);
+        $media3 = self::createMedia($collection1, $mediaType, ['title' => 'media-3', 'locale' => 'en']);
 
-        self::assertSame($category1->getId(), $content['single_category_selection']->getId());
-        self::assertCount(1, $content['collection_selection']);
-        $contentCollection1 = $content['collection_selection'][0];
-        self::assertSame($collection1->getId(), $contentCollection1->getId());
+        self::getEntityManager()->flush();
 
-        self::assertSame($collection1->getId(), $content['single_collection_selection']->getId());
+        $example1 = static::createExample(
+            [
+                'en' => [
+                    'live' => [
+                        'template' => 'full-content',
+                        'title' => 'Lorem Ipsum',
+                        'url' => '/lorem-ipsum',
+                        'media_selection' => [
+                            'ids' => [$media1->getId(), $media2->getId(), $media3->getId()],
+                            'displayOption' => 'left',
+                        ],
+                        'single_media_selection' => [
+                            'id' => $media1->getId(),
+                            'displayOption' => 'left',
+                        ],
+                        'excerptIcon' => [
+                            'id' => $media1->getId(),
+                        ],
+                        'excerptImage' => [
+                            'id' => $media2->getId(),
+                        ],
+                    ],
+                ],
+            ],
+            [
+                'create_route' => true,
+            ]
+        );
 
-        self::assertCount(2, $content['media_selection']);
-        $contentMedia1 = $content['media_selection'][0];
+        static::getEntityManager()->flush();
+
+        $dimensionContent = $this->contentAggregator->aggregate($example1, ['locale' => 'en', 'stage' => 'live']);
+        /** @var mixed[] $result */
+        $result = $this->contentResolver->resolve($dimensionContent);
+
+        /** @var mixed[] $content */
+        $content = $result['content'];
+
+        $mediaSelection = $content['media_selection'];
+        self::assertIsArray($mediaSelection);
+        self::assertCount(3, $mediaSelection);
+        $contentMedia1 = $mediaSelection[0];
+        self::assertInstanceOf(Media::class, $contentMedia1);
+        self::assertSame($media1->getId(), $contentMedia1->getId());
+        $contentMedia2 = $mediaSelection[1];
+        self::assertInstanceOf(Media::class, $contentMedia2);
+        self::assertSame($media2->getId(), $contentMedia2->getId());
+        $contentMedia3 = $mediaSelection[2];
+        self::assertInstanceOf(Media::class, $contentMedia3);
+        self::assertSame($media3->getId(), $contentMedia3->getId());
+
+        $contentMedia1 = $content['single_media_selection'];
         self::assertInstanceOf(Media::class, $contentMedia1);
         self::assertSame($media1->getId(), $contentMedia1->getId());
 
-        $contentMedia2 = $content['media_selection'][1];
+        /** @var mixed[] $excerpt */
+        $excerpt = $content['excerpt'];
+        $contentMedia1 = $excerpt['excerptIcon'];
+        self::assertInstanceOf(Media::class, $contentMedia1);
+        self::assertSame($media1->getId(), $contentMedia1->getId());
+
+        $contentMedia2 = $excerpt['excerptImage'];
         self::assertInstanceOf(Media::class, $contentMedia2);
         self::assertSame($media2->getId(), $contentMedia2->getId());
+    }
 
-        //TODO
-        //account selection / contact selection / image map / blocks 2 / excerpt / seo
+    public function testResolveCollections(): void
+    {
+        $collection1 = self::createCollection(['title' => 'collection-1', 'locale' => 'en']);
+        $collection2 = self::createCollection([
+            'title' => 'collection-2',
+            'locale' => 'en',
+            'name' => 'collection-2',
+            'key' => 'collection-2',
+        ]);
+
+        self::getEntityManager()->flush();
+
+        $example1 = static::createExample(
+            [
+                'en' => [
+                    'live' => [
+                        'template' => 'full-content',
+                        'title' => 'Lorem Ipsum',
+                        'url' => '/lorem-ipsum',
+                        'collection_selection' => [$collection1->getId(), $collection2->getId()],
+                        'single_collection_selection' => $collection1->getId(),
+                    ],
+                ],
+            ],
+            [
+                'create_route' => true,
+            ]
+        );
+
+        static::getEntityManager()->flush();
+
+        $dimensionContent = $this->contentAggregator->aggregate($example1, ['locale' => 'en', 'stage' => 'live']);
+        /** @var mixed[] $result */
+        $result = $this->contentResolver->resolve($dimensionContent);
+
+        /** @var mixed[] $content */
+        $content = $result['content'];
+
+        $contentSelection = $content['collection_selection'];
+        self::assertIsArray($contentSelection);
+        self::assertCount(2, $contentSelection);
+        $contentCollection1 = $contentSelection[0];
+        self::assertSame($collection1->getId(), $contentCollection1->getId());
+        $contentCollection2 = $contentSelection[1];
+        self::assertSame($collection2->getId(), $contentCollection2->getId());
+
+        $singleCollectionSelection = $content['single_collection_selection'];
+        self::assertInstanceOf(Collection::class, $singleCollectionSelection);
+        self::assertSame($collection1->getId(), $singleCollectionSelection->getId());
+    }
+
+    public function testResolveCategories(): void
+    {
+        $category1 = self::createCategory(['key' => 'category-1']);
+        $category2 = self::createCategory(['key' => 'category-2']);
+        self::getEntityManager()->flush();
+
+        $example1 = static::createExample(
+            [
+                'en' => [
+                    'live' => [
+                        'template' => 'full-content',
+                        'title' => 'Lorem Ipsum',
+                        'url' => '/lorem-ipsum',
+                        'category_selection' => [$category1->getId(), $category2->getId()],
+                        'single_category_selection' => $category1->getId(),
+                        'excerptCategories' => [$category1->getId(), $category2->getId()],
+                    ],
+                ],
+            ],
+            [
+                'create_route' => true,
+            ]
+        );
+
+        static::getEntityManager()->flush();
+
+        $dimensionContent = $this->contentAggregator->aggregate($example1, ['locale' => 'en', 'stage' => 'live']);
+        /** @var mixed[] $result */
+        $result = $this->contentResolver->resolve($dimensionContent);
+
+        /** @var mixed[] $content */
+        $content = $result['content'];
+
+        $categorySelection = $content['category_selection'];
+        self::assertIsArray($categorySelection);
+        self::assertCount(2, $categorySelection);
+        $contentCategory1 = $categorySelection[0];
+        self::assertSame($category1->getId(), $contentCategory1->getId());
+        $contentCategory2 = $categorySelection[1];
+        self::assertSame($category2->getId(), $contentCategory2->getId());
+
+        $singleCategorySelection = $content['single_category_selection'];
+        self::assertInstanceOf(Category::class, $singleCategorySelection);
+        self::assertSame($category1->getId(), $singleCategorySelection->getId());
+
+        /** @var mixed[] $excerpt */
+        $excerpt = $content['excerpt'];
+
+        $excerptCategories = $excerpt['excerptCategories'];
+        self::assertIsArray($excerptCategories);
+        self::assertCount(2, $excerptCategories);
+        $excerptCategory1 = $excerptCategories[0];
+        self::assertSame($category1->getId(), $excerptCategory1->getId());
+        $excerptCategory2 = $excerptCategories[1];
+        self::assertSame($category2->getId(), $excerptCategory2->getId());
+    }
+
+    public function testResolveTags(): void
+    {
+        $tag1 = self::createTag(['name' => 'tag-1']);
+        $tag2 = self::createTag(['name' => 'tag-2']);
+        self::getEntityManager()->flush();
+
+        $example1 = static::createExample(
+            [
+                'en' => [
+                    'live' => [
+                        'template' => 'full-content',
+                        'title' => 'Lorem Ipsum',
+                        'url' => '/lorem-ipsum',
+                        'tag_selection' => [$tag1->getName()],
+                        'excerptTags' => [$tag1->getName(), $tag2->getName()],
+                    ],
+                ],
+            ],
+            [
+                'create_route' => true,
+            ]
+        );
+
+        static::getEntityManager()->flush();
+
+        $dimensionContent = $this->contentAggregator->aggregate($example1, ['locale' => 'en', 'stage' => 'live']);
+        /** @var mixed[] $result */
+        $result = $this->contentResolver->resolve($dimensionContent);
+
+        /** @var mixed[] $content */
+        $content = $result['content'];
+
+        /** @var mixed[] $excerpt */
+        $excerpt = $content['excerpt'];
+
+        $tagSelection = $content['tag_selection'];
+        self::assertIsArray($tagSelection);
+        self::assertSame('tag-1', $tagSelection[0]);
+
+        $excerptTags = $excerpt['excerptTags'];
+        self::assertIsArray($excerptTags);
+        self::assertSame('tag-1', $excerptTags[0]);
+        self::assertSame('tag-2', $excerptTags[1]);
+    }
+
+    public function testResolveContentBlocks(): void
+    {
+        $category1 = self::createCategory(['key' => 'category-1']);
+        $category2 = self::createCategory(['key' => 'category-2']);
+        $tag1 = self::createTag(['name' => 'tag-1']);
+        $collection1 = self::createCollection(['title' => 'collection-1', 'locale' => 'en']);
+        $mediaType = self::createMediaType(['name' => 'Image', 'description' => 'This is an image']);
+        $media1 = self::createMedia($collection1, $mediaType, ['title' => 'media-1', 'locale' => 'en']);
+        $media2 = self::createMedia($collection1, $mediaType, ['title' => 'media-2', 'locale' => 'en']);
+
+        self::getEntityManager()->flush();
+
+        $example1 = static::createExample(
+            [
+                'en' => [
+                    'live' => [
+                        'template' => 'full-content',
+                        'title' => 'Lorem Ipsum',
+                        'url' => '/lorem-ipsum',
+                        'blocks' => [
+                            [
+                                'type' => 'editor',
+                                'text_editor' => '<p>Block Level 0: Lorem Ipsum dolor sit amet</p>',
+                            ],
+                            [
+                                'type' => 'media',
+                                'media_selection' => [
+                                    'ids' => [$media1->getId()],
+                                ],
+                            ],
+                            [
+                                'type' => 'block',
+                                'blocks' => [
+                                    [
+                                        'type' => 'editor',
+                                        'text_editor' => '<p>Block Level 1: Lorem Ipsum dolor sit amet</p>',
+                                    ],
+                                    [
+                                        'type' => 'media',
+                                        'media_selection' => [
+                                            'ids' => [$media1->getId(), $media2->getId()],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            [
+                'create_route' => true,
+            ]
+        );
+
+        static::getEntityManager()->flush();
+
+        $dimensionContent = $this->contentAggregator->aggregate($example1, ['locale' => 'en', 'stage' => 'live']);
+        /** @var mixed[] $result */
+        $result = $this->contentResolver->resolve($dimensionContent);
+
+        /** @var mixed[] $content */
+        $content = $result['content'];
+
+        self::assertSame('Lorem Ipsum', $content['title']);
+        self::assertSame('/lorem-ipsum', $content['url']);
+
+        // block 0
+        self::assertSame('editor', $content['blocks'][0]['type']);
+        self::assertSame('<p>Block Level 0: Lorem Ipsum dolor sit amet</p>', $content['blocks'][0]['text_editor']);
+
+        // block 1
+        self::assertSame('media', $content['blocks'][1]['type']);
+        $mediaSelection = $content['blocks'][1]['media_selection'];
+        self::assertCount(1, $mediaSelection);
+        $mediaApi1 = $mediaSelection[0];
+        self::assertInstanceOf(Media::class, $mediaApi1);
+        self::assertSame($media1->getId(), $mediaApi1->getId());
+
+        // block 2
+        self::assertSame('block', $content['blocks'][2]['type']);
+        self::assertSame('<p>Block Level 1: Lorem Ipsum dolor sit amet</p>', $content['blocks'][2]['blocks'][0]['text_editor']);
+        self::assertSame('editor', $content['blocks'][2]['blocks'][0]['type']);
+
+        self::assertSame('media', $content['blocks'][2]['blocks'][1]['type']);
+        $mediaSelection = $content['blocks'][2]['blocks'][1]['media_selection'];
+        self::assertCount(2, $mediaSelection);
+        $mediaApi1 = $content['blocks'][2]['blocks'][1]['media_selection'][0];
+        self::assertInstanceOf(Media::class, $mediaApi1);
+        self::assertSame($media1->getId(), $mediaApi1->getId());
+        $mediaApi2 = $content['blocks'][2]['blocks'][1]['media_selection'][1];
+        self::assertInstanceOf(Media::class, $mediaApi2);
+        self::assertSame($media2->getId(), $mediaApi2->getId());
     }
 }

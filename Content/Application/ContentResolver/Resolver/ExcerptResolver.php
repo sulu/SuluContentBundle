@@ -63,7 +63,7 @@ class ExcerptResolver implements ResolverInterface
      *     excerptMore: string|null,
      *     excerptDescription: string|null,
      *     excerptCategories: int[],
-     *     excerptTags: int[],
+     *     excerptTags: string[],
      *     excerptIcon: array{id: int}|null,
      *     excerptImage: array{id: int}|null
      * }
@@ -79,7 +79,7 @@ class ExcerptResolver implements ResolverInterface
                 $dimensionContent->getExcerptCategories()
             ),
             'excerptTags' => \array_map(
-                fn (TagInterface $tag) => $tag->getId(), $dimensionContent->getExcerptTags()
+                fn (TagInterface $tag) => $tag->getName(), $dimensionContent->getExcerptTags()
             ),
             'excerptIcon' => $dimensionContent->getExcerptIcon(),
             'excerptImage' => $dimensionContent->getExcerptImage(),

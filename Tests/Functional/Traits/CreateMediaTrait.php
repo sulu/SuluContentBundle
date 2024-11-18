@@ -32,6 +32,8 @@ trait CreateMediaTrait
      * @param array{
      *     title?: string,
      *     locale?: string,
+     *     name?: string,
+     *     key?: string,
      * } $data
      */
     private function createCollection(array $data = []): CollectionInterface
@@ -45,8 +47,8 @@ trait CreateMediaTrait
         if (!$collectionType) {
             $collectionType = new CollectionType();
             $collectionType->setId(1);
-            $collectionType->setName('Default');
-            $collectionType->setKey('default');
+            $collectionType->setName($data['name'] ?? 'Default');
+            $collectionType->setKey($data['key'] ?? 'default');
             $manager->persist($collectionType);
         }
 
