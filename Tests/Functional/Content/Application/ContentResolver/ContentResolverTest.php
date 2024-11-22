@@ -130,7 +130,7 @@ class ContentResolverTest extends SuluTestCase
     public function testResolveMedias(): void
     {
         self::markTestSkipped('This test is skipped because it somehow fails in the CI.');
-        
+
         $collection1 = self::createCollection(['title' => 'collection-1', 'locale' => 'en']);
         $mediaType = self::createMediaType(['name' => 'Image', 'description' => 'This is an image']);
         $media1 = self::createMedia($collection1, $mediaType, ['title' => 'media-1', 'locale' => 'en']);
