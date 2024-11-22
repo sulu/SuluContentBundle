@@ -245,8 +245,10 @@ class ContentResolverTest extends SuluTestCase
         self::assertIsArray($contentSelection);
         self::assertCount(2, $contentSelection);
         $contentCollection1 = $contentSelection[0];
+        self::assertInstanceOf(Collection::class, $contentCollection1);
         self::assertSame($collection1->getId(), $contentCollection1->getId());
         $contentCollection2 = $contentSelection[1];
+        self::assertInstanceOf(Collection::class, $contentCollection2);
         self::assertSame($collection2->getId(), $contentCollection2->getId());
 
         $singleCollectionSelection = $content['single_collection_selection'];
