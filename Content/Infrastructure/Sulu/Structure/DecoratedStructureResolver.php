@@ -29,9 +29,12 @@ class DecoratedStructureResolver implements StructureResolverInterface
     /**
      * @return mixed[]
      */
-    public function resolve(StructureInterface $structure, bool $loadExcerpt = true): array
+    public function resolve(StructureInterface $structure, bool $loadExcerpt = true/*, array $includedProperties = null*/): array
     {
-        $data = $this->inner->resolve($structure, $loadExcerpt);
+        $includedProperties = (\func_num_args() > 2) ? \func_get_arg(2) : null;
+
+        /** @phpstan-ignore-next-line */
+        $data = $this->inner->resolve($structure, $loadExcerpt, $includedProperties);
 
         if (!$structure instanceof ContentStructureBridge) {
             return $data;

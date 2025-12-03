@@ -50,7 +50,7 @@ class DecoratedStructureResolverTest extends TestCase
         $structure = $this->prophesize(StructureInterface::class);
         $expectedData = ['key' => 'value'];
 
-        $this->innerResolver->resolve($structure->reveal(), true)
+        $this->innerResolver->resolve($structure->reveal(), true, null)
             ->willReturn($expectedData);
 
         $result = $this->decoratedResolver->resolve($structure->reveal());
@@ -68,7 +68,7 @@ class DecoratedStructureResolverTest extends TestCase
         $document->getContent()->willReturn($content);
 
         $expectedData = ['key' => 'value'];
-        $this->innerResolver->resolve($structure->reveal(), true)
+        $this->innerResolver->resolve($structure->reveal(), true, null)
             ->willReturn($expectedData);
 
         $result = $this->decoratedResolver->resolve($structure->reveal());
@@ -88,7 +88,7 @@ class DecoratedStructureResolverTest extends TestCase
         $document->getContent()->willReturn($content->reveal());
 
         $expectedData = ['key' => 'value'];
-        $this->innerResolver->resolve($structure->reveal(), true)
+        $this->innerResolver->resolve($structure->reveal(), true, null)
             ->willReturn($expectedData);
 
         $authDate = new \DateTimeImmutable();
@@ -117,7 +117,7 @@ class DecoratedStructureResolverTest extends TestCase
         $document->getContent()->willReturn($content->reveal());
 
         $expectedData = ['key' => 'value'];
-        $this->innerResolver->resolve($structure->reveal(), true)
+        $this->innerResolver->resolve($structure->reveal(), true, null)
             ->willReturn($expectedData);
 
         $content->getAuthored()->willReturn(null);
@@ -138,10 +138,24 @@ class DecoratedStructureResolverTest extends TestCase
         $structure = $this->prophesize(StructureInterface::class);
         $expectedData = ['key' => 'value'];
 
-        $this->innerResolver->resolve($structure->reveal(), false)
+        $this->innerResolver->resolve($structure->reveal(), false, null)
             ->willReturn($expectedData);
 
         $result = $this->decoratedResolver->resolve($structure->reveal(), false);
+
+        $this->assertSame($expectedData, $result);
+    }
+
+    public function testResolveWithIncludedProperties(): void
+    {
+        $structure = $this->prophesize(StructureInterface::class);
+        $includedProperties = ['title' => 'title', 'url' => 'url'];
+        $expectedData = ['key' => 'value'];
+
+        $this->innerResolver->resolve($structure->reveal(), false, $includedProperties)
+            ->willReturn($expectedData);
+
+        $result = $this->decoratedResolver->resolve($structure->reveal(), false, $includedProperties);
 
         $this->assertSame($expectedData, $result);
     }
