@@ -38,5 +38,7 @@
     "title": "Test Example",
     "url": "/my-example",
     "workflowPlace": "unpublished",
-    "mainWebspace": "sulu-io"
+    "mainWebspace": "sulu-io",
+    "lastModifiedEnabled": false,
+    "lastModified": null
 }

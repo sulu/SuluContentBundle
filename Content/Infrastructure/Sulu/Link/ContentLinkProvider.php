@@ -89,6 +89,7 @@ abstract class ContentLinkProvider implements LinkProviderInterface
                             return null;
                         }
 
+                        /** @var array{title?: string, name?: string} $data */
                         $data = $this->contentManager->normalize($resolvedDimensionContent);
 
                         return new LinkItem(
@@ -104,7 +105,10 @@ abstract class ContentLinkProvider implements LinkProviderInterface
 
     /**
      * @param B $dimensionContent
-     * @param mixed[] $data
+     * @param array{
+     *     title?: string,
+     *     name?: string
+     * } $data
      */
     protected function getTitle(DimensionContentInterface $dimensionContent, array $data): ?string
     {

@@ -35,6 +35,10 @@ final class AuthorMerger implements MergerInterface
             $targetObject->setAuthor($author);
         }
 
+        if ($lastModified = $sourceObject->getLastModified()) {
+            $targetObject->setLastModified($lastModified);
+        }
+
         if ($authored = $sourceObject->getAuthored()) {
             $targetObject->setAuthored($authored);
         }

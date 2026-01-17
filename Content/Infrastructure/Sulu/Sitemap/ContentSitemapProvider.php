@@ -168,7 +168,7 @@ class ContentSitemapProvider implements SitemapProviderInterface
                 ->getQuery()
                 ->getSingleScalarResult();
 
-            return (int) \ceil($amount / $this->pageSize);
+            return (int) \ceil((int) $amount / $this->pageSize);
         } catch (NoResultException|NonUniqueResultException $e) { // @codeCoverageIgnore
             // TODO FIXME add testcase for this
             return 0; // @codeCoverageIgnore

@@ -1,5 +1,9 @@
 # Upgrade
 
+```sql
+ALTER TABLE test_example_dimension_contents ADD updated DATETIME DEFAULT NULL COMMENT '(DC2Type:datetime_immutable)';
+```
+
 ## 0.8.0
 
 ### Require PHP 8.1

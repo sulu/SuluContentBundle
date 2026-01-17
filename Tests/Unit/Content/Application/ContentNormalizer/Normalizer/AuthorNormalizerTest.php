@@ -77,15 +77,20 @@ class AuthorNormalizerTest extends TestCase
         $contact->getId()->shouldBeCalled()->willReturn(1);
         $object->getAuthor()->willReturn($contact->reveal());
         $authored = new \DateTimeImmutable('2020-05-08T00:00:00+00:00');
+        $lastModified = new \DateTimeImmutable('2022-05-08T00:00:00+00:00');
 
         $data = [
             'author' => $contact->reveal(),
             'authored' => $authored,
+            'lastModifiedEnabled' => true,
+            'lastModified' => $lastModified,
         ];
 
         $expectedResult = [
             'author' => 1,
             'authored' => $authored,
+            'lastModifiedEnabled' => true,
+            'lastModified' => $lastModified,
         ];
 
         $this->assertSame(

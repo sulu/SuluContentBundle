@@ -113,6 +113,7 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
                             return null;
                         }
 
+                        /** @var array{title?: string|null, name?: string|null} $data */
                         $data = $this->contentManager->normalize($resolvedDimensionContent);
 
                         return $this->createTeaser($resolvedDimensionContent, $data, $locale);
@@ -125,7 +126,10 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
 
     /**
      * @param B $dimensionContent
-     * @param array<string, mixed> $data
+     * @param array{
+     *       title?: string|null,
+     *       name?: string|null
+     *   } $data
      */
     protected function createTeaser(DimensionContentInterface $dimensionContent, array $data, string $locale): ?Teaser
     {
@@ -139,10 +143,10 @@ abstract class ContentTeaserProvider implements TeaserProviderInterface
         $title = $this->getTitle($dimensionContent, $data);
 
         /** @var string $description */
-        $description = $this->getDescription($dimensionContent, $data); // @phpstan-ignore-line
+        $description = $this->getDescription($dimensionContent, $data);
 
         /** @var string $moreText */
-        $moreText = $this->getMoreText($dimensionContent, $data); // @phpstan-ignore-line
+        $moreText = $this->getMoreText($dimensionContent, $data);
 
         /** @var int $mediaId */
         $mediaId = $this->getMediaId($dimensionContent, $data);
