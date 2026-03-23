@@ -109,7 +109,7 @@ final class MetadataLoader
 
         if ($reflection->implementsInterface(AuthorInterface::class)) {
             $this->addField($metadata, 'authored', 'datetime_immutable', ['nullable' => true]);
-            $this->addManyToOne($event, $metadata, 'author', ContactInterface::class, true);
+            $this->addManyToOne($event, $metadata, 'author', ContactInterface::class);
         }
 
         if ($reflection->implementsInterface(WorkflowInterface::class)) {
@@ -132,7 +132,6 @@ final class MetadataLoader
         ClassMetadataInfo $metadata,
         string $name,
         string $class,
-        bool $nullable = false
     ): void {
         if ($metadata->hasAssociation($name)) {
             return;
@@ -148,9 +147,8 @@ final class MetadataLoader
                 [
                     'name' => $namingStrategy->joinKeyColumnName($name), // @phpstan-ignore-line
                     'referencedColumnName' => $referencedColumnName,
-                    'nullable' => $nullable,
-                    'onDelete' => 'CASCADE',
-                    'onUpdate' => 'CASCADE',
+                    'nullable' => true,
+                    'onDelete' => 'SET NULL',
                 ],
             ],
         ]);
