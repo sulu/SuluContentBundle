@@ -1,5 +1,16 @@
 # Upgrade
 
+## 0.8.3
+
+### Remove cascade by contact removal
+
+Fix that removal of a contact which is linked as author does remove the dimension content.
+
+```sql
+ALTER TABLE test_example_dimension_contents DROP FOREIGN KEY FK_9BFA55BF675F31B;
+ALTER TABLE test_example_dimension_contents ADD CONSTRAINT FK_9BFA55BF675F31B FOREIGN KEY (author_id) REFERENCES co_contacts (id) ON DELETE SET NUL
+```
+
 ## 0.8.0
 
 ### Require PHP 8.1
