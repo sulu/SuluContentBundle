@@ -1,7 +1,71 @@
-example_test.examples:
-    type: rest
-    name_prefix: example_test.
-    resource: example_test.example_controller
+example_test.get_examples:
+    path: '/admin/api/examples.{_format}'
+    methods: GET
+    controller: 'example_test.example_controller::cgetAction'
+    format: json
     defaults:
+        _format: json
         options:
             api_dimension_listener: true
+    requirements:
+        _format: json|csv
+
+example_test.get_example:
+    path: '/admin/api/examples/{id}.{_format}'
+    methods: GET
+    controller: 'example_test.example_controller::getAction'
+    format: json
+    defaults:
+        _format: json
+        options:
+            api_dimension_listener: true
+    requirements:
+        _format: json|csv
+
+example_test.post_example:
+    path: '/admin/api/examples.{_format}'
+    methods: POST
+    controller: 'example_test.example_controller::postAction'
+    format: json
+    defaults:
+        _format: json
+        options:
+            api_dimension_listener: true
+    requirements:
+        _format: json|csv
+
+example_test.post_example_trigger:
+    path: '/admin/api/examples/{id}.{_format}'
+    methods: POST
+    controller: 'example_test.example_controller::postTriggerAction'
+    format: json
+    defaults:
+        _format: json
+        options:
+            api_dimension_listener: true
+    requirements:
+        _format: json|csv
+
+example_test.put_example:
+    path: '/admin/api/examples/{id}.{_format}'
+    methods: PUT
+    controller: 'example_test.example_controller::putAction'
+    format: json
+    defaults:
+        _format: json
+        options:
+            api_dimension_listener: true
+    requirements:
+        _format: json|csv
+
+example_test.delete_example:
+    path: '/admin/api/examples/{id}.{_format}'
+    methods: DELETE
+    controller: 'example_test.example_controller::deleteAction'
+    format: json
+    defaults:
+        _format: json
+        options:
+            api_dimension_listener: true
+    requirements:
+        _format: json|csv
