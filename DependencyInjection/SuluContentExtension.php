@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\ContentBundle\DependencyInjection;
 
+use Sulu\Bundle\ContentBundle\Content\Domain\Repository\ContentRichEntityRepositoryInterface;
 use Sulu\Bundle\PersistenceBundle\DependencyInjection\PersistenceExtensionTrait;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -52,6 +53,9 @@ class SuluContentExtension extends Extension implements PrependExtensionInterfac
         $loader->load('services.xml');
         $loader->load('form-visitor.xml');
         $loader->load('controller.xml');
+
+        $container->registerForAutoconfiguration(ContentRichEntityRepositoryInterface::class)
+            ->addTag('sulu_content.repository');
 
         if ($container->hasParameter('kernel.bundles')) {
             // TODO FIXME add test here

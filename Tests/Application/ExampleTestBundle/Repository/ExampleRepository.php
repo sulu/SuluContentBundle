@@ -18,13 +18,17 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
+use Sulu\Bundle\ContentBundle\Content\Domain\Repository\ContentRichEntityRepositoryInterface;
 use Sulu\Bundle\ContentBundle\Content\Infrastructure\Doctrine\DimensionContentQueryEnhancer;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\Example;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Entity\ExampleDimensionContent;
 use Sulu\Bundle\ContentBundle\Tests\Application\ExampleTestBundle\Exception\ExampleNotFoundException;
 use Webmozart\Assert\Assert;
 
-class ExampleRepository
+/**
+ * @implements ContentRichEntityRepositoryInterface<int, Example>
+ */
+class ExampleRepository implements ContentRichEntityRepositoryInterface
 {
     /**
      * Groups are used in controllers and represents serialization / resolver group,
@@ -83,6 +87,11 @@ class ExampleRepository
         $this->entityRepository = $entityManager->getRepository(Example::class);
         $this->entityManager = $entityManager;
         $this->dimensionContentQueryEnhancer = $dimensionContentQueryEnhancer;
+    }
+
+    public static function getResourceKey(): string
+    {
+        return Example::RESOURCE_KEY;
     }
 
     /**
