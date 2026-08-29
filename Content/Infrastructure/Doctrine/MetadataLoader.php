@@ -46,9 +46,9 @@ final class MetadataLoader
             $this->addField($metadata, 'locale', 'string', ['length' => 7, 'nullable' => true]);
             $this->addField($metadata, 'ghostLocale', 'string', ['length' => 7, 'nullable' => true]);
             $this->addField($metadata, 'availableLocales', 'json', ['nullable' => true, 'options' => ['jsonb' => true]]);
-            $this->addIndex($metadata, 'idx_dimension', ['stage', 'locale']);
-            $this->addIndex($metadata, 'idx_locale', ['locale']);
-            $this->addIndex($metadata, 'idx_stage', ['stage']);
+            $this->addIndex($metadata, 'dimension', ['stage', 'locale']);
+            $this->addIndex($metadata, 'locale', ['locale']);
+            $this->addIndex($metadata, 'stage', ['stage']);
         }
 
         if ($reflection->implementsInterface(ShadowInterface::class)) {
@@ -60,7 +60,7 @@ final class MetadataLoader
             $this->addField($metadata, 'templateKey', 'string', ['length' => 32]);
             $this->addField($metadata, 'templateData', 'json', ['nullable' => false, 'options' => ['jsonb' => true]]);
 
-            $this->addIndex($metadata, 'idx_template_key', ['templateKey']);
+            $this->addIndex($metadata, 'template_key', ['templateKey']);
         }
 
         if ($reflection->implementsInterface(SeoInterface::class)) {
@@ -116,8 +116,8 @@ final class MetadataLoader
             $this->addField($metadata, 'workflowPlace', 'string', ['length' => 32, 'nullable' => true]);
             $this->addField($metadata, 'workflowPublished', 'datetime_immutable', ['nullable' => true]);
 
-            $this->addIndex($metadata, 'idx_workflow_place', ['workflowPlace']);
-            $this->addIndex($metadata, 'idx_workflow_published', ['workflowPublished']);
+            $this->addIndex($metadata, 'workflow_place', ['workflowPlace']);
+            $this->addIndex($metadata, 'workflow_published', ['workflowPublished']);
         }
     }
 
@@ -229,6 +229,7 @@ final class MetadataLoader
     private function addIndex(ClassMetadataInfo $metadata, string $name, array $fields): void
     {
         $builder = new ClassMetadataBuilder($metadata);
+        $name = sprintf('idx_%s_%s', $metadata->getTableName(), $name);
 
         $builder->addIndex($fields, $name);
     }
